@@ -47,8 +47,8 @@ ORDER BY (`kubernetes_container_name`, timestamp)
 Download the agent and aggregator value files for the helm chart.
 
 ```
-wget https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/vector_to_vector/aggregator.yaml
-wget https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/vector_to_vector/agent.yaml
+wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/vector_to_vector/aggregator.yaml
+wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/vector_to_vector/agent.yaml
 ```
 
 ## Install the aggregator
