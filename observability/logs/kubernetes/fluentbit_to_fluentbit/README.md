@@ -31,6 +31,14 @@ ENGINE = MergeTree
 ORDER BY (host, pod_name, timestamp)
 ```
 
+## Download files
+
+Download the agent and aggregator value files for the helm chart.
+
+```
+wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/fluentbit_to_fluentbit/agent.yaml
+wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/fluentbit_to_fluentbit/aggregator.yaml
+```
 
 ## Install the aggregator
 
