@@ -12,6 +12,8 @@ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm
 
 ## Download files
 
+Download the agent and aggregator value files for the helm chart.
+
 ```
 wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/otel_to_otel/agent.yml
 wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/otel_to_otel/gateway.yml
