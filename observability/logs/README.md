@@ -1,4 +1,4 @@
-# Observability
+# Logging data
 
 Examples of collecting and analyzing logging data in ClickHouse. 
 
