@@ -10,9 +10,16 @@ Installs an Open Telemetry collector as a deployment (for an aggregator/gateway)
 helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 ```
 
+## Download files
+
+```
+wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/otel_to_otel/agent.yml
+wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/otel_to_otel/gateway.yml
+```
+
 ## Install the aggregator
 
-Installs the collector as a deployment. Ensure you modify the [target ClickHouse cluster]() and [resources]() to fit your environment.
+Installs the collector as a deployment. Ensure you modify the [target ClickHouse cluster](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/otel_to_otel/gateway.yml#L78) and [resources](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/otel_to_otel/gateway.yml#L223-L226) to fit your environment.
 
 ```bash
 helm install otel-collector open-telemetry/opentelemetry-collector --values gateway.yml --create-namespace --namespace otel
