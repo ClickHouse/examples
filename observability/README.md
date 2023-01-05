@@ -1,5 +1,6 @@
 # Observability
 
-Examples for handling Observability data in ClickHouse. 
+Examples of collecting and analyzing Observability data in ClickHouse. 
 
-- [logs](https://github.com/ClickHouse/examples/tree/main/observability/logs)
+- [Kubernetes](https://github.com/ClickHouse/examples/tree/main/observability/logs/kubernetes)
+    - [Logs](https://github.com/ClickHouse/examples/tree/main/observability/logs)
