@@ -13,7 +13,6 @@ helm repo add vector https://helm.vector.dev
 
 ## Create the database and table
 
-
 ```bash
 CREATE database vector
 
@@ -43,9 +42,18 @@ ENGINE = MergeTree
 ORDER BY (`kubernetes_container_name`, timestamp)
 ```
 
+## Download files
+
+Download the agent and aggregator value files for the helm chart.
+
+```
+wget https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/vector_to_vector/aggregator.yaml
+wget https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/vector_to_vector/agent.yaml
+```
+
 ## Install the aggregator
 
-Installs the collector as a deployment. Ensure you modify the [target ClickHouse cluster]() and [resources]() to fit your environment.
+Installs the collector as a deployment. Ensure you modify the [target ClickHouse cluster](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/vector_to_vector/aggregator.yaml#L314-L324) and [resources](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/vector_to_vector/aggregator.yaml#L167-L173) to fit your environment.
 
 
 ```bash
