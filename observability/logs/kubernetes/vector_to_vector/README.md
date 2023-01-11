@@ -53,14 +53,13 @@ wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/lo
 
 ## Aggegator Configuration
 
-The [aggregator.yml](./aggregator.yml) provides a full sample gateway configuration, requiring only minor changes for most cases.
+The [aggregator.yml](./aggregator.yml) provides a full sample aggregator configuration, requiring only minor changes for most cases.
 
 To deploy an aggregator, we make a few key configuration changes to the charts `values.yaml`:
   - Set the `role` to “Aggregator”
     ```yaml
     role: "Aggregator"
     ```
-  - Tune our resource limits to fit our throughput
   - Modify the `customConfig` key to use [vector as our source](https://vector.dev/docs/reference/configuration/sources/vector/). This vector-specific protocol allows agent instances to forward logs to the aggregator over port 6000. Note also our [remap](https://vector.dev/docs/reference/configuration/transforms/remap/) transform, which uses [VRL](https://vector.dev/docs/reference/vrl/) to ensure columns use `_` as delimiter and not `.`.
     ```yaml
     customConfig:
@@ -94,27 +93,32 @@ To deploy an aggregator, we make a few key configuration changes to the charts `
               .kubernetes_pod_uid = .kubernetes.pod_uid
               del(.kubernetes)
     ```
-  - Under the same `customConfig` key, configure the ClickHouse sink. Note the need to specify a protocol prefix in the endpoint and settings to encourage [larger batch sizes](https://vector.dev/docs/reference/configuration/sinks/clickhouse/#batch).
-    ```yaml
-    customConfig:
-      sinks:
-        clickhouse:
-          type: clickhouse
-          inputs: [dots_to_underscores]
-          database: vector
-          endpoint: "https://<host>:8443"
-          table: vector_logs
-          compression: gzip
-          auth:
-            password: <password>
-            strategy: basic
-            user: <username>
-          batch:
-            timeout_secs: 10
-            max_events: 10000
-            max_bytes: 10485760
-          skip_unknown_fields: true
-    ```
+    
+
+**Important**
+
+Under the `customConfig` key, configure the ClickHouse sink. Note the need to specify a protocol prefix in the endpoint and settings to encourage [larger batch sizes](https://vector.dev/docs/reference/configuration/sinks/clickhouse/#batch). Also ensure you tune the [resources](./aggregator.yaml#L167-L173) to fit your throughput.
+
+```yaml
+customConfig:
+  sinks:
+    clickhouse:
+      type: clickhouse
+      inputs: [dots_to_underscores]
+      database: vector
+      endpoint: "https://<host>:8443"
+      table: vector_logs
+      compression: gzip
+      auth:
+        password: <password>
+        strategy: basic
+        user: <username>
+      batch:
+        timeout_secs: 10
+        max_events: 10000
+        max_bytes: 10485760
+      skip_unknown_fields: true
+```
 
 ## Install the aggregator
 

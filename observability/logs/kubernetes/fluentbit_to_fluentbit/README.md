@@ -40,6 +40,14 @@ wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/lo
 wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/fluentbit_to_fluentbit/aggregator.yaml
 ```
 
+## Aggegator Configuration
+
+The [aggregator.yml](./aggregator.yml) provides a full sample aggregator configuration, requiring only minor changes for most cases.
+
+Note the following:
+
+- We utilize a different [Lua script](./aggregator.yaml#L291-L309) to move certain fields to the root out of the Kubernetes key, allowing these to be used in the primary key. We also move annotations and labels to the root. This allows them to be declared as a Map type and excluded from [Compression](#compression) statistics later as they are very sparse. Furthermore, this means our `kubernetes` column has only a single later of nesting and can be declared as a Map also.
+
 ## Install the aggregator
 
 Installs the collector as a deployment. Ensure you modify the [target ClickHouse cluster]() and [resources]() to fit your environment.
@@ -54,4 +62,16 @@ Installs the collector as a daemonset. Ensure you modify the [resources]() to fi
 
 ```bash
 helm install fluent-agent fluent/fluent-bit --values agent.yaml --namespace fluent
+```
+
+## Confirm logs are arriving
+
+
+```sql
+SELECT count()
+FROM fluent.fluent_logs
+
+┌─count()─┐
+│ 4695341 │
+└─────────┘
 ```

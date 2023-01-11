@@ -25,16 +25,17 @@ wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/lo
 
 The [gateway.yml](./gateway.yml) provides a full sample gateway configuration, requiring only minor changes for most cases.
 
-Deploying the Collector as a gateway requires a few simple configuration changes. Principally, we specify the mode as `deployment` and ensure any collection is disabled. 
+Deploying the Collector as a gateway requires a few simple configuration changes:
 
+- Specify the mode as `deployment` and ensure any collection is disabled. 
+    ```yaml
+    # Valid values are "daemonset", "deployment", and "statefulset".
+    mode: "deployment"
+    ```
+- Agent-specific configuration occurs under the `config` key. To receive data from agents, we configure an oltp receiver to use gRPC on port 4317. The batch processor can be used to maximize bulk inserts to ClickHouse, with `timeout` property allowing the user to control the maximum latency of inserts (time from collection to ClickHouse insert). Note we recommend a [batch size of at least 1000](https://clickhouse.com/docs/en/cloud/bestpractices/bulk-inserts/#:~:text=Generally%2C%20we%20recommend%20inserting%20data,between%2010%2C000%20to%20100%2C000%20rows.) and setting the timeout to the highest possible value to avoid small inserts. 
+- We configure a clickhouse exporter, using the [dsn syntax supported by the Go client](https://github.com/ClickHouse/clickhouse-go#dsn), to securely send logs to port 9440, specify a table as `otel_logs` and declare a pipeline to tie everything together. The pipeline explicitly connects the receiver, processors, and exporter into a single execution flow.
 
-```yaml
-# Valid values are "daemonset", "deployment", and "statefulset".
-mode: "deployment"
-```
-
-Agent-specific configuration occurs under the `config` key. To receive data from agents, we configure an oltp receiver to use gRPC on port 4317. The batch processor can be used to maximize bulk inserts to ClickHouse, with `timeout` property allowing the user to control the maximum latency of inserts (time from collection to ClickHouse insert). Note we recommend a [batch size of at least 1000](https://clickhouse.com/docs/en/cloud/bestpractices/bulk-inserts/#:~:text=Generally%2C%20we%20recommend%20inserting%20data,between%2010%2C000%20to%20100%2C000%20rows.) and setting the timeout to the highest possible value to avoid small inserts. We configure a clickhouse exporter, using the [dsn syntax supported by the Go client](https://github.com/ClickHouse/clickhouse-go#dsn), to securely send logs to port 9440, specify a table as `OTEL_logs` and declare a pipeline to tie everything together. The pipeline explicitly connects the receiver, processors, and exporter into a single execution flow.
-
+**Important**
 
 Ensure you modify the [target ClickHouse cluster](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/otel_to_otel/gateway.yml#L78) via the `dsn` key and [resources](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/otel_to_otel/gateway.yml#L223-L226) to fit your environment.
 
@@ -80,8 +81,6 @@ config:
        receivers:
          - OTLP
 ```
-
-
 
 ## Install the gateway
 
@@ -158,7 +157,7 @@ config:
 
 ## Install the Agent
 
-Installs the collector as a daemonset. Ensure you modify the [resources]() to fit your environment.
+Installs the collector as a daemonset. Ensure you modify the [resources](./agent.yml#L251-L254) to fit your environment.
 
 ```bash
 helm install otel-agent open-telemetry/opentelemetry-collector --values agent.yml --create-namespace --namespace otel
