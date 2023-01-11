@@ -3,7 +3,7 @@
 Collect logs and store in ClickHouse using Vector.
 
 
-Installs an Vector agent as a deployment (for an aggregator) and as a deamonset to collect logs from each node.
+Installs an Vector agent as a StatefulSet (for an aggregator) and as a deamonset to collect logs from each node.
 
 ## Install helm chart
 
@@ -124,7 +124,7 @@ customConfig:
 
 ## Install the aggregator
 
-Installs the collector as a deployment.
+Installs the StatefulSet as a deployment.
 
 ```bash
 helm install vector-aggregator vector/vector \

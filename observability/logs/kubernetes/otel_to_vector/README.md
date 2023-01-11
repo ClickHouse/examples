@@ -2,7 +2,7 @@
 
 Collect logs and store in ClickHouse using the Open Telemetry Collector as an agent and Vector as an aggregator.
 
-Installs Vector as a deployment (for an aggregator) and an Open Telemetry collector as a deamonset to collect logs from each node.
+Installs Vector as a StatefulSet (for an aggregator) and an Open Telemetry collector as a deamonset to collect logs from each node.
 
 
 ## Install helm charts
@@ -65,7 +65,7 @@ Ensure you configure your the [ClickHouse host and access credentials](./aggrega
 
 ## Install the aggregator
 
-Installs the vector as a deployment.
+Installs the vector as a StatefulSet.
 
 ```bash
 helm install vector-aggregator-otel vector/vector \
