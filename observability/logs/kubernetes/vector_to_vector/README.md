@@ -51,7 +51,7 @@ wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/lo
 wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/vector_to_vector/agent.yaml
 ```
 
-## Aggegator Configuration
+## Aggregator Configuration
 
 The [aggregator.yml](./aggregator.yml) provides a full sample aggregator configuration, requiring only minor changes for most cases.
 

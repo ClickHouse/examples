@@ -40,14 +40,14 @@ wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/lo
 wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/fluentbit_to_fluentbit/aggregator.yaml
 ```
 
-## Aggegator Configuration
+## Aggregator Configuration
 
 The [aggregator.yml](./aggregator.yml) provides a full sample aggregator configuration, requiring only minor changes for most cases.
 
 
 **Important Note on asynchronous inserts**
 
-We recommend the use of asynchronous inserts with ClickHouse and Fluent Bit to address the lack of batching in the ClickHouse output. This avoids [common problems with too many small writes](https://clickhouse.com/blog/common-getting-started-issues-with-clickhouse) and is the [recommended approach](https://clickhouse.com/docs/en/optimize/asynchronous-inserts/) for the write profile produced by Fluent Bit.
+*We recommend the use of asynchronous inserts with ClickHouse and Fluent Bit to address the lack of batching in the ClickHouse output. This avoids [common problems with too many small writes](https://clickhouse.com/blog/common-getting-started-issues-with-clickhouse) and is the [recommended approach](https://clickhouse.com/docs/en/optimize/asynchronous-inserts/) for the write profile produced by Fluent Bit.*
 
 Note the following:
 
@@ -96,15 +96,18 @@ fluent-aggregator-fluent-bit-5d89dd49dd-hsc5d   1/1     Running   0          16m
 
 ## Agent Configuration
 
+The [agent.yml](./agent.yml) provides a full sample agent configuration, requiring only minor changes for most cases.
 
-    ```yaml
-    outputs: |
-        [OUTPUT]
-            Name forward
-            Match *
-            Host fluent-aggregator-fluent-bit
-            Port 24224
-    ```
+The principal configuration changes is the specification of a `forward` output to commmunicate with the aggregator:
+
+```yaml
+outputs: |
+    [OUTPUT]
+        Name forward
+        Match *
+        Host fluent-aggregator-fluent-bit
+        Port 24224
+```
 
 ## Install the Agent
 
