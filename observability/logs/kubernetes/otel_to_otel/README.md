@@ -4,6 +4,8 @@ Collect logs and store in ClickHouse using the Open Telemetry Collector.
 
 Installs an Open Telemetry collector as a deployment (for an aggregator/gateway) and as a deamonset to collect logs from each node.
 
+![architecture](./architecture.png)
+
 ## Install helm chart
 
 ```bash
@@ -19,12 +21,77 @@ wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/lo
 wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/otel_to_otel/gateway.yml
 ```
 
-## Install the aggregator
+## Gateway Configuration
 
-Installs the collector as a deployment. Ensure you modify the [target ClickHouse cluster](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/otel_to_otel/gateway.yml#L78) and [resources](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/otel_to_otel/gateway.yml#L223-L226) to fit your environment.
+Deploying the Collector as a gateway requires a few simple configuration changes. Principally, we specify the mode as `deployment` and ensure any collection is disabled. 
+
+The [gateway.yml](./gateway.yml) contains the following required changes.
+
+```yaml
+# Valid values are "daemonset", "deployment", and "statefulset".
+mode: "deployment"
+```
+
+Agent-specific configuration occurs under the `config` key. To receive data from agents, we configure an oltp receiver to use gRPC on port 4317. The batch processor can be used to maximize bulk inserts to ClickHouse, with `timeout` property allowing the user to control the maximum latency of inserts (time from collection to ClickHouse insert). Note we recommend a [batch size of at least 1000](https://clickhouse.com/docs/en/cloud/bestpractices/bulk-inserts/#:~:text=Generally%2C%20we%20recommend%20inserting%20data,between%2010%2C000%20to%20100%2C000%20rows.) and setting the timeout to the highest possible value to avoid small inserts. We configure a clickhouse exporter, using the [dsn syntax supported by the Go client](https://github.com/ClickHouse/clickhouse-go#dsn), to securely send logs to port 9440, specify a table as `OTEL_logs` and declare a pipeline to tie everything together. The pipeline explicitly connects the receiver, processors, and exporter into a single execution flow.
+
+
+Ensure you modify the [target ClickHouse cluster](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/otel_to_otel/gateway.yml#L78) via the `dsn` key and [resources](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/otel_to_otel/gateway.yml#L223-L226) to fit your environment.
+
+```yaml
+config:
+ receivers:
+   OTLP:
+     protocols:
+       grpc:
+         endpoint: 0.0.0.0:4317
+       http:
+         endpoint: 0.0.0.0:4318
+ processors:
+   memory_limiter: null
+   batch:
+     send_batch_size: 100000
+     timeout: 5s
+ exporters:
+   clickhouse:
+     # send logs to OTEL db
+     dsn: clickhouse://default:<password>@<host>:9440/OTEL?secure=true
+     logs_table_name: OTEL_logs
+     ttl_days: 0
+     timeout: 10s
+     sending_queue:
+       queue_size: 100
+     retry_on_failure:
+       enabled: true
+       initial_interval: 5s
+       max_interval: 30s
+       max_elapsed_time: 300s
+ service:
+   extensions:
+     - health_check
+     - memory_ballast
+   pipelines:
+     logs:
+       exporters:
+         - clickhouse
+       processors:
+         - memory_limiter
+         - batch
+       receivers:
+         - OTLP
+```
+
+
+
+## Install the gateway
+
+Install the collector as a deployment. 
 
 ```bash
 helm install otel-collector open-telemetry/opentelemetry-collector --values gateway.yml --create-namespace --namespace otel
+
+kubectl -n=otel get pods
+NAME                                 READY   STATUS    RESTARTS   AGE
+collector-gateway-74c7dd4f7b-zwllq   1/1     Running   0          9s
 ```
 
 This will create a table `otel_logs` in the `otel` database of the following schema:
@@ -55,12 +122,49 @@ ORDER BY (ServiceName, SeverityText, toUnixTimestamp(Timestamp), TraceId)
 SETTINGS index_granularity = 8192, ttl_only_drop_parts = 1
 ```
 
+## Agent Configuration
+
+Once we have an aggregator in our cluster, we can deploy the OTEL collector as an agent. In this case, we set the mode to `daemonset` and enable the logs' collection and enrichment with k8s metadata.
+
+```yaml
+mode: "daemonset"
+presets:
+ logsCollection:
+   enabled: true
+   includeCollectorLogs: false
+   storeCheckpoints: true
+ kubernetesAttributes:
+   enabled: true
+```
+
+Our pipeline, in this instance, is configured to utilize an oltp exporter to send logs to the aggregator. Again we use the batch processor to ensure large bulk sizes and modify the `k8sattributes` processor to enrich our logs.
+
+```yaml
+config:
+ exporters:
+   OTLP:
+     endpoint: otel-collector-gateway:4317
+     tls:
+       insecure: true
+     sending_queue:
+       num_consumers: 4
+       queue_size: 100
+     retry_on_failure:
+       enabled: true
+```
+
 ## Install the Agent
 
 Installs the collector as a daemonset. Ensure you modify the [resources]() to fit your environment.
 
 ```bash
 helm install otel-agent open-telemetry/opentelemetry-collector --values agent.yml --create-namespace --namespace otel
+
+ 
+kubectl -n=otel get pods
+NAME                                 READY   STATUS    RESTARTS   AGE
+agent-agent-2wgsm                    1/1     Running   0          5s
+agent-agent-588w9                    1/1     Running   0          5s
 ```
 
 ## Confirm logs are arriving
