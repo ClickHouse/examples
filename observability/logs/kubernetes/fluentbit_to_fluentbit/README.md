@@ -83,8 +83,6 @@ Note the following:
 Ensure you modify the [target ClickHouse cluster](./aggregator.yaml#L346-L353) and [resources](./aggregator.yaml#L161-L167) to fit your environment.
 
 
-[tune the resources](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/fluentbit_to_fluentbit/aggregator.yaml#L161-L167).
-
 ## Install the aggregator
 
 
