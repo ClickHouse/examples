@@ -115,8 +115,6 @@ To deploy an aggregator, we make a few key configuration changes to the charts `
             max_bytes: 10485760
           skip_unknown_fields: true
     ```
-  - 
-
 
 ## Install the aggregator
 
