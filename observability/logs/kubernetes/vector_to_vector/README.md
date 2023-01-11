@@ -42,6 +42,8 @@ ENGINE = MergeTree
 ORDER BY (`kubernetes_container_name`, timestamp)
 ```
 
+Remember to adapt you [ORDER BY key](https://clickhouse.com/docs/en/guides/improving-query-performance/sparse-primary-indexes/sparse-primary-indexes-intro) to suit your access patterns.
+
 ## Download files
 
 Download the agent and aggregator value files for the helm chart.
@@ -97,7 +99,7 @@ To deploy an aggregator, we make a few key configuration changes to the charts `
 
 **Important**
 
-Under the `customConfig` key, configure the ClickHouse sink. Note the need to specify a protocol prefix in the endpoint and settings to encourage [larger batch sizes](https://vector.dev/docs/reference/configuration/sinks/clickhouse/#batch). Also ensure you tune the [resources](./aggregator.yaml#L167-L173) to fit your throughput.
+Under the `customConfig` key, configure the [ClickHouse sink](./aggregator.yaml#L314-L324). Note the need to specify a protocol prefix in the endpoint and settings to encourage [larger batch sizes](https://vector.dev/docs/reference/configuration/sinks/clickhouse/#batch). Also ensure you tune the [resources](./aggregator.yaml#L167-L173) to fit your throughput.
 
 ```yaml
 customConfig:
@@ -122,8 +124,7 @@ customConfig:
 
 ## Install the aggregator
 
-Installs the collector as a deployment. Ensure you modify the [target ClickHouse cluster](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/vector_to_vector/aggregator.yaml#L314-L324) and [resources](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/vector_to_vector/aggregator.yaml#L167-L173) to fit your environment.
-
+Installs the collector as a deployment.
 
 ```bash
 helm install vector-aggregator vector/vector \
@@ -181,4 +182,15 @@ vector-agent-2nxgv    1/1     Running   0          75s
 vector-agent-4m2vj    1/1     Running   0          75s
 vector-agent-6jdg4    1/1     Running   0          75s
 vector-agent-74cbd    1/1     Running   0          75s
+```
+
+## Confirm logs are arriving
+
+```sql
+SELECT count()
+FROM vector.vector_logs
+
+┌─count()─┐
+│ 4695341 │
+└─────────┘
 ```

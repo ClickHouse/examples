@@ -171,7 +171,6 @@ agent-agent-588w9                    1/1     Running   0          5s
 
 ## Confirm logs are arriving
 
-
 ```sql
 SELECT count()
 FROM otel.otel_logs

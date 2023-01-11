@@ -31,6 +31,8 @@ ENGINE = MergeTree
 ORDER BY (host, pod_name, timestamp)
 ```
 
+Remember to adapt you [ORDER BY key](https://clickhouse.com/docs/en/guides/improving-query-performance/sparse-primary-indexes/sparse-primary-indexes-intro) to suit your access patterns.
+
 ## Download files
 
 Download the agent and aggregator value files for the helm chart.
