@@ -4,6 +4,7 @@ Collect logs and store in ClickHouse using FluentBit.
 
 Installs an FluentBit agent as a deployment (for an aggregator) and as a deamonset to collect logs from each node.
 
+![architecture](./architecture.png)
 
 ## Install helm chart
 

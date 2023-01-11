@@ -2,8 +2,9 @@
 
 Collect logs and store in ClickHouse using Vector.
 
-
 Installs an Vector agent as a StatefulSet (for an aggregator) and as a deamonset to collect logs from each node.
+
+![architecture](./architecture.png)
 
 ## Install helm chart
 
