@@ -23,9 +23,10 @@ wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/lo
 
 ## Gateway Configuration
 
+The [gateway.yml](./gateway.yml) provides a full sample gateway configuration, requiring only minor changes for most cases.
+
 Deploying the Collector as a gateway requires a few simple configuration changes. Principally, we specify the mode as `deployment` and ensure any collection is disabled. 
 
-The [gateway.yml](./gateway.yml) contains the following required changes.
 
 ```yaml
 # Valid values are "daemonset", "deployment", and "statefulset".
@@ -123,6 +124,8 @@ SETTINGS index_granularity = 8192, ttl_only_drop_parts = 1
 ```
 
 ## Agent Configuration
+
+The [agent.yml](./agent.yml) provides a full sample agent configuration.
 
 Once we have an aggregator in our cluster, we can deploy the OTEL collector as an agent. In this case, we set the mode to `daemonset` and enable the logs' collection and enrichment with k8s metadata.
 
