@@ -32,6 +32,10 @@ Note some of the following are pending ClickHouse implementations. Contributions
 - [Shortest Path via Traces]()
 - [Total Ether transferred and average transaction cost, aggregated by day]() - pending.
 
+## DataFlow/Apache Beam Example
+
+[Python example of Apache Beam job for data loading](./dataflow/README.md)
+
 ## References and further reading
 
 We recommend the following resources with respect to Ethereum and querying this dataset.
