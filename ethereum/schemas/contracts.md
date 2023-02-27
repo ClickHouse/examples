@@ -35,7 +35,7 @@ CREATE TABLE ethereum.contracts
     `block_hash` String
 )
 ENGINE = MergeTree
-ORDER BY (is_erc721, address)
+ORDER BY (bytecode, is_erc721, address)
 ```
 
 ## Load instructions (public bucket - Parquet files)
