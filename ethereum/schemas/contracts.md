@@ -26,11 +26,11 @@ OPTIONS(
 CREATE TABLE ethereum.contracts
 (
     `address` String,
-    `bytecode` String,
+    `bytecode` String CODEC(ZSTD(3)),
     `function_sighashes` Array(String),
     `is_erc20` Bool,
     `is_erc721` Bool,
-    `block_timestamp` DateTime,
+    `block_timestamp` DateTime CODEC(Delta(4), ZSTD(1)),
     `block_number` UInt32 CODEC(Delta(4), ZSTD(1)),
     `block_hash` String
 )
