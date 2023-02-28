@@ -25,17 +25,17 @@ OPTIONS(
 ```sql
 CREATE TABLE ethereum.contracts
 (
-    `address` String,
-    `bytecode` String CODEC(ZSTD(3)),
+    `address` LowCardinality(String),
+    `bytecode` LowCardinality(String) CODEC(ZSTD(9)),
     `function_sighashes` Array(String),
     `is_erc20` Bool,
     `is_erc721` Bool,
     `block_timestamp` DateTime CODEC(Delta(4), ZSTD(1)),
     `block_number` UInt32 CODEC(Delta(4), ZSTD(1)),
-    `block_hash` String
+    `block_hash` LowCardinality(String) CODEC(ZSTD(9))
 )
 ENGINE = MergeTree
-ORDER BY (bytecode, is_erc721, address)
+ORDER BY (is_erc721, block_number, address)
 ```
 
 ## Load instructions (public bucket - Parquet files)
