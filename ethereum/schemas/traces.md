@@ -1,5 +1,63 @@
 # Traces
 
+## ClickHouse Schema
+
+```sql
+CREATE TABLE traces
+(
+    `transaction_hash` String,
+    `transaction_index` UInt16,
+    `from_address` String,
+    `to_address` String,
+    `value` Decimal(38, 0),
+    `input` String,
+    `output` String,
+    `trace_type` Enum8('call' = 1, 'create' = 2, 'suicide' = 3, 'reward' = 4, 'genesis' = 5, 'daofork' = 6),
+    `call_type` Enum8('' = 0, 'call' = 1, 'callcode' = 2, 'delegatecall' = 3, 'staticcall' = 4),
+    `reward_type` Enum8('' = 0, 'block' = 1, 'uncle' = 2),
+    `gas` UInt32 CODEC(Delta(4), ZSTD(1)),
+    `gas_used` UInt32,
+    `subtraces` UInt32,
+    `trace_address` String,
+    `error` String,
+    `status` Bool,
+    `block_timestamp` DateTime CODEC(Delta(4), ZSTD(1)),
+    `block_number` UInt32 CODEC(Delta(4), ZSTD(1)),
+    `block_hash` String,
+    `trace_id` String
+)
+ENGINE = MergeTree
+ORDER BY (call_type, block_number, block_timestamp)
+```
+
+### Load instructions (public bucket - CSV files)
+
+```sql
+INSERT INTO traces
+SELECT
+    transaction_hash,
+    transaction_index,
+    from_address,
+    to_address,
+    value,
+    input,
+    output,
+    trace_type,
+    call_type,
+    reward_type,
+    gas,
+    gas_used,
+    subtraces,
+    trace_address,
+    error,
+    status,
+    toInt64(block_timestamp) AS block_timestamp,
+    block_number,
+    block_hash,
+    trace_id
+FROM s3Cluster('default', 'https://storage.googleapis.com/clickhouse_public_datasets/ethereum/traces/*.csv.gz', 'CSVWithNames', 'transaction_hash String,transaction_index Int64,from_address String,to_address String,value Decimal(38, 0),input String,output String,trace_type Enum8(\'\'=0,\'call\'=1, \'create\' = 2, \'suicide\' = 3, \'reward\' = 4, \'genesis\' = 5, \'daofork\' = 6) ,call_type Enum8(\'call\' = 1, \'callcode\' = 2, \'delegatecall\' = 3, \'staticcall\' = 4),reward_type Enum8(\'\'=0,\'block\' = 1, \'uncle\' = 2), gas Int64, gas_used Int64, subtraces Int64, trace_address String, error String, status Bool, block_timestamp DateTime, block_number Int64, block_hash String, trace_id String')
+```
+
 ## BigQuery Schema
 
 ```sql
@@ -32,60 +90,31 @@ OPTIONS(
 );
 ```
 
-## ClickHouse Schema
+## Redshift Schema
+
+Note the absence of the `input` and `output` columns as they cannot be stored due to their size exceeding [Redshift VARCHAR limits](https://docs.aws.amazon.com/redshift/latest/dg/r_Character_types.html).
 
 ```sql
-CREATE TABLE traces
-(
-    `transaction_hash` String,
-    `transaction_index` UInt16,
-    `from_address` String,
-    `to_address` String,
-    `value` Decimal(38, 0),
-    `input` String,
-    `output` String,
-    `trace_type` Enum8('call' = 1, 'create' = 2, 'suicide' = 3, 'reward' = 4, 'genesis' = 5, 'daofork' = 6),
-    `call_type` Enum8('' = 0, 'call' = 1, 'callcode' = 2, 'delegatecall' = 3, 'staticcall' = 4),
-    `reward_type` Enum8('' = 0, 'block' = 1, 'uncle' = 2),
-    `gas` UInt32 CODEC(Delta(4), ZSTD(1)),
-    `gas_used` UInt32,
-    `subtraces` UInt32,
-    `trace_address` String,
-    `error` String,
-    `status` Bool,
-    `block_timestamp` DateTime CODEC(Delta(4), ZSTD(1)),
-    `block_number` UInt32 CODEC(Delta(4), ZSTD(1)),
-    `block_hash` String,
-    `trace_id` String
+CREATE TABLE traces (
+    transaction_hash character(66) ENCODE zstd,
+    transaction_index integer ENCODE zstd,
+    from_address character(42) ENCODE zstd,
+    to_address character(42) ENCODE zstd,
+    value numeric(38,0) ENCODE zstd,
+    trace_type character varying(7) ENCODE zstd,
+    call_type character varying(12) ENCODE raw,
+    reward_type character varying(5) ENCODE zstd,
+    gas bigint ENCODE zstd,
+    gas_used bigint ENCODE zstd,
+    subtraces bigint ENCODE zstd,
+    trace_address character varying(2500) ENCODE zstd,
+    error character varying(50) ENCODE zstd,
+    status integer ENCODE zstd,
+    block_timestamp timestamp without time zone ENCODE raw,
+    block_number bigint ENCODE raw,
+    block_hash character(66) ENCODE zstd,
+    trace_id character varying(2500) ENCODE zstd
 )
-ENGINE = MergeTree
-ORDER BY (call_type, block_number, block_timestamp)
-```
-
-## Load instructions (public bucket - CSV files)
-
-```sql
-INSERT INTO traces
-SELECT
-    transaction_hash,
-    transaction_index,
-    from_address,
-    to_address,
-    value,
-    input,
-    output,
-    trace_type,
-    call_type,
-    reward_type,
-    gas,
-    gas_used,
-    subtraces,
-    trace_address,
-    error,
-    status,
-    toInt64(block_timestamp) AS block_timestamp,
-    block_number,
-    block_hash,
-    trace_id
-FROM s3Cluster('default', 'https://storage.googleapis.com/clickhouse_public_datasets/ethereum/traces/*.csv.gz', 'CSVWithNames', 'transaction_hash String,transaction_index Int64,from_address String,to_address String,value Decimal(38, 0),input String,output String,trace_type Enum8(\'\'=0,\'call\'=1, \'create\' = 2, \'suicide\' = 3, \'reward\' = 4, \'genesis\' = 5, \'daofork\' = 6) ,call_type Enum8(\'call\' = 1, \'callcode\' = 2, \'delegatecall\' = 3, \'staticcall\' = 4),reward_type Enum8(\'\'=0,\'block\' = 1, \'uncle\' = 2), gas Int64, gas_used Int64, subtraces Int64, trace_address String, error String, status Bool, block_timestamp DateTime, block_number Int64, block_hash String, trace_id String')
+DISTSTYLE AUTO
+SORTKEY ( call_type, block_number, block_timestamp );	
 ```

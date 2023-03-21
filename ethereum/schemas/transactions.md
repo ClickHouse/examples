@@ -1,5 +1,64 @@
 # Transactions
 
+## ClickHouse Schema
+
+```sql
+CREATE TABLE ethereum.transactions
+(
+    `hash` String,
+    `nonce` UInt32,
+    `block_hash` String,
+    `block_number` UInt32 CODEC(Delta(4), ZSTD(1)),
+    `transaction_index` UInt16,
+    `from_address` String,
+    `to_address` String,
+    `value` Decimal(38, 0),
+    `gas` UInt32 CODEC(Delta(4), ZSTD(1)),
+    `gas_price` UInt64,
+    `input` String,
+    `block_timestamp` DateTime CODEC(Delta(4), ZSTD(1)),
+    `max_fee_per_gas` UInt64,
+    `max_priority_fee_per_gas` UInt64,
+    `transaction_type` Nullable(UInt8),
+    `receipt_cumulative_gas_used` UInt32,
+    `receipt_gas_used` UInt32,
+    `receipt_contract_address` String,
+    `receipt_root` String,
+    `receipt_status` Nullable(UInt8),
+    `receipt_effective_gas_price` UInt64
+)
+ENGINE = MergeTree
+ORDER BY (block_timestamp, block_number)
+```
+
+### Load instructions (public bucket - CSV files)
+
+```sql
+INSERT INTO t SELECT
+    hash,
+    nonce,
+    block_hash,
+    block_number,
+    transaction_index,
+    from_address,
+    to_address,
+    value,
+    gas,
+    gas_price,
+    input,
+    toInt64(block_timestamp) AS block_timestamp,
+    max_fee_per_gas,
+    max_priority_fee_per_gas,
+    transaction_type,
+    receipt_cumulative_gas_used,
+    receipt_gas_used,
+    receipt_contract_address,
+    receipt_root,
+    receipt_status,
+    receipt_effective_gas_price
+FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/ethereum/transactions/*.csv.gz', 'CSVWithNames', 'hash String, nonce Int64, transaction_index Int64,from_address String, to_address Nullable(String), value Decimal(38, 0), gas Int64, gas_price Int64, input String, receipt_cumulative_gas_used Int64,receipt_gas_used Int64,receipt_contract_address Nullable(String),receipt_root String,receipt_status Nullable(Int64),block_timestamp DateTime, block_number Int64, block_hash String, max_fee_per_gas Nullable(Int64), max_priority_fee_per_gas Nullable(Int64), transaction_type Int64, receipt_effective_gas_price Int64')
+```
+
 ## BigQuery Schema
 
 ```sql
@@ -33,61 +92,34 @@ OPTIONS(
 );
 ```
 
-## ClickHouse Schema
+## Redshift Schema
+
+Note the absence of the `input` column as they cannot be stored due to its size exceeding [Redshift VARCHAR limits](https://docs.aws.amazon.com/redshift/latest/dg/r_Character_types.html).
 
 ```sql
-CREATE TABLE ethereum.transactions
-(
-    `hash` String,
-    `nonce` UInt32,
-    `block_hash` String,
-    `block_number` UInt32 CODEC(Delta(4), ZSTD(1)),
-    `transaction_index` UInt16,
-    `from_address` String,
-    `to_address` String,
-    `value` Decimal(38, 0),
-    `gas` UInt32 CODEC(Delta(4), ZSTD(1)),
-    `gas_price` UInt64,
-    `input` String,
-    `block_timestamp` DateTime CODEC(Delta(4), ZSTD(1)),
-    `max_fee_per_gas` UInt64,
-    `max_priority_fee_per_gas` UInt64,
-    `transaction_type` Nullable(UInt8),
-    `receipt_cumulative_gas_used` UInt32,
-    `receipt_gas_used` UInt32,
-    `receipt_contract_address` String,
-    `receipt_root` String,
-    `receipt_status` Nullable(UInt8),
-    `receipt_effective_gas_price` UInt64
+CREATE TABLE transactions (
+    hash character(66) ENCODE zstd,
+    nonce bigint ENCODE zstd,
+    block_hash character(66) ENCODE zstd,
+    block_number bigint NOT NULL ENCODE raw,
+    transaction_index integer ENCODE az64,
+    from_address character(42) ENCODE zstd,
+    to_address character(42) ENCODE zstd,
+    value numeric(38,0) ENCODE zstd,
+    gas bigint ENCODE zstd,
+    gas_price bigint ENCODE zstd,
+    block_timestamp timestamp without time zone ENCODE raw,
+    max_fee_per_gas bigint ENCODE az64,
+    max_priority_fee_per_gas bigint ENCODE az64,
+    transaction_type integer ENCODE az64,
+    receipt_cumulative_gas_used bigint ENCODE az64,
+    receipt_gas_used bigint ENCODE zstd,
+    receipt_contract_address character(42) ENCODE zstd,
+    receipt_root character(66) ENCODE zstd,
+    receipt_status integer ENCODE zstd,
+    receipt_effective_gas_price bigint ENCODE zstd,
+    FOREIGN KEY (block_number) REFERENCES "blocks"(number)
 )
-ENGINE = MergeTree
-ORDER BY (block_timestamp, block_number)
-```
-
-## Load instructions (public bucket - CSV files)
-
-```sql
-INSERT INTO t SELECT
-    hash,
-    nonce,
-    block_hash,
-    block_number,
-    transaction_index,
-    from_address,
-    to_address,
-    value,
-    gas,
-    gas_price,
-    input,
-    toInt64(block_timestamp) AS block_timestamp,
-    max_fee_per_gas,
-    max_priority_fee_per_gas,
-    transaction_type,
-    receipt_cumulative_gas_used,
-    receipt_gas_used,
-    receipt_contract_address,
-    receipt_root,
-    receipt_status,
-    receipt_effective_gas_price
-FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/ethereum/transactions/*.csv.gz', 'CSVWithNames', 'hash String, nonce Int64, transaction_index Int64,from_address String, to_address Nullable(String), value Decimal(38, 0), gas Int64, gas_price Int64, input String, receipt_cumulative_gas_used Int64,receipt_gas_used Int64,receipt_contract_address Nullable(String),receipt_root String,receipt_status Nullable(Int64),block_timestamp DateTime, block_number Int64, block_hash String, max_fee_per_gas Nullable(Int64), max_priority_fee_per_gas Nullable(Int64), transaction_type Int64, receipt_effective_gas_price Int64')
+DISTSTYLE AUTO
+SORTKEY ( block_timestamp, block_number );	
 ```

@@ -1,5 +1,31 @@
 # Contracts
 
+## ClickHouse Schema
+
+```sql
+CREATE TABLE ethereum.contracts
+(
+    `address` LowCardinality(String),
+    `bytecode` LowCardinality(String) CODEC(ZSTD(9)),
+    `function_sighashes` Array(String),
+    `is_erc20` Bool,
+    `is_erc721` Bool,
+    `block_timestamp` DateTime CODEC(Delta(4), ZSTD(1)),
+    `block_number` UInt32 CODEC(Delta(4), ZSTD(1)),
+    `block_hash` LowCardinality(String) CODEC(ZSTD(9))
+)
+ENGINE = MergeTree
+ORDER BY (is_erc721, block_number, address)
+```
+
+### Load instructions (public bucket - Parquet files)
+
+```sql
+INSERT INTO contracts
+SELECT *
+FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/ethereum/contracts/*.parquet')
+```
+
 ## BigQuery Schema
 
 ```sql
@@ -20,28 +46,19 @@ OPTIONS(
 );
 ```
 
-## ClickHouse Schema
+## Redshift Schema
 
 ```sql
-CREATE TABLE ethereum.contracts
-(
-    `address` LowCardinality(String),
-    `bytecode` LowCardinality(String) CODEC(ZSTD(9)),
-    `function_sighashes` Array(String),
-    `is_erc20` Bool,
-    `is_erc721` Bool,
-    `block_timestamp` DateTime CODEC(Delta(4), ZSTD(1)),
-    `block_number` UInt32 CODEC(Delta(4), ZSTD(1)),
-    `block_hash` LowCardinality(String) CODEC(ZSTD(9))
+CREATE TABLE contracts (
+    address character(42) ENCODE raw,
+    bytecode character varying(65535) ENCODE zstd,
+    function_sighashes super,
+    is_erc20 integer ENCODE zstd,
+    is_erc721 integer ENCODE raw,
+    block_timestamp timestamp without time zone ENCODE zstd,
+    block_number bigint ENCODE raw,
+    block_hash character(66) ENCODE zstd
 )
-ENGINE = MergeTree
-ORDER BY (is_erc721, block_number, address)
-```
-
-## Load instructions (public bucket - Parquet files)
-
-```sql
-INSERT INTO contracts
-SELECT *
-FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/ethereum/contracts/*.parquet')
+DISTSTYLE AUTO
+SORTKEY ( is_erc721, block_number, address );	
 ```
