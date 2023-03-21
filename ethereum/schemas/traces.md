@@ -27,7 +27,7 @@ CREATE TABLE traces
     `trace_id` String
 )
 ENGINE = MergeTree
-ORDER BY (call_type, block_number, block_timestamp)
+ORDER BY (trace_type, block_number, block_timestamp)
 ```
 
 ### Load instructions (public bucket - CSV files)
@@ -116,5 +116,5 @@ CREATE TABLE traces (
     trace_id character varying(2500) ENCODE zstd
 )
 DISTSTYLE AUTO
-SORTKEY ( call_type, block_number, block_timestamp );	
+SORTKEY ( trace_type, block_number, block_timestamp );	
 ```
