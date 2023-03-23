@@ -93,6 +93,7 @@ OPTIONS(
 ## Redshift Schema
 
 Note the absence of the `input` and `output` columns as they cannot be stored due to their size exceeding [Redshift VARCHAR limits](https://docs.aws.amazon.com/redshift/latest/dg/r_Character_types.html).
+`output` can be stored as `VARBYTE` but this is not supported when exporting to Parquet.
 
 ```sql
 CREATE TABLE traces (
