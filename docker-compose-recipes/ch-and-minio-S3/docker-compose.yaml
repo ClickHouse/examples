@@ -1,0 +1,60 @@
+version: '1.0'
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    user: "${UID}:${UID}"
+    container_name: clickhouse
+    hostname: clickhouse
+    networks:
+      ch-and-minio:
+        ipv4_address: 172.50.5.1
+    volumes:
+      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
+      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+      - ${PWD}/fs/volumes/clickhouse/var/lib/clickhouse:/var/lib/clickhouse
+      - ${PWD}/fs/volumes/clickhouse/var/log/clickhouse-server:/var/log/clickhouse-server
+    ports:
+      - "127.0.0.1:8123:8123"
+      - "127.0.0.1:9000:9000"
+    depends_on:
+      - minio
+  minio:
+    image: quay.io/minio/minio
+    user: "${UID}:${UID}"
+    container_name: minio
+    hostname: minio
+    networks:
+      ch-and-minio:
+        ipv4_address: 172.50.5.2
+    volumes:
+      - ${PWD}/fs/volumes/minio/data:/data
+    command: server --address 0.0.0.0:10000 --console-address 0.0.0.0:10001 /data
+    ports:
+      - "127.0.0.1:10000:10000"
+      - "127.0.0.1:10001:10001"
+    environment:
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadminpassword
+  createbuckets:
+    image: minio/mc
+    user: "${UID}:${UID}"
+    networks:
+        ch-and-minio:
+          ipv4_address: 172.50.5.3
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio http://minio:10000 minioadmin minioadminpassword;
+      /usr/bin/mc admin info myminio;
+      /usr/bin/mc mb myminio/clickhouse;
+      /usr/bin/mc policy set public myminio/clickhouse;
+      exit 0;
+      "
+networks:
+  ch-and-minio:
+    name: ch-and-minio
+    ipam:
+      config:
+        - subnet: 172.50.0.0/16
+          

@@ -1,0 +1,68 @@
+version: '1.0'
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    user: "${UID}:${UID}"
+    container_name: clickhouse
+    hostname: clickhouse
+    networks:
+      ch-and-openldap:
+        ipv4_address: 172.52.5.1
+    volumes:
+      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
+      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+      - ${PWD}/fs/volumes/clickhouse/var/lib/clickhouse:/var/lib/clickhouse
+      - ${PWD}/fs/volumes/clickhouse/var/log/clickhouse-server:/var/log/clickhouse-server
+    ports:
+      - "127.0.0.1:8123:8123"
+      - "127.0.0.1:9000:9000"
+  openldap:
+    build: 
+      context: ${PWD}/docker_files/
+      dockerfile: openldap.Dockerfile
+    user: "${UID}:${UID}"
+    container_name: openldap
+    hostname: openldap
+    networks:
+      ch-and-openldap:
+        ipv4_address: 172.52.5.2
+    volumes:
+      - ${PWD}/fs/volumes/openldap/data:/var/lib/ldap
+      - ${PWD}/fs/volumes/openldap/config:/etc/ldap/slapd.d
+    ports:
+      - "127.0.0.1:389:389"
+      - "127.0.0.1:686:686"
+    environment:      
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=adminpassword
+      - LDAP_RFC2307BIS_SCHEMA=true
+      - LDAP_BASED_DN=dc=clickhouse,dc=test
+    command: "--loglevel debug"
+  openldap-ui:
+    image: wheelybird/ldap-user-manager
+    container_name: openldap-ui
+    environment:
+      - LDAP_URI=ldap://openldap
+      - LDAP_BASE_DN=dc=clickhouse,dc=test
+      - LDAP_REQUIRE_STARTTLS=FALSE
+      - LDAP_ADMINS_GROUP=admins
+      - LDAP_ADMIN_BIND_DN=cn=ldap_admin,dc=clickhouse,dc=test
+      - LDAP_ADMIN_BIND_PWD=adminpassword
+      - LDAP_IGNORE_CERT_ERRORS=true
+      - NO_HTTPS=TRUE
+      - PASSWORD_HASH=SSHA
+      - SERVER_HOSTNAME=172.5.2.3:18080
+    depends_on:
+      - openldap
+    ports:
+      - "127.0.0.1:10000:18080"
+    networks:
+      ch-and-openldap:
+        ipv4_address: 172.52.5.3
+networks:
+  ch-and-openldap:
+    name: ch-and-openldap
+    ipam:
+      config:
+        - subnet: 172.52.0.0/16
+          

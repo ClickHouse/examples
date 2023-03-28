@@ -1,0 +1,42 @@
+version: '1.0'
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    user: "${UID}:${UID}"
+    container_name: clickhouse
+    hostname: clickhouse
+    networks:
+      ch-and-grafana:
+        ipv4_address: 172.51.5.1
+    volumes:
+      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
+      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+      - ${PWD}/fs/volumes/clickhouse/var/lib/clickhouse:/var/lib/clickhouse
+      - ${PWD}/fs/volumes/clickhouse/var/log/clickhouse-server:/var/log/clickhouse-server
+    ports:
+      - "127.0.0.1:8123:8123"
+      - "127.0.0.1:9000:9000"
+  grafana:
+    build: 
+      context: ${PWD}/docker_files/
+      dockerfile: grafana.Dockerfile
+    user: "${UID}:${UID}"
+    container_name: grafana
+    hostname: grafana
+    networks:
+      ch-and-grafana:
+        ipv4_address: 172.51.5.2
+    volumes:
+      - ${PWD}/fs/volumes/grafana/etc/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ${PWD}/fs/volumes/grafana/var/log/grafana:/var/log/grafana
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      - clickhouse
+networks:
+  ch-and-grafana:
+    name: ch-and-grafana
+    ipam:
+      config:
+        - subnet: 172.51.0.0/16
+          
