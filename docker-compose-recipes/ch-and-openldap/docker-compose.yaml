@@ -2,7 +2,7 @@ version: '1.0'
 services:
   clickhouse:
     image: clickhouse/clickhouse-server
-    user: "${UID}:${UID}"
+    user: "101:101"
     container_name: clickhouse
     hostname: clickhouse
     networks:
@@ -20,7 +20,7 @@ services:
     build: 
       context: ${PWD}/docker_files/
       dockerfile: openldap.Dockerfile
-    user: "${UID}:${UID}"
+    user: "101:101"
     container_name: openldap
     hostname: openldap
     networks:

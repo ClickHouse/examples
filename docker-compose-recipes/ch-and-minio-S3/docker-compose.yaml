@@ -2,7 +2,7 @@ version: '1.0'
 services:
   clickhouse:
     image: clickhouse/clickhouse-server
-    user: "${UID}:${UID}"
+    user: "101:101"
     container_name: clickhouse
     hostname: clickhouse
     networks:
@@ -20,7 +20,7 @@ services:
       - minio
   minio:
     image: quay.io/minio/minio
-    user: "${UID}:${UID}"
+    user: "101:101"
     container_name: minio
     hostname: minio
     networks:
@@ -37,7 +37,7 @@ services:
       - MINIO_SECRET_KEY=minioadminpassword
   createbuckets:
     image: minio/mc
-    user: "${UID}:${UID}"
+    user: "101:101"
     networks:
         ch-and-minio:
           ipv4_address: 172.50.5.3
