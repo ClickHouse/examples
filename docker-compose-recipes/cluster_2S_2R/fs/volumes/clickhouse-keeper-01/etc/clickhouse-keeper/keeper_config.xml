@@ -8,7 +8,7 @@
         <coordination_settings>
             <operation_timeout_ms>10000</operation_timeout_ms>
             <session_timeout_ms>30000</session_timeout_ms>
-            <raft_logs_level>trace</raft_logs_level>
+            <raft_logs_level>information</raft_logs_level>
         </coordination_settings>
         <raft_configuration>
             <server>
