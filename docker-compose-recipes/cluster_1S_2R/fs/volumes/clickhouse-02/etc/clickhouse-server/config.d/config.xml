@@ -6,7 +6,7 @@
         <size>1000M</size>
         <count>3</count>
     </logger>
-    <display_name>cluster_1S_2R</display_name>
+    <display_name>cluster_1S_2R node 2</display_name>
     <listen_host>0.0.0.0</listen_host>
     <http_port>8123</http_port>
     <tcp_port>9000</tcp_port>
@@ -21,7 +21,7 @@
     <distributed_ddl>
         <path>/clickhouse/task_queue/ddl</path>
     </distributed_ddl>
-    <remote_servers>
+    <remote_servers replace="true">
         <cluster_1S_2R>
             <shard>
                 <internal_replication>true</internal_replication>

@@ -2,7 +2,7 @@ version: '1.0'
 services:
   clickhouse-01:
     image: clickhouse/clickhouse-server
-    user: "${UID}:${UID}"
+    user: "101:101"
     container_name: clickhouse-01
     hostname: clickhouse-01
     networks:
@@ -22,7 +22,7 @@ services:
       - clickhouse-keeper-03
   clickhouse-02:
     image: clickhouse/clickhouse-server
-    user: "${UID}:${UID}"
+    user: "101:101"
     container_name: clickhouse-02
     hostname: clickhouse-02
     networks:
@@ -41,53 +41,47 @@ services:
       - clickhouse-keeper-02
       - clickhouse-keeper-03
   clickhouse-keeper-01:
-    image: clickhouse/clickhouse-server
-    user: "${UID}:${UID}"
+    image: clickhouse/clickhouse-keeper
+    user: "101:101"
     container_name: clickhouse-keeper-01
     hostname: clickhouse-keeper-01
     networks:
       network_cluster_1S_2R:
         ipv4_address: 172.29.5.5
     volumes:
-      - ${PWD}/fs/volumes/clickhouse-keeper-01/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
-      - ${PWD}/fs/volumes/clickhouse-keeper-01/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+      - ${PWD}/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
       - ${PWD}/fs/volumes/clickhouse-keeper-01/var/lib/clickhouse:/var/lib/clickhouse
       - ${PWD}/fs/volumes/clickhouse-keeper-01/var/log/clickhouse-server:/var/log/clickhouse-server
     ports:
-        - "127.0.0.1:8127:8123"
-        - "127.0.0.1:9004:9000"
+        - "127.0.0.1:9181:9181"
   clickhouse-keeper-02:
-    image: clickhouse/clickhouse-server
-    user: "${UID}:${UID}"
+    image: clickhouse/clickhouse-keeper
+    user: "101:101"
     container_name: clickhouse-keeper-02
     hostname: clickhouse-keeper-02
     networks:
       network_cluster_1S_2R:
         ipv4_address: 172.29.5.6
     volumes:
-      - ${PWD}/fs/volumes/clickhouse-keeper-02/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
-      - ${PWD}/fs/volumes/clickhouse-keeper-02/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+      - ${PWD}/fs/volumes/clickhouse-keeper-02/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
       - ${PWD}/fs/volumes/clickhouse-keeper-02/var/lib/clickhouse:/var/lib/clickhouse
       - ${PWD}/fs/volumes/clickhouse-keeper-02/var/log/clickhouse-server:/var/log/clickhouse-server
     ports:
-        - "127.0.0.1:8128:8123"
-        - "127.0.0.1:9005:9000"
+        - "127.0.0.1:9182:9181"
   clickhouse-keeper-03:
-    image: clickhouse/clickhouse-server
-    user: "${UID}:${UID}"
+    image: clickhouse/clickhouse-keeper
+    user: "101:101"
     container_name: clickhouse-keeper-03
     hostname: clickhouse-keeper-03
     networks:
       network_cluster_1S_2R:
         ipv4_address: 172.29.5.7
     volumes:
-      - ${PWD}/fs/volumes/clickhouse-keeper-03/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
-      - ${PWD}/fs/volumes/clickhouse-keeper-03/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+      - ${PWD}/fs/volumes/clickhouse-keeper-03/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
       - ${PWD}/fs/volumes/clickhouse-keeper-03/var/lib/clickhouse:/var/lib/clickhouse
       - ${PWD}/fs/volumes/clickhouse-keeper-03/var/log/clickhouse-server:/var/log/clickhouse-server
     ports:
-        - "127.0.0.1:8129:8123"
-        - "127.0.0.1:9006:9000"
+        - "127.0.0.1:9183:9181"
 networks:
   network_cluster_1S_2R:
     name: network_cluster_1S_2R
