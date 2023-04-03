@@ -20,7 +20,6 @@ services:
       - minio
   minio:
     image: quay.io/minio/minio
-    user: "101:101"
     container_name: minio
     hostname: minio
     networks:
@@ -37,7 +36,6 @@ services:
       - MINIO_SECRET_KEY=minioadminpassword
   createbuckets:
     image: minio/mc
-    user: "101:101"
     networks:
         ch-and-minio:
           ipv4_address: 172.50.5.3

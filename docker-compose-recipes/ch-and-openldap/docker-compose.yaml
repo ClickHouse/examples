@@ -20,7 +20,6 @@ services:
     build: 
       context: ${PWD}/docker_files/
       dockerfile: openldap.Dockerfile
-    user: "101:101"
     container_name: openldap
     hostname: openldap
     networks:

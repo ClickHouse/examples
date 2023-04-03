@@ -20,7 +20,6 @@ services:
     build: 
       context: ${PWD}/docker_files/
       dockerfile: grafana.Dockerfile
-    user: "101:101"
     container_name: grafana
     hostname: grafana
     networks:
