@@ -23,8 +23,6 @@ services:
     networks:
       ch-and-minio:
         ipv4_address: 172.50.5.2
-    volumes:
-      - ${PWD}/fs/volumes/minio/data:/data
     command: server --address 0.0.0.0:10000 --console-address 0.0.0.0:10001 /data
     ports:
       - "127.0.0.1:10000:10000"

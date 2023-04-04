@@ -34,12 +34,14 @@ From scratch, to test S3 functionalities, run [ClickHouse and Minio S3](./ch-and
 ```
 ➜  ch-and-minio-S3 git:(docker-compose-import) ✗ ./scripts/create-docker-network.sh
 f520d603cdbef63de8e73b9a3f20f713e634d659670d2f3694e85f4c095bb338
-➜  ch-and-minio-S3 git:(docker-compose-import) ✗ docker compose up
-[+] Running 3/3
- ⠿ Container minio                            Created                                                                                                                                                                                                                                 0.1s
+[+] Running 4/2
+ ⠿ Network ch-and-minio                       Created                                                                                                                                                                                                                                 0.0s
+ ⠿ Container minio                            Created                                                                                                                                                                                                                                 0.0s
+ ⠿ Container ch-and-minio-s3-createbuckets-1  Created                                                                                                                                                                                                                                 0.0s
  ⠿ Container clickhouse                       Created                                                                                                                                                                                                                                 0.1s
- ⠿ Container ch-and-minio-s3-createbuckets-1  Created                                                                                                                                                                                                                                 0.1s
 Attaching to ch-and-minio-s3-createbuckets-1, clickhouse, minio
+minio                            | Formatting 1st pool, 1 set(s), 1 drives per set.
+minio                            | WARNING: Host local has more than 0 drives of set. A host failure will result in data becoming unavailable.
 minio                            | MinIO Object Storage Server
 minio                            | Copyright: 2015-2023 MinIO, Inc.
 minio                            | License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl-3.0.html>
@@ -63,7 +65,7 @@ ch-and-minio-s3-createbuckets-1  | Pools:
 ch-and-minio-s3-createbuckets-1  |    1st, Erasure sets: 1, Drives per erasure set: 1
 ch-and-minio-s3-createbuckets-1  |
 ch-and-minio-s3-createbuckets-1  | 1 drive online, 0 drives offline
-ch-and-minio-s3-createbuckets-1  | mc: <ERROR> Unable to make bucket `myminio/clickhouse`. Your previous request to create the named bucket succeeded and you already own it.
+ch-and-minio-s3-createbuckets-1  | Bucket created successfully `myminio/clickhouse`.
 ch-and-minio-s3-createbuckets-1  | mc: Please use 'mc anonymous'
 ch-and-minio-s3-createbuckets-1 exited with code 0
 clickhouse                       | Processing configuration file '/etc/clickhouse-server/config.xml'.
