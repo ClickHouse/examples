@@ -37,7 +37,6 @@
             </shard>
         </cluster_2S_1R>
     </remote_servers>
-    <!-- use keeper -->
     <zookeeper>
         <node>
             <host>clickhouse-keeper-01</host>

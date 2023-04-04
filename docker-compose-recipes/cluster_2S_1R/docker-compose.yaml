@@ -11,8 +11,6 @@ services:
     volumes:
       - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
       - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
-      - ${PWD}/fs/volumes/clickhouse-01/var/lib/clickhouse:/var/lib/clickhouse
-      - ${PWD}/fs/volumes/clickhouse-01/var/log/clickhouse-server:/var/log/clickhouse-server
     ports:
       - "127.0.0.1:8123:8123"
       - "127.0.0.1:9000:9000"
@@ -31,8 +29,6 @@ services:
     volumes:
       - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
       - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
-      - ${PWD}/fs/volumes/clickhouse-02/var/lib/clickhouse:/var/lib/clickhouse
-      - ${PWD}/fs/volumes/clickhouse-02/var/log/clickhouse-server:/var/log/clickhouse-server
     ports:
       - "127.0.0.1:8124:8123"
       - "127.0.0.1:9001:9000"
@@ -50,8 +46,6 @@ services:
         ipv4_address: 172.30.5.5
     volumes:
       - ${PWD}/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
-      - ${PWD}/fs/volumes/clickhouse-keeper-01/var/lib/clickhouse:/var/lib/clickhouse
-      - ${PWD}/fs/volumes/clickhouse-keeper-01/var/log/clickhouse-keeper:/var/log/clickhouse-keeper
     ports:
         - "127.0.0.1:9181:9181"
   clickhouse-keeper-02:
@@ -64,8 +58,6 @@ services:
         ipv4_address: 172.30.5.6
     volumes:
       - ${PWD}/fs/volumes/clickhouse-keeper-02/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
-      - ${PWD}/fs/volumes/clickhouse-keeper-02/var/lib/clickhouse:/var/lib/clickhouse
-      - ${PWD}/fs/volumes/clickhouse-keeper-02/var/log/clickhouse-keeper:/var/log/clickhouse-keeper
     ports:
         - "127.0.0.1:9182:9181"
   clickhouse-keeper-03:
@@ -78,8 +70,6 @@ services:
         ipv4_address: 172.30.5.7
     volumes:
       - ${PWD}/fs/volumes/clickhouse-keeper-03/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
-      - ${PWD}/fs/volumes/clickhouse-keeper-03/var/lib/clickhouse:/var/lib/clickhouse
-      - ${PWD}/fs/volumes/clickhouse-keeper-03/var/log/clickhouse-keeper:/var/log/clickhouse-keeper
     ports:
         - "127.0.0.1:9183:9181"
 networks:

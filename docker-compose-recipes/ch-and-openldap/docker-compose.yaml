@@ -11,8 +11,6 @@ services:
     volumes:
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
-      - ${PWD}/fs/volumes/clickhouse/var/lib/clickhouse:/var/lib/clickhouse
-      - ${PWD}/fs/volumes/clickhouse/var/log/clickhouse-server:/var/log/clickhouse-server
     ports:
       - "127.0.0.1:8123:8123"
       - "127.0.0.1:9000:9000"
@@ -25,9 +23,6 @@ services:
     networks:
       ch-and-openldap:
         ipv4_address: 172.52.5.2
-    volumes:
-      - ${PWD}/fs/volumes/openldap/data:/var/lib/ldap
-      - ${PWD}/fs/volumes/openldap/config:/etc/ldap/slapd.d
     ports:
       - "127.0.0.1:389:389"
       - "127.0.0.1:686:686"

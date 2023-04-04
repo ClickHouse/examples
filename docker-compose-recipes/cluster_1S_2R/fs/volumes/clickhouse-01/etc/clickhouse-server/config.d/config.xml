@@ -21,14 +21,7 @@
     <distributed_ddl>
         <path>/clickhouse/task_queue/ddl</path>
     </distributed_ddl>
-    <!-- clustering -->
     <remote_servers replace="true">
-        <!-- remote_servers is not related to Replication.
-Cluster description remote_servers is used by Distributed Engine to know which node to query.
-Replicated engines use only ZK path /clickhouse/tables/{shard_triple}/table_name', '{replica}' 
-
-Helper on Cluster is just a simple helper for create table and it executes create on nodes from remote_servers.
-It does not change tables' metadata at hosts. You can create tables without using on Cluster at each node by own automation or manually  no difference. -->
         <cluster_1S_2R>
             <shard>
                 <internal_replication>true</internal_replication>
@@ -44,7 +37,6 @@ It does not change tables' metadata at hosts. You can create tables without usin
         </cluster_1S_2R>
     </remote_servers>
     <zookeeper>
-        <!-- where are the ZK nodes -->
         <node>
             <host>clickhouse-keeper-01</host>
             <port>9181</port>

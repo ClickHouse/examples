@@ -11,8 +11,6 @@ services:
     volumes:
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
-      - ${PWD}/fs/volumes/clickhouse/var/lib/clickhouse:/var/lib/clickhouse
-      - ${PWD}/fs/volumes/clickhouse/var/log/clickhouse-server:/var/log/clickhouse-server
     ports:
       - "127.0.0.1:8123:8123"
       - "127.0.0.1:9000:9000"
@@ -27,7 +25,6 @@ services:
         ipv4_address: 172.51.5.2
     volumes:
       - ${PWD}/fs/volumes/grafana/etc/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
-      - ${PWD}/fs/volumes/grafana/var/log/grafana:/var/log/grafana
     ports:
       - "127.0.0.1:3000:3000"
     depends_on:

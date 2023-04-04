@@ -21,7 +21,6 @@
     <distributed_ddl>
         <path>/clickhouse/task_queue/ddl</path>
     </distributed_ddl>
-    <!-- clustering -->
     <remote_servers>
         <cluster_2S_2R>
             <shard>
@@ -48,8 +47,6 @@
             </shard>
         </cluster_2S_2R>
     </remote_servers>
-    <!-- use keeper -->
-    <!-- use keeper -->
     <zookeeper>
         <node>
             <host>clickhouse-keeper-01</host>

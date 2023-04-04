@@ -52,30 +52,5 @@
             <verification_cooldown>300</verification_cooldown>
             <enable_tls>no</enable_tls>
         </openldap_roles>
-        <!-- <secureopenldap>
-            <host>openldap</host>
-            <role_mapping>
-                <base_dn>CN=Users,DC=example,DC=com</base_dn>
-                <attribute>CN</attribute>
-                <scope>subtree</scope>
-                <search_filter>(&amp;(objectClass=group)(member={user_dn}))</search_filter>
-                <prefix>clickhouse_</prefix>
-            </role_mapping>
-            <port>686</port>
-            <bind_dn>uid={user_name},ou=users,dc=example,dc=com</bind_dn>
-            <user_dn_detection>
-                <base_dn>CN=Users,DC=example,DC=com</base_dn>
-                <search_filter>(&amp;(objectClass=user)(sAMAccountName={user_name}))</search_filter>
-            </user_dn_detection>
-            <verification_cooldown>300</verification_cooldown>
-            <enable_tls>yes</enable_tls>
-            <tls_minimum_protocol_version>tls1.2</tls_minimum_protocol_version>
-            <tls_require_cert>demand</tls_require_cert>
-            <tls_cert_file>/path/to/tls_cert_file</tls_cert_file>
-            <tls_key_file>/path/to/tls_key_file</tls_key_file>
-            <tls_ca_cert_file>/path/to/tls_ca_cert_file</tls_ca_cert_file>
-            <tls_ca_cert_dir>/path/to/tls_ca_cert_dir</tls_ca_cert_dir>
-            <tls_cipher_suite>ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:AES256-GCM-SHA384</tls_cipher_suite>
-        </secureopenldap>  -->
     </ldap_servers>
 </clickhouse>
