@@ -91,7 +91,7 @@ services:
     volumes:
       - ${PWD}/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
       - ${PWD}/fs/volumes/clickhouse-keeper-01/var/lib/clickhouse:/var/lib/clickhouse
-      - ${PWD}/fs/volumes/clickhouse-keeper-01/var/log/clickhouse-server:/var/log/clickhouse-server
+      - ${PWD}/fs/volumes/clickhouse-keeper-01/var/log/clickhouse-keeper:/var/log/clickhouse-keeper
     ports:
         - "127.0.0.1:9181:9181"
   clickhouse-keeper-02:
@@ -105,7 +105,7 @@ services:
     volumes:
       - ${PWD}/fs/volumes/clickhouse-keeper-02/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
       - ${PWD}/fs/volumes/clickhouse-keeper-02/var/lib/clickhouse:/var/lib/clickhouse
-      - ${PWD}/fs/volumes/clickhouse-keeper-02/var/log/clickhouse-server:/var/log/clickhouse-server
+      - ${PWD}/fs/volumes/clickhouse-keeper-02/var/log/clickhouse-keeper:/var/log/clickhouse-keeper
     ports:
         - "127.0.0.1:9182:9181"
   clickhouse-keeper-03:
@@ -119,7 +119,7 @@ services:
     volumes:
       - ${PWD}/fs/volumes/clickhouse-keeper-03/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
       - ${PWD}/fs/volumes/clickhouse-keeper-03/var/lib/clickhouse:/var/lib/clickhouse
-      - ${PWD}/fs/volumes/clickhouse-keeper-03/var/log/clickhouse-server:/var/log/clickhouse-server
+      - ${PWD}/fs/volumes/clickhouse-keeper-03/var/log/clickhouse-keeper:/var/log/clickhouse-keeper
     ports:
         - "127.0.0.1:9183:9181"
 networks:
