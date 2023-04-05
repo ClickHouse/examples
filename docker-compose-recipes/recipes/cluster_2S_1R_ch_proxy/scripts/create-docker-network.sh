@@ -4,7 +4,6 @@
 
 docker network create \
   --driver=bridge \
-  --subnet=172.30.0.0/16 \
-  --ip-range=172.30.5.0/24 \
-  --gateway=172.30.5.254 \
-  network_cluster_2S_1R
+  --subnet=192.168.7.0/24 \
+  --gateway=192.168.7.254 \
+  cluster_1S_2R_ch_proxy

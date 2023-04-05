@@ -4,7 +4,6 @@
 
 docker network create \
   --driver=bridge \
-  --subnet=172.50.0.0/16 \
-  --ip-range=172.50.5.0/24 \
-  --gateway=172.50.5.254 \
-  ch-and-minio
+  --subnet=192.168.3.0/24 \
+  --gateway=192.168.3.254 \
+  ch-and-openldap

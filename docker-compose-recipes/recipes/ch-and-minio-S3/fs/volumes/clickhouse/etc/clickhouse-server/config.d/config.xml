@@ -22,7 +22,7 @@
         <disks>
             <s3>
                 <type>s3</type>
-                <endpoint>http://172.50.5.2:10000/clickhouse//</endpoint>
+                <endpoint>http://192.168.2.2:10000/clickhouse//</endpoint>
                 <access_key_id>minioadmin</access_key_id>
                 <secret_access_key>minioadminpassword</secret_access_key>
                 <region></region>

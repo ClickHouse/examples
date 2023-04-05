@@ -7,7 +7,7 @@ services:
     hostname: clickhouse
     networks:
       ch-and-grafana:
-        ipv4_address: 172.51.5.1
+        ipv4_address: 192.168.1.1
     volumes:
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
@@ -22,7 +22,7 @@ services:
     hostname: grafana
     networks:
       ch-and-grafana:
-        ipv4_address: 172.51.5.2
+        ipv4_address: 192.168.1.2
     volumes:
       - ${PWD}/fs/volumes/grafana/etc/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
     ports:
@@ -33,6 +33,6 @@ networks:
   ch-and-grafana:
     name: ch-and-grafana
     ipam:
-      config:
-        - subnet: 172.51.0.0/16
-          
+      driver: default
+      config:        
+        - subnet: 192.168.1.0/24         

@@ -6,8 +6,8 @@ services:
     container_name: clickhouse-01
     hostname: clickhouse-01
     networks:
-      network_cluster_2S_1R:
-        ipv4_address: 172.30.5.1
+      cluster_2S_1R:
+        ipv4_address: 192.168.6.1
     volumes:
       - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
       - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
@@ -24,8 +24,8 @@ services:
     container_name: clickhouse-02
     hostname: clickhouse-02
     networks:
-      network_cluster_2S_1R:
-        ipv4_address: 172.30.5.2
+      cluster_2S_1R:
+        ipv4_address: 192.168.6.2
     volumes:
       - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
       - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
@@ -42,10 +42,10 @@ services:
     container_name: clickhouse-keeper-01
     hostname: clickhouse-keeper-01
     networks:
-      network_cluster_2S_1R:
-        ipv4_address: 172.30.5.5
+      cluster_2S_1R:
+        ipv4_address: 192.168.6.5
     volumes:
-      - ${PWD}/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
+      - ${PWD}/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper:/etc/clickhouse-keeper/
     ports:
         - "127.0.0.1:9181:9181"
   clickhouse-keeper-02:
@@ -54,10 +54,10 @@ services:
     container_name: clickhouse-keeper-02
     hostname: clickhouse-keeper-02
     networks:
-      network_cluster_2S_1R:
-        ipv4_address: 172.30.5.6
+      cluster_2S_1R:
+        ipv4_address: 192.168.6.6
     volumes:
-      - ${PWD}/fs/volumes/clickhouse-keeper-02/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
+      - ${PWD}/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper:/etc/clickhouse-keeper/
     ports:
         - "127.0.0.1:9182:9181"
   clickhouse-keeper-03:
@@ -66,16 +66,17 @@ services:
     container_name: clickhouse-keeper-03
     hostname: clickhouse-keeper-03
     networks:
-      network_cluster_2S_1R:
-        ipv4_address: 172.30.5.7
+      cluster_2S_1R:
+        ipv4_address: 192.168.6.7
     volumes:
-      - ${PWD}/fs/volumes/clickhouse-keeper-03/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
+      - ${PWD}/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper:/etc/clickhouse-keeper/
     ports:
         - "127.0.0.1:9183:9181"
 networks:
-  network_cluster_2S_1R:
-    name: network_cluster_2S_1R
+  cluster_2S_1R:
+    name: cluster_2S_1R
     ipam:
+      driver: default
       config:
-        - subnet: 172.30.0.0/16
+        - subnet: 192.168.6.0/24
           

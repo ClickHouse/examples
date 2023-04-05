@@ -7,7 +7,7 @@ services:
     hostname: clickhouse
     networks:
       ch-and-minio:
-        ipv4_address: 172.50.5.1
+        ipv4_address: 192.168.2.1
     volumes:
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
@@ -22,7 +22,7 @@ services:
     hostname: minio
     networks:
       ch-and-minio:
-        ipv4_address: 172.50.5.2
+        ipv4_address: 192.168.2.2
     command: server --address 0.0.0.0:10000 --console-address 0.0.0.0:10001 /data
     ports:
       - "127.0.0.1:10000:10000"
@@ -34,7 +34,7 @@ services:
     image: minio/mc
     networks:
         ch-and-minio:
-          ipv4_address: 172.50.5.3
+          ipv4_address: 192.168.2.3
     depends_on:
       - minio
     entrypoint: >
@@ -49,6 +49,7 @@ networks:
   ch-and-minio:
     name: ch-and-minio
     ipam:
+      driver: default
       config:
-        - subnet: 172.50.0.0/16
+        - subnet: 192.168.2.0/24
           
