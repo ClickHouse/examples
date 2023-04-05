@@ -1,6 +1,6 @@
 # ClickHouse Docker Compose recipes
 
-A work-in-progress list of ClickHouse docker compose examples
+A list of ClickHouse docker compose recipes
 
 - [ClickHouse and Grafana](./recipes/ch-and-grafana/README.md)
 - [ClickHouse and Minio S3](./recipes/ch-and-minio-S3/README.md)
