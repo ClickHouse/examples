@@ -1,0 +1,25 @@
+server:
+  https:
+    listen_addr: ":443"
+    autocert:
+      cache_dir: "certs_dir"
+  http:
+    listen_addr: ":80"
+    allowed_networks: ["127.0.0.0/24", "172.29.0.0/16"]
+
+users:
+  - name: "admin_1S_2R"
+    password: "password"
+    to_cluster: "cluster_1S_2R"
+    to_user: "admin"
+    max_concurrent_queries: 100
+    max_execution_time: 30s
+    requests_per_minute: 10
+    # Allow `CORS` requests for `tabix`.
+    allow_cors: true
+clusters:
+  - name: "cluster_1S_2R"
+    nodes: ["172.29.5.1:8123", "172.29.5.2:8123"]
+    users:
+      - name: "admin"
+        password: "password"

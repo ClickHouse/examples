@@ -1,0 +1,134 @@
+version: '1.0'
+services:
+  clickhouse-01:
+    image: clickhouse/clickhouse-server
+    user: "101:101"
+    container_name: clickhouse-01
+    hostname: clickhouse-01
+    networks:
+      network_cluster_2S_2R:
+        ipv4_address: 172.28.5.1
+    volumes:
+      - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
+      - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+    ports:
+      - "127.0.0.1:8123:8123"
+      - "127.0.0.1:9000:9000"
+    depends_on:
+      - clickhouse-keeper-01
+      - clickhouse-keeper-02
+      - clickhouse-keeper-03
+  clickhouse-02:
+    image: clickhouse/clickhouse-server
+    user: "101:101"
+    container_name: clickhouse-02
+    hostname: clickhouse-02
+    networks:
+      network_cluster_2S_2R:
+        ipv4_address: 172.28.5.2
+    volumes:
+      - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
+      - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+    ports:
+      - "127.0.0.1:8124:8123"
+      - "127.0.0.1:9001:9000"
+    depends_on:
+      - clickhouse-keeper-01
+      - clickhouse-keeper-02
+      - clickhouse-keeper-03
+  clickhouse-03:
+    image: clickhouse/clickhouse-server
+    user: "101:101"
+    container_name: clickhouse-03
+    hostname: clickhouse-03
+    networks:
+      network_cluster_2S_2R:
+        ipv4_address: 172.28.5.3
+    volumes:
+      - ${PWD}/fs/volumes/clickhouse-03/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
+      - ${PWD}/fs/volumes/clickhouse-03/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+    ports:
+      - "127.0.0.1:8125:8123"
+      - "127.0.0.1:9002:9000"
+    depends_on:
+      - clickhouse-keeper-01
+      - clickhouse-keeper-02
+      - clickhouse-keeper-03
+  clickhouse-04:
+    image: clickhouse/clickhouse-server
+    user: "101:101"
+    container_name: clickhouse-04
+    hostname: clickhouse-04
+    networks:
+      network_cluster_2S_2R:
+        ipv4_address: 172.28.5.4
+    volumes:
+      - ${PWD}/fs/volumes/clickhouse-04/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
+      - ${PWD}/fs/volumes/clickhouse-04/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+    ports:
+        - "127.0.0.1:8126:8123"
+        - "127.0.0.1:9003:9000"
+    depends_on:
+      - clickhouse-keeper-01
+      - clickhouse-keeper-02
+      - clickhouse-keeper-03
+  clickhouse-keeper-01:
+    image: clickhouse/clickhouse-keeper
+    user: "101:101"
+    container_name: clickhouse-keeper-01
+    hostname: clickhouse-keeper-01
+    networks:
+      network_cluster_2S_2R:
+        ipv4_address: 172.28.5.5
+    volumes:
+      - ${PWD}/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
+    ports:
+        - "127.0.0.1:9181:9181"
+  clickhouse-keeper-02:
+    image: clickhouse/clickhouse-keeper
+    user: "101:101"
+    container_name: clickhouse-keeper-02
+    hostname: clickhouse-keeper-02
+    networks:
+      network_cluster_2S_2R:
+        ipv4_address: 172.28.5.6
+    volumes:
+      - ${PWD}/fs/volumes/clickhouse-keeper-02/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
+    ports:
+        - "127.0.0.1:9182:9181"
+  clickhouse-keeper-03:
+    image: clickhouse/clickhouse-keeper
+    user: "101:101"
+    container_name: clickhouse-keeper-03
+    hostname: clickhouse-keeper-03
+    networks:
+      network_cluster_2S_2R:
+        ipv4_address: 172.28.5.7
+    volumes:
+      - ${PWD}/fs/volumes/clickhouse-keeper-03/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
+    ports:
+        - "127.0.0.1:9183:9181"
+  ch-proxy:
+    image: tacyuuhon/clickhouse-chproxy
+    container_name: ch-proxy
+    hostname: ch-proxy
+    networks:
+      network_cluster_2S_2R:
+        ipv4_address: 172.28.5.10
+    ports:
+      - "127.0.0.1:443:443"
+      - "127.0.0.1:80:80"
+    volumes:
+      - ${PWD}/fs/volumes/ch-proxy/config/config.yml:/opt/config.yml
+    depends_on:
+      - clickhouse-01
+      - clickhouse-02
+      - clickhouse-03
+      - clickhouse-04
+networks:
+  network_cluster_2S_2R:
+    name: network_cluster_2S_2R
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+          

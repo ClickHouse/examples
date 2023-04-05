@@ -2,12 +2,15 @@
 
 A work-in-progress list of ClickHouse docker compose examples
 
-- [ClickHouse and Grafana](./ch-and-grafana/README.md)
-- [ClickHouse and Minio S3](./ch-and-minio-S3/README.md)
-- [Clickhouse and LDAP (OpenLDAP) - WIP](./ch-and-openldap/README.md)
-- [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas)](./cluster_1S_2R/README.md)
-- [Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica)](./cluster_2S_1R/README.md)
-- [Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas)](./cluster_2S_2R/README.md)
+- [ClickHouse and Grafana](./recipes/ch-and-grafana/README.md)
+- [ClickHouse and Minio S3](./recipes/ch-and-minio-S3/README.md)
+- [Clickhouse and LDAP (OpenLDAP) - WIP](./recipes/ch-and-openldap/README.md)
+- [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas)](./recipes/cluster_1S_2R/README.md)
+- [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica)](./recipes/cluster_2S_1R/README.md)
+- [Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas)](./recipes/cluster_2S_2R/README.md)
+- [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas) - CH Proxy LB](./recipes/cluster_1S_2R_ch_proxy/README.md)
+- [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica) - CH Proxy LB](./recipes/cluster_2S_1R_ch_proxy/README.md)
+- [Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) - CH Proxy LB](./recipes/cluster_2S_2R_ch_proxy/README.md)
 
 These recipes are provided "AS-IS" and intendend strictly and only for local quick and dirty testing.
 
@@ -26,10 +29,14 @@ Each recipe runs as a pre-configured docker compose setup.
 - ctrl+C will abort executiong
 - once done, run `docker compose down` to tear down the environment
 
+## Resources
 
-## Example
+Make sure enough cpu cores, memory and disk are allocated for docker containers through docker settings.
+Some of these recipes do use up to 8 different hosts.
 
-From scratch, to test S3 functionalities, run [ClickHouse and Minio S3](./ch-and-minio-S3/README.md) recipe:
+## Example use
+
+To test ClickHouse with S3 functionalities, run [ClickHouse and Minio S3](./recipes/ch-and-minio-S3/README.md) recipe:
 
 ```
 ➜  ch-and-minio-S3 git:(docker-compose-import) ✗ ./scripts/create-docker-network.sh
