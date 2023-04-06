@@ -127,9 +127,9 @@ services:
       - clickhouse-04
 networks:
   cluster_2S_2R_ch_proxy:
-    name: cluster_2S_2R_ch_proxy
+    driver: bridge
     ipam:
-      driver: default
       config:
         - subnet: 192.168.9.0/24
+          gateway: 192.168.9.254
           

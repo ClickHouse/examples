@@ -57,4 +57,3 @@ services:
      - ${PWD}/fs/volumes/clickhouse-keeper-03/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
     ports:
         - "127.0.0.1:9183:9181"
-          

@@ -86,12 +86,11 @@ services:
       - ${PWD}/fs/volumes/ch-proxy/config/config.yml:/opt/config.yml
     depends_on:
       - clickhouse-01
-      - clickhouse-02
+      - clickhouse-02         
 networks:
   cluster_1S_2R_ch_proxy:
-    name: cluster_1S_2R_ch_proxy
+    driver: bridge
     ipam:
-      driver: default
       config:
         - subnet: 192.168.5.0/24
-          
+          gateway: 192.168.5.254
