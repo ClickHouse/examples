@@ -21,7 +21,7 @@ These recipes are provided "AS-IS" and intendend strictly and only for local qui
 Each recipe runs as a pre-configured docker compose setup.
 
 - clone this repository locally (`cd /opt && git clone https://github.com/ClickHouse/examples`)
-- make sure the path _where_ you clone this repo is added to your docker sharing settings
+- make sure the path _where_ you clone this repo (in this _example_ `/opt`) is added to your docker sharing settings
 ![](./extras/add_path_to_docker_settings.png)
 - each recipe has a `script` folder, make sure to run the `create-network.sh` script to create the related docker private bridged network
 - `cd` into the desire recipe directory (e.g. `cd recipes/ch-and-grafana`)
