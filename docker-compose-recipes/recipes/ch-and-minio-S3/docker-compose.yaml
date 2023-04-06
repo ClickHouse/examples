@@ -5,9 +5,6 @@ services:
     user: "101:101"
     container_name: clickhouse
     hostname: clickhouse
-    networks:
-      ch-and-minio:
-        ipv4_address: 192.168.2.1
     volumes:
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
@@ -20,9 +17,6 @@ services:
     image: quay.io/minio/minio
     container_name: minio
     hostname: minio
-    networks:
-      ch-and-minio:
-        ipv4_address: 192.168.2.2
     command: server --address 0.0.0.0:10000 --console-address 0.0.0.0:10001 /data
     ports:
       - "127.0.0.1:10000:10000"
@@ -32,9 +26,6 @@ services:
       - MINIO_SECRET_KEY=minioadminpassword
   createbuckets:
     image: minio/mc
-    networks:
-        ch-and-minio:
-          ipv4_address: 192.168.2.3
     depends_on:
       - minio
     entrypoint: >
@@ -45,11 +36,4 @@ services:
       /usr/bin/mc policy set public myminio/clickhouse;
       exit 0;
       "
-networks:
-  ch-and-minio:
-    name: ch-and-minio
-    ipam:
-      driver: default
-      config:
-        - subnet: 192.168.2.0/24
           

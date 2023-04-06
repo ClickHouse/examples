@@ -5,9 +5,6 @@ services:
     user: "101:101"
     container_name: clickhouse
     hostname: clickhouse
-    networks:
-      ch-and-openldap:
-        ipv4_address:  192.168.3.1
     volumes:
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
@@ -16,13 +13,10 @@ services:
       - "127.0.0.1:9000:9000"
   openldap:
     build: 
-      context: ${PWD}/docker_files/
+      context: ./docker_files
       dockerfile: openldap.Dockerfile
     container_name: openldap
     hostname: openldap
-    networks:
-      ch-and-openldap:
-        ipv4_address:  192.168.3.2
     ports:
       - "127.0.0.1:389:389"
       - "127.0.0.1:686:686"
@@ -50,14 +44,4 @@ services:
       - openldap
     ports:
       - "127.0.0.1:10000:18080"
-    networks:
-      ch-and-openldap:
-        ipv4_address:  192.168.3.3
-networks:
-  ch-and-openldap:
-    name: ch-and-openldap
-    ipam:
-      driver: default
-      config:
-        - subnet: 192.168.3.0/24
           
