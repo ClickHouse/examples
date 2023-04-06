@@ -36,4 +36,3 @@ services:
       /usr/bin/mc policy set public myminio/clickhouse;
       exit 0;
       "
-          

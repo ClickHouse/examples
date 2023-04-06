@@ -94,4 +94,3 @@ networks:
       config:
         - subnet: 192.168.7.0/24
           gateway: 192.168.7.254
-          
