@@ -9,8 +9,8 @@ services:
       cluster_2S_2R_ch_proxy:
         ipv4_address: 192.168.9.1
     volumes:
-      - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
-      - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+      - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
     ports:
       - "127.0.0.1:8123:8123"
       - "127.0.0.1:9000:9000"
@@ -27,8 +27,8 @@ services:
       cluster_2S_2R_ch_proxy:
         ipv4_address: 192.168.9.2
     volumes:
-      - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
-      - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+      - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
     ports:
       - "127.0.0.1:8124:8123"
       - "127.0.0.1:9001:9000"
@@ -45,8 +45,8 @@ services:
       cluster_2S_2R_ch_proxy:
         ipv4_address: 192.168.9.3
     volumes:
-      - ${PWD}/fs/volumes/clickhouse-03/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
-      - ${PWD}/fs/volumes/clickhouse-03/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+      - ${PWD}/fs/volumes/clickhouse-03/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ${PWD}/fs/volumes/clickhouse-03/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
     ports:
       - "127.0.0.1:8125:8123"
       - "127.0.0.1:9002:9000"
@@ -63,8 +63,8 @@ services:
       cluster_2S_2R_ch_proxy:
         ipv4_address: 192.168.9.4
     volumes:
-      - ${PWD}/fs/volumes/clickhouse-04/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
-      - ${PWD}/fs/volumes/clickhouse-04/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+      - ${PWD}/fs/volumes/clickhouse-04/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ${PWD}/fs/volumes/clickhouse-04/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
     ports:
         - "127.0.0.1:8126:8123"
         - "127.0.0.1:9003:9000"

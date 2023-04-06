@@ -9,8 +9,8 @@ services:
        cluster_1S_2R:
         ipv4_address:  192.168.4.1
     volumes:
-      - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
-      - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+      - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
     ports:
       - "127.0.0.1:8123:8123"
       - "127.0.0.1:9000:9000"
@@ -27,8 +27,8 @@ services:
        cluster_1S_2R:
         ipv4_address:  192.168.4.2
     volumes:
-      - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
-      - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
+      - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
     ports:
       - "127.0.0.1:8124:8123"
       - "127.0.0.1:9001:9000"
@@ -42,7 +42,7 @@ services:
     container_name: clickhouse-keeper-01
     hostname: clickhouse-keeper-01
     volumes:
-     - ${PWD}/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper:/etc/clickhouse-keeper/
+     - ${PWD}/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
     networks:
        cluster_1S_2R:
         ipv4_address:  192.168.4.5
@@ -54,7 +54,7 @@ services:
     container_name: clickhouse-keeper-02
     hostname: clickhouse-keeper-02
     volumes:
-     - ${PWD}/fs/volumes/clickhouse-keeper-02/etc/clickhouse-keeper:/etc/clickhouse-keeper/
+     - ${PWD}/fs/volumes/clickhouse-keeper-02/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
     networks:
        cluster_1S_2R:
         ipv4_address:  192.168.4.6
@@ -66,7 +66,7 @@ services:
     container_name: clickhouse-keeper-03
     hostname: clickhouse-keeper-03
     volumes:
-     - ${PWD}/fs/volumes/clickhouse-keeper-03/etc/clickhouse-keeper:/etc/clickhouse-keeper/
+     - ${PWD}/fs/volumes/clickhouse-keeper-03/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
     networks:
        cluster_1S_2R:
         ipv4_address:  192.168.4.7
