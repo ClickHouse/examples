@@ -1,3 +1,3 @@
 # ClickHouse Examples
 
-A repository of configuration examples. Mainly used for configuration presented in [ClickHouse blogs](clickhouse.com/blog).
+Examples mainly used for [ClickHouse blogs](clickhouse.com/blog) and a [list](./docker-compose-recipes/README.md) of docker compose recipes.
