@@ -35,16 +35,15 @@ Some of these recipes do use up to 8 different hosts.
 
 ## Example use
 
-To test ClickHouse with S3 functionalities, run [ClickHouse and Minio S3](./recipes/ch-and-minio-S3/README.md) recipe:
+To test ClickHouse with S3 functionalities, launch the [ClickHouse and Minio S3](./recipes/ch-and-minio-S3/README.md) recipe:
 
 ```
-➜  ch-and-minio-S3 git:(docker-compose-import) ✗ ./scripts/create-docker-network.sh
-f520d603cdbef63de8e73b9a3f20f713e634d659670d2f3694e85f4c095bb338
+➜ ch-and-minio-S3$ docker compose up
 [+] Running 4/2
- ⠿ Network ch-and-minio                       Created                                                                                                                                                                                                                                 0.0s
- ⠿ Container minio                            Created                                                                                                                                                                                                                                 0.0s
- ⠿ Container ch-and-minio-s3-createbuckets-1  Created                                                                                                                                                                                                                                 0.0s
- ⠿ Container clickhouse                       Created                                                                                                                                                                                                                                 0.1s
+ ⠿ Network ch-and-minio-s3_default            Created                                                                                                                                                                                         0.0s
+ ⠿ Container minio                            Created                                                                                                                                                                                         0.0s
+ ⠿ Container clickhouse                       Created                                                                                                                                                                                         0.0s
+ ⠿ Container ch-and-minio-s3-createbuckets-1  Created                                                                                                                                                                                         0.0s
 Attaching to ch-and-minio-s3-createbuckets-1, clickhouse, minio
 minio                            | Formatting 1st pool, 1 set(s), 1 drives per set.
 minio                            | WARNING: Host local has more than 0 drives of set. A host failure will result in data becoming unavailable.
@@ -76,10 +75,17 @@ ch-and-minio-s3-createbuckets-1  | mc: Please use 'mc anonymous'
 ch-and-minio-s3-createbuckets-1 exited with code 0
 clickhouse                       | Processing configuration file '/etc/clickhouse-server/config.xml'.
 clickhouse                       | Merging configuration file '/etc/clickhouse-server/config.d/config.xml'.
+clickhouse                       | Merging configuration file '/etc/clickhouse-server/config.d/docker_related_config.xml'.
 clickhouse                       | Logging debug to /var/log/clickhouse-server/clickhouse-server.log
 clickhouse                       | Logging errors to /var/log/clickhouse-server/clickhouse-server.err.log
+minio                            |
+minio                            |  You are running an older version of MinIO released 1 week ago
+minio                            |  Update: Run `mc admin update`
+minio                            |
+minio                            |
 clickhouse                       | Processing configuration file '/etc/clickhouse-server/config.xml'.
 clickhouse                       | Merging configuration file '/etc/clickhouse-server/config.d/config.xml'.
+clickhouse                       | Merging configuration file '/etc/clickhouse-server/config.d/docker_related_config.xml'.
 clickhouse                       | Saved preprocessed configuration to '/var/lib/clickhouse/preprocessed_configs/config.xml'.
 clickhouse                       | Processing configuration file '/etc/clickhouse-server/users.xml'.
 clickhouse                       | Merging configuration file '/etc/clickhouse-server/users.d/users.xml'.
