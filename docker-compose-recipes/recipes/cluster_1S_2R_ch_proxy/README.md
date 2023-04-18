@@ -3,3 +3,7 @@
 2 ClickHouse instances leveraging 3 dedicated ClickHouse Keepers and CH Proxy load balancer
 
 1 Shard with replication across clickhouse-01 and clickhouse-02
+
+This Docker compose file deploys a configuration very similar to [this
+example in the documentation](https://clickhouse.com/docs/en/architecture/replication), the main difference is that this adds the ClickHouse Proxy.
+See the docs for information on terminology, configuration, and testing.
