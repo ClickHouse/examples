@@ -5,6 +5,7 @@ A list of ClickHouse docker compose recipes
 - [ClickHouse and Grafana](./recipes/ch-and-grafana/README.md)
 - [ClickHouse and Minio S3](./recipes/ch-and-minio-S3/README.md)
 - [Clickhouse and LDAP (OpenLDAP) - WIP](./recipes/ch-and-openldap/README.md)
+- [ClickHouse and Postgres](./recipes/ch-and-postgres/README.md)
 - [Clickhouse and Vector syslog and apache demo data](./recipes/ch-and-vector/README.md)
 - [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas)](./recipes/cluster_1S_2R/README.md)
 - [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica)](./recipes/cluster_2S_1R/README.md)
@@ -29,10 +30,12 @@ Each recipe runs as a pre-configured docker compose setup.
 - ctrl+C will abort executiong
 - once done, run `docker compose down` to tear down the environment
 
+
 ## Resources
 
 Make sure enough cpu cores, memory and disk are allocated for docker containers through docker settings.
-Some of these recipes do use up to 8 different hosts.
+Some of these recipes do use up to 8 different containers.
+
 
 ## Example use
 

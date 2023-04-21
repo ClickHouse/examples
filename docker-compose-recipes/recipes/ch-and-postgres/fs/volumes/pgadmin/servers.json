@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "clickhouse",
+      "Group": "clickhouse",
+      "Port": 5432,
+      "Username": "admin",
+      "Host": "postgres",
+      "SSLMode": "prefer",
+      "MaintenanceDB": "clickhouse"
+    }
+  }
+}
