@@ -1,7 +1,7 @@
 {
   "Servers": {
     "1": {
-      "Name": "clickhouse",
+      "Name": "clickhouse_pg_db",
       "Group": "clickhouse",
       "Port": 5432,
       "Username": "admin",

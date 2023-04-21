@@ -22,7 +22,7 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: clickhouse
+      POSTGRES_DB: clickhouse_pg_db
     ports:
       - "5432:5432"
   pgadmin:
