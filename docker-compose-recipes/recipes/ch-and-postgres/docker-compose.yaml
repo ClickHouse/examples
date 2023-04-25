@@ -13,7 +13,7 @@ services:
       - "127.0.0.1:8123:8123"
       - "127.0.0.1:9000:9000"
     depends_on:
-      - pgadmin
+      - postgres
   postgres:
     container_name: postgres
     hostname: postgres
@@ -25,17 +25,9 @@ services:
       POSTGRES_DB: clickhouse_pg_db
     ports:
       - "5432:5432"
-  pgadmin:
-    container_name: pgadmin
-    hostname: pgadmin
-    image: dpage/pgadmin4
-    restart: always
     volumes:
-    - ${PWD}/fs/volumes/pgadmin/servers.json:/pgadmin4/servers.json
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@clickhouse.com
-      PGADMIN_DEFAULT_PASSWORD: password
-    ports:
-      - "5050:80"
-    depends_on:
-      - postgres
+      - ${PWD}/fs/volumes/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical" #required for MaterializedPostgreSQL
