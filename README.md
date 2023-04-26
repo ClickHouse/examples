@@ -1,7 +1,7 @@
 # ClickHouse Examples
 ## ClickHouse Blog data
 
-A collection of the data required to back our ClickHouse official [Blogs](clickhouse.com/blog), including:
+A collection of data required to back our own ClickHouse official [Blogs](clickhouse.com/blog), including:
 - [DDL](./ethereum/schemas/) statements;
 - SQL [queries](./ethereum/queries/);
 - a collection of agents (Vector, FluentBit, etc) [configurations](./observability/README.md) to analyze Kubernetes logs in Clickhouse;
