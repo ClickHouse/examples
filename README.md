@@ -23,7 +23,7 @@ A list of ClickHouse [docker compose](https://docs.docker.com/compose/) recipes:
 - Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica) - CH Proxy LB
 - Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) - CH Proxy LB
 
-These recipes are meant to provide a quick n dirty way to get started and try out a given ClickHouse cluster on your laptop.
+These recipes are meant to provide a quick n dirty way to get started and try out specific type of ClickHouse integration or clustered environment locally.
 
 See [this page](./docker-compose-recipes/README.md) to get started using ClickHouse docker compose recipes.
 
