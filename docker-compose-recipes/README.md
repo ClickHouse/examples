@@ -3,7 +3,7 @@
 A list of ClickHouse docker compose recipes
 
 - [ClickHouse and Grafana](./recipes/ch-and-grafana/README.md)
-- [ClickHouse and Minio S3](./recipes/ch-and-minio-S3/README.md)
+- [ClickHouse and MinIO S3](./recipes/ch-and-minio-S3/README.md)
 - [Clickhouse and LDAP (OpenLDAP) - WIP](./recipes/ch-and-openldap/README.md)
 - [ClickHouse and Postgres](./recipes/ch-and-postgres/README.md)
 - [Clickhouse and Vector syslog and apache demo data](./recipes/ch-and-vector/README.md)
@@ -14,7 +14,7 @@ A list of ClickHouse docker compose recipes
 - [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica) - CH Proxy LB](./recipes/cluster_2S_1R_ch_proxy/README.md)
 - [Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) - CH Proxy LB](./recipes/cluster_2S_2R_ch_proxy/README.md)
 
-These recipes are provided "AS-IS" and intendend strictly and only for local quick and dirty testing.
+These recipes are provided "AS-IS" and intended strictly and only for local quick and dirty testing.
 
 
 
@@ -27,7 +27,7 @@ Each recipe runs as a pre-configured docker compose setup.
 ![](./extras/add_path_to_docker_settings.png)
 - `cd` into the desire recipe directory (e.g. `cd recipes/ch-and-grafana`)
 - run `docker compose up` to launch the recipe
-- ctrl+C will abort executiong
+- ctrl+C will abort execution
 - once done, run `docker compose down` to tear down the environment
 
 
@@ -36,10 +36,9 @@ Each recipe runs as a pre-configured docker compose setup.
 Make sure enough cpu cores, memory and disk are allocated for docker containers through docker settings.
 Some of these recipes do use up to 8 different containers.
 
-
 ## Example use
 
-To test ClickHouse with S3 functionalities, launch the [ClickHouse and Minio S3](./recipes/ch-and-minio-S3/README.md) recipe:
+To test ClickHouse with S3 functionalities, launch the [ClickHouse and MinIO S3](./recipes/ch-and-minio-S3/README.md) recipe:
 
 ```
 ➜ ch-and-minio-S3$ docker compose up
