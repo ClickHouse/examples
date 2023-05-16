@@ -9,7 +9,7 @@ and I will probably look at that.
 
 ## Docker
 
-Docker is used to run this, a very simple Dockerfile installs Scrapy and its dependencies, and then copies in the Scrapy config from the `mycrawler` dir.  
+Docker is used to run this, a very simple Dockerfile installs Scrapy and its dependencies.
 
 ## Build
 
@@ -17,11 +17,23 @@ Docker is used to run this, a very simple Dockerfile installs Scrapy and its dep
 docker build --network=host -t crawler .
 ```
 
-## Run
+## Run the container
+
+The `mycrawler` directory gets mounted into the container.
+
 ```bash
-docker run  -ti \
+docker run  --rm -ti \
   --name    crawl \
   --network host \
-  crawler
+  --mount type=bind,source="$(pwd)"/mycrawler,target=/usr/src/app/mycrawler \
+crawler
+```
+
+## Crawl clickhouse.com/docs
+
+Scrapy gets the list of pages (URLs) from the file at https://clickhouse.com/docs/sitemap.xml and process the list.  This command starts a crawl:
+
+```bash
+scrapy crawl clickhouse-docs
 ```
 

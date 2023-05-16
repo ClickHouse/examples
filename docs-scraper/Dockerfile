@@ -3,11 +3,13 @@ WORKDIR /usr/src/app
 
 # Install Scrapy and prerequisites
 COPY requirements.txt requirements.txt
+COPY scrapy.cfg scrapy.cfg
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Copy in the scrapy project (configuration)
-COPY mycrawler mycrawler
+#COPY mycrawler mycrawler
 
 # Run the scraper
-WORKDIR /usr/src/app/mycrawler
-CMD [ "scrapy", "crawl", "example" ]
+#WORKDIR /usr/src/app/mycrawler
+#CMD [ "scrapy", "crawl", "example" ]
+CMD [ "bash" ]
