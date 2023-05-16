@@ -17,9 +17,9 @@ Docker is used to run this, a very simple Dockerfile installs Scrapy and its dep
 docker build --network=host -t crawler .
 ```
 
-## Run the container
+## Start the container
 
-The `mycrawler` directory gets mounted into the container.
+The `mycrawler` directory gets mounted into the container, and the container launches a bash shell. 
 
 ```bash
 docker run  --rm -ti \
@@ -35,5 +35,11 @@ Scrapy gets the list of pages (URLs) from the file at https://clickhouse.com/doc
 
 ```bash
 scrapy crawl clickhouse-docs
+```
+
+## Enter an interactive Scrapy shell
+
+```bash
+scrapy shell
 ```
 
