@@ -708,7 +708,7 @@ A full list of configuration parameters can be found [here](https://debezium.io/
 
 A Debezium connector can be configured in Confluent Cloud as shown below. This connector will automatically create a Kafka topic when messages are received. 
 
-![Configure Debezium](https://github.com/ClickHouse/examples/blob/main/cdc/postgresql/configure_debezium.gif?raw=true)
+![Configure Debezium](https://github.com/ClickHouse/examples/blob/main/cdc/postgresql/debezium_configuration.gif?raw=true)
 
 The associated JSON configuration is shown below and can be used with the steps documented [here](https://docs.confluent.io/cloud/current/connectors/cc-postgresql-cdc-source-debezium.html):
 
@@ -808,7 +808,6 @@ Details on deploying this connector in self-managed environments can be found [h
 The HTTP Sink is a native connector to Confluent Cloud. We show configuring this connector below but also suggest users read [the supporting documentation]() for configuring this sink with ClickHouse.
 
 ![HTTP Sink Configuration](https://github.com/ClickHouse/examples/blob/main/cdc/postgresql/http_connector_configuration.gif?raw=true)
-
 
 The JSON configuration is shown below:
 
