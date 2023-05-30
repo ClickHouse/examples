@@ -5,8 +5,8 @@ For our example we use the uk house price paid dataset of 28m rows. Examples bel
 ## Requirements
 
 - Kafka
-- Postgres 10+ - tested on version X using `pgoutput`
-- Debezium Connector - tested on version X
+- Postgres 10+ - tested on version 14.7 using `pgoutput`
+- Debezium Connector - tested on version 2.2.1
 - [ClickHouse Sink for Kafka](https://clickhouse.com/docs/en/integrations/kafka#clickhouse-kafka-connect-sink) or [HTTP Sink](https://clickhouse.com/docs/en/integrations/kafka#confluent-http-sink-connector) (Confluent Cloud only)
 
 These examples use a AWS Aurora instance of Postgres version X. We use Confluent for hosting our Kafka instance and connectors but self-managed variants should also work.
@@ -678,8 +678,8 @@ Deploying the connector in the Kafka connect framework requires the following se
 
 The following key configuration properties are required for the Debezium connector to work with ClickHouse. **Important:** We configure the connector to track changes at a per table level:
 
-- `name` - Unique name for the connector. Attempting to register again with the same name will fail. This property is required by all Kafka Connect connectors.
-- `connector.class` - Always set to value `io.debezium.connector.postgresql.PostgresConnector` (self-managed only)
+- [`name`](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-name) - Unique name for the connector. Attempting to register again with the same name will fail. This property is required by all Kafka Connect connectors.
+- [`connector.class`](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-connector-class) - Always set to value `io.debezium.connector.postgresql.PostgresConnector` (self-managed only)
 - [`database.hostname`](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-database-hostname) - Hostname not including port.
 - [`database.port`](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-database-port)
 - [`database.user`](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-database-user)
@@ -687,7 +687,7 @@ The following key configuration properties are required for the Debezium connect
 - [`database.dbname`](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-database-dbname)
 - [`database.sslmode`](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-database-sslmode) - `require` for Cloud databases.
 `publication.autocreate.mode`
-- [`database.server.name`] - Logical name that identifies and provides a namespace for the particular PostgreSQL database server/cluster being monitored. The logical name should be unique across all other connectors, since it is used as a prefix for all Kafka topic names coming from this connector. For our example, we use the value `postgres`.
+- [`database.server.name`](https://docs.confluent.io/kafka-connectors/debezium-postgres-source/current/postgres_source_connector_config.html#auto-topic-creation) - Logical name that identifies and provides a namespace for the particular PostgreSQL database server/cluster being monitored. The logical name should be unique across all other connectors, since it is used as a prefix for all Kafka topic names coming from this connector. For our example, we use the value `postgres`.
 - [`tasks.max`](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-tasks-max) - Always 1
 - [`plugin.name`](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-plugin-name) - The name of the PostgreSQL logical decoding plug-in installed on the PostgreSQL server. We recommend `pgoutput`.
 - [`slot.name`](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-slot-name) - Logical decoding slot name. Must be unique to a Database+schema. If replicating only one, use `debezium`.
@@ -704,10 +704,9 @@ The following key configuration properties are required for the Debezium connect
 
 A full list of configuration parameters can be found [here](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-connector-properties). Confluent provides [additional documentation](https://docs.confluent.io/kafka-connectors/debezium-postgres-source/current/postgres_source_connector_config.html#auto-topic-creation) for those deploying using the Confluent Kafka or Cloud.
 
-A Debezium connector can be configured in Confluent Cloud as shown below. In the example below we set the setting `REPLICA IDENTITY` to `FULL`, thus supporting deletes. This connector will automatically create a Kafka topic when messages are received. 
+A Debezium connector can be configured in Confluent Cloud as shown below. This connector will automatically create a Kafka topic when messages are received. 
 
-
-![Configure Debezium](https://github.com/ClickHouse/examples/blob/main/cdc/postgresql/configure_debezium.gif)
+![Configure Debezium](https://github.com/ClickHouse/examples/blob/main/cdc/postgresql/configure_debezium.gif?raw=true)
 
 The associated JSON configuration is shown below and can be used with the steps documented [here](https://docs.confluent.io/cloud/current/connectors/cc-postgresql-cdc-source-debezium.html):
 
@@ -758,9 +757,11 @@ The associated JSON configuration is shown below and can be used with the steps 
 }
 ```
 
-Important: Note the important settings above: 
-    - We set the `after.state.only` property to `false`. This settings appears specific to Confluent Cloud and must be set as `false` to ensure the previous values of rows are provided as well as the LSN number.
-    - We also utilize the SMT capabilities of Kafka connect to [flatten](https://kafka.apache.org/documentation/#org.apache.kafka.connect.transforms.Flatten) the messages and set the Kafka topic. This can be achieved in self-manage through configuration. Further details [here](https://debezium.io/documentation/reference/stable/transformations/topic-routing.html#_example) and [here](https://kafka.apache.org/documentation/#connect_transforms).
+**Important: Note the important settings above**:
+
+- We set the `after.state.only` property to `false`. This settings appears specific to Confluent Cloud and must be set as `false` to ensure the previous values of rows are provided as well as the LSN number.
+
+- We also utilize the SMT capabilities of Kafka connect to [flatten](https://kafka.apache.org/documentation/#org.apache.kafka.connect.transforms.Flatten) the messages and set the Kafka topic. This can be achieved in self-manage through configuration. Further details [here](https://debezium.io/documentation/reference/stable/transformations/topic-routing.html#_example) and [here](https://kafka.apache.org/documentation/#connect_transforms).
 
 Self-managed installation instructions can be found [here](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-deployment).
 
@@ -774,40 +775,148 @@ Both examples below assume the user has configured the Debezium connector to sen
 
 ### ClickHouse Kafka Connect Sink
 
-We show configuring the ClickHouse Kafka Connect Sink below. Note the connector package can be downloaded from [here]().
+We show configuring the ClickHouse Kafka Connect Sink in Confluent Cloud below. Note the connector package can be downloaded from [here](https://github.com/ClickHouse/clickhouse-kafka-connect/releases).
 
+```
+                                            **GIF TODO**
+```
 
-// gif
+The JSON configuration is shown below:
+
+```json
+{
+  "database": "default",
+  "exactlyOnce": "false",
+  "hostname": "cbupclfpbv.us-east-2.aws.clickhouse-staging.com",
+  "password": "****************",
+  "port": "8443",
+  "schemas.enable": "false",
+  "security.protocol": "SSL",
+  "ssl": "true",
+  "topics": "uk_price_paid_changes",
+  "username": "default",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": "false"
+}
+```
+
+Details on deploying this connector in self-managed environments can be found [here](https://clickhouse.com/docs/en/integrations/kafka#clickhouse-kafka-connect-sink).
+
 
 ### HTTP Sink (Confluent Cloud only)
 
 The HTTP Sink is a native connector to Confluent Cloud. We show configuring this connector below but also suggest users read [the supporting documentation]() for configuring this sink with ClickHouse.
 
-// gif
+![HTTP Sink Configuration](https://github.com/ClickHouse/examples/blob/main/cdc/postgresql/http_connector_configuration.gif?raw=true)
+
+
+The JSON configuration is shown below:
+
+```json
+{
+  "topics": "uk_price_paid_changes",
+  "input.data.format": "JSON",
+  "connector.class": "HttpSink",
+  "name": "ClickHouse HTTP Sink",
+  "kafka.auth.mode": "KAFKA_API_KEY",
+  "kafka.api.key": "5RRHQMJGUZF4ZNSJ",
+  "kafka.api.secret": "****************************************************************",
+  "http.api.url": "https://cbupclfpbv.us-east-2.aws.clickhouse-staging.com:8443?query=INSERT%20INTO%20default.uk_price_paid_changes%20FORMAT%20JSONEachRow",
+  "request.method": "POST",
+  "behavior.on.null.values": "ignore",
+  "behavior.on.error": "ignore",
+  "report.errors.as": "error_string",
+  "request.body.format": "json",
+  "batch.max.size": "1000",
+  "batch.json.as.array": "true",
+  "auth.type": "BASIC",
+  "connection.user": "default",
+  "connection.password": "*************",
+  "oauth2.token.property": "access_token",
+  "oauth2.client.auth.mode": "header",
+  "oauth2.client.scope": "any",
+  "oauth2.jwt.enabled": "false",
+  "oauth2.jwt.keystore.type": "JKS",
+  "retry.on.status.codes": "400-",
+  "max.retries": "3",
+  "retry.backoff.ms": "3000",
+  "http.connect.timeout.ms": "30000",
+  "http.request.timeout.ms": "30000",
+  "https.ssl.protocol": "TLSv1.3",
+  "https.host.verifier.enabled": "true",
+  "tasks.max": "1"
+}
+```
+
+Attention is drawn to the settings `http.api.url`, `request.body.format` and `batch.json.as.array`. The former of these requires the a URL encoded ClickHouse URL containing the database name and `FORMAT` as `JSONEachRow`. Further details [here](https://clickhouse.com/docs/en/integrations/kafka#confluent-http-sink-connector). The latter 2 settings ensure the rows are sent as JSON. The setting `batch.max.size` can be used to tune the batch size.
+
 
 ## Querying in ClickHouse
 
 At [merge time](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/replacingmergetree) the ReplacingMergeTree removes rows, retaining the highest version, with the same `ORDER BY` values. Deleted rows should also be removed (see [below](#important-note-regards-deletes)). This, however, offers eventual correctness only - it doesnot guarantee rows will be deduplicated and you should not rely on it.
 
+To obtain correct answers, users will need to complement background merges with query time deduplication. This can be achieved using one of two methods:
 
-To obtain correct answers, users will need to complement background merges with query time deduplication. This can be achieved using one of two methods.
+1. Modify queries to utilize only the latest version of each row and filter deletes. For example, consider the queries below. The former utilizes all rows and returns (potentially) the wrong answer. The latter uses only the latest version of each row.
+
+```sql
+SELECT avg(price)
+FROM uk_price_paid
+
+┌─────────avg(price)─┐
+│ 214352.47087590597 │
+└────────────────────┘
+
+1 row in set. Elapsed: 0.045 sec. Processed 27.74 million rows, 110.94 MB (615.08 million rows/s., 2.46 GB/s.)
+
+SELECT avg(price)
+FROM
+(
+    SELECT argMax(price, version) AS price
+    FROM uk_price_paid
+    GROUP BY id
+)
+┌─────────avg(price)─┐
+│ 214352.57845933954 │
+└────────────────────┘
+
+1 row in set. Elapsed: 0.426 sec. Processed 27.74 million rows, 554.70 MB (65.11 million rows/s., 1.30 GB/s.)
+
+```
+
+2. Utilize the `FINAL` modifier after the table name. This will perform query time de-duplication. Provided the query filters rows effectively, avoiding full table scans, this can be performant. Full table scans, however, maybe appreciably impacted. Note how the below query is slower than the adapted query above.
+
+```sql
+SELECT avg(price)
+FROM uk_price_paid
+FINAL
+
+┌─────────avg(price)─┐
+│ 214352.57845933954 │
+└────────────────────┘
+
+1 row in set. Elapsed: 0.671 sec. Processed 29.65 million rows, 1.35 GB (44.20 million rows/s., 2.01 GB/s.)
+```
 
 ## Testing
 
 To test we utilize a custom Python script which makes random changes to the Postgres rows - adding, updating and deleting rows. Specifically, regards updates, this script changes the `type`, `price` and `is_new` column for random rows. The full code and dependencies can found [here](https://github.com/ClickHouse/examples/blob/main/cdc/postgresql/randomize.py).
 
 ```bash
+export PGDATABASE=<database>
+export PGUSER=postgres
+export PGPASSWORD=<password>
+export PGHOST=<host>
+export PGPORT=5432
 pip3 install -r requirements.txt
-python
-
+python randomize.py --iterations 1 --weights "0.4,0.4,0.2" --delay 0.5
 ```
 
-Note the parameter `0.4,0.4,0.2` denotes the rato of creates, updates and deletes. The `pause` parameter sets the time delay between each operation (default 0.5secs). `iterations` sets the total number of changes to make to the table. In the example above, we modify 1000 rows.
+Note the `weights` parameter and value `0.4,0.4,0.2` denotes the rato of creates, updates and deletes. The `delay` parameter sets the time delay between each operation (default 0.5 secs). `iterations` sets the total number of changes to make to the table. In the example above, we modify 1000 rows.
 
-Once the script has complete we can run the following queries against Postgres and ClickHouse to confirm consistency. The responses shown may differ from your values, as changes are random. The values from both databases should, however, be identical.
+Once the script has complete we can run the following queries against Postgres and ClickHouse to confirm consistency. The responses shown may differ from your values, as changes are random. The values from both databases should, however, be identical. We utilize `FINAL` for simplicity.
 
 #### Identical row count
-
 
 ```sql
 -- Postgres
@@ -827,7 +936,6 @@ FINAL
 │ 27735027 │
 └──────────┘
 ```
-
 
 #### Same price statistics
 
@@ -922,12 +1030,14 @@ https://debezium.io/documentation/reference/stable/connectors/postgresql.html#po
 - Logical decoding replication slots are supported on only primary servers. When there is a cluster of PostgreSQL servers, the connector can run on only the active primary server. It cannot run on hot or warm standby replicas. If the primary server fails or is demoted, the connector stops. After the primary server has recovered, you can restart the connector. If a different PostgreSQL server has been promoted to primary, adjust the connector configuration before restarting the connector.
 - single task
 - per table level
+
 ### Important note regards deletes
 
-Our previous example sets the setting `X` to `Never` when creating the `uk_price_paid` table in ClickHouse. This means deleted rows will never be deleted. The setting `XX` with value `Always` is required for the `ReplacingMergeTree` to delete rows on merges. As of `22.4` this feature has a bug where rows are not removed. We therefore recommend using the value `Never` as shown - this will cause delete rows to accumulate but may be acceptable if low volumes.
+Our previous example used the default value of `Never` for the setting `clean_deleted_rows`, when creating the `uk_price_paid` table in ClickHouse. This means deleted rows will never be deleted. The setting `clean_deleted_rows` with value `Always` is required for the `ReplacingMergeTree` to delete rows on merges. As of `22.4` this feature has a bug where rows are not removed. We therefore recommend using the value `Never` as shown - this will cause delete rows to accumulate but may be acceptable if low volumes. To forcibly remove deleted rows, users can periodically scheduled an `OPTIMIZE FINAL CLEANUP` operation on the table i.e.
 
-We are actively addressing this issue.
+This should be done with caution (ideally during idle periods), since it can cause significant IO on large tables.
 
+**We are actively addressing [this issue](https://github.com/ClickHouse/ClickHouse/issues/50346).**
 
 ## TODO
 
