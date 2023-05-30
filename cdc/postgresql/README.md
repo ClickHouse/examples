@@ -700,7 +700,11 @@ The following key configuration properties are required for the Debezium connect
 - [`decimal.handling.mode`](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-decimal-types). Specifies how the connector should handle values for DECIMAL and NUMERIC columns. The default value of `precise` will encode these in their binary form i.e. java.math.BigDecimal. Combined with the `decimal.format` setting above this will cause these to be output in the JSON as numeric. Users may wish to adjust depending on the precision required.
 - [topic.prefix](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-topic-prefix) - Topic prefix that provides a namespace for the particular PostgreSQL database server or cluster in which Debezium is capturing changes. The prefix should be unique across all other connectors, since it is used as a topic name prefix for all Kafka topics that receive records from this connector. This should not be changed once set. We do not set in our example and leave empty.
 
+The following settings will impact the delay between changes in Postgres and their arrival time in ClickHouse. Consider these in the context of required SLAs and efficient batching to ClickHouse - see [Other Considerations](#other-considerations).
 
+- [max.batch.size](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-max-batch-size) - maximum size of each batch of events.
+- [max.queue.size](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-max-queue-size) - queue size before sending events to Kafka. Allows backpressure. Should be greater than batch size.
+- [poll.interval.ms](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-max-queue-size) - Positive integer value that specifies the number of milliseconds the connector should wait for new change events to appear before it starts processing a batch of events. Defaults to 500 milliseconds.
 
 A full list of configuration parameters can be found [here](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-connector-properties). Confluent provides [additional documentation](https://docs.confluent.io/kafka-connectors/debezium-postgres-source/current/postgres_source_connector_config.html#auto-topic-creation) for those deploying using the Confluent Kafka or Cloud.
 
@@ -1013,32 +1017,28 @@ GROUP BY type
 
 ## Other Considerations
 
-- Async inserts or batch
-- scaling
-https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-wal-disk-space
+- The Debezium connector will batch row changes where possible, upto a max size of the `max.batch.size`. These batches are formed every poll interval `poll.interval.ms` (500ms default). Users can increase these values for larger and more efficient batches at the expense of higher end-to-end latency. Remember that ClickHouse [prefers batches of atleast 1000](https://clickhouse.com/docs/en/cloud/bestpractices/bulk-inserts) to avoid common issues such as [too many parts](https://clickhouse.com/docs/knowledgebase/exception-too-many-parts). For low throughput environments (<100 rows per second) this batching is not as critical as ClickHouse will likely keep up with merges. However, users should avoid small batches at a high rate of insert. 
+
+Batching can also be configured on the Sink side for the HTTP connector. This is currently not supported explictly in the ClickHouse Sink, but can be configured through the Kafka connect framework - see the setting [`consumer.override.max.poll.records`](https://docs.confluent.io/platform/current/installation/configuration/consumer-configs.html#max-poll-records). Alternatively, users can configure [ClickHouse Async inserts](https://clickhouse.com/docs/en/optimize/asynchronous-inserts#enabling-asynchronous-inserts) and allow ClickHouse to batch. In this mode, inserts can be sent as small batches to ClickHouse which will batch rows before flushing. Note that while flushing, rows will not be searchable. This approach therefore does **not** help with end-to-end latency.
+- Users should be cognizant of [WAL disk usage](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-wal-disk-space) and the importance of [`heartbeat.interval.ms`](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-heartbeat-interval-ms) in cases where tables with few changes are being monitored in databases with many updates. 
+- Normally the primary key in a ClickHouse table is denoted by the `ORDER BY` clause. For performance, this is held in memory. The use of the `ORDER BY` key for deduplication in the ReplacingMergeTree can cause this to become long, increasing memory usage. If this becomes a concern, users can utilize the `PRIMARY KEY` clause. This should be prefix of the `ORDER BY` clause. While the data will be sorted on disk, according to the `ORDER BY` (maximizing compression and ensuring uniqueness), only the columns in the `PRIMARY KEY` will be held in memory. Using this approach, the Postgres primary key columns can be omitted from the `PRIMARY KEY` - saving memory without impacting query performance.
+- We recommened users partition their table according to [best practices](https://clickhouse.com/docs/en/optimize/partitioning-key). If users can ensure this partitioning key does not change, updates pertaining to the same row will be sent to the same ClickHouse partition. Assuming this is the case, users can use the parameter `do_not_merge_across_partitions_select_final` at query time to improve performance.
 
 ## Limitations 
 
-- The above approach does not currently support Postgres primary key changes. To implement this, users will need to detect `op=delete` messages from Debezium which have no `before` or `after` fields. The `id` should then be used to delete these rows in ClickHouse - preferably using Lightweight deletes. This requires custom code instead of using the Kafka sink/HTTP sink for sending data to ClickHouse.
-- The columns used in the `ORDER BY` clause of the ClickHouse table cannot change in Postgres. These are used by the `ReplacingMergeTree` to identify duplicate rows. Choose these columns carefully and ensure - optimize them for ClickHouse access patterns and search performance, while making sure they are immutable in Postgres.
-- As noted, the `FINAL` operator is required on searches for correct results. For full table scans this can impact search performance appreciably. Either:
-    - Ensure your queries are filtering to a smaller subset
-    - Modify your queries to target only the latest version of rows - this can be possible, for example, if a column is known to be monotonically increasing.
-
-- Changing primary key
-- Logical decoding does not support DDL changes. This means that the connector is unable to report DDL change events back to consumers.
+- The above approach does not currently support **Postgres primary key changes**. To implement this, users will need to detect `op=delete` messages from Debezium which have no `before` or `after` fields. The `id` should then be used to delete these rows in ClickHouse - preferably using [Lightweight deletes](https://clickhouse.com/docs/en/guides/developer/lightweght-delete). This requires custom code instead of using the Kafka sink/HTTP sink for sending data to ClickHouse.
+- The columns used in the `ORDER BY` clause of the ClickHouse table cannot change in origin Postgres table. These are used by the `ReplacingMergeTree` to identify duplicate rows. Choose these columns carefully and ensure - optimize them for ClickHouse access patterns and search performance, while making sure they are immutable in Postgres.
+- If the Primary key of a table changes, users will likely need to create a new ClickHouse table with the new column as part of the `ORDER BY` clause. Note this also requires a [process to be performed for the Debezium connector](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-streaming-changes). 
+- The logical decoding, on which the Debezium connector depends, does not support DDL changes. This means that the connector is unable to report DDL change events back to consumers.
 - Logical decoding replication slots are supported on only primary servers. When there is a cluster of PostgreSQL servers, the connector can run on only the active primary server. It cannot run on hot or warm standby replicas. If the primary server fails or is demoted, the connector stops. After the primary server has recovered, you can restart the connector. If a different PostgreSQL server has been promoted to primary, adjust the connector configuration before restarting the connector.
-- single task
-- per table level
+- While Kafka Sinks can be safely scaled to use more workers, the Debezium connector allows only a [single task](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-tasks-max). The solution proposed above uses a connector per table, allowing the solution to be scaled at a table level.
+- The documented approach assumes a connector instance per table. We currently donot support a connector monitoring several tables - although this maybe achievable with topic routing i.e. messages are routed to a table specific topic. This configuration has not yet been tested.
 
 ### Important note regards deletes
 
-Our previous example used the default value of `Never` for the setting `clean_deleted_rows`, when creating the `uk_price_paid` table in ClickHouse. This means deleted rows will never be deleted. The setting `clean_deleted_rows` with value `Always` is required for the `ReplacingMergeTree` to delete rows on merges. As of `22.4` this feature has a bug where rows are not removed. We therefore recommend using the value `Never` as shown - this will cause delete rows to accumulate but may be acceptable if low volumes. To forcibly remove deleted rows, users can periodically scheduled an `OPTIMIZE FINAL CLEANUP` operation on the table i.e.
+Our previous example used the default value of `Never` for the setting `clean_deleted_rows`, when creating the `uk_price_paid` table in ClickHouse. This means deleted rows will never be deleted. The setting `clean_deleted_rows` with value `Always` is required for the `ReplacingMergeTree` to delete rows on merges. As of `22.4` this feature has a bug where the wrong rows can be removed. We therefore recommend using the value `Never` as shown - this will cause delete rows to accumulate but may be acceptable if low volumes. To forcibly remove deleted rows, users can periodically scheduled an `OPTIMIZE FINAL CLEANUP` operation on the table i.e.
 
 This should be done with caution (ideally during idle periods), since it can cause significant IO on large tables.
 
 **We are actively addressing [this issue](https://github.com/ClickHouse/ClickHouse/issues/50346).**
 
-## TODO
-
-partioning
