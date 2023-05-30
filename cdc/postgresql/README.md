@@ -42,7 +42,6 @@ Download the data
 ```bash
 wget https://datasets-documentation.s3.eu-west-3.amazonaws.com/uk-house-prices/postgres/uk_prices.sql.tar.gz
 tar -xvf uk_prices.sql.tar.gz
-
 ```
 
 Insert the data using psql.
@@ -53,7 +52,6 @@ PGUSER=postgres
 PGHOST=<host>
 
 psql < house_prices.sql
-
 ```
 
 Confirm all data has been loaded. This can take 10 mins.
@@ -674,7 +672,7 @@ Deploying the connector in the Kafka connect framework requires the following se
 - `key.converter` - `org.apache.kafka.connect.storage.StringConverter`
 - `key.converter.schemas.enable` - `false`
 - `value.converter.schemas.enable` - `false`
-- `decimal.format` - Controls which format this converter will serialize decimals in. This value is case insensitive and can be either `BASE64` (default) or `NUMERIC`. Users can set to `NUMERIC`. For more details on Decimal handling see [here](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-decimal-types).
+- `decimal.format` - Controls which format this converter will serialize decimals in. This value is case insensitive and can be either `BASE64` (default) or `NUMERIC`. This should be set to `BASE64`. For more details on Decimal handling see [here](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-decimal-types).
 
 The following key configuration properties are required for the Debezium connector to work with ClickHouse. **Important:** We configure the connector to track changes at a per table level:
 
@@ -750,7 +748,7 @@ The associated JSON configuration is shown below and can be used with the steps 
   "output.data.format": "JSON",
   "after.state.only": "false",
   "output.key.format": "STRING",
-  "json.output.decimal.format": "NUMERIC",
+  "json.output.decimal.format": "BASE64",
   "tasks.max": "1",
   "transforms": "flatten,set_topic",
   "transforms.flatten.type": "org.apache.kafka.connect.transforms.Flatten$Value",
@@ -781,9 +779,7 @@ Both examples below assume the user has configured the Debezium connector to sen
 
 We show configuring the ClickHouse Kafka Connect Sink in Confluent Cloud below. Note the connector package can be downloaded from [here](https://github.com/ClickHouse/clickhouse-kafka-connect/releases).
 
-```
-                                            **GIF TODO**
-```
+![ClickHouse Sink Configuration](https://github.com/ClickHouse/examples/blob/main/cdc/postgresql/clickhouse_sink_configuration.gif?raw=true)
 
 The JSON configuration is shown below:
 
