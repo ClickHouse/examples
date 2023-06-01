@@ -1,0 +1,37 @@
+{
+  "before": null,
+  "after": {
+    "id": 55507461,
+    "price": 120000,
+    "date": 10760,
+    "postcode1": "SG5",
+    "postcode2": "4JZ",
+    "type": "detached",
+    "is_new": 0,
+    "duration": "freehold",
+    "addr1": "30",
+    "addr2": "",
+    "street": "HAZEL GROVE",
+    "locality": "STOTFOLD",
+    "town": "HITCHIN",
+    "district": "MID BEDFORDSHIRE",
+    "county": "BEDFORDSHIRE"
+  },
+  "source": {
+    "version": "1.9.6.Final",
+    "connector": "postgresql",
+    "name": "postgres_server",
+    "ts_ms": 1685378749598,
+    "snapshot": "false",
+    "db": "postgres",
+    "sequence": "[\"247430390416\",\"247833035832\"]",
+    "schema": "public",
+    "table": "uk_price_paid",
+    "txId": 106939,
+    "lsn": 247833035832,
+    "xmin": null
+  },
+  "op": "c",
+  "ts_ms": 1685378750345,
+  "transaction": null
+}

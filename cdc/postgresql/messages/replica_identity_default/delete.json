@@ -1,0 +1,37 @@
+{
+  "before": {
+    "id": 50419765,
+    "price": null,
+    "date": null,
+    "postcode1": null,
+    "postcode2": null,
+    "type": null,
+    "is_new": null,
+    "duration": null,
+    "addr1": null,
+    "addr2": null,
+    "street": null,
+    "locality": null,
+    "town": null,
+    "district": null,
+    "county": null
+  },
+  "after": null,
+  "source": {
+    "version": "1.9.6.Final",
+    "connector": "postgresql",
+    "name": "postgres_server",
+    "ts_ms": 1685379500528,
+    "snapshot": "false",
+    "db": "postgres",
+    "sequence": "[\"247967265912\",\"247967265968\"]",
+    "schema": "public",
+    "table": "uk_price_paid",
+    "txId": 106959,
+    "lsn": 247967265968,
+    "xmin": null
+  },
+  "op": "d",
+  "ts_ms": 1685379500562,
+  "transaction": null
+}
