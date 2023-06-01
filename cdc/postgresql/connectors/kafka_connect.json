@@ -1,0 +1,14 @@
+{
+  "database": "default",
+  "exactlyOnce": "false",
+  "hostname": "cbupclfpbv.us-east-2.aws.clickhouse-staging.com",
+  "password": "****************",
+  "port": "8443",
+  "schemas.enable": "false",
+  "security.protocol": "SSL",
+  "ssl": "true",
+  "topics": "uk_price_paid_changes",
+  "username": "default",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": "false"
+}

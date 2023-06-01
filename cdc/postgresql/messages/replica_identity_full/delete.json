@@ -1,0 +1,37 @@
+{
+  "before": {
+    "id": 43637598,
+    "price": 581500,
+    "date": 17799,
+    "postcode1": "NW1",
+    "postcode2": "3PR",
+    "type": "flat",
+    "is_new": 0,
+    "duration": "leasehold",
+    "addr1": "29",
+    "addr2": "",
+    "street": "MUNSTER SQUARE",
+    "locality": "",
+    "town": "LONDON",
+    "district": "CAMDEN",
+    "county": "GREATER LONDON"
+  },
+  "after": null,
+  "source": {
+    "version": "1.9.6.Final",
+    "connector": "postgresql",
+    "name": "postgres_server",
+    "ts_ms": 1685378804044,
+    "snapshot": "false",
+    "db": "postgres",
+    "sequence": "[\"247833046808\",\"247833046912\"]",
+    "schema": "public",
+    "table": "uk_price_paid",
+    "txId": 106942,
+    "lsn": 247833046912,
+    "xmin": null
+  },
+  "op": "d",
+  "ts_ms": 1685378804649,
+  "transaction": null
+}
