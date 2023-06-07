@@ -1,3 +1,4 @@
 **.idea
 **.venv
 .DS_Store
+s3-variables.env
