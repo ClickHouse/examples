@@ -5,6 +5,9 @@
 - ReplicatedMergeTree table
 - Storage on S3
 
+Note: The Replicated database engine is experimental at the time this example was added, check
+[the docs](https://clickhouse.com/docs/en/engines/database-engines/replicated) for more guidance.
+
 ## Configuration files
 ClickHouse uses configuration files in `/etc/clickhouse-server/`.  During install
 a file `config.xml` is added at `/etc/clickhouse-server/config.xml`, a file `users.xml` is added at `/etc/clickhouse-server/users.xml`, and two empty directories are also created:
