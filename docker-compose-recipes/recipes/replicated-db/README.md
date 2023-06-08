@@ -9,6 +9,22 @@
 - Can I make one node read/write and others read only (compute nodes that do not write to the source tables in S3)?
 - Can I add a node without restarting the original nodes?
 
+## Create Object Storage (S3, GCS, MinIO, etc.)
+Using S3 as an example, create a bucket and assign a key / secret that can manage
+the bucket and objects.  Put the details in the file `s3-variables.env` in the same
+directory as the `docker-compose.yaml` file.
+
+In this example, the bucket is `my-clickhouse-s3-disk` and the folder is `data`
+
+If you need more info on creating the bucket and assigning an access key, see
+[Use S3 Object Storage as a ClickHouse disk](https://clickhouse.com/docs/en/integrations/s3#configuring-s3-for-clickhouse-use)
+
+```
+ENDPOINT=https://my-clickhouse-s3-disk.s3.amazonaws.com/data/
+ACCESS_KEY_ID=AKIABBBBBBBBBBBBBBBB
+SECRET_ACCESS_KEY=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
+```
+
 ## Start the containers
 ```bash
 docker compose up
@@ -44,6 +60,8 @@ CREATE DATABASE ReplicatedDB ENGINE = Replicated('/test/ReplicatedDB', 'shard1',
 
 ## Table DDL on main node
 
+This table DDL adds a `SETTINGS` line and specifies the storage policy `s3_main` (see `storage.xml`).
+
 ```sql
 CREATE TABLE ReplicatedDB.uk_price_paid
 (
@@ -63,7 +81,8 @@ CREATE TABLE ReplicatedDB.uk_price_paid
     county LowCardinality(String)
 )
 ENGINE = ReplicatedMergeTree
-ORDER BY (postcode1, postcode2, addr1, addr2);
+ORDER BY (postcode1, postcode2, addr1, addr2)
+SETTINGS storage_policy='s3_main';
 ```
 ```response
 Query id: 60e09cd7-c3bd-4769-8708-3116a3e0fdc7
@@ -81,6 +100,32 @@ Query id: 60e09cd7-c3bd-4769-8708-3116a3e0fdc7
 Note: The response to the DDL to create the table shows that the table was created on
 both replicas (clickhouse-01, and clickhouse-02)
 
+## Look at the storage policy details
+
+Query `system.tables` and note that the storage_policy is `s3_main`:
+
+```sql
+SELECT
+    name,
+    engine,
+    data_paths,
+    metadata_path,
+    storage_policy,
+    formatReadableSize(total_bytes)
+FROM system.tables
+WHERE name = 'uk_price_paid'
+FORMAT Vertical
+```
+```response
+Row 1:
+──────
+name:                            uk_price_paid
+engine:                          ReplicatedMergeTree
+data_paths:                      ['/var/lib/clickhouse/disks/s3_disk/store/0ae/0ae2b58b-b6af-4b2b-bc2f-325b57cf8629/']
+metadata_path:                   /var/lib/clickhouse/store/9fd/9fd691d3-65b0-4a94-bcc4-d2823849cd8e/uk_price_paid.sql
+storage_policy:                  s3_main
+formatReadableSize(total_bytes): 0.00 B
+```
 
 ## Insert data on main node
 ```sql
@@ -146,32 +191,3 @@ LIMIT 100
 .
 ```
 
-## Question: What happens?
-I had to create the replicated database on both nodes, but the DDL for the table was done once, and propogated to the second node.  The data also was inserted to both nodes without doing anything secial (just using the ReplicatedMergeTree table engine.
-
-
-## Use S3
-Storage Policy is `s3_main` (see `storage.xml`).  To create the above table on S3:
-
-```sql
-CREATE TABLE ReplicatedDB.uk_price_paid
-(
-    price UInt32,
-    date Date,
-    postcode1 LowCardinality(String),
-    postcode2 LowCardinality(String),
-    type Enum8('terraced' = 1, 'semi-detached' = 2, 'detached' = 3, 'flat' = 4, 'other' = 0),
-    is_new UInt8,
-    duration Enum8('freehold' = 1, 'leasehold' = 2, 'unknown' = 0),
-    addr1 String,
-    addr2 String,
-    street LowCardinality(String),
-    locality LowCardinality(String),
-    town LowCardinality(String),
-    district LowCardinality(String),
-    county LowCardinality(String)
-)
-ENGINE = ReplicatedMergeTree
-ORDER BY (postcode1, postcode2, addr1, addr2)
-SETTINGS storage_policy='s3_main';
-```
