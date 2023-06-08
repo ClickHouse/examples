@@ -172,7 +172,6 @@ CREATE TABLE ReplicatedDB.uk_price_paid
     county LowCardinality(String)
 )
 ENGINE = ReplicatedMergeTree
-ORDER BY (postcode1, postcode2, addr1, addr2);
-# highlight-next-line
-SETTINGS storage_policy='s3_main'
+ORDER BY (postcode1, postcode2, addr1, addr2)
+SETTINGS storage_policy='s3_main';
 ```
