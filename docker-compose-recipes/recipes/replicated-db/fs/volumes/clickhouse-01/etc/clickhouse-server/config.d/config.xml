@@ -15,10 +15,6 @@
                     <host>clickhouse-02</host>
                     <port>9000</port>
                 </replica>
-                <replica>
-                    <host>clickhouse-03</host>
-                    <port>9000</port>
-                </replica>
             </shard>
         </cluster_1S>
     </remote_servers>

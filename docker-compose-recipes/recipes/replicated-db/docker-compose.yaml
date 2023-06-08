@@ -34,23 +34,6 @@ services:
       - clickhouse-keeper-01
       - clickhouse-keeper-02
       - clickhouse-keeper-03
-  clickhouse-03:
-    env_file:
-      - s3-variables.env
-    image: "clickhouse/clickhouse-server:${CHVER:-latest}"
-    user: "101:101"
-    container_name: clickhouse-03
-    hostname: clickhouse-03
-    volumes:
-      - ${PWD}/fs/volumes/clickhouse-03/etc/clickhouse-server/config.d:/etc/clickhouse-server/config.d
-      - ${PWD}/fs/volumes/clickhouse-03/etc/clickhouse-server/users.d:/etc/clickhouse-server/users.d
-    ports:
-      - "127.0.0.1:8125:8123"
-      - "127.0.0.1:9002:9000"
-    depends_on:
-      - clickhouse-keeper-01
-      - clickhouse-keeper-02
-      - clickhouse-keeper-03
   clickhouse-keeper-01:
     image: "clickhouse/clickhouse-keeper:${CHKVER:-latest-alpine}"
     user: "101:101"

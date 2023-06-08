@@ -191,8 +191,8 @@ Note: Information about the dataset can be found here:
 
 
 ## Query the table on the second replica
-While the data is streaming into the table on the main node (clickhouse-01) query it on
-the second:
+The loading time is dependent on your connection speed, once you see that data is loading on one of the nodes you can query it on the other node.  If there are zero rows wait a few seconds and try again, the data has to be downloaded to your workstation and then written to S3.
+
 ```sql
 SELECT town
 FROM ReplicatedDB.uk_price_paid
