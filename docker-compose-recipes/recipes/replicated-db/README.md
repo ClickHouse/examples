@@ -1,13 +1,29 @@
 ## Scenario
-- Three ClickHouse nodes
+- Two ClickHouse nodes
 - Three ClickHouse Keeper nodes
 - Database using the Replicated DB engine
 - ReplicatedMergeTree table
+- Storage on S3
 
-## Questions
-- Can I use S3 for the disk?
-- Can I make one node read/write and others read only (compute nodes that do not write to the source tables in S3)?
-- Can I add a node without restarting the original nodes?
+## Configuration files
+ClickHouse uses configuration files in `/etc/clickhouse-server/`.  During install
+a file `config.xml` is added at `/etc/clickhouse-server/config.xml`, a file `users.xml` is added at `/etc/clickhouse-server/users.xml`, and two empty directories are also created:
+- `/etc/clickhouse-server/config.d/`
+- `/etc/clickhouse-server/users.d/`
+
+All of your configuration should be added to those directories; config.xml and users.xml
+in the parent directory should not be edited.
+
+In the `docker-compose.yaml` file you will see that there are configuration files 
+mounted from the `fs/volumes/` directories into the containers, and when you start
+things up you will see log messages telling you that the configuration in those mounted
+files is merged with the default configuration.
+
+You should have a look at the configuration files in `fs/volumes/` to understand how
+- S3 storage is added as a disk
+- that local storage is used as a cache
+- experimental settings are enabled
+- etc.
 
 ## Create Object Storage (S3, GCS, MinIO, etc.)
 Using S3 as an example, create a bucket and assign a key / secret that can manage
@@ -30,37 +46,36 @@ SECRET_ACCESS_KEY=00aBCD00/a00BcDEfG0hijKLmNoPQRsTU/VWxYZA
 docker compose up
 ```
 
-Note: On recent versions of Docker `docker compose` is included, if `docker compose` does not work
-on your system you may need to install a Python based `docker-compose` and add the `-` to your
-commands.
+Note: Recent versions of Docker include `docker compose`, if `docker compose` does not exist
+on your system you may need to install a Python based `docker-compose` and add the `-` to
+your commands.
 
-## Database DDL on main node
+## Database DDL on clickhouse-01
 
 ```bash
 docker compose exec clickhouse-01 clickhouse-client
 ```
 
 ```sql
-CREATE DATABASE ReplicatedDB ENGINE = Replicated('/test/ReplicatedDB', 'shard1', 'replica' || '1');
+CREATE DATABASE ReplicatedDB
+ENGINE = Replicated('/test/ReplicatedDB', 'shard1', concat('replica', '1'))
 ```
 
-```sql
-
-```
-
-## Database DDL on second node
+## Database DDL on clickhouse-02
 
 ```bash
 docker compose exec clickhouse-02 clickhouse-client
 ```
 
 ```sql
-CREATE DATABASE ReplicatedDB ENGINE = Replicated('/test/ReplicatedDB', 'shard1', 'replica2');
+CREATE DATABASE ReplicatedDB
+ENGINE = Replicated('/test/ReplicatedDB', 'shard1', 'replica2')
 ```
 
-## Table DDL on main node
+## Table DDL on clickhouse-01
 
-This table DDL adds a `SETTINGS` line and specifies the storage policy `s3_main` (see `storage.xml`).
+This table DDL adds a `SETTINGS` line and specifies the storage policy `s3_main`
+(see `storage.xml`).
 
 ```sql
 CREATE TABLE ReplicatedDB.uk_price_paid
@@ -127,7 +142,7 @@ storage_policy:                  s3_main
 formatReadableSize(total_bytes): 0.00 B
 ```
 
-## Insert data on main node
+## Insert data on clickhouse-01
 ```sql
 INSERT INTO ReplicatedDB.uk_price_paid
 WITH
@@ -169,6 +184,12 @@ FROM url(
 ) SETTINGS max_http_get_redirects=10;
 ```
 
+Note: Information about the dataset can be found here:
+- Source: https://www.gov.uk/government/statistical-data-sets/price-paid-data-downloads
+- Description of the fields: https://www.gov.uk/guidance/about-the-price-paid-data
+- Contains HM Land Registry data © Crown copyright and database right 2021. This data is licensed under the Open Government Licence v3.0.
+
+
 ## Query the table on the second replica
 While the data is streaming into the table on the main node (clickhouse-01) query it on
 the second:
@@ -190,4 +211,8 @@ LIMIT 100
 .
 .
 ```
+
+## More queries
+The UK Price Paid dataset has a dedicated page in the ClickHouse documentation.  See
+[Example Dataset: UK Price Paid](https://clickhouse.com/docs/en/getting-started/example-datasets/uk-price-paid) for some interesting queries.
 
