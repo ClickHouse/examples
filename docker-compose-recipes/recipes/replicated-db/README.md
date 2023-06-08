@@ -150,3 +150,29 @@ LIMIT 100
 I had to create the replicated database on both nodes, but the DDL for the table was done once, and propogated to the second node.  The data also was inserted to both nodes without doing anything secial (just using the ReplicatedMergeTree table engine.
 
 
+## Use S3
+Storage Policy is `s3_main` (see `storage.xml`).  To create the above table on S3:
+
+```sql
+CREATE TABLE ReplicatedDB.uk_price_paid
+(
+    price UInt32,
+    date Date,
+    postcode1 LowCardinality(String),
+    postcode2 LowCardinality(String),
+    type Enum8('terraced' = 1, 'semi-detached' = 2, 'detached' = 3, 'flat' = 4, 'other' = 0),
+    is_new UInt8,
+    duration Enum8('freehold' = 1, 'leasehold' = 2, 'unknown' = 0),
+    addr1 String,
+    addr2 String,
+    street LowCardinality(String),
+    locality LowCardinality(String),
+    town LowCardinality(String),
+    district LowCardinality(String),
+    county LowCardinality(String)
+)
+ENGINE = ReplicatedMergeTree
+ORDER BY (postcode1, postcode2, addr1, addr2);
+# highlight-next-line
+SETTINGS storage_policy='s3_main'
+```
