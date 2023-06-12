@@ -10,5 +10,6 @@
   "topics": "uk_price_paid_changes",
   "username": "default",
   "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-  "value.converter.schemas.enable": "false"
+  "value.converter.schemas.enable": "false",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter"
 }
