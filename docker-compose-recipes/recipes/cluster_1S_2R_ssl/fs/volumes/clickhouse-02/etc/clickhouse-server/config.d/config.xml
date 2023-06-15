@@ -1,16 +1,47 @@
 <clickhouse replace="true">
+    <grpc>
+        <enable_ssl>1</enable_ssl>
+        <ssl_cert_file>/etc/clickhouse-server/certs/clickhouse-02.crt</ssl_cert_file>
+        <ssl_key_file>/etc/clickhouse-server/certs/clickhouse-02.key</ssl_key_file>
+        <ssl_require_client_auth>true</ssl_require_client_auth>
+        <ssl_ca_cert_file>/etc/clickhouse-server/certs/test_ca.crt</ssl_ca_cert_file>
+        <transport_compression_type>none</transport_compression_type>
+        <transport_compression_level>0</transport_compression_level>
+        <max_send_message_size>-1</max_send_message_size>
+        <max_receive_message_size>-1</max_receive_message_size>
+        <verbose_logs>false</verbose_logs>
+    </grpc>
+    <openSSL>
+        <server>
+            <certificateFile>/etc/clickhouse-server/certs/clickhouse-02.crt</certificateFile>
+            <privateKeyFile>/etc/clickhouse-server/certs/clickhouse-02.key</privateKeyFile>
+            <verificationMode>relaxed</verificationMode>
+            <caConfig>/etc/clickhouse-server/certs/test_ca.crt</caConfig>
+            <cacheSessions>true</cacheSessions>
+            <disableProtocols>sslv2,sslv3</disableProtocols>
+            <preferServerCiphers>true</preferServerCiphers>
+        </server>
+        <client>
+            <loadDefaultCAFile>false</loadDefaultCAFile>
+            <caConfig>/etc/clickhouse-server/certs/test_ca.crt</caConfig>
+            <cacheSessions>true</cacheSessions>
+            <disableProtocols>sslv2,sslv3</disableProtocols>
+            <preferServerCiphers>true</preferServerCiphers>
+            <verificationMode>relaxed</verificationMode>
+            <invalidCertificateHandler>
+                <name>RejectCertificateHandler</name>
+            </invalidCertificateHandler>
+        </client>
+    </openSSL>
     <logger>
-        <level>debug</level>
-        <log>/var/log/clickhouse-server/clickhouse-server.log</log>
-        <errorlog>/var/log/clickhouse-server/clickhouse-server.err.log</errorlog>
-        <size>1000M</size>
-        <count>3</count>
+        <console>1</console>
     </logger>
     <display_name>cluster_1S_2R node 2</display_name>
     <listen_host>0.0.0.0</listen_host>
     <https_port>8443</https_port>
     <tcp_port_secure>9440</tcp_port_secure>
     <interserver_https_port>9010</interserver_https_port>
+    <interserver_http_port remove="true"/>
     <user_directories>
         <users_xml>
             <path>users.xml</path>
