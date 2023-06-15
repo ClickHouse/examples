@@ -18,8 +18,28 @@ This Docker compose file deploys a configuration matching [this
 example in the documentation](https://clickhouse.com/docs/en/architecture/replication).
 See the docs for information on terminology, configuration, and testing.
 
+## Connecting with ClickHouse client
+
+### clickhouse-01
+```bash
+docker compose exec clickhouse-01 clickhouse client --secure --port 9440
+```
+
+### clickhouse-02
+```bash
+docker compose exec clickhouse-02 clickhouse client --secure --port 9440
+```
+
+## Notes
+- The standard HTTP and TCP ports for connecting clients are disabled, so use port 9440 or 8443.
+- clickhouse client will need a config file that references the certificate in order to 
+connect.  This is mounted at `/etc/clickhouse-client/config.xml` in `clickhouse-01` and `clickhouse-02`.
+If you want to use it from elsewhere copy it and the files that it references.
+
 ## Using openssl to generate certificates
 The steps below are from the [ClickHouse docs](https://clickhouse.com/docs/en/guides/sre/configuring-ssl).  The only difference is the names of the output files and nodes.
+
+Note: You can use the certificates in this repo, these commands are here if you would like to generate your own.
 
 ```bash
 openssl genrsa -out test_ca.key 2048
