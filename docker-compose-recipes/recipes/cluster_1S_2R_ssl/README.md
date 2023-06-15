@@ -17,3 +17,42 @@ docker compose up
 This Docker compose file deploys a configuration matching [this
 example in the documentation](https://clickhouse.com/docs/en/architecture/replication).
 See the docs for information on terminology, configuration, and testing.
+
+## Using openssl to generate certificates
+The steps below are from the [ClickHouse docs](https://clickhouse.com/docs/en/guides/sre/configuring-ssl).  The only difference is the names of the output files and nodes.
+
+```bash
+openssl genrsa -out test_ca.key 2048
+openssl req -x509 -subj "/CN=test CA" -nodes -key test_ca.key -days 1095 -out test_ca.crt
+openssl x509 -in test_ca.crt -text
+openssl req -newkey rsa:2048 -nodes -subj "/CN=clickhouse-01" -addext "subjectAltName = DNS:clickhouse-01" -keyout clickhouse-01.key -out clickhouse-01.csr
+openssl req -newkey rsa:2048 -nodes -subj "/CN=clickhouse-02" -addext "subjectAltName = DNS:clickhouse-02" -keyout clickhouse-02.key -out clickhouse-02.csr
+openssl req -newkey rsa:2048 -nodes -subj "/CN=clickhouse-keeper-03" -addext "subjectAltName = DNS:clickhouse-keeper-03" -keyout clickhouse-keeper-03.key -out clickhouse-keeper-03.csr
+openssl req -newkey rsa:2048 -nodes -subj "/CN=clickhouse-keeper-02" -addext "subjectAltName = DNS:clickhouse-keeper-02" -keyout clickhouse-keeper-02.key -out clickhouse-keeper-02.csr
+openssl req -newkey rsa:2048 -nodes -subj "/CN=clickhouse-keeper-01" -addext "subjectAltName = DNS:clickhouse-keeper-01" -keyout clickhouse-keeper-01.key -out clickhouse-keeper-01.csr
+openssl x509 -req -in clickhouse-01.csr -out clickhouse-01.crt -CAcreateserial -CA test_ca.crt -CAkey test_ca.key -days 3650
+openssl x509 -req -in clickhouse-02.csr -out clickhouse-02.crt -CAcreateserial -CA test_ca.crt -CAkey test_ca.key -days 3650
+openssl x509 -req -in clickhouse-keeper-03.csr -out clickhouse-keeper-03.crt -CAcreateserial -CA test_ca.crt -CAkey test_ca.key -days 3650
+openssl x509 -req -in clickhouse-keeper-02.csr -out clickhouse-keeper-02.crt -CAcreateserial -CA test_ca.crt -CAkey test_ca.key -days 3650
+openssl x509 -req -in clickhouse-keeper-01.csr -out clickhouse-keeper-01.crt -CAcreateserial -CA test_ca.crt -CAkey test_ca.key -days 3650
+openssl x509 -in clickhouse-01.crt -text -noout
+openssl x509 -in clickhouse-02.crt -text -noout
+openssl x509 -in clickhouse-keeper-01.crt -text -noout
+openssl x509 -in clickhouse-keeper-02.crt -text -noout
+openssl x509 -in clickhouse-keeper-03.crt -text -noout
+openssl verify -CAfile test_ca.crt clickhouse-01.crt
+openssl verify -CAfile test_ca.crt clickhouse-02.crt
+openssl verify -CAfile test_ca.crt clickhouse-keeper-01.crt
+openssl verify -CAfile test_ca.crt clickhouse-keeper-02.crt
+openssl verify -CAfile test_ca.crt clickhouse-keeper-03.crt
+mkdir fs/volumes/clickhouse-01/etc/certs
+mkdir fs/volumes/clickhouse-02/etc/certs
+mkdir fs/volumes/clickhouse-keeper-01/etc/certs
+mkdir fs/volumes/clickhouse-keeper-02/etc/certs
+mkdir fs/volumes/clickhouse-keeper-03/etc/certs
+cp clickhouse-01.crt clickhouse-01.key test_ca.crt fs/volumes/clickhouse-01/etc/certs
+cp clickhouse-02.crt clickhouse-02.key test_ca.crt fs/volumes/clickhouse-02/etc/certs
+cp clickhouse-keeper-01.crt clickhouse-keeper-01.key test_ca.crt fs/volumes/clickhouse-keeper-01/etc/certs
+cp clickhouse-keeper-02.crt clickhouse-keeper-02.key test_ca.crt fs/volumes/clickhouse-keeper-02/etc/certs
+cp clickhouse-keeper-03.crt clickhouse-keeper-03.key test_ca.crt fs/volumes/clickhouse-keeper-03/etc/certs
+```

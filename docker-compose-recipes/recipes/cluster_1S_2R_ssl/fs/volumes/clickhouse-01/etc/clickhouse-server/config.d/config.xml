@@ -8,8 +8,9 @@
     </logger>
     <display_name>cluster_1S_2R node 1</display_name>
     <listen_host>0.0.0.0</listen_host>
-    <http_port>8123</http_port>
-    <tcp_port>9000</tcp_port>
+    <https_port>8443</https_port>
+    <tcp_port_secure>9440</tcp_port_secure>
+    <interserver_https_port>9010</interserver_https_port>
     <user_directories>
         <users_xml>
             <path>users.xml</path>
@@ -27,11 +28,13 @@
                 <internal_replication>true</internal_replication>
                 <replica>
                     <host>clickhouse-01</host>
-                    <port>9000</port>
+                    <port>9440</port>
+                    <secure>1</secure>
                 </replica>
                 <replica>
                     <host>clickhouse-02</host>
-                    <port>9000</port>
+                    <port>9440</port>
+                    <secure>1</secure>
                 </replica>
             </shard>
         </cluster_1S_2R>
@@ -39,15 +42,18 @@
     <zookeeper>
         <node>
             <host>clickhouse-keeper-01</host>
-            <port>9181</port>
+            <port>9281</port>
+            <secure>1</secure>
         </node>
         <node>
             <host>clickhouse-keeper-02</host>
-            <port>9181</port>
+            <port>9281</port>
+            <secure>1</secure>
         </node>
         <node>
             <host>clickhouse-keeper-03</host>
-            <port>9181</port>
+            <port>9281</port>
+            <secure>1</secure>
         </node>
     </zookeeper>
     <macros>

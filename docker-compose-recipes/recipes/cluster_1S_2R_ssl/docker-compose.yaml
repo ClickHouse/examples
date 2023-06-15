@@ -9,8 +9,8 @@ services:
       - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
       - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
     ports:
-      - "127.0.0.1:8123:8123"
-      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:8443:8443"
+      - "127.0.0.1:9440:9440"
     depends_on:
       - clickhouse-keeper-01
       - clickhouse-keeper-02
@@ -24,8 +24,8 @@ services:
       - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
       - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
     ports:
-      - "127.0.0.1:8124:8123"
-      - "127.0.0.1:9001:9000"
+      - "127.0.0.1:8444:8443"
+      - "127.0.0.1:9441:9440"
     depends_on:
       - clickhouse-keeper-01
       - clickhouse-keeper-02
@@ -38,7 +38,7 @@ services:
     volumes:
      - ${PWD}/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
     ports:
-        - "127.0.0.1:9181:9181"
+        - "127.0.0.1:9281:9281"
   clickhouse-keeper-02:
     image: "clickhouse/clickhouse-keeper:${CHKVER:-latest-alpine}"
     user: "101:101"
@@ -47,7 +47,7 @@ services:
     volumes:
      - ${PWD}/fs/volumes/clickhouse-keeper-02/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
     ports:
-        - "127.0.0.1:9182:9181"
+        - "127.0.0.1:9282:9281"
   clickhouse-keeper-03:
     image: "clickhouse/clickhouse-keeper:${CHKVER:-latest-alpine}"
     user: "101:101"
@@ -56,4 +56,4 @@ services:
     volumes:
      - ${PWD}/fs/volumes/clickhouse-keeper-03/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
     ports:
-        - "127.0.0.1:9183:9181"
+        - "127.0.0.1:9283:9281"
