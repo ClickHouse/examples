@@ -8,6 +8,7 @@ services:
     volumes:
       - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
       - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/certs:/etc/clickhouse-server/certs
+      - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-client/config.xml:/etc/clickhouse-client/config.xml
       - ${PWD}/fs/volumes/clickhouse-01/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
     ports:
       - "127.0.0.1:8443:8443"
@@ -24,6 +25,7 @@ services:
     volumes:
       - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
       - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/certs:/etc/clickhouse-server/certs
+      - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-client/config.xml:/etc/clickhouse-client/config.xml
       - ${PWD}/fs/volumes/clickhouse-02/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
     ports:
       - "127.0.0.1:8444:8443"

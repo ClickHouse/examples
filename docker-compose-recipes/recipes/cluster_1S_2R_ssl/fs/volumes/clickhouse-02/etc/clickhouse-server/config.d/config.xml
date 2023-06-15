@@ -39,8 +39,10 @@
     <display_name>cluster_1S_2R node 2</display_name>
     <listen_host>0.0.0.0</listen_host>
     <https_port>8443</https_port>
+    <http_port remove="true"/>
     <tcp_port_secure>9440</tcp_port_secure>
     <interserver_https_port>9010</interserver_https_port>
+    <tcp_port remove="true"/>
     <interserver_http_port remove="true"/>
     <user_directories>
         <users_xml>
