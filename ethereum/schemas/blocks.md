@@ -3,30 +3,34 @@
 ## ClickHouse Schema
 
 ```sql
+SET flatten_nested=0
 CREATE TABLE ethereum.blocks
 (
-    `number` UInt32 CODEC(Delta(4), ZSTD(1)),
-    `hash` String,
-    `parent_hash` String,
-    `nonce` String,
-    `sha3_uncles` String,
-    `logs_bloom` String,
-    `transactions_root` String,
-    `state_root` String,
-    `receipts_root` String,
-    `miner` String,
-    `difficulty` Decimal(38, 0),
-    `total_difficulty` Decimal(38, 0),
-    `size` UInt32 CODEC(Delta(4), ZSTD(1)),
-    `extra_data` String,
-    `gas_limit` UInt32 CODEC(Delta(4), ZSTD(1)),
-    `gas_used` UInt32 CODEC(Delta(4), ZSTD(1)),
-    `timestamp` DateTime CODEC(Delta(4), ZSTD(1)),
-    `transaction_count` UInt16,
-    `base_fee_per_gas` UInt64
+	`number` UInt32 CODEC(Delta(4), ZSTD(1)),
+	`hash` String,
+	`parent_hash` String,
+	`nonce` String,
+	`sha3_uncles` String,
+	`logs_bloom` String,
+	`transactions_root` String,
+	`state_root` String,
+	`receipts_root` String,
+	`miner` String,
+	`difficulty` Decimal(38, 0),
+	`total_difficulty` Decimal(38, 0),
+	`size` UInt32 CODEC(Delta(4), ZSTD(1)),
+	`extra_data` String,
+	`gas_limit` UInt32 CODEC(Delta(4), ZSTD(1)),
+	`gas_used` UInt32 CODEC(Delta(4), ZSTD(1)),
+	`timestamp` DateTime CODEC(Delta(4), ZSTD(1)),
+	`transaction_count` UInt16,
+	`base_fee_per_gas` UInt64,
+         `withdrawals_root` String,
+         `withdrawals` Nested(index Int64, validator_index Int64, address String, amount String) 
 )
 ENGINE = MergeTree
 ORDER BY timestamp
+
 ```
 
 ## Load instructions (public bucket - CSV files)
