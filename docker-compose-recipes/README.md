@@ -30,11 +30,38 @@ Each recipe runs as a pre-configured docker compose setup.
 - ctrl+C will abort execution
 - once done, run `docker compose down` to tear down the environment
 
-
 ## Resources
 
 Make sure enough cpu cores, memory and disk are allocated for docker containers through docker settings.
 Some of these recipes do use up to 8 different containers.
+
+## Configuration files
+
+The configuration files for ClickHouse server, ClickHouse Keeper, and all of the other components that
+are deployed by the recipes are located in the `fs/volumes/` subdirectory of each recipe.  For example,
+to learn how ClickHouse Keeper is configured for the `cluster_1S_2R` recipe, you would look at [keeper_config.xml](./recipes/cluster_1S_2R/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper/keeper_config.xml) and the similar files for the other two Keeper servers.
+
+## Connecting to ClickHouse
+
+If you have `clickhouse client` on your workstation you can generally run `clickhouse client --user admin --password password` and connect to the Docker ClickHouse instance.
+
+If running a recipe with multiple ClickHouse ([example](https://github.com/ClickHouse/examples/tree/main/docker-compose-recipes/recipes/cluster_2S_1R)), while the first instance normally binds to your localhost as the default ClickHouse native protocol port [9000](https://github.com/ClickHouse/examples//blob/93291fe2ca143d7d0ec1ec02ad61f50dc2f83788/docker-compose-recipes/recipes/cluster_2S_2R/docker-compose.yaml#L13-L14) normally, however other instances will use a different port to bind the ClickHouse native TCP connection to your localhost ([example](https://github.com/ClickHouse/examples/blob/93291fe2ca143d7d0ec1ec02ad61f50dc2f83788/docker-compose-recipes/recipes/cluster_2S_2R/docker-compose.yaml#L28) where `clickhouse-02` binds on localhost port `9001`), in this case you will want to specify:
+
+`clickhouse client --user admin --password passwod --port 9001`
+
+
+You may want to run `clickhouse client` within one of more of the containers so that the version of the client matches the version
+of the server.  You can run a command like this:
+
+```bash
+docker compose exec clickhouse-01 clickhouse-client
+```
+
+Or, to open a shell on the server you can run the following and then look around or run `clickhouse client` from the shell:
+
+```bash
+docker compose exec clickhouse-01 bash
+```
 
 ## Example use
 
