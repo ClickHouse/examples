@@ -36,6 +36,12 @@ Each recipe runs as a pre-configured docker compose setup.
 Make sure enough cpu cores, memory and disk are allocated for docker containers through docker settings.
 Some of these recipes do use up to 8 different containers.
 
+## Configuration files
+
+The configuration files for ClickHouse server, ClickHouse Keeper, and all of the other components that
+are deployed by the recipes are located in the `fs/volumes/` subdirectory of each recipe.  For example,
+to learn how ClickHouse Keeper is configured for the `cluster_1S_2R` recipe, you would look at [keeper_config.xml](./recipes/cluster_1S_2R/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper/keeper_config.xml) and the similar files for the other two Keeper servers.
+
 ## Example use
 
 To test ClickHouse with S3 functionalities, launch the [ClickHouse and MinIO S3](./recipes/ch-and-minio-S3/README.md) recipe:
