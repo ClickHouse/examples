@@ -30,7 +30,6 @@ Each recipe runs as a pre-configured docker compose setup.
 - ctrl+C will abort execution
 - once done, run `docker compose down` to tear down the environment
 
-
 ## Resources
 
 Make sure enough cpu cores, memory and disk are allocated for docker containers through docker settings.
@@ -41,6 +40,21 @@ Some of these recipes do use up to 8 different containers.
 The configuration files for ClickHouse server, ClickHouse Keeper, and all of the other components that
 are deployed by the recipes are located in the `fs/volumes/` subdirectory of each recipe.  For example,
 to learn how ClickHouse Keeper is configured for the `cluster_1S_2R` recipe, you would look at [keeper_config.xml](./recipes/cluster_1S_2R/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper/keeper_config.xml) and the similar files for the other two Keeper servers.
+
+## Connecting to ClickHouse
+
+If you have `clickhouse client` on your workstation you can generally run `clickhouse client` and connect to the Docker container `clickhouse-01`.  You may want to run `clickhouse client` within one of more of the containers so that the version of the client matches the version
+of the server.  You can run a command like this:
+
+```bash
+docker compose exec clickhouse-01 clickhouse-client
+```
+
+Or, to open a shell on the server you can run the following and then look around or run `clickhouse client` from the shell:
+
+```bash
+docker compose exec clickhouse-01 bash
+```
 
 ## Example use
 
