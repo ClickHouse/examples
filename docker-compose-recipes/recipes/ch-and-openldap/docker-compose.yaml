@@ -8,39 +8,28 @@ services:
     volumes:
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
+      - ${PWD}/fs/volumes/clickhouse/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
       - "127.0.0.1:8123:8123"
       - "127.0.0.1:9000:9000"
+    depends_on: 
+    - openldap
   openldap:
     build: 
       context: ./docker_files
       dockerfile: openldap.Dockerfile
     container_name: openldap
-    hostname: openldap
+    hostname: openldaps
     ports:
       - "127.0.0.1:389:389"
-      - "127.0.0.1:686:686"
-    environment:      
-      - LDAP_ADMIN_USERNAME=admin
-      - LDAP_ADMIN_PASSWORD=adminpassword
-      - LDAP_RFC2307BIS_SCHEMA=true
-      - LDAP_BASED_DN=dc=clickhouse,dc=test
-    command: "--loglevel debug"
-  openldap-ui:
-    image: wheelybird/ldap-user-manager
-    container_name: openldap-ui
+    command: --copy-service --loglevel debug
+  phpldapadmin:
+    image: osixia/phpldapadmin:latest
+    container_name: phpldapadmin
     environment:
-      - LDAP_URI=ldap://openldap
-      - LDAP_BASE_DN=dc=clickhouse,dc=test
-      - LDAP_REQUIRE_STARTTLS=FALSE
-      - LDAP_ADMINS_GROUP=admins
-      - LDAP_ADMIN_BIND_DN=cn=ldap_admin,dc=clickhouse,dc=test
-      - LDAP_ADMIN_BIND_PWD=adminpassword
-      - LDAP_IGNORE_CERT_ERRORS=true
-      - NO_HTTPS=TRUE
-      - PASSWORD_HASH=SSHA
-      - SERVER_HOSTNAME=192.168.3.3:18080
+      PHPLDAPADMIN_LDAP_HOSTS: "openldap"
+      PHPLDAPADMIN_HTTPS: "false"
     depends_on:
       - openldap
     ports:
-      - "127.0.0.1:10000:18080"
+      - "127.0.0.1:80:80"
