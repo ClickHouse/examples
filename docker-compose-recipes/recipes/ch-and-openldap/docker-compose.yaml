@@ -19,7 +19,7 @@ services:
       context: ./docker_files
       dockerfile: openldap.Dockerfile
     container_name: openldap
-    hostname: openldaps
+    hostname: openldap
     ports:
       - "127.0.0.1:389:389"
     command: --copy-service --loglevel debug
