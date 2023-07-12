@@ -134,7 +134,13 @@ All users are using password: `password`
 
 You can validate the LDAP schema using PhpLDAPAdmin UI at http://localhost
 
+Login DN: `cn=ldapadmin,ou=Users,dc=clickhouse,dc=test`
+
+Password: `password`
+
 Or by running on your host `ldapsearch` command, example:
+
+If you do not have `ldapsearch` on your host you can run it from the openldap container:
 
 ```
 ldapsearch  -D 'cn=bob,ou=Users,dc=clickhouse,dc=test' -b'dc=clickhouse,dc=test' -H ldap://localhost:389 -w password
