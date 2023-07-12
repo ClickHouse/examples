@@ -87,16 +87,16 @@ userPassword:: cGFzc3dvcmQ=
 These roles are mapped respectively in ClickHouse through the [db](./fs/volumes/clickhouse/docker-entrypoint-initdb.d/1_create_ldap_dbs.sh) and [roles](./fs/volumes/clickhouse/docker-entrypoint-initdb.d/2_create_ldap_roles.sh) configs:
 
 ```sql
-CREATE DATABASE sales;
-CREATE DATABASE development;
-CREATE DATABASE other_data;
-CREATE ROLE Admins;
+CREATE DATABASE IF NOT EXISTS sales_db;
+CREATE DATABASE IF NOT EXISTS development_db;
+CREATE DATABASE IF NOT EXISTS other_data_db;
+CREATE ROLE IF NOT EXISTS Admins;
 GRANT ALL ON *.* TO Admins;
-CREATE ROLE Sales;
+CREATE ROLE IF NOT EXISTS Sales;
 GRANT ALL ON sales_db.* TO Sales;
-CREATE ROLE Development;
+CREATE ROLE IF NOT EXISTS Development;
 GRANT ALL ON development_db.* TO Development;
-CREATE ROLE AllUsers;
+CREATE ROLE IF NOT EXISTS AllUsers;
 GRANT SELECT ON *.* TO AllUsers;
 ```
 
