@@ -130,7 +130,7 @@ the rest of configuration to define the LDAP server and map the LDAP groups to C
     </user_directories>
 ```
 
-All users are using password: `password`
+All LDAP users are using password: `password`
 
 You can validate the LDAP schema using PhpLDAPAdmin UI at http://localhost
 
