@@ -1,0 +1,15 @@
+{
+  "database": "default",
+  "errors.retry.timeout": "30",
+  "exactlyOnce": "false",
+  "schemas.enable": "false",
+  "hostname": "clickhouse",
+  "password": "",
+  "port": "8443",
+  "ssl": "true",
+  "topics": "vector-syslog-topic",
+  "username": "default",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": "false"
+}

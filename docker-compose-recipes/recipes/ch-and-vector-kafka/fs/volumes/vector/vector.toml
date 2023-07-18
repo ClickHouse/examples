@@ -1,0 +1,28 @@
+[sources.src_syslog]
+type = "demo_logs"
+format = "syslog"
+
+[transforms.parse_syslog]
+type = "remap"
+inputs = [ "src_syslog" ]
+source = """
+  structured = parse_syslog!(.message)
+  . = merge(., structured)
+"""
+
+[sinks.emit_syslog]
+inputs = [ "parse_syslog" ]
+type = "console"
+
+[sinks.emit_syslog.encoding]
+codec = "json"
+
+[sinks.kakfa_sink]
+type = "kafka"
+
+inputs = [ "parse_syslog" ]
+bootstrap_servers = "kafka:29092"
+topic = "vector-syslog-topic"
+
+[sinks.kakfa_sink.encoding]
+codec = "json"

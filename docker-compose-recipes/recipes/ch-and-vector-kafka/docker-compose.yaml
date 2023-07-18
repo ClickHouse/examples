@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    user: '101:101'
+    container_name: clickhouse
+    hostname: clickhouse
+    volumes:
+      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
+      - ${PWD}/fs/volumes/clickhouse/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - '127.0.0.1:8123:8123'
+      - '127.0.0.1:9000:9000'
+  vector:
+    image: timberio/vector:latest-alpine
+    container_name: vector
+    hostname: vector
+    volumes:
+      - ${PWD}/fs/volumes/vector/vector.toml:/etc/vector/vector.toml
+    depends_on:
+      - clickhouse
+      - kafka
+  zk:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: zk
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 2181:2181
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zk
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zk:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  clickhouse-kafka-connector:
+    build:
+      context: clickhouse-kafka-connector
+      dockerfile: clickhouse-kafka-connector.DockerFile
+    container_name: clickhouse-kafka-connector
+    hostname: clickhouse-kafka-connector
+    volumes:
+      - './fs/volumes/clickhouse-kafka-connector/prepare.sh:/opt/clickhouse-kafka-connector/prepare.sh'
+      - './fs/volumes/clickhouse-kafka-connector/config.json:/opt/clickhouse-kafka-connector/config.json'
+    command: '/opt/clickhouse-kafka-connector/prepare.sh&'
