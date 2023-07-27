@@ -4,7 +4,7 @@
 
 This recipe defines a S3 type disk pointing to the Minio S3 instance, a storage policy that makes use of the s3 disk and a MergeTree table backed by it.
 
-```
+```sql
 ch_minio_s3 :) SELECT * FROM trips_s3 LIMIT 1 FORMAT Vertical
 
 SELECT *
@@ -64,5 +64,3 @@ SETTINGS index_granularity = 8192, storage_policy = 's3_main'
 
 1 row in set. Elapsed: 0.003 sec.
 ```
-
-
