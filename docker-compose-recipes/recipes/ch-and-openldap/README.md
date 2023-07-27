@@ -172,4 +172,4 @@ When authenticating with user `bob` and `alice` in ClickHouse, you will see in t
 
 The documentation for ClickHouse and LDAP is available in the [ClickHouse documentation](https://clickhouse.com/docs/en/guides/sre/configuring-ldap).
 
-If you would like to contribute to this example, please open an issue in this repo.  Thanks in advance for your contribution!
+If you would like to contribute to this example, please file a PR in this repo.  Thanks in advance for your contribution!
