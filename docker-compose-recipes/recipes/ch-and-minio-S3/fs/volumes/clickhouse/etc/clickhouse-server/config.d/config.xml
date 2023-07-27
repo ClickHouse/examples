@@ -36,13 +36,13 @@
             </s3_cache>
         </disks>
         <policies>
-            <s3only>
+            <s3_main>
                 <volumes>
                     <s3>
                         <disk>s3</disk>
                     </s3>
                 </volumes>
-            </s3only>
+            </s3_main>
         </policies>
     </storage_configuration>
 </clickhouse>
