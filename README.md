@@ -13,7 +13,7 @@ A list of ClickHouse [docker compose](https://docs.docker.com/compose/) recipes:
 
 - ClickHouse and Grafana
 - ClickHouse and Minio S3
-- Clickhouse and LDAP (OpenLDAP) - WIP
+- Clickhouse and LDAP (OpenLDAP)
 - ClickHouse and Postgres
 - Clickhouse and Vector syslog and apache demo data
 - Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas)
