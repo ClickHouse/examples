@@ -6,7 +6,7 @@
 - across clickhouse-01 and clickhouse-03 for shard 01
 - across clickhouse-02 and clickhouse-04 for shard 02
 
-This recipes implements also:
+This recipe implements also:
 
 - cluster inter-nodes authentication (`<secret>`)
 - keeper authentication through auth digest scheme (`<identity>`)
