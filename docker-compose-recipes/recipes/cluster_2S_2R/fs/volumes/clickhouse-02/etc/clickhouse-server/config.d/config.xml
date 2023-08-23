@@ -23,7 +23,6 @@
     </distributed_ddl>
     <remote_servers>
         <cluster_2S_2R>
-            <secret>cluster_secret</secret>
             <shard>
                 <internal_replication>true</internal_replication>
                 <replica>
@@ -61,7 +60,6 @@
             <host>clickhouse-keeper-03</host>
             <port>9181</port>
         </node>
-        <identity>user:password</identity>
     </zookeeper>
     <macros>
         <shard>02</shard>
