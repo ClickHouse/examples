@@ -1,0 +1,25 @@
+# Ignore
+node_modules/
+dist/
+*secrets.json    
+.prettierrc
+*.js
+# dotenv environment variable files
+.env
+.env*yaml
+.DS_Store
+yarn-error.log
+*.temp
+*.sample.json
+*.json
+.env*
+.DS_Store
+
+# ALLOWED
+!babel.config.js
+!jest.config.js
+!package.json
+!.eslintrc.json
+!.prettierrc
+!tsconfig.json
+
