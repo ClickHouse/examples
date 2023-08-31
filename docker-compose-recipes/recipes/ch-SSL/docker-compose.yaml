@@ -1,29 +1,61 @@
 version: '3.8'
 services:
   clickhouse:
-    image: clickhouse/clickhouse-server
+    build:
+      context: ${PWD}/docker_files/
+      dockerfile: chSSL.Dockerfile
     user: '101:101'
     container_name: clickhouse
     hostname: clickhouse
     volumes:
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
+      - ${PWD}/fs/volumes/clickhouse/logs:/var/log/clickhouse-server/
     networks:
       clickhouse_network:
         ipv4_address: 192.168.50.1
     ports:
       - '127.0.0.1:8123:8123'
+      - '127.0.0.1:8443:8443'
       - '127.0.0.1:9000:9000'
-  grafana:
-    build:
-      context: ${PWD}/docker_files/
-      dockerfile: grafana.Dockerfile
-    container_name: grafana
-    hostname: grafana
+      - '127.0.0.1:9440:9440'
+  client:
+    image: eclipse-temurin:17-jdk
+    # build:
+    #   context: ${PWD}/docker_files/
+    #   dockerfile: clickhouse-java-ssl-client.DockerFile
+    container_name: client
+    hostname: client
     volumes:
-      - ${PWD}/fs/volumes/grafana/etc/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
-    ports:
-      - '127.0.0.1:3000:3000'
+      - ${PWD}/fs/volumes/client/clickhouse-java-ssl-client:/clickhouse-java-ssl-client
+      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/certs/clickhouse_test_CA.pem:/clickhouse-java-ssl-client/certs/clickhouse_test_CA.pem
+    entrypoint: >
+      #WIP
+      /bin/bash -c "echo 123;
+      echo 456;
+      uname -a;
+      apt-get -q update;
+      apt-get -q install maven -y;
+      cd /clickhouse-java-ssl-client;
+      pwd;
+      find .;
+      echo "123";
+      mvn -q compile;
+      find .;
+      echo "456";
+      java -version
+      java target/classes/com/clickhousesupport/examples/Main
+      echo "exiting";
+      ";
+    # entrypoint: >
+    #   /bin/bash -c "
+    #   # import cert to JVM keystore
+    #   # keytool -import -trustcacerts -alias TestCA -file ~/certcompare/clickhouse_test_CA.pem -storetype JKS -keystore /Users/abonuccelli/Library/Java/JavaVirtualMachines/openjdk-20.0.2/Contents/Home/lib/security/cacertsEnter -storepass password -noprompt
+    #   # mvn
+    #   mvn compile;
+    #   echo $JAVA_HOME;
+    #   top;
+    #   "
     depends_on:
       - clickhouse
 networks:

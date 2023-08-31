@@ -1,8 +1,5 @@
 # ClickHouse and Grafana
 
-1 single ClickHouse Instance configured with 1 Grafana instance
+1 single ClickHouse Instance configured with SSL connection via a test rootCA and a simple Java application connecting to it using STRICT SSL verification mode.
 
-[Docs](https://clickhouse.com/docs/en/integrations/grafana)
-
-[Blog](https://clickhouse.com/blog/visualizing-data-with-grafana)
-
+[Docs](https://clickhouse.com/docs/en/guides/sre/configuring-ssl)

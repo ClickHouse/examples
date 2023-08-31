@@ -8,8 +8,8 @@
     </logger>
     <display_name>ch_grafana</display_name>
     <listen_host>0.0.0.0</listen_host>
-    <http_port>8123</http_port>
-    <tcp_port>9000</tcp_port>
+    <https_port>8443</https_port>
+    <tcp_port_secure>9440</tcp_port_secure>
     <user_directories>
         <users_xml>
             <path>users.xml</path>
@@ -18,4 +18,27 @@
             <path>/var/lib/clickhouse/access/</path>
         </local_directory>
     </user_directories>
+    <openSSL>
+        <server>
+            <!--root CA and node certs are built within the chSSL.dockerFile-->
+            <certificateFile>/etc/clickhouse-server/certs/clickhouse-01.crt</certificateFile>
+            <privateKeyFile>/etc/clickhouse-server/certs/clickhouse-01.key</privateKeyFile>
+            <verificationMode>relaxed</verificationMode>
+            <caConfig>/etc/clickhouse-server/certs/clickhouse_test_CA.pem</caConfig>
+            <cacheSessions>true</cacheSessions>
+            <disableProtocols>sslv2,sslv3</disableProtocols>
+            <preferServerCiphers>true</preferServerCiphers>
+        </server>
+        <client>
+            <loadDefaultCAFile>false</loadDefaultCAFile>
+            <caConfig>/etc/clickhouse-server/certs/clickhouse_test_CA.pem</caConfig>
+            <cacheSessions>true</cacheSessions>
+            <disableProtocols>sslv2,sslv3</disableProtocols>
+            <preferServerCiphers>true</preferServerCiphers>
+            <verificationMode>relaxed</verificationMode>
+            <invalidCertificateHandler>
+                <name>RejectCertificateHandler</name>
+            </invalidCertificateHandler>
+        </client>
+    </openSSL>
 </clickhouse>

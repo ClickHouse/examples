@@ -1,0 +1,46 @@
+# generate private key for root CA
+
+openssl genrsa  -out clickhouse_test_CA.key 2048
+
+# skip passphrase
+
+
+# generate root cert clickhouse_test_CA.pem
+
+openssl req -x509 -new -nodes -subj '/CN=Test CA/O=ClickHouse' -key clickhouse_test_CA.key -sha256 -days 1825 -out clickhouse_test_CA.pem
+
+
+# generate private key for nodes
+
+openssl genrsa -out clickhouse-01.key 2048
+
+# create CSR 
+
+openssl req -new -key clickhouse-01.key -subj '/CN=Test ClickHouse-01/O=ClickHouse' -out clickhouse-01.csr
+
+# create an X509 V3 certificate extension config file (clickhouse-01.ext), which is used to define the Subject Alternative Name (SAN) for the certificate
+
+cat <<EOT >> clickhouse-01.ext
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = clickhouse-01
+DNS.2 = localhost
+IP.1 = 127.0.0.1
+IP.2 = 192.168.50.1
+EOT
+
+
+
+
+# run the command to create the certificate: using our CSR, the CA private key, the CA certificate, and the config file:
+
+openssl x509 -req -in clickhouse-01.csr -CA clickhouse_test_CA.pem -CAkey clickhouse_test_CA.key -CAcreateserial -out clickhouse-01.crt -days 825 -sha256 -extfile clickhouse-01.ext
+
+# We now have three files:
+# clickhouse-01.key (the private key)
+# clickhouse-01.csr (the certificate signing request, or csr file)
+# clickhouse-01.crt (the signed certificate). 
