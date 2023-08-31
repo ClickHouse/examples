@@ -8,7 +8,8 @@
 
 This recipe implements also:
 
-- cluster inter-nodes authentication (`<secret>`)
+- cluster inter-nodes authentication for distributed queries (`<secret>`)
+- cluster interserver http channel for low-level replication (`<interserver_http_credentials>`)
 - keeper authentication through auth digest scheme (`<identity>`)
 
 By default the version of ClickHouse used will be `latest`, and ClickHouse Keeper
