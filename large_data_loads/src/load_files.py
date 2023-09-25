@@ -82,7 +82,7 @@ def load_files(url, rows_per_batch, db_dst, table_dst, client, format, structure
             load_file_in_batches(file_url, file_row_count, rows_per_batch, db_temp, table_temp, db_dst, table_dst, format, structure, select, settings, client)
         else:
             load_file_complete(file_url, db_temp, table_temp, db_dst, table_dst, format, structure, select, settings, client)
-        
+
 
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -199,7 +199,7 @@ def create_complete_load_command(file_url, db_temp, table_temp, format, structur
 def load_one_batch(batch_command, db_temp, table_temp, db_dst, table_dst, client):
     retries = 3
     attempt = 1
-    while attempt <= retries:
+    while True:
         # Step ①: Drop all parts from the temp table
         client.command(f"TRUNCATE TABLE {db_temp}.{table_temp}")
         try:
@@ -207,19 +207,21 @@ def load_one_batch(batch_command, db_temp, table_temp, db_dst, table_dst, client
             client.command(batch_command)
             # Step ③: copy parts (of all partitions) from temp table to destination table
             copy_partitions(db_temp, table_temp, db_dst, table_dst, client)
-            # Success, nothing more todo here
+            # Success, nothing more to do here
             return
         except Exception as err:
             logger.error(f"Unexpected {err=}, {type(err)=}")
-            # wait a bit for transient issues to resolve, then retry the batch
-            logger.info("Going to sleep for 60s")
-            time.sleep(60)
             attempt = attempt + 1
-            logger.info(f"Starting attempt {attempt} of {retries}")
-            continue
-           # Step ①: Drop all parts from the temp table
-    # we land here in case all retries are used unsuccessfully
-    raise BatchFailedError(f"Batch still failed after {retries} attempts.")
+            if attempt <= retries:
+                # wait a bit for transient issues to resolve
+                logger.info("Going to sleep for 60s")
+                time.sleep(60)
+                # retry the batch
+                logger.info(f"Starting attempt {attempt} of {retries}")
+                continue
+            else:
+                # we land here in case all retries are used unsuccessfully
+                raise BatchFailedError(f"Batch still failed after {retries} attempts.")
 
 #-----------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------
