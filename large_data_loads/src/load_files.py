@@ -82,7 +82,7 @@ def load_files(url, rows_per_batch, db_dst, table_dst, client, format, structure
             load_file_in_batches(file_url, file_row_count, rows_per_batch, db_temp, table_temp, db_dst, table_dst, format, structure, select, settings, client)
         else:
             load_file_complete(file_url, db_temp, table_temp, db_dst, table_dst, format, structure, select, settings, client)
-        break
+        
 
 
 #-----------------------------------------------------------------------------------------------------------------------
