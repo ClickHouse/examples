@@ -93,24 +93,6 @@ def load_files(url, rows_per_batch, db_dst, tbl_dst, client, configuration = {})
 
 
 #-----------------------------------------------------------------------------------------------------------------------
-# Load files - Step ①: Create a staging table
-#-----------------------------------------------------------------------------------------------------------------------
-def create_tbl_clone(db_src, tbl_src, db_dst, tbl_dst, client):
-
-    # REPLACE in case a previous run got stopped before cleanup
-    result = client.query("""
-    SELECT replaceOne(replaceOne(create_table_query, concat({db_src:String}, '.', {tbl_src:String}), concat({db_dst:String}, '.', {tbl_dst:String})), 'CREATE TABLE ', 'CREATE OR REPLACE TABLE ')
-    FROM system.tables
-    WHERE database = {db_src:String} AND name = {tbl_src:String}
-    """, parameters = {'db_src' : db_src, 'tbl_src' : tbl_src, 'db_dst' : db_dst, 'tbl_dst' : tbl_dst})
-
-    ddl_for_clone_table = result.result_rows[0][0]
-    logger.info(f"ddl_for_clone_table:")
-    logger.info(f"{ddl_for_clone_table}")
-    client.command(ddl_for_clone_table)
-
-
-#-----------------------------------------------------------------------------------------------------------------------
 # Load files - Step ②: Get full path urls and row counts for all to-be-loaded files
 #-----------------------------------------------------------------------------------------------------------------------
 def get_file_urls_and_row_counts(url, configuration, client):
@@ -191,7 +173,7 @@ def load_file_complete(file_url, staging_tables, configuration, client):
 
 
 #-----------------------------------------------------------------------------------------------------------------------
-# Load a single file in batches (Step ③.Ⓑ): Create the SQL load command
+# Load a single file completely in one batch (Step ③.Ⓑ): Create the SQL load command
 #-----------------------------------------------------------------------------------------------------------------------
 def create_complete_load_command(file_url, db_staging, tbl_staging, configuration):
 
@@ -299,6 +281,24 @@ def create_staging_tables(db_dst, tbl_dst, client):
 
 
 #-----------------------------------------------------------------------------------------------------------------------
+# Clone a table
+#-----------------------------------------------------------------------------------------------------------------------
+def create_tbl_clone(db_src, tbl_src, db_dst, tbl_dst, client):
+
+    # REPLACE in case a previous run got stopped before cleanup
+    result = client.query("""
+    SELECT replaceOne(replaceOne(create_table_query, concat({db_src:String}, '.', {tbl_src:String}), concat({db_dst:String}, '.', {tbl_dst:String})), 'CREATE TABLE ', 'CREATE OR REPLACE TABLE ')
+    FROM system.tables
+    WHERE database = {db_src:String} AND name = {tbl_src:String}
+    """, parameters = {'db_src' : db_src, 'tbl_src' : tbl_src, 'db_dst' : db_dst, 'tbl_dst' : tbl_dst})
+
+    ddl_for_clone_table = result.result_rows[0][0]
+    logger.info(f"ddl_for_clone_table:")
+    logger.info(f"{ddl_for_clone_table}")
+    client.command(ddl_for_clone_table)
+
+
+#-----------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------
 # Cloning MVs
 #-----------------------------------------------------------------------------------------------------------------------
@@ -385,7 +385,7 @@ def create_mv_clone(mv_infos, tbl_src_infos, tbl_tgt_infos, client):
 
 #-----------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------
-# Copying all existing parts (for all partitions) from one table to another
+# Copying part from one table to another
 #-----------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------
 
