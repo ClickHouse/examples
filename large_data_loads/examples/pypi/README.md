@@ -1,8 +1,8 @@
 # Example for resiliently loading a large data set
 
-## Data set
+##Data set
 
-The PYPI dataset is currently available as a [public table in BigQuery.](https://packaging.python.org/en/latest/guides/analyzing-pypi-package-downloads/#id10)  Each row in this dataset represents the download of a python package by a user e.g. using pip. 
+The [PYPI dataset](https://clickhouse.com/blog/clickhouse-vs-snowflake-for-real-time-analytics-benchmarks-cost-analysis#pypi-dataset) is currently available as a [public table in BigQuery.](https://packaging.python.org/en/latest/guides/analyzing-pypi-package-downloads/#id10)  Each row in this dataset represents the download of a python package by a user e.g. using pip. 
 
 We have exported this data as Parquet files, making it available in the public gcs bucket `https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/sample`. 
 
@@ -182,7 +182,7 @@ LIMIT 10;
 
 ## Step ②: Use our script to resiliently load the data into the target table
 
-This is the appropriate call of our script where we load the data into a ClickHouse Cloud service.
+This is the appropriate call of our script where we load the data into a [ClickHouse Cloud](https://clickhouse.com/cloud) service.
 Note that each of the ~70k parquet files contains a bit less than 1 million rows. Therefore we configure the `rows_per_batch` setting to 1 million rows in order to load each file efficiently with a single load query.
 
 Also, note that you need to adapt some settings, like `host`, `port`, `username`, and `password`.
@@ -216,10 +216,11 @@ python load_files.py \
     rustc_version AS rustc_version,
     tls_protocol,
     tls_cipher" \
---cfg.query_settings input_format_null_as_default=1 input_format_parquet_import_nested=1
+--cfg.query_settings input_format_null_as_default=1 input_format_parquet_import_nested=1 max_insert_threads=30
 ```
 Note that all settings starting with `cfg.` are optional.
 
+Also, note that we provide an increased `max_insert_threads` setting based on the size (Number of CPU cores and RAM) of our ClickHouse Cloud service. You need to adapt this to your used machine sizes.
 
 ## Step ③: Check that the projection and all materialized views have their data available
 
