@@ -98,6 +98,7 @@ def load_files(url, rows_per_batch, db_dst, tbl_dst, client, configuration = {})
 def get_file_urls_and_row_counts(url, configuration, client):
 
     format_fragment =  f""", '{configuration['format']}'""" if 'format' in configuration else ''
+    settings_fragment = f"""SETTINGS {to_string(configuration['settings'])}""" if 'settings' in configuration and len(configuration['settings']) > 0  else ''
 
     query = f"""
     WITH
@@ -108,7 +109,8 @@ def get_file_urls_and_row_counts(url, configuration, client):
         count() as count
     FROM s3('{url}'{format_fragment})
     GROUP BY 1
-    ORDER BY 1"""
+    ORDER BY 1
+    {settings_fragment}"""
 
     result = client.query( query)
     return result.result_rows
