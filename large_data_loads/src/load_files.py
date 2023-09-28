@@ -38,9 +38,12 @@ ap.add_argument("--database",       required=True)
 ap.add_argument("--table",          required=True)
 
 # Data loading - optional settings
-ap.add_argument("--cfg.format",    required=False)
-ap.add_argument("--cfg.structure", required=False)
-ap.add_argument("--cfg.select",    required=False)
+ap.add_argument("--cfg.function",                         required=False)
+ap.add_argument("--cfg.function_fragment_for_file_list",  required=False)
+ap.add_argument("--cfg.format",                           required=False)
+ap.add_argument("--cfg.structure",                        required=False)
+ap.add_argument("--cfg.select",                           required=False)
+ap.add_argument("--cfg.where",                            required=False)
 ap.add_argument('--cfg.query_settings', nargs='+', default=[], required=False)
 
 args = vars(ap.parse_args())
@@ -97,6 +100,13 @@ def load_files(url, rows_per_batch, db_dst, tbl_dst, client, configuration = {})
 #-----------------------------------------------------------------------------------------------------------------------
 def get_file_urls_and_row_counts(url, configuration, client):
 
+    function_fragment = 's3('
+    if 'function_fragment_for_file_list' in configuration:
+        function_fragment = f"""{configuration['function_fragment_for_file_list']}"""
+    else:
+        if 'function' in configuration:
+            function_fragment = f"""{configuration['function']}("""
+
     format_fragment =  f""", '{configuration['format']}'""" if 'format' in configuration else ''
     settings_fragment = f"""SETTINGS {to_string(configuration['settings'])}""" if 'settings' in configuration and len(configuration['settings']) > 0  else ''
 
@@ -107,10 +117,12 @@ def get_file_urls_and_row_counts(url, configuration, client):
     SELECT
         concat(_protocol, '://', _domain, '/', _path) as file,
         count() as count
-    FROM s3('{url}'{format_fragment})
+    FROM {function_fragment}'{url}'{format_fragment})
     GROUP BY 1
     ORDER BY 1
     {settings_fragment}"""
+
+    print(query)
 
     result = client.query( query)
     return result.result_rows
@@ -195,12 +207,14 @@ def create_batch_load_command(file_url, db_staging, tbl_staging, configuration, 
     # Handling of all optional configuration settings
     query_clause_fragments = to_query_clause_fragments(configuration, row_start, row_end, extra_settings)
 
+
     command = f"""
             INSERT INTO {db_staging}.{tbl_staging}
-            SELECT {query_clause_fragments['select_fragment']} FROM s3('{file_url}'{query_clause_fragments['format_fragment']}{query_clause_fragments['structure_fragment']})
+            {query_clause_fragments['select_fragment']} FROM {query_clause_fragments['function_fragment']}'{file_url}'{query_clause_fragments['format_fragment']}{query_clause_fragments['structure_fragment']})
             {query_clause_fragments['filter_fragment']}
             {query_clause_fragments['settings_fragment']}
         """
+
     return command
 
 
@@ -215,11 +229,20 @@ def to_query_clause_fragments(configuration, row_start = None, row_end = None, e
     if extra_settings:
         settings = {**settings, **extra_settings}
 
+    filter_fragment = ''
+    if 'where' in configuration:
+        filter_fragment =  configuration['where']
+    if row_end:
+        filter_fragment = filter_fragment + (' AND ' if len(filter_fragment) > 0 else ' WHERE ')
+        filter_fragment = filter_fragment + f"""rowNumberInAllBlocks() >= {row_start} AND rowNumberInAllBlocks()  < {row_end}"""
+
+
     return {
-        'select_fragment' : configuration['select'] if 'select' in configuration else '*',
+        'function_fragment' : f"""{configuration['function']}(""" if 'function' in configuration else 's3(',
+        'select_fragment' : configuration['select'] if 'select' in configuration else 'SELECT *',
         'format_fragment' :  f""", '{configuration['format']}'""" if 'format' in configuration else '',
         'structure_fragment' : f""", '{configuration['structure']}'""" if 'structure' in configuration else '',
-        'filter_fragment' : f"""WHERE rowNumberInAllBlocks() >= {row_start} AND rowNumberInAllBlocks()  < {row_end}""" if row_start and row_end else '',
+        'filter_fragment' : filter_fragment,
         'settings_fragment' : f"""SETTINGS {to_string(settings)}""" if len(settings) > 0  else ''}
 
 
@@ -463,9 +486,12 @@ def copy_partition(partition_id, db_src, tbl_src, db_dst, tbl_dst, client):
 
 def to_configuration_dictionary(args):
     configuration = {}
+    add_to_dictionary_if_present(configuration, args, 'cfg.function', 'function')
+    add_to_dictionary_if_present(configuration, args, 'cfg.function_fragment_for_file_list', 'function_fragment_for_file_list')
     add_to_dictionary_if_present(configuration, args, 'cfg.format', 'format')
     add_to_dictionary_if_present(configuration, args, 'cfg.structure', 'structure')
     add_to_dictionary_if_present(configuration, args, 'cfg.select', 'select')
+    add_to_dictionary_if_present(configuration, args, 'cfg.where', 'where')
     configuration.update({'settings' : to_query_settings_dictionary(args)})
 
     return configuration
