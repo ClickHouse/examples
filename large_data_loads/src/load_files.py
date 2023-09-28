@@ -120,7 +120,10 @@ def load_file_in_batches(file_url, file_row_count, rows_per_batch, staging_table
     row_start = 0
     row_end = rows_per_batch
     while row_start < file_row_count:
-        command = create_batch_load_command(file_url, row_start, row_end, staging_tables[0]['db_staging'], staging_tables[0]['tbl_staging'], configuration)
+        command = create_batch_load_command(file_url, staging_tables[0]['db_staging'], staging_tables[0]['tbl_staging'],
+                                            configuration, row_start, row_end,
+                                            extra_settings = {'input_format_parquet_preserve_order' : 1,
+                                                                 'parallelize_output_from_storages' : 0})
         try:
             logger.debug(f"Batch loading file: {file_url}")
             logger.debug(f"Batch row block: {row_start} to {row_end}")
@@ -135,31 +138,10 @@ def load_file_in_batches(file_url, file_row_count, rows_per_batch, staging_table
 
 
 #-----------------------------------------------------------------------------------------------------------------------
-# Load a single file in batches (Step ③.Ⓐ): Create the SQL load command
-#-----------------------------------------------------------------------------------------------------------------------
-def create_batch_load_command(file_url, row_start, row_end, db_staging, tbl_staging, configuration):
-
-    extra_settings = {'input_format_parquet_preserve_order' : 1,
-                      'parallelize_output_from_storages' : 0}
-
-    # Handling of all optional configuration settings
-    query_clause_fragments = to_query_clause_fragments(configuration, extra_settings)
-
-    command = f"""
-            INSERT INTO {db_staging}.{tbl_staging}
-            SELECT {query_clause_fragments['select_fragment']} FROM s3('{file_url}'{query_clause_fragments['format_fragment']}{query_clause_fragments['structure_fragment']})
-            WHERE rowNumberInAllBlocks() >= {row_start}
-              AND rowNumberInAllBlocks()  < {row_end}
-            {query_clause_fragments['settings_fragment']}
-        """
-    return command
-
-
-#-----------------------------------------------------------------------------------------------------------------------
 # Load files - Step ③.Ⓑ: Load a single file completely in one batch (because its file_row_count  < rows_per_batch)
 #-----------------------------------------------------------------------------------------------------------------------
 def load_file_complete(file_url, staging_tables, configuration, client):
-        command = create_complete_load_command(file_url, staging_tables[0]['db_staging'], staging_tables[0]['tbl_staging'], configuration)
+        command = create_batch_load_command(file_url, staging_tables[0]['db_staging'], staging_tables[0]['tbl_staging'], configuration)
         try:
             logger.debug(f"Batch loading file: {file_url}")
             logger.debug(f"Batch command: {command}")
@@ -167,40 +149,6 @@ def load_file_complete(file_url, staging_tables, configuration, client):
         except BatchFailedError as err:
             logger.error(f"{err=}")
             logger.error(f"Failed file: {file_url}")
-
-
-#-----------------------------------------------------------------------------------------------------------------------
-# Load a single file completely in one batch (Step ③.Ⓑ): Create the SQL load command
-#-----------------------------------------------------------------------------------------------------------------------
-def create_complete_load_command(file_url, db_staging, tbl_staging, configuration):
-
-    # Handling of all optional configuration settings
-    query_clause_fragments = to_query_clause_fragments(configuration)
-
-    command = f"""
-            INSERT INTO {db_staging}.{tbl_staging}
-            SELECT {query_clause_fragments['select_fragment']} FROM s3('{file_url}'{query_clause_fragments['format_fragment']}{query_clause_fragments['structure_fragment']})
-            {query_clause_fragments['settings_fragment']}
-        """
-    return command
-
-
-#-----------------------------------------------------------------------------------------------------------------------
-# Turn all optional query configuration settings into fragments for the query clauses
-#-----------------------------------------------------------------------------------------------------------------------
-def to_query_clause_fragments(configuration, extra_settings = None):
-
-    settings = {}
-    if 'settings' in configuration:
-        settings =  {**settings, **configuration['settings']}
-    if extra_settings:
-        settings = {**settings, **extra_settings}
-
-    return {
-        'select_fragment' : configuration['select'] if 'select' in configuration else '*',
-        'format_fragment' :  f""", '{configuration['format']}'""" if 'format' in configuration else '',
-        'structure_fragment' : f""", '{configuration['structure']}'""" if 'structure' in configuration else '',
-        'settings_fragment' : f"""SETTINGS {to_string(settings)}""" if len(settings) > 0  else ''}
 
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -234,6 +182,59 @@ def load_one_batch(batch_command, staging_tables, client):
             else:
                 # we land here in case all retries are used unsuccessfully
                 raise BatchFailedError(f"Batch still failed after {retries} attempts.")
+
+
+#-----------------------------------------------------------------------------------------------------------------------
+# Helper function for ③.Ⓐ and ③.Ⓑ: construct the batch load SQL command
+#-----------------------------------------------------------------------------------------------------------------------
+def create_batch_load_command(file_url, db_staging, tbl_staging, configuration, row_start = None, row_end = None, extra_settings = None):
+    # Handling of all optional configuration settings
+    query_clause_fragments = to_query_clause_fragments(configuration, row_start, row_end, extra_settings)
+
+    command = f"""
+            INSERT INTO {db_staging}.{tbl_staging}
+            SELECT {query_clause_fragments['select_fragment']} FROM s3('{file_url}'{query_clause_fragments['format_fragment']}{query_clause_fragments['structure_fragment']})
+            {query_clause_fragments['filter_fragment']}
+            {query_clause_fragments['settings_fragment']}
+        """
+    return command
+
+
+#-----------------------------------------------------------------------------------------------------------------------
+# Helper function for ③.Ⓐ and ③.Ⓑ: Turn optional query configuration settings into fragments for the query clauses
+#-----------------------------------------------------------------------------------------------------------------------
+def to_query_clause_fragments(configuration, row_start = None, row_end = None, extra_settings = None):
+
+    settings = {}
+    if 'settings' in configuration:
+        settings =  {**settings, **configuration['settings']}
+    if extra_settings:
+        settings = {**settings, **extra_settings}
+
+    return {
+        'select_fragment' : configuration['select'] if 'select' in configuration else '*',
+        'format_fragment' :  f""", '{configuration['format']}'""" if 'format' in configuration else '',
+        'structure_fragment' : f""", '{configuration['structure']}'""" if 'structure' in configuration else '',
+        'filter_fragment' : f"""WHERE rowNumberInAllBlocks() >= {row_start} AND rowNumberInAllBlocks()  < {row_end}""" if row_start and row_end else '',
+        'settings_fragment' : f"""SETTINGS {to_string(settings)}""" if len(settings) > 0  else ''}
+
+
+#-----------------------------------------------------------------------------------------------------------------------
+# Transform dictionary items into comma-separated settings-fragment for SQL SETTINGS clause
+# {'a' : 23, 'b' : 42} -> "'a' = 23, 'b' = 42"
+#-----------------------------------------------------------------------------------------------------------------------
+def to_string(settings):
+    settings_string = ''
+    for key in settings:
+        settings_string += str(key) + ' = ' + str(settings[key]) + ', '
+    return settings_string[:-2]
+
+
+#-----------------------------------------------------------------------------------------------------------------------
+# Our dedicated exception for indicating that a batch failed even after a few retries
+#-----------------------------------------------------------------------------------------------------------------------
+class BatchFailedError(Exception):
+    pass
 
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -447,31 +448,6 @@ def copy_partition(partition_id, db_src, tbl_src, db_dst, tbl_dst, client):
         ATTACH PARTITION {partition_id}
         FROM {db_src}.{tbl_src}"""
     client.command(command)
-
-
-#-----------------------------------------------------------------------------------------------------------------------
-#-----------------------------------------------------------------------------------------------------------------------
-# Misc helpers
-#-----------------------------------------------------------------------------------------------------------------------
-#-----------------------------------------------------------------------------------------------------------------------
-
-
-#-----------------------------------------------------------------------------------------------------------------------
-# Transform dictionary items into comma-separated settings-fragment for SQL SETTINGS clause
-# {'a' : 23, 'b' : 42} -> "'a' = 23, 'b' = 42"
-#-----------------------------------------------------------------------------------------------------------------------
-def to_string(settings):
-    settings_string = ''
-    for key in settings:
-        settings_string += str(key) + ' = ' + str(settings[key]) + ', '
-    return settings_string[:-2]
-
-
-#-----------------------------------------------------------------------------------------------------------------------
-# Our dedicated exception for indicating that a batch failed even after a few retries
-#-----------------------------------------------------------------------------------------------------------------------
-class BatchFailedError(Exception):
-    pass
 
 
 #-----------------------------------------------------------------------------------------------------------------------
