@@ -1,9 +1,11 @@
 import clickhouse_connect
 import time
 import logging
+import argparse
 
-
+#-----------------------------------------------------------------------------------------------------------------------
 # Logger Configuration
+#-----------------------------------------------------------------------------------------------------------------------
 LOGGER_FILENAME = "log.log"
 
 logging.basicConfig(filename=LOGGER_FILENAME, format="%(asctime)s %(message)s", filemode='a')
@@ -16,62 +18,57 @@ consoleHandler.setFormatter(logFormatter)
 logger.addHandler(consoleHandler)
 
 
+#-----------------------------------------------------------------------------------------------------------------------
+# Command line arguments parsing
+#-----------------------------------------------------------------------------------------------------------------------
+ap = argparse.ArgumentParser()
 
+# ClickHouse connection settings
+ap.add_argument("--host",     required=True)
+ap.add_argument("--port",     required=True)
+ap.add_argument("--username", required=True)
+ap.add_argument("--password", required=True)
 
-def main():
+help = "Show Output"
 
+# Data loading - main settings
+ap.add_argument("--url",            required=True)
+ap.add_argument("--rows_per_batch", required=True)
+ap.add_argument("--database",       required=True)
+ap.add_argument("--table",          required=True)
 
-    client = clickhouse_connect.get_client(
-        host='f1e1rfvwho.us-central1.gcp.clickhouse-staging.com',
-        port=8443,
-        username='default',
-        password='XXX')
+# Data loading - optional settings
+ap.add_argument("--cfg.format",    required=False)
+ap.add_argument("--cfg.structure", required=False)
+ap.add_argument("--cfg.select",    required=False)
+ap.add_argument('--cfg.query_settings', nargs='+', default=[], required=False)
 
-
-    # staging_tables = create_staging_tables('default', 'pypi2', client)
-    # print(staging_tables)
-    #
-    # return
-
-
-    load_files(
-        # url = 'https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/sample/2023/{0..61}-*.parquet',
-        # url = 'https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/sample/2023/{0..1}-*.parquet',
-        url = 'https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/sample/2023/0-00000000000{1..2}*.parquet',
-        rows_per_batch = 100000,
-        # rows_per_batch = 1000000,
-        db_dst =  'default',
-        # table = 'T1',
-        tbl_dst = 'pypi2',
-        client = client,
-        configuration = {
-            'format' : 'Parquet',
-            'structure' : 'timestamp DateTime64(6), country_code LowCardinality(String), url String, project String, `file.filename` String, `file.project` String, `file.version` String, `file.type` String, `installer.name` String, `installer.version` String, python String, `implementation.name` String, `implementation.version` String, `distro.name` String, `distro.version` String, `distro.id` String, `distro.libc.lib` String, `distro.libc.version` String, `system.name` String, `system.release` String, cpu String, openssl_version String, setuptools_version String, rustc_version String,tls_protocol String, tls_cipher String',
-            'select' : """
-                timestamp,
-                country_code,
-                url,
-                project,
-                (ifNull(file.filename, ''), ifNull(file.project, ''), ifNull(file.version, ''), ifNull(file.type, '')) AS file,
-                (ifNull(installer.name, ''), ifNull(installer.version, '')) AS installer,
-                python AS python,
-                (ifNull(implementation.name, ''), ifNull(implementation.version, '')) AS implementation,
-                (ifNull(distro.name, ''), ifNull(distro.version, ''), ifNull(distro.id, ''), (ifNull(distro.libc.lib, ''), ifNull(distro.libc.version, ''))) AS distro,
-                (ifNull(system.name, ''), ifNull(system.release, '')) AS system,
-                cpu AS cpu,
-                openssl_version AS openssl_version,
-                setuptools_version AS setuptools_version,
-                rustc_version AS rustc_version,
-                tls_protocol,
-                tls_cipher
-            """,
-            'settings' : {'input_format_null_as_default': 1,
-                          'input_format_parquet_import_nested': 1}}
-        )
+args = vars(ap.parse_args())
 
 
 #-----------------------------------------------------------------------------------------------------------------------
-# Main function
+# Calling the main entry point
+#-----------------------------------------------------------------------------------------------------------------------
+def main():
+
+    client = clickhouse_connect.get_client(
+        host =  args['host'],
+        port = args['port'],
+        username = args['username'],
+        password = args['password'],
+        secure = True)
+
+    load_files(
+        url = args['url'],
+        rows_per_batch = int(args['rows_per_batch']),
+        db_dst =  args['database'],
+        tbl_dst = args['table'],
+        client = client,
+        configuration = to_configuration_dictionary(args))
+
+
+#-----------------------------------------------------------------------------------------------------------------------
+# Main entry point to the code
 #-----------------------------------------------------------------------------------------------------------------------
 def load_files(url, rows_per_batch, db_dst, tbl_dst, client, configuration = {}):
     # Step ①: Create all necessary staging tables (and MV clones)
@@ -85,8 +82,10 @@ def load_files(url, rows_per_batch, db_dst, tbl_dst, client, configuration = {})
         logger.info(f"Row count: {file_row_count}")
         # Step ③: Load a single file (potentially in batches)
         if file_row_count > rows_per_batch:
+             # ③.Ⓐ Load a single file in batches (because its file_row_count  > rows_per_batch)
             load_file_in_batches(file_url, file_row_count, rows_per_batch, staging_tables, configuration, client)
         else:
+            # ③.Ⓑ Load a single file completely in one batch
             load_file_complete(file_url, staging_tables, configuration, client)
     # Cleanup: Drop all staging tables (and MV clones)
     drop_staging_tables(staging_tables, client)
@@ -139,21 +138,19 @@ def load_file_in_batches(file_url, file_row_count, rows_per_batch, staging_table
 # Load a single file in batches (Step ③.Ⓐ): Create the SQL load command
 #-----------------------------------------------------------------------------------------------------------------------
 def create_batch_load_command(file_url, row_start, row_end, db_staging, tbl_staging, configuration):
+
     extra_settings = {'input_format_parquet_preserve_order' : 1,
                       'parallelize_output_from_storages' : 0}
 
     # Handling of all optional configuration settings
-    select = configuration['select'] if 'select' in configuration else '*'
-    format_fragment =  f""", '{configuration['format']}'""" if 'format' in configuration else ''
-    structure_fragment = f""", '{configuration['structure']}'""" if 'structure' in configuration else ''
-    settings = configuration['settings'] if 'settings' in configuration else {}
+    query_clause_fragments = to_query_clause_fragments(configuration, extra_settings)
 
     command = f"""
             INSERT INTO {db_staging}.{tbl_staging}
-            SELECT {select} FROM s3('{file_url}'{format_fragment}{structure_fragment})
+            SELECT {query_clause_fragments['select_fragment']} FROM s3('{file_url}'{query_clause_fragments['format_fragment']}{query_clause_fragments['structure_fragment']})
             WHERE rowNumberInAllBlocks() >= {row_start}
               AND rowNumberInAllBlocks()  < {row_end}
-            SETTINGS {as_string({**settings, **extra_settings})}
+            {query_clause_fragments['settings_fragment']}
         """
     return command
 
@@ -178,18 +175,32 @@ def load_file_complete(file_url, staging_tables, configuration, client):
 def create_complete_load_command(file_url, db_staging, tbl_staging, configuration):
 
     # Handling of all optional configuration settings
-    select = configuration['select'] if 'select' in configuration else '*'
-    format_fragment =  f""", '{configuration['format']}'""" if 'format' in configuration else ''
-    structure_fragment = f""", '{configuration['structure']}'""" if 'structure' in configuration else ''
-    settings_fragment = f"""SETTINGS {as_string(configuration['settings'])}""" if 'settings' in configuration else ''
+    query_clause_fragments = to_query_clause_fragments(configuration)
 
     command = f"""
             INSERT INTO {db_staging}.{tbl_staging}
-            SELECT {select} FROM s3('{file_url}'{format_fragment}{structure_fragment})
-            {settings_fragment}
+            SELECT {query_clause_fragments['select_fragment']} FROM s3('{file_url}'{query_clause_fragments['format_fragment']}{query_clause_fragments['structure_fragment']})
+            {query_clause_fragments['settings_fragment']}
         """
-
     return command
+
+
+#-----------------------------------------------------------------------------------------------------------------------
+# Turn all optional query configuration settings into fragments for the query clauses
+#-----------------------------------------------------------------------------------------------------------------------
+def to_query_clause_fragments(configuration, extra_settings = None):
+
+    settings = {}
+    if 'settings' in configuration:
+        settings =  {**settings, **configuration['settings']}
+    if extra_settings:
+        settings = {**settings, **extra_settings}
+
+    return {
+        'select_fragment' : configuration['select'] if 'select' in configuration else '*',
+        'format_fragment' :  f""", '{configuration['format']}'""" if 'format' in configuration else '',
+        'structure_fragment' : f""", '{configuration['structure']}'""" if 'structure' in configuration else '',
+        'settings_fragment' : f"""SETTINGS {to_string(settings)}""" if len(settings) > 0  else ''}
 
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -299,6 +310,18 @@ def create_tbl_clone(db_src, tbl_src, db_dst, tbl_dst, client):
 
 
 #-----------------------------------------------------------------------------------------------------------------------
+# Drop all staging tables, including MV clones
+#-----------------------------------------------------------------------------------------------------------------------
+def drop_staging_tables(staging_tables, client):
+    for d in staging_tables:
+        if 'mv_staging' in d:
+            # drop a mv clone
+            client.command(f"""DROP VIEW IF EXISTS {d['db_mv_staging']}.{d['mv_staging']}""")
+        # drop a staging table
+        client.command(f"""DROP TABLE IF EXISTS {d['db_staging']}.{d['tbl_staging']}""")
+
+
+#-----------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------
 # Cloning MVs
 #-----------------------------------------------------------------------------------------------------------------------
@@ -329,7 +352,7 @@ def get_mvs(db_dst, tbl_dst, client):
 
 
 #-----------------------------------------------------------------------------------------------------------------------
-# db name and table name of a MV's target table
+# Get db name and table name of a MV's target table
 #-----------------------------------------------------------------------------------------------------------------------
 def get_mv_target_table(db, mv, client):
     result = client.query("""
@@ -346,7 +369,7 @@ def get_mv_target_table(db, mv, client):
 
 
 #-----------------------------------------------------------------------------------------------------------------------
-# create MV clone - with new source table and new target table instead of original source table and target table
+# Create MV clone - with new source table and new target table instead of original source table and target table
 #-----------------------------------------------------------------------------------------------------------------------
 def create_mv_clone(mv_infos, tbl_src_infos, tbl_tgt_infos, client):
 
@@ -385,7 +408,7 @@ def create_mv_clone(mv_infos, tbl_src_infos, tbl_tgt_infos, client):
 
 #-----------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------
-# Copying part from one table to another
+# Copying parts from one table to another
 #-----------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------
 
@@ -428,32 +451,20 @@ def copy_partition(partition_id, db_src, tbl_src, db_dst, tbl_dst, client):
 
 #-----------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------
-# Misc helper functions
+# Misc helpers
 #-----------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------
 
 
 #-----------------------------------------------------------------------------------------------------------------------
-# transform dictionary items into comma-separated settings-fragment for SQL SETTINGS clause
+# Transform dictionary items into comma-separated settings-fragment for SQL SETTINGS clause
 # {'a' : 23, 'b' : 42} -> "'a' = 23, 'b' = 42"
 #-----------------------------------------------------------------------------------------------------------------------
-def as_string(settings):
+def to_string(settings):
     settings_string = ''
     for key in settings:
         settings_string += str(key) + ' = ' + str(settings[key]) + ', '
     return settings_string[:-2]
-
-
-#-----------------------------------------------------------------------------------------------------------------------
-# Drop a table
-#-----------------------------------------------------------------------------------------------------------------------
-def drop_staging_tables(staging_tables, client):
-    for d in staging_tables:
-        if 'mv_staging' in d:
-            # drop a mv clone
-            client.command(f"""DROP VIEW IF EXISTS {d['db_mv_staging']}.{d['mv_staging']}""")
-        # drop a staging table
-        client.command(f"""DROP TABLE IF EXISTS {d['db_staging']}.{d['tbl_staging']}""")
 
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -463,10 +474,35 @@ class BatchFailedError(Exception):
     pass
 
 
+#-----------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------
+# Command line argument handling
+#-----------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------
+
+
+def to_configuration_dictionary(args):
+    configuration = {}
+    add_to_dictionary_if_present(configuration, args, 'cfg.format', 'format')
+    add_to_dictionary_if_present(configuration, args, 'cfg.structure', 'structure')
+    add_to_dictionary_if_present(configuration, args, 'cfg.select', 'select')
+    configuration.update({'settings' : to_query_settings_dictionary(args)})
+
+    return configuration
+
+
+def add_to_dictionary_if_present(dictionary, args, argument, key):
+    if args[argument] != None:
+        dictionary.update({key : args[argument]})
+
+
+def to_query_settings_dictionary(args):
+    query_settings = {}
+    if len(args['cfg.query_settings']) > 0:
+        for s in args['cfg.query_settings']:
+            s_split = s.split('=')
+            query_settings.update({s_split[0] : s_split[1]})
+    return query_settings
+
 
 main()
-
-
-
-
-
