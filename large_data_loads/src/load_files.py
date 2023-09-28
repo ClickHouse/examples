@@ -115,14 +115,14 @@ def get_file_urls_and_row_counts(url, configuration, client):
         splitByString('://', '{url}')[1] AS _protocol,
         domain('{url}') AS _domain
     SELECT
-        concat(_protocol, '://', _domain, '/', _path) as file,
+        concat(_protocol, '://', _domain,  if(startsWith(_path, '/') , '', '/'), _path) as file,
         count() as count
     FROM {function_fragment}'{url}'{format_fragment})
     GROUP BY 1
     ORDER BY 1
     {settings_fragment}"""
 
-    print(query)
+    logger.debug(f"Query for full path urls and row counts:{query}")
 
     result = client.query( query)
     return result.result_rows
