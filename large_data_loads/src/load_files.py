@@ -77,6 +77,7 @@ def load_files(url, rows_per_batch, db_dst, tbl_dst, client, configuration = {})
     logger.info(f"Fetching all files and row counts")
     file_list = get_file_urls_and_row_counts(url, configuration, client)
     logger.info(f"Done")
+    logger.info(f"Processing {len(file_list)} files")
     for [file_url, file_row_count] in file_list:
         logger.info(f"Processing file: {file_url}")
         logger.info(f"Row count: {file_row_count}")
@@ -95,20 +96,21 @@ def load_files(url, rows_per_batch, db_dst, tbl_dst, client, configuration = {})
 # Load files - Step ②: Get full path urls and row counts for all to-be-loaded files
 #-----------------------------------------------------------------------------------------------------------------------
 def get_file_urls_and_row_counts(url, configuration, client):
-    result = client.query("""
+
+    format_fragment =  f""", '{configuration['format']}'""" if 'format' in configuration else ''
+
+    query = f"""
     WITH
-        splitByString('://', {url:String})[1] AS _protocol,
-        domain({url:String}) AS _domain
+        splitByString('://', '{url}')[1] AS _protocol,
+        domain('{url}') AS _domain
     SELECT
         concat(_protocol, '://', _domain, '/', _path) as file,
         count() as count
-    FROM s3Cluster(
-        'default',
-        {url:String},
-        {format:String})
+    FROM s3('{url}'{format_fragment})
     GROUP BY 1
-    ORDER BY 1
-    """, parameters = {'url' : url, 'format' : configuration['format']})
+    ORDER BY 1"""
+
+    result = client.query( query)
     return result.result_rows
 
 
