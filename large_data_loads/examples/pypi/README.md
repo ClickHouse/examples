@@ -200,22 +200,24 @@ python load_files.py \
 --cfg.format Parquet \
 --cfg.structure  'timestamp DateTime64(6), country_code LowCardinality(String), url String, project String, `file.filename` String, `file.project` String, `file.version` String, `file.type` String, `installer.name` String, `installer.version` String, python String, `implementation.name` String, `implementation.version` String, `distro.name` String, `distro.version` String, `distro.id` String, `distro.libc.lib` String, `distro.libc.version` String, `system.name` String, `system.release` String, cpu String, openssl_version String, setuptools_version String, rustc_version String,tls_protocol String, tls_cipher String' \
 --cfg.select "
-    timestamp,
-    country_code,
-    url,
-    project,
-    (ifNull(file.filename, ''), ifNull(file.project, ''), ifNull(file.version, ''), ifNull(file.type, '')) AS file,
-    (ifNull(installer.name, ''), ifNull(installer.version, '')) AS installer,
-    python AS python,
-    (ifNull(implementation.name, ''), ifNull(implementation.version, '')) AS implementation,
-    (ifNull(distro.name, ''), ifNull(distro.version, ''), ifNull(distro.id, ''), (ifNull(distro.libc.lib, ''), ifNull(distro.libc.version, ''))) AS distro,
-    (ifNull(system.name, ''), ifNull(system.release, '')) AS system,
-    cpu AS cpu,
-    openssl_version AS openssl_version,
-    setuptools_version AS setuptools_version,
-    rustc_version AS rustc_version,
-    tls_protocol,
-    tls_cipher" \
+    SELECT		
+      timestamp,
+      country_code,
+      url,
+      project,
+      (ifNull(file.filename, ''), ifNull(file.project, ''), ifNull(file.version, ''), ifNull(file.type, '')) AS file,
+      (ifNull(installer.name, ''), ifNull(installer.version, '')) AS installer,
+      python AS python,
+      (ifNull(implementation.name, ''), ifNull(implementation.version, '')) AS implementation,
+      (ifNull(distro.name, ''), ifNull(distro.version, ''), ifNull(distro.id, ''), (ifNull(distro.libc.lib, ''), ifNull(distro.libc.version, ''))) AS 
+      distro,
+      (ifNull(system.name, ''), ifNull(system.release, '')) AS system,
+      cpu AS cpu,
+      openssl_version AS openssl_version,
+      setuptools_version AS setuptools_version,
+      rustc_version AS rustc_version,
+      tls_protocol,
+      tls_cipher" \
 --cfg.query_settings input_format_null_as_default=1 input_format_parquet_import_nested=1 max_insert_threads=30
 ```
 Note that all settings starting with `cfg.` are optional.
