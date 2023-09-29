@@ -1,4 +1,4 @@
-# A script for reliable loading large volumes of data
+# A script for reliable loading of large volumes of data
 
 Welcome 👋 to this repository containing a script for loading a large dataset with trillions of rows incrementally and reliably over a long period of time. 
 
