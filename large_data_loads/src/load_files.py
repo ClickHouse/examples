@@ -1,7 +1,13 @@
+#!/usr/bin/python
+import sys
 import clickhouse_connect
 import time
 import logging
 import argparse
+
+MIN_PYTHON = (3, 10)
+if sys.version_info < MIN_PYTHON:
+    sys.exit("Python %s.%s or later is required.\n" % MIN_PYTHON)
 
 #-----------------------------------------------------------------------------------------------------------------------
 # Logger Configuration
