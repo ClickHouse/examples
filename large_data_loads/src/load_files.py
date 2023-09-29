@@ -29,8 +29,6 @@ ap.add_argument("--port",     required=True)
 ap.add_argument("--username", required=True)
 ap.add_argument("--password", required=True)
 
-help = "Show Output"
-
 # Data loading - main settings
 ap.add_argument("--url",            required=True)
 ap.add_argument("--rows_per_batch", required=True)
