@@ -23,26 +23,48 @@ logger.addHandler(consoleHandler)
 #-----------------------------------------------------------------------------------------------------------------------
 ap = argparse.ArgumentParser()
 
-# ClickHouse connection settings
+# ClickHouse connection settings ---------------------------------------------------------------------------------------
 ap.add_argument("--host",     required=True)
 ap.add_argument("--port",     required=True)
 ap.add_argument("--username", required=True)
 ap.add_argument("--password", required=True)
 
-# Data loading - main settings
-ap.add_argument("--url",            required=True)
-ap.add_argument("--rows_per_batch", required=True)
-ap.add_argument("--database",       required=True)
-ap.add_argument("--table",          required=True)
+# Data loading - main settings -----------------------------------------------------------------------------------------
+ap.add_argument("--url",            required=True,
+                help='The url (which can contain glob patterns) specifying the set of files to be loaded.')
+ap.add_argument("--rows_per_batch", required=True,
+                help='How many rows should be loaded within a single batch transfer.')
+ap.add_argument("--database",       required=True,
+                help='Name of the target ClickHouse database.')
+ap.add_argument("--table",          required=True,
+                help='Name of the target ClickHouse table.')
 
-# Data loading - optional settings
-ap.add_argument("--cfg.function",                         required=False)
-ap.add_argument("--cfg.function_fragment_for_file_list",  required=False)
-ap.add_argument("--cfg.format",                           required=False)
-ap.add_argument("--cfg.structure",                        required=False)
-ap.add_argument("--cfg.select",                           required=False)
-ap.add_argument("--cfg.where",                            required=False)
-ap.add_argument('--cfg.query_settings', nargs='+', default=[], required=False)
+# Data loading - optional settings -------------------------------------------------------------------------------------
+ap.add_argument("--cfg.function",                           required=False, default='s3',
+                help='Name of the table function for accessing the to-be-loaded files.')
+
+ap.add_argument("--cfg.use_cluster_function_for_file_list", required=False,
+                help='Should the more efficient ...Cluster version of the table function be used for retrieving the file list?',
+                action="store_true")
+
+ap.add_argument("--cfg.cluster_name",                       required=False, default='default',
+                help='Name of the cluster in case the ...Cluster table function version is used for retrieving the file list.')
+
+ap.add_argument("--cfg.format",                             required=False,
+                help='Name of the file format used.')
+
+ap.add_argument("--cfg.structure",                          required=False,
+                help='Structure of the file data.')
+
+ap.add_argument("--cfg.select",                             required=False, default='SELECT *',
+                help='Custom SELECT clause for retrieving the file data.')
+
+ap.add_argument("--cfg.where",                              required=False,
+                help='Custom WHERE clause for retrieving the file data.')
+
+ap.add_argument('--cfg.query_settings', nargs='+', default=[], required=False,
+                help='Custom query-level settings.')
+
 
 args = vars(ap.parse_args())
 
@@ -98,12 +120,9 @@ def load_files(url, rows_per_batch, db_dst, tbl_dst, client, configuration = {})
 #-----------------------------------------------------------------------------------------------------------------------
 def get_file_urls_and_row_counts(url, configuration, client):
 
-    function_fragment = 's3('
-    if 'function_fragment_for_file_list' in configuration:
-        function_fragment = f"""{configuration['function_fragment_for_file_list']}"""
-    else:
-        if 'function' in configuration:
-            function_fragment = f"""{configuration['function']}("""
+    function_fragment = f"""{configuration['function']}("""
+    if configuration['use_cluster_function_for_file_list'] == True:
+        function_fragment = f"""{configuration['function']}Cluster({configuration['cluster_name']}, """
 
     format_fragment =  f""", '{configuration['format']}'""" if 'format' in configuration else ''
     settings_fragment = f"""SETTINGS {to_string(configuration['settings'])}""" if 'settings' in configuration and len(configuration['settings']) > 0  else ''
@@ -236,8 +255,8 @@ def to_query_clause_fragments(configuration, row_start = None, row_end = None, e
 
 
     return {
-        'function_fragment' : f"""{configuration['function']}(""" if 'function' in configuration else 's3(',
-        'select_fragment' : configuration['select'] if 'select' in configuration else 'SELECT *',
+        'function_fragment' : f"""{configuration['function']}(""",
+        'select_fragment' : f"""configuration['select'] """,
         'format_fragment' :  f""", '{configuration['format']}'""" if 'format' in configuration else '',
         'structure_fragment' : f""", '{configuration['structure']}'""" if 'structure' in configuration else '',
         'filter_fragment' : filter_fragment,
@@ -485,7 +504,8 @@ def copy_partition(partition_id, db_src, tbl_src, db_dst, tbl_dst, client):
 def to_configuration_dictionary(args):
     configuration = {}
     add_to_dictionary_if_present(configuration, args, 'cfg.function', 'function')
-    add_to_dictionary_if_present(configuration, args, 'cfg.function_fragment_for_file_list', 'function_fragment_for_file_list')
+    add_to_dictionary_if_present(configuration, args, 'cfg.use_cluster_function_for_file_list', 'use_cluster_function_for_file_list')
+    add_to_dictionary_if_present(configuration, args, 'cfg.cluster_name', 'cluster_name')
     add_to_dictionary_if_present(configuration, args, 'cfg.format', 'format')
     add_to_dictionary_if_present(configuration, args, 'cfg.structure', 'structure')
     add_to_dictionary_if_present(configuration, args, 'cfg.select', 'select')
