@@ -1,8 +1,17 @@
-# Script for reliable loading large volumes of data
+# A script for reliable loading large volumes of data
 
-This is a script introduced in a [blog](todo) for loading a large dataset with trillions of rows incrementally and reliably over a long period of time. 
+Welcome 👋 to this repository containing a script for loading a large dataset with trillions of rows incrementally and reliably over a long period of time. 
 
-## Examples
+## Under the hood blog
+
+We described the data loading orchestrations mechanism used by the script in detail in a [blog](todo).
+
+## Dependencies
+
+- [Python](https://www.python.org) >= 3.10
+- [ClickHouse Connect](https://github.com/ClickHouse/clickhouse-connect) ClickHouse database driver ([installation instructions](https://github.com/ClickHouse/clickhouse-connect))
+
+## Example
 
 We provide an example of how to use the script with some large example data set [here](./examples/pypi/README.md).
 
