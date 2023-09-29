@@ -23,13 +23,13 @@ logger.addHandler(consoleHandler)
 #-----------------------------------------------------------------------------------------------------------------------
 ap = argparse.ArgumentParser()
 
-# ClickHouse connection settings ---------------------------------------------------------------------------------------
+# ① ClickHouse connection settings ------------------------------------------------------------------------------------
 ap.add_argument("--host",     required=True)
 ap.add_argument("--port",     required=True)
 ap.add_argument("--username", required=True)
 ap.add_argument("--password", required=True)
 
-# Data loading - main settings -----------------------------------------------------------------------------------------
+# ② Data loading - main settings --------------------------------------------------------------------------------------
 ap.add_argument("--url",            required=True,
                 help='The url (which can contain glob patterns) specifying the set of files to be loaded.')
 ap.add_argument("--rows_per_batch", required=True,
@@ -39,7 +39,7 @@ ap.add_argument("--database",       required=True,
 ap.add_argument("--table",          required=True,
                 help='Name of the target ClickHouse table.')
 
-# Data loading - optional settings -------------------------------------------------------------------------------------
+# ③ Data loading - optional settings ----------------------------------------------------------------------------------
 ap.add_argument("--cfg.function",                           required=False, default='s3',
                 help='Name of the table function for accessing the to-be-loaded files.')
 
