@@ -4,7 +4,7 @@ Welcome 👋 to this repository containing a script for loading a large dataset 
 
 ## Under the hood blog
 
-We described the data loading orchestrations mechanism used by the script in detail in a [blog](todo).
+We described the data loading orchestration mechanism used by the script in detail in a [blog](todo).
 
 ## Dependencies
 
