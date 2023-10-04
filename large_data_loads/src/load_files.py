@@ -262,7 +262,7 @@ def to_query_clause_fragments(configuration, row_start = None, row_end = None, e
 
     return {
         'function_fragment' : f"""{configuration['function']}(""",
-        'select_fragment' : f"""configuration['select'] """,
+        'select_fragment' : f"""{configuration['select']} """,
         'format_fragment' :  f""", '{configuration['format']}'""" if 'format' in configuration else '',
         'structure_fragment' : f""", '{configuration['structure']}'""" if 'structure' in configuration else '',
         'filter_fragment' : filter_fragment,
@@ -347,17 +347,12 @@ def create_staging_tables(db_dst, tbl_dst, client):
 #-----------------------------------------------------------------------------------------------------------------------
 def create_tbl_clone(db_src, tbl_src, db_dst, tbl_dst, client):
 
-    # REPLACE in case a previous run got stopped before cleanup
-    result = client.query("""
-    SELECT replaceOne(replaceOne(create_table_query, concat({db_src:String}, '.', {tbl_src:String}), concat({db_dst:String}, '.', {tbl_dst:String})), 'CREATE TABLE ', 'CREATE OR REPLACE TABLE ')
-    FROM system.tables
-    WHERE database = {db_src:String} AND name = {tbl_src:String}
-    """, parameters = {'db_src' : db_src, 'tbl_src' : tbl_src, 'db_dst' : db_dst, 'tbl_dst' : tbl_dst})
-
-    ddl_for_clone_table = result.result_rows[0][0]
+    command = f"""
+        CREATE OR REPLACE TABLE {db_src}.{tbl_src} AS {db_dst}.{tbl_dst}
+        """
     logger.info(f"ddl_for_clone_table:")
-    logger.info(f"{ddl_for_clone_table}")
-    client.command(ddl_for_clone_table)
+    logger.info(f"{command}")
+    client.command(command)
 
 
 #-----------------------------------------------------------------------------------------------------------------------
