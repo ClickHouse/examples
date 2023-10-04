@@ -348,7 +348,7 @@ def create_staging_tables(db_dst, tbl_dst, client):
 def create_tbl_clone(db_src, tbl_src, db_dst, tbl_dst, client):
 
     command = f"""
-        CREATE OR REPLACE TABLE {db_src}.{tbl_src} AS {db_dst}.{tbl_dst}
+        CREATE OR REPLACE TABLE {db_dst}.{tbl_dst} AS {db_src}.{tbl_src}
         """
     logger.info(f"ddl_for_clone_table:")
     logger.info(f"{command}")
