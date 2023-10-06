@@ -105,10 +105,13 @@ def load_files(url, rows_per_batch, db_dst, tbl_dst, client, configuration = {})
     # Step ②: Get full path urls and row counts for all to-be-loaded files
     logger.info(f"Fetching all files and row counts")
     file_list = get_file_urls_and_row_counts(url, configuration, client)
+    file_count = len(file_list)
+    file_nr = 0
     logger.info(f"Done")
-    logger.info(f"Processing {len(file_list)} files")
+    logger.info(f"Processing {file_count} files")
     for [file_url, file_row_count] in file_list:
-        logger.info(f"Processing file: {file_url}")
+        file_nr = file_nr + 1
+        logger.info(f"Processing file {file_nr} of {file_count}: {file_url}")
         logger.info(f"Row count: {file_row_count}")
         # Step ③: Load a single file (potentially in batches)
         if file_row_count > rows_per_batch:
@@ -203,9 +206,9 @@ def load_one_batch(batch_command, staging_tables, client):
         try:
             # Step ②: load one batch
             client.command(batch_command)
-            # Step ③: copy parts (of all partitions) from all staging tables to their corresponding destination tables
+            # Step ③: move parts (of all partitions) from all staging tables to their corresponding destination tables
             for d in staging_tables:
-                copy_partitions(d['db_staging'], d['tbl_staging'], d['db_dst'], d['tbl_dst'], client)
+                move_partitions(d['db_staging'], d['tbl_staging'], d['db_dst'], d['tbl_dst'], client)
             # Success, nothing more to do here
             return
         except Exception as err:
@@ -460,13 +463,13 @@ def create_mv_clone(mv_infos, tbl_src_infos, tbl_tgt_infos, client):
 
 
 #-----------------------------------------------------------------------------------------------------------------------
-# Copy all existing parts (for all partitions) from one table to another
+# Move all existing parts (for all partitions) from one table to another
 #-----------------------------------------------------------------------------------------------------------------------
-def copy_partitions(db_src, tbl_src, db_dst, tbl_dst, client):
+def move_partitions(db_src, tbl_src, db_dst, tbl_dst, client):
     partition_ids = get_partition_ids(db_src, tbl_src, client)
     for [partition_id] in partition_ids:
         logger.debug(f"Copy partition: {partition_id}")
-        copy_partition(partition_id, db_src, tbl_src, db_dst, tbl_dst, client)
+        move_partition(partition_id, db_src, tbl_src, db_dst, tbl_dst, client)
 
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -485,14 +488,16 @@ def get_partition_ids(db, table, client):
 
 
 #-----------------------------------------------------------------------------------------------------------------------
-# Copy a single partition from one table to another
+# Move a single partition from one table to another
 #-----------------------------------------------------------------------------------------------------------------------
-def copy_partition(partition_id, db_src, tbl_src, db_dst, tbl_dst, client):
+def move_partition(partition_id, db_src, tbl_src, db_dst, tbl_dst, client):
     command = f"""
-        ALTER TABLE {db_dst}.{tbl_dst}
-        ATTACH PARTITION {partition_id}
-        FROM {db_src}.{tbl_src}"""
+        ALTER TABLE {db_src}.{tbl_src}
+        MOVE PARTITION {partition_id}
+        TO TABLE {db_dst}.{tbl_dst}"""
+    # logger.debug(f"{command}")
     client.command(command)
+
 
 
 #-----------------------------------------------------------------------------------------------------------------------
