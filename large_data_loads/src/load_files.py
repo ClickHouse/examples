@@ -102,6 +102,9 @@ def main():
 def load_files(url, rows_per_batch, db_dst, tbl_dst, client, configuration = {}):
     # Step ①: Create all necessary staging tables (and MV clones)
     staging_tables = create_staging_tables(db_dst, tbl_dst, client)
+    drop_staging_tables(staging_tables, client)
+
+    return
     # Step ②: Get full path urls and row counts for all to-be-loaded files
     logger.info(f"Fetching all files and row counts")
     file_list = get_file_urls_and_row_counts(url, configuration, client)
@@ -426,7 +429,7 @@ def create_mv_clone(mv_infos, tbl_src_infos, tbl_tgt_infos, client):
     try:
         client.command(f"DROP VIEW {mv_infos['db_mv_clone']}.{mv_infos['mv_clone']}")
     except Exception as err:
-        if not f"{err=}".find(" does not exist.") > -1:
+        if (not f"{err=}".find(" does not exist") > -1) and (not f"{err=}".find("doesn't exist") > -1):
             raise
 
     result = client.query("""
