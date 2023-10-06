@@ -102,9 +102,6 @@ def main():
 def load_files(url, rows_per_batch, db_dst, tbl_dst, client, configuration = {}):
     # Step ①: Create all necessary staging tables (and MV clones)
     staging_tables = create_staging_tables(db_dst, tbl_dst, client)
-    drop_staging_tables(staging_tables, client)
-
-    return
     # Step ②: Get full path urls and row counts for all to-be-loaded files
     logger.info(f"Fetching all files and row counts")
     file_list = get_file_urls_and_row_counts(url, configuration, client)
