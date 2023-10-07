@@ -423,11 +423,7 @@ def get_mv_target_table(db, mv, client):
 def create_mv_clone(mv_infos, tbl_src_infos, tbl_tgt_infos, client):
 
     # drop staging mv in case a previous run got stopped before cleanup
-    try:
-        client.command(f"DROP VIEW {mv_infos['db_mv_clone']}.{mv_infos['mv_clone']}")
-    except Exception as err:
-        if (not f"{err=}".find(" does not exist") > -1) and (not f"{err=}".find("doesn't exist") > -1):
-            raise
+    client.command(f"DROP VIEW IF EXISTS {mv_infos['db_mv_clone']}.{mv_infos['mv_clone']}")
 
     result = client.query("""
         SELECT
