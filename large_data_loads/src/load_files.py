@@ -68,6 +68,9 @@ ap.add_argument("--cfg.select",                             required=False, defa
 ap.add_argument("--cfg.where",                              required=False,
                 help='Custom WHERE clause for retrieving the file data.')
 
+ap.add_argument("--cfg.staging_suffix",                     required=False, default='_staging',
+                help='Suffix appended to the names of the staging tables and MVs.')
+
 ap.add_argument('--cfg.query_settings', nargs='+', default=[], required=False,
                 help='Custom query-level settings.')
 
@@ -101,7 +104,7 @@ def main():
 #-----------------------------------------------------------------------------------------------------------------------
 def load_files(url, rows_per_batch, db_dst, tbl_dst, client, configuration = {}):
     # Step ①: Create all necessary staging tables (and MV clones)
-    staging_tables = create_staging_tables(db_dst, tbl_dst, client)
+    staging_tables = create_staging_tables(db_dst, tbl_dst, client, configuration)
     # Step ②: Get full path urls and row counts for all to-be-loaded files
     logger.info(f"Fetching all files and row counts")
     file_list = get_file_urls_and_row_counts(url, configuration, client)
@@ -300,10 +303,10 @@ class BatchFailedError(Exception):
 #-----------------------------------------------------------------------------------------------------------------------
 # Create all staging tables - one for the main target table, and one for each MV target table, we also clone all MVs
 #-----------------------------------------------------------------------------------------------------------------------
-def create_staging_tables(db_dst, tbl_dst, client):
+def create_staging_tables(db_dst, tbl_dst, client, configuration):
     staging_tables = []
     db_staging = db_dst
-    tbl_staging = tbl_dst + '_staging'
+    tbl_staging = tbl_dst + configuration['staging_suffix']
     # create staging table for main target table
     create_tbl_clone(db_dst, tbl_dst, db_staging, tbl_staging, client)
     staging_tables.append({
@@ -316,13 +319,13 @@ def create_staging_tables(db_dst, tbl_dst, client):
         db_mv = d['db_mv']
         mv = d['mv']
         db_mv_staging = db_mv
-        mv_staging = mv + '_staging'
+        mv_staging = mv + configuration['staging_suffix']
 
          # target table infos
         db_tgt = d['db_target']
         tbl_tgt = d['tbl_target']
         db_tgt_staging = db_tgt
-        tbl_tgt_staging = tbl_tgt + '_staging'
+        tbl_tgt_staging = tbl_tgt + configuration['staging_suffix']
 
         # create staging table for MV target table
         create_tbl_clone(db_tgt, tbl_tgt, db_tgt_staging, tbl_tgt_staging, client)
@@ -512,6 +515,7 @@ def to_configuration_dictionary(args):
     add_to_dictionary_if_present(configuration, args, 'cfg.structure', 'structure')
     add_to_dictionary_if_present(configuration, args, 'cfg.select', 'select')
     add_to_dictionary_if_present(configuration, args, 'cfg.where', 'where')
+    add_to_dictionary_if_present(configuration, args, 'cfg.staging_suffix', 'staging_suffix')
     configuration.update({'settings' : to_query_settings_dictionary(args)})
 
     return configuration
