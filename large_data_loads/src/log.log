@@ -1,0 +1,17 @@
+2023-10-07 00:02:00,484 ddl_for_clone_table:
+2023-10-07 00:02:00,485 
+        CREATE OR REPLACE TABLE default.pypi_staging AS default.pypi
+        
+2023-10-07 00:04:15,464 ddl_for_clone_table:
+2023-10-07 00:04:15,465 
+        CREATE OR REPLACE TABLE default.pypi_downloads_per_day_staging AS default.pypi_downloads_per_day
+        
+2023-10-07 16:25:00,661 ddl_for_clone_table:
+2023-10-07 16:25:00,662 
+        CREATE OR REPLACE TABLE default.pypi_staging AS default.pypi
+        
+2023-10-07 16:26:15,467 ddl_for_clone_table:
+2023-10-07 16:26:15,468 
+        CREATE OR REPLACE TABLE default.pypi_temp_staging AS default.pypi_temp
+        
+2023-10-07 16:26:23,682 Fetching all files and row counts

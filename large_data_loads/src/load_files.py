@@ -146,7 +146,7 @@ def get_file_urls_and_row_counts(url, configuration, client):
     SELECT
         concat(_protocol, '://', _domain,  if(startsWith(_path, '/') , '', '/'), _path) as file,
         count() as count
-    FROM {function_fragment}'{url}'{format_fragment})
+    FROM {function_fragment}'{url}'{format_fragment}) {configuration['where']}
     GROUP BY 1
     ORDER BY 1
     {settings_fragment}"""
