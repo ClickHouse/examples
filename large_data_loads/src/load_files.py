@@ -45,9 +45,9 @@ def get_logger(
     file_handler_error.setLevel(logging.WARNING)
     logger.addHandler(file_handler_error)
 
-    consoleHandler = logging.StreamHandler()
-    consoleHandler.setFormatter(log_formatter)
-    logger.addHandler(consoleHandler)
+    # consoleHandler = logging.StreamHandler()
+    # consoleHandler.setFormatter(log_formatter)
+    # logger.addHandler(consoleHandler)
 
     logger.setLevel(logging.DEBUG)
 
@@ -81,6 +81,8 @@ ap.add_argument("--database", required=True,
                 help='Name of the target ClickHouse database.')
 ap.add_argument("--table", required=True,
                 help='Name of the target ClickHouse table.')
+ap.add_argument("--files_chunk_size", required=False, default=1000,
+                help='How many files are atomically processed together.')
 
 # ③ Data loading - optional settings ----------------------------------------------------------------------------------
 ap.add_argument("--cfg.function", required=False, default='s3',
@@ -135,6 +137,7 @@ def main():
         file_list = get_file_urls_from_file(args['file'], int(args['rows_per_batch']))
     load_files(
         file_list=file_list,
+        files_chunk_size=int(args['files_chunk_size']),
         rows_per_batch=int(args['rows_per_batch']),
         db_dst=args['database'],
         tbl_dst=args['table'],
@@ -145,26 +148,50 @@ def main():
 # -----------------------------------------------------------------------------------------------------------------------
 # Main entry point to the code
 # -----------------------------------------------------------------------------------------------------------------------
-def load_files(file_list, rows_per_batch, db_dst, tbl_dst, client, configuration={}):
+def load_files(file_list, files_chunk_size, rows_per_batch, db_dst, tbl_dst, client, configuration={}):
     # Step ①: Create all necessary staging tables (and MV clones)
+    logger.info(f"Creating staging tables")
     staging_tables = create_staging_tables(db_dst, tbl_dst, client, configuration)
     file_count = len(file_list)
-    file_nr = 0
     logger.info(f"Done")
+
     logger.info(f"Processing {file_count} files")
-    for [file_url, file_row_count] in file_list:
-        file_nr = file_nr + 1
-        logger.info(f"Processing file {file_nr} of {file_count}: {file_url}")
-        logger.info(f"Row count: {file_row_count}")
-        # Step ③: Load a single file (potentially in batches)
-        if file_row_count > rows_per_batch:
-            # ③.Ⓐ Load a single file in batches (because its file_row_count  > rows_per_batch)
-            load_file_in_batches(file_url, file_row_count, rows_per_batch, staging_tables, configuration, client)
-        else:
-            # ③.Ⓑ Load a single file completely in one batch
-            load_file_complete(file_url, staging_tables, configuration, client)
+    for sub_list in chunker(file_list, files_chunk_size):
+        load_files_atomically(sub_list, staging_tables, configuration, client)
     # Cleanup: Drop all staging tables (and MV clones)
     drop_staging_tables(staging_tables, client)
+
+
+
+
+@retry(tries=retry_tries, delay=retry_delay, backoff=retry_backoff, logger=logger)
+def load_files_atomically(file_list, staging_tables, configuration, client):
+
+    logger.info(f"staging load started")
+    try:
+        _load_files(file_list, staging_tables, configuration, client)
+    except Exception as err:
+        truncate_tables(staging_tables, client)
+        raise
+    logger.info(f"staging load complete")
+
+    logger.info(f"moving partitions from staging tables to target tables")
+    for d in staging_tables:
+        move_partitions(d['db_staging'], d['tbl_staging'], d['db_dst'], d['tbl_dst'], client)
+
+
+
+def _load_files(file_list, staging_tables, configuration, client):
+    for [file_url, file_row_count] in file_list:
+        logger.info(f"Loading file into staging tables: {file_url}")
+
+        command = create_batch_load_command(file_url, staging_tables[0]['db_staging'], staging_tables[0]['tbl_staging'],
+                                        configuration)
+        client.command(command)
+
+
+def chunker(seq, size):
+    return (seq[pos:pos + size] for pos in range(0, len(seq), size))
 
 
 def get_file_urls_from_file(file, rows_per_batch):
@@ -196,6 +223,7 @@ def get_file_urls_and_row_counts(url, configuration, client):
         count() as count
     FROM {function_fragment}'{url}'{format_fragment}) {configuration['where']}
     GROUP BY 1
+    ORDER BY 1
     {settings_fragment}"""
 
     logger.debug(f"Query for full path urls and row counts:{query}")
@@ -257,7 +285,7 @@ def load_one_batch(batch_command, staging_tables, client):
         move_partitions(d['db_staging'], d['tbl_staging'], d['db_dst'], d['tbl_dst'], client)
 
 
-@retry(tries=retry_tries, delay=retry_delay, backoff=retry_backoff)
+@retry(tries=retry_tries, delay=retry_delay, backoff=retry_backoff, logger=logger)
 def _load_batch(batch_command, client):
     try:
         client.command(batch_command)
@@ -340,13 +368,13 @@ class BatchFailedError(Exception):
 # -----------------------------------------------------------------------------------------------------------------------
 
 
-@retry(tries=retry_tries, delay=retry_delay, backoff=retry_backoff)
+@retry(tries=retry_tries, delay=retry_delay, backoff=retry_backoff, logger=logger)
 def _command(client, command):
     logger.debug(f"{command}")
     client.command(command)
 
 
-@retry(tries=retry_tries, delay=retry_delay, backoff=retry_backoff)
+@retry(tries=retry_tries, delay=retry_delay, backoff=retry_backoff, logger=logger)
 def _query(client, query, parameters = None):
     result = client.query(query, parameters)
     return result
