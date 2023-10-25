@@ -1,14 +1,21 @@
 #!/usr/bin/python
-import sys
-import clickhouse_connect
-import time
-import logging
 import argparse
+import clickhouse_connect
+from clickhouse_connect import common
+from datetime import datetime
+import logging
+import random
 from retry import retry
+import signal
+import sys
+import time
+import uuid
+
 
 MIN_PYTHON = (3, 10)
 if sys.version_info < MIN_PYTHON:
     sys.exit("Python %s.%s or later is required.\n" % MIN_PYTHON)
+
 
 # -----------------------------------------------------------------------------------------------------------------------
 # Retries Configuration
@@ -68,32 +75,21 @@ ap.add_argument("--port", required=True)
 ap.add_argument("--username", required=True)
 ap.add_argument("--password", required=True)
 
-source_parser = ap.add_mutually_exclusive_group(required=True)
 
 # ② Data loading - main settings --------------------------------------------------------------------------------------
-source_parser.add_argument("--url", required=False,
-                           help='The url (which can contain glob patterns) specifying the set of files to be loaded.')
-source_parser.add_argument("--file", required=False,
-                           help='The CSV file specifying the set of files to be loaded.')
-ap.add_argument("--rows_per_batch", required=True,
-                help='How many rows should be loaded within a single batch transfer.')
+ap.add_argument("--task_database", required=True)
+ap.add_argument("--task_table", required=True)
+ap.add_argument("--worker_id", required=False, default=str(uuid.uuid1()).replace('-', '_'))
+
 ap.add_argument("--database", required=True,
                 help='Name of the target ClickHouse database.')
 ap.add_argument("--table", required=True,
                 help='Name of the target ClickHouse table.')
-ap.add_argument("--files_chunk_size", required=False, default=1000,
-                help='How many files are atomically processed together.')
+
 
 # ③ Data loading - optional settings ----------------------------------------------------------------------------------
 ap.add_argument("--cfg.function", required=False, default='s3',
                 help='Name of the table function for accessing the to-be-loaded files.')
-
-ap.add_argument("--cfg.use_cluster_function_for_file_list", required=False,
-                help='Should the more efficient ...Cluster version of the table function be used for retrieving the file list?',
-                action="store_true")
-
-ap.add_argument("--cfg.cluster_name", required=False, default='default',
-                help='Name of the cluster in case the ...Cluster table function version is used for retrieving the file list.')
 
 ap.add_argument("--cfg.format", required=False,
                 help='Name of the file format used.')
@@ -107,63 +103,153 @@ ap.add_argument("--cfg.select", required=False, default='SELECT *',
 ap.add_argument("--cfg.where", required=False, default='',
                 help='Custom WHERE clause for retrieving the file data.')
 
-ap.add_argument("--cfg.staging_suffix", required=False, default='_staging',
-                help='Suffix appended to the names of the staging tables and MVs.')
-
 ap.add_argument('--cfg.query_settings', nargs='+', default=[], required=False,
                 help='Custom query-level settings.')
 
 args = vars(ap.parse_args())
 
 
+# staging_tables is global for the signal_handler
+staging_tables = []
+
+
+# -----------------------------------------------------------------------------------------------------------------------
+# as the worker executes a endless loop with sleep breaks,
+# we use a signal handler for cleaning up all staging tables
+# when the script is stopped via Ctrl+C
+# -----------------------------------------------------------------------------------------------------------------------
+def signal_handler(sig, frame):
+    # logger.info(f"You pressed Ctrl+C!")
+    logger.info(f"Cleanup: Drop all staging tables (and MV clones)")
+
+    # As this runs in another thread (compared to the main thread) we need a different
+    # client with a different session id - otherwise ClickHouse will complain
+    common.set_setting('autogenerate_session_id', False)
+    client = clickhouse_connect.get_client(
+    host=args['host'],
+    port=args['port'],
+    username=args['username'],
+    password=args['password'],
+    secure=True)
+
+    drop_staging_tables(staging_tables, client)
+
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
+
 # -----------------------------------------------------------------------------------------------------------------------
 # Calling the main entry point
 # -----------------------------------------------------------------------------------------------------------------------
 def main():
+
     client = clickhouse_connect.get_client(
         host=args['host'],
         port=args['port'],
         username=args['username'],
         password=args['password'],
-        secure=True)
+        secure=True,
+        settings={
+            'keeper_map_strict_mode': 1
+        })
 
-    # Get full path urls and row counts for all to-be-loaded files
-    logger.info(f"Fetching all files and row counts")
     configuration = to_configuration_dictionary(args)
-    file_list = []
-    if args['url']:
-        file_list = get_file_urls_and_row_counts(args['url'], configuration, client)
-    elif args['file']:
-        file_list = get_file_urls_from_file(args['file'], int(args['rows_per_batch']))
-    load_files(
-        file_list=file_list,
-        files_chunk_size=int(args['files_chunk_size']),
-        rows_per_batch=int(args['rows_per_batch']),
+
+    # Create all necessary staging tables (and MV clones)
+    logger.info(f"Creating staging tables")
+    global staging_tables
+    staging_tables = create_staging_tables(db_dst=args['database'], tbl_dst=args['table'], client=client, configuration=configuration)
+    logger.info(f"Done")
+
+    # Start the worker process
+    worker_process(
         db_dst=args['database'],
         tbl_dst=args['table'],
         client=client,
+        worker_id = args['worker_id'],
+        sleep_time = 60,
         configuration=configuration)
 
 
 # -----------------------------------------------------------------------------------------------------------------------
-# Main entry point to the code
 # -----------------------------------------------------------------------------------------------------------------------
-def load_files(file_list, files_chunk_size, rows_per_batch, db_dst, tbl_dst, client, configuration={}):
-    # Step ①: Create all necessary staging tables (and MV clones)
-    logger.info(f"Creating staging tables")
-    staging_tables = create_staging_tables(db_dst, tbl_dst, client, configuration)
-    file_count = len(file_list)
-    logger.info(f"Done")
-
-    logger.info(f"Processing {file_count} files")
-    for sub_list in chunker(file_list, files_chunk_size):
-        load_files_atomically(sub_list, staging_tables, configuration, client)
-    # Cleanup: Drop all staging tables (and MV clones)
-    drop_staging_tables(staging_tables, client)
+# Worker process
+# -----------------------------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------
 
 
+# -----------------------------------------------------------------------------------------------------------------------
+# The worker process main entry point
+# -----------------------------------------------------------------------------------------------------------------------
+def worker_process(db_dst, tbl_dst, worker_id,  sleep_time, client, configuration={}):
+    logger.info(f'starting worker {worker_id}')
+
+    while True:
+
+        logger.info(f'---------- polling a chunk of files')
+        claimed_files = claim_files(args['task_database'], args['task_table'], worker_id, 10, client)
+
+        if claimed_files is not None:
+            logger.info(f'Polled a chunk of {len(claimed_files)} files')
+            load_files_atomically(claimed_files, staging_tables, configuration, client)
+            cleanup_files(args['task_database'], args['task_table'], claimed_files, client)
+        else:
+            logger.info(f'Poll was unsuccessful')
+            logger.info(f'{worker_id} is sleeping 60s till next poll')
+            time.sleep(sleep_time)
 
 
+# -----------------------------------------------------------------------------------------------------------------------
+# Claim a chunk of files from the task table
+# -----------------------------------------------------------------------------------------------------------------------
+def claim_files(task_database, task_table, worker_id, retries, client):
+    jobs = _query_rows(client, f"SELECT file_path, file_paths FROM {task_database}.{task_table} WHERE worker_id = '' ORDER BY scheduled ASC LIMIT {retries}")
+
+    for job in jobs:
+        file_path = job[0]
+        logger.info(f'attempting to claim {file_path}')
+        scheduled_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        try:
+            # keeper map doesn't allow two threads to set here
+            _query_row(client, f"ALTER TABLE {task_database}.{task_table} UPDATE worker_id = '{worker_id}', "
+                              f"started_time = '{scheduled_time}' WHERE file_path = '{file_path}' AND worker_id = ''")
+            # this may either throw an exception if another worker gets there first OR return 0 rows if the
+            # job has already been processed and deleted or claimed successfully. So we check we have set and claimed.
+            assigned_worker_id = _query_row(client, f"SELECT worker_id FROM {task_database}.{task_table} WHERE file_path = '{file_path}'")
+            if assigned_worker_id[0] == worker_id:
+                logger.info(f'[{worker_id}] claimed file [{file_path}]')
+                return job[1]
+            else:
+                logger.info(f'unable to claim file [{file_path}]. maybe already claimed.')
+        except:
+            logger.exception(f'unable to claim file [{file_path}]. maybe already claimed.')
+    return None
+
+
+# -----------------------------------------------------------------------------------------------------------------------
+# After processing a chunk of files from the work_queue, we delete the corresponding task from the task table
+# -----------------------------------------------------------------------------------------------------------------------
+def cleanup_files(task_database, task_table, claimed_files, client):
+
+    try:
+        logger.info(f'cleaning up job [{claimed_files[0]}]')
+        # always release the job so it can be scheduled
+        _command(client, f"DELETE FROM {task_database}.{task_table} WHERE file_path='{claimed_files[0]}'")
+    except:
+        logger.exception(f'unable to clean up job [{file_path}]. Manually clean.')
+
+
+# -----------------------------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------
+# Loading a chunk of files atomically (all or nothing) into the target table + all existing MVs
+# -----------------------------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------
+
+
+# -----------------------------------------------------------------------------------------------------------------------
+# The main entry point for loading a chunk of files atomically
+# -----------------------------------------------------------------------------------------------------------------------
 @retry(tries=retry_tries, delay=retry_delay, backoff=retry_backoff, logger=logger)
 def load_files_atomically(file_list, staging_tables, configuration, client):
 
@@ -180,132 +266,29 @@ def load_files_atomically(file_list, staging_tables, configuration, client):
         move_partitions(d['db_staging'], d['tbl_staging'], d['db_dst'], d['tbl_dst'], client)
 
 
-
+# -----------------------------------------------------------------------------------------------------------------------
+# Helper function
+# -----------------------------------------------------------------------------------------------------------------------
 def _load_files(file_list, staging_tables, configuration, client):
-    for [file_url, file_row_count] in file_list:
-        logger.info(f"Loading file into staging tables: {file_url}")
+    file_number = len(file_list)
+    current_number = 1
+
+    for file_url in file_list:
+        logger.info(f"Loading file {current_number} of {file_number} into staging tables: {file_url}")
 
         command = create_batch_load_command(file_url, staging_tables[0]['db_staging'], staging_tables[0]['tbl_staging'],
                                         configuration)
+
         client.command(command)
-
-
-def chunker(seq, size):
-    return (seq[pos:pos + size] for pos in range(0, len(seq), size))
-
-
-def get_file_urls_from_file(file, rows_per_batch):
-    file_list = []
-    with open(file, 'r') as file_urls:
-        for line in file_urls:
-            file_list.append((line.strip(), rows_per_batch))
-    return file_list
+        current_number+=1
 
 
 # -----------------------------------------------------------------------------------------------------------------------
-# Load files - Step ②: Get full path urls and row counts for all to-be-loaded files
+# Construction of the batch load SQL command
 # -----------------------------------------------------------------------------------------------------------------------
-def get_file_urls_and_row_counts(url, configuration, client):
-    function_fragment = f"""{configuration['function']}("""
-    if configuration['use_cluster_function_for_file_list'] == True:
-        function_fragment = f"""{configuration['function']}Cluster({configuration['cluster_name']}, """
-
-    format_fragment = f""", '{configuration['format']}'""" if 'format' in configuration else ''
-    settings_fragment = f"""SETTINGS {to_string(configuration['settings'])}""" if 'settings' in configuration and len(
-        configuration['settings']) > 0 else ''
-
-    query = f"""
-    WITH
-        splitByString('://', '{url}')[1] AS _protocol,
-        domain('{url}') AS _domain
-    SELECT
-        concat(_protocol, '://', _domain,  if(startsWith(_path, '/') , '', '/'), _path) as file,
-        count() as count
-    FROM {function_fragment}'{url}'{format_fragment}) {configuration['where']}
-    GROUP BY 1
-    ORDER BY 1
-    {settings_fragment}"""
-
-    logger.debug(f"Query for full path urls and row counts:{query}")
-
-    result = _query(client, query)
-    return result.result_rows
-
-
-# -----------------------------------------------------------------------------------------------------------------------
-# Load files - Step ③.Ⓐ: Load a single file in batches (because its file_row_count  > rows_per_batch)
-# -----------------------------------------------------------------------------------------------------------------------
-def load_file_in_batches(file_url, file_row_count, rows_per_batch, staging_tables,
-                         configuration, client):
-    row_start = 0
-    row_end = rows_per_batch
-    while row_start < file_row_count:
-        command = create_batch_load_command(file_url, staging_tables[0]['db_staging'], staging_tables[0]['tbl_staging'],
-                                            configuration, row_start, row_end,
-                                            extra_settings={'input_format_parquet_preserve_order': 1,
-                                                            'parallelize_output_from_storages': 0})
-        try:
-            logger.debug(f"Batch loading file: {file_url}")
-            logger.debug(f"Batch row block: {row_start} to {row_end}")
-            logger.debug(f"Batch command: {command}")
-            load_one_batch(command, staging_tables, client)
-        except BatchFailedError as err:
-            logger.error(f"{err=}")
-            logger.error(f"Failed file: {file_url}")
-            logger.error(f"Failed row block: {row_start} to {row_end}")
-        row_start = row_end
-        row_end = row_end + rows_per_batch
-
-
-# -----------------------------------------------------------------------------------------------------------------------
-# Load files - Step ③.Ⓑ: Load a single file completely in one batch (because its file_row_count  < rows_per_batch)
-# -----------------------------------------------------------------------------------------------------------------------
-def load_file_complete(file_url, staging_tables, configuration, client):
-    command = create_batch_load_command(file_url, staging_tables[0]['db_staging'], staging_tables[0]['tbl_staging'],
-                                        configuration)
-    try:
-        logger.debug(f"Batch loading file: {file_url}")
-        logger.debug(f"Batch command: {command}")
-        load_one_batch(command, staging_tables, client)
-    except BatchFailedError as err:
-        logger.error(f"{err=}")
-        logger.error(f"Failed file: {file_url}")
-
-
-
-
-
-# -----------------------------------------------------------------------------------------------------------------------
-# Load one batch for a single file (Step ③.Ⓐ or Step ③.Ⓑ)
-# -----------------------------------------------------------------------------------------------------------------------
-def load_one_batch(batch_command, staging_tables, client):
-    _load_batch(batch_command, client)
-    logger.info(f"staging load complete")
-    for d in staging_tables:
-        move_partitions(d['db_staging'], d['tbl_staging'], d['db_dst'], d['tbl_dst'], client)
-
-
-@retry(tries=retry_tries, delay=retry_delay, backoff=retry_backoff, logger=logger)
-def _load_batch(batch_command, client):
-    try:
-        client.command(batch_command)
-    except Exception as err:
-        logger.error(f"Unexpected {err=}, {type(err)=}")
-        truncate_tables(staging_tables, client)
-        raise
-
-def truncate_tables(staging_tables, client):
-    for d in staging_tables:
-        _command(client, f"TRUNCATE TABLE {d['db_staging']}.{d['tbl_staging']}")
-
-
-# -----------------------------------------------------------------------------------------------------------------------
-# Helper function for ③.Ⓐ and ③.Ⓑ: construct the batch load SQL command
-# -----------------------------------------------------------------------------------------------------------------------
-def create_batch_load_command(file_url, db_staging, tbl_staging, configuration, row_start=None, row_end=None,
-                              extra_settings=None):
+def create_batch_load_command(file_url, db_staging, tbl_staging, configuration):
     # Handling of all optional configuration settings
-    query_clause_fragments = to_query_clause_fragments(configuration, row_start, row_end, extra_settings)
+    query_clause_fragments = to_query_clause_fragments(configuration)
 
     command = f"""
             INSERT INTO {db_staging}.{tbl_staging}
@@ -318,21 +301,16 @@ def create_batch_load_command(file_url, db_staging, tbl_staging, configuration, 
 
 
 # -----------------------------------------------------------------------------------------------------------------------
-# Helper function for ③.Ⓐ and ③.Ⓑ: Turn optional query configuration settings into fragments for the query clauses
+# Turn optional query configuration settings into fragments for the query clauses
 # -----------------------------------------------------------------------------------------------------------------------
-def to_query_clause_fragments(configuration, row_start=None, row_end=None, extra_settings=None):
+def to_query_clause_fragments(configuration):
     settings = {}
     if 'settings' in configuration:
         settings = {**settings, **configuration['settings']}
-    if extra_settings:
-        settings = {**settings, **extra_settings}
 
     filter_fragment = ''
     if 'where' in configuration:
         filter_fragment = configuration['where']
-    if row_end:
-        filter_fragment = filter_fragment + (' AND ' if len(filter_fragment) > 0 else ' WHERE ')
-        filter_fragment = filter_fragment + f"""rowNumberInAllBlocks() >= {row_start} AND rowNumberInAllBlocks()  < {row_end}"""
 
     return {
         'function_fragment': f"""{configuration['function']}(""",
@@ -355,10 +333,11 @@ def to_string(settings):
 
 
 # -----------------------------------------------------------------------------------------------------------------------
-# Our dedicated exception for indicating that a batch failed even after a few retries
+# We truncate all staging tables in case something goes wrong and retry the load
 # -----------------------------------------------------------------------------------------------------------------------
-class BatchFailedError(Exception):
-    pass
+def truncate_tables(staging_tables, client):
+    for d in staging_tables:
+        _command(client, f"TRUNCATE TABLE {d['db_staging']}.{d['tbl_staging']}")
 
 
 # -----------------------------------------------------------------------------------------------------------------------
@@ -373,11 +352,20 @@ def _command(client, command):
     logger.debug(f"{command}")
     client.command(command)
 
-
 @retry(tries=retry_tries, delay=retry_delay, backoff=retry_backoff, logger=logger)
 def _query(client, query, parameters = None):
     result = client.query(query, parameters)
     return result
+
+@retry(tries=retry_tries, delay=retry_delay, backoff=retry_backoff, logger=logger)
+def _query_rows(client, query):
+    return client.query(query).result_set
+
+@retry(tries=retry_tries, delay=retry_delay, backoff=retry_backoff, logger=logger)
+def _query_row(client, query):
+    for result in client.query(query).result_set:
+        return result
+    return None
 
 
 # -----------------------------------------------------------------------------------------------------------------------
@@ -392,8 +380,11 @@ def _query(client, query, parameters = None):
 # -----------------------------------------------------------------------------------------------------------------------
 def create_staging_tables(db_dst, tbl_dst, client, configuration):
     staging_tables = []
-    db_staging = db_dst
-    tbl_staging = tbl_dst + configuration['staging_suffix']
+
+    db_staging = db_dst + configuration['staging_suffix']
+    create_staging_db(db_staging, client)
+
+    tbl_staging = tbl_dst
     # create staging table for main target table
     create_tbl_clone(db_dst, tbl_dst, db_staging, tbl_staging, client)
     staging_tables.append({
@@ -405,15 +396,14 @@ def create_staging_tables(db_dst, tbl_dst, client, configuration):
         # MV infos
         db_mv = d['db_mv']
         mv = d['mv']
-        db_mv_staging = db_mv
-        mv_staging = mv + configuration['staging_suffix']
+        db_mv_staging = db_mv + configuration['staging_suffix']
+        mv_staging = mv
 
         # target table infos
         db_tgt = d['db_target']
         tbl_tgt = d['tbl_target']
-        db_tgt_staging = db_tgt
-        db_tgt_staging = db_tgt
-        tbl_tgt_staging = tbl_tgt + configuration['staging_suffix']
+        db_tgt_staging = db_tgt + configuration['staging_suffix']
+        tbl_tgt_staging = tbl_tgt
 
         # create staging table for MV target table
         create_tbl_clone(db_tgt, tbl_tgt, db_tgt_staging, tbl_tgt_staging, client)
@@ -447,15 +437,27 @@ def create_tbl_clone(db_src, tbl_src, db_dst, tbl_dst, client):
 
 
 # -----------------------------------------------------------------------------------------------------------------------
+# Create the staging database
+# -----------------------------------------------------------------------------------------------------------------------
+def create_staging_db(db_dst, client):
+    command = f"""
+        CREATE DATABASE IF NOT EXISTS {db_dst}
+        """
+    _command(client, command)
+
+
+# -----------------------------------------------------------------------------------------------------------------------
 # Drop all staging tables, including MV clones
 # -----------------------------------------------------------------------------------------------------------------------
 def drop_staging_tables(staging_tables, client):
-    for d in staging_tables:
-        if 'mv_staging' in d:
-            # drop a mv clone
-            _command(client, f"""DROP VIEW IF EXISTS {d['db_mv_staging']}.{d['mv_staging']}""")
-        # drop a staging table
-        _command(client, f"""DROP TABLE IF EXISTS {d['db_staging']}.{d['tbl_staging']}""")
+    _command(client, f"""DROP DATABASE IF EXISTS {staging_tables[0]['db_staging']}""")
+
+    # for d in staging_tables:
+    #     if 'mv_staging' in d:
+    #         # drop a mv clone
+    #         _command(client, f"""DROP VIEW IF EXISTS {d['db_mv_staging']}.{d['mv_staging']}""")
+    #     # drop a staging table
+    #     _command(client, f"""DROP TABLE IF EXISTS {d['db_staging']}.{d['tbl_staging']}""")
 
 
 # -----------------------------------------------------------------------------------------------------------------------
@@ -595,14 +597,13 @@ def move_partition(partition_id, db_src, tbl_src, db_dst, tbl_dst, client):
 def to_configuration_dictionary(args):
     configuration = {}
     add_to_dictionary_if_present(configuration, args, 'cfg.function', 'function')
-    add_to_dictionary_if_present(configuration, args, 'cfg.use_cluster_function_for_file_list',
-                                 'use_cluster_function_for_file_list')
-    add_to_dictionary_if_present(configuration, args, 'cfg.cluster_name', 'cluster_name')
     add_to_dictionary_if_present(configuration, args, 'cfg.format', 'format')
     add_to_dictionary_if_present(configuration, args, 'cfg.structure', 'structure')
     add_to_dictionary_if_present(configuration, args, 'cfg.select', 'select')
     add_to_dictionary_if_present(configuration, args, 'cfg.where', 'where')
-    add_to_dictionary_if_present(configuration, args, 'cfg.staging_suffix', 'staging_suffix')
+
+    configuration.update({'staging_suffix': '_' + args['worker_id']})
+
     configuration.update({'settings': to_query_settings_dictionary(args)})
 
     return configuration
@@ -622,4 +623,9 @@ def to_query_settings_dictionary(args):
     return query_settings
 
 
+# -----------------------------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------
+# Calling the main function
+# -----------------------------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------
 main()
