@@ -91,6 +91,9 @@ ap.add_argument("--table", required=True,
 ap.add_argument("--cfg.function", required=False, default='s3',
                 help='Name of the table function for accessing the to-be-loaded files.')
 
+ap.add_argument("--cfg.bucket_access_key", required=False)
+ap.add_argument("--cfg.bucket_access_secret", required=False)
+
 ap.add_argument("--cfg.format", required=False,
                 help='Name of the file format used.')
 
@@ -279,6 +282,7 @@ def _load_files(file_list, staging_tables, configuration, client):
         command = create_batch_load_command(file_url, staging_tables[0]['db_staging'], staging_tables[0]['tbl_staging'],
                                         configuration)
 
+        print(command)
         client.command(command)
         current_number+=1
 
@@ -292,7 +296,7 @@ def create_batch_load_command(file_url, db_staging, tbl_staging, configuration):
 
     command = f"""
             INSERT INTO {db_staging}.{tbl_staging}
-            {query_clause_fragments['select_fragment']} FROM {query_clause_fragments['function_fragment']}'{file_url}'{query_clause_fragments['format_fragment']}{query_clause_fragments['structure_fragment']})
+            {query_clause_fragments['select_fragment']} FROM {query_clause_fragments['function_fragment']}'{file_url}'{query_clause_fragments['access_fragment']}{query_clause_fragments['format_fragment']}{query_clause_fragments['structure_fragment']})
             {query_clause_fragments['filter_fragment']}
             {query_clause_fragments['settings_fragment']}
         """
@@ -304,16 +308,22 @@ def create_batch_load_command(file_url, db_staging, tbl_staging, configuration):
 # Turn optional query configuration settings into fragments for the query clauses
 # -----------------------------------------------------------------------------------------------------------------------
 def to_query_clause_fragments(configuration):
-    settings = {}
-    if 'settings' in configuration:
-        settings = {**settings, **configuration['settings']}
+
+    access_fragment = ''
+    if 'bucket_access_key' in configuration:
+        access_fragment = f""", '{configuration['bucket_access_key']}', '{configuration['bucket_access_secret']}'"""
 
     filter_fragment = ''
     if 'where' in configuration:
         filter_fragment = configuration['where']
 
+        settings = {}
+    if 'settings' in configuration:
+        settings = {**settings, **configuration['settings']}
+
     return {
         'function_fragment': f"""{configuration['function']}(""",
+        'access_fragment': access_fragment,
         'select_fragment': f"""{configuration['select']} """,
         'format_fragment': f""", '{configuration['format']}'""" if 'format' in configuration else '',
         'structure_fragment': f""", '{configuration['structure']}'""" if 'structure' in configuration else '',
@@ -597,6 +607,8 @@ def move_partition(partition_id, db_src, tbl_src, db_dst, tbl_dst, client):
 def to_configuration_dictionary(args):
     configuration = {}
     add_to_dictionary_if_present(configuration, args, 'cfg.function', 'function')
+    add_to_dictionary_if_present(configuration, args, 'cfg.bucket_access_key', 'bucket_access_key')
+    add_to_dictionary_if_present(configuration, args, 'cfg.bucket_access_secret', 'bucket_access_secret')
     add_to_dictionary_if_present(configuration, args, 'cfg.format', 'format')
     add_to_dictionary_if_present(configuration, args, 'cfg.structure', 'structure')
     add_to_dictionary_if_present(configuration, args, 'cfg.select', 'select')
