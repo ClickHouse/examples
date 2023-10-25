@@ -30,7 +30,7 @@ class ClickHouse(beam.DoFn):
 
     def setup(self):
         self._client = clickhouse_connect.get_client(host=self._host, port=self._port, username=self._username,
-                                                     password=self._password, secure=True)
+                                                     password=self._password, secure=self._ssl)
         describe_result = self._client.query(f'DESCRIBE TABLE {self._table}')
         column_defs = [ColumnDef(**row) for row in describe_result.named_results()
                        if row['default_type'] not in ('ALIAS', 'MATERIALIZED')]
