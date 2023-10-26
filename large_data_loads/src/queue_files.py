@@ -97,8 +97,6 @@ def main():
     logger.info(f"Fetching all files")
     file_url_list = get_file_urls_from_file(args['file'])
     logger.debug(f"Number of files: {len(file_url_list)}")
-    file_url_list = file_url_list[:500000]
-    logger.debug(f"Number of files: {len(file_url_list)}")
 
     # create the full set of rows for the task table
     data_array = to_data_array(file_url_list, int(args['files_chunk_size_min']), int(args['files_chunk_size_max']))
