@@ -14,7 +14,9 @@ We described the data loading orchestration mechanism used by the script in deta
 
 - python3.10+
 - clickhouse-client
-- ClickHouse instance with support for KeeperMap and `keeper_map_strict_mode`
+- ClickHouse instance with support for [KeeperMap](https://clickhouse.com/docs/en/engines/table-engines/special/keeper-map) and [keeper_map_strict_mode](https://clickhouse.com/docs/en/engines/table-engines/special/keeper-map#updates)
+
+- ~1GB of RAM per Keeper node per 1 million scheduled files in the KeeperMap backed job task table
 
 ## Installing
 
