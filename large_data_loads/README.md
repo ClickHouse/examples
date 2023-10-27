@@ -7,8 +7,9 @@ We described the data loading orchestration mechanism used by the script in deta
 
 ## Capabilities
  - Reliably import data from files hosted in a object storage bucket into ClickHouse
- - Supports any partitioning key, projections, and materialized views
- - Job queue for files to be imported. Scales linearly.
+ - Supports [any partitioning key](./internals/README.md#support-for-arbitrary-partitioning-keys), projections, and materialized views
+ - Job queue for files to be imported. Scales linearly
+ - Continuous data loading [can be set up](./examples/pypi/README.md#setting-up-a-continuous-data-load).
 
 ## Pre-requisites
 
