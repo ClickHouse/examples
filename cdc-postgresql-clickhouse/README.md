@@ -60,8 +60,8 @@ Navigate to [Consumer Groups](http://localhost:8080/groups) to verify that Click
 ### 6. Verify ClickHouse data
 Open [ClickHouse UI](http://localhost:8123/play) and verify that PostgreSQL data are already pushed to ClickHouse from ClickHouseSink Connector by executing below:
 ```text
-SELECT * FROM demo_table1_mv FINAL;
-SELECT * FROM demo_table2_mv FINAL;
+SELECT * FROM demo_table1_data FINAL;
+SELECT * FROM demo_table2_data FINAL;
 ```
 
 ## Testing
