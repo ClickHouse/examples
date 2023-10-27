@@ -10,6 +10,7 @@ This diagram sketches the steps we took (and describe in the following) to load 
 
 ![](pypi_load_architecture.png)
 
+
 Note that we use a [GCE VM](https://cloud.google.com/compute?hl=en) for running the main steps (that we describe in detail below) ①, ②, and ③. This VM needs network connectivity with both the source object storage bucket and the target ClickHouse service.
 
 ## Pre-requisites
@@ -109,11 +110,72 @@ start_workers 90 10
 
 ## Result
 
-TODO: how long did it take
-- 8 million rows/s with 6 nodes
-- 4 million rows/s with 3 nodes
+We run the data load with 100 parallel workers and 2 different CLickHouse Cloud service sizes:
 
-- Show sanity queries for checking that amount of rows is the same
+### CLickHouse Cloud service size 1
+- 6 ClickHouse servers
+- 59 CPU cores per server
+- 236 GB RAM per server
 
-- show some retries from the logs
+### CLickHouse Cloud service size 2
+- 3 ClickHouse servers
+- 59 CPU cores per server
+- 236 GB RAM per server
 
+Both services used a Keeper service with 3 nodes and 3 CPU cores and 6 GB RAM per node.
+
+For both data loads we monitored the utilization of both the ClickHouse and the Keeper servers:
+
+### ClickHouse server utilization during the data load
+- CPU: max. 20 of the available 59 CPU cores were utilized
+- Memory: max. 30 GB of the available 236 GB RAM were utilized
+
+### Keeper server utilization during the data load
+- CPU: max. 1.5 of the available 3 CPU cores were utilized
+- Memory: max. 2 GB of the available 6 GB RAM were utilized
+
+Based on this utilization numbers we could have started additional workers.
+
+How long did the loading of the 625.57 billion rows stored in ~1.5 million parquet files take?
+
+With 6 ClickHouse servers we could reliably load `600 billion rows per 20 hours` which gives a insert throughput of `8 million rows per second`.
+
+With 3 ClickHouse servers we could reliably load `600 billion rows per 40 hours` which gives a insert throughput of `4 million rows per second`.
+
+In the worker's log files we could see some retries meaning that some things transiently went wrong but this situations could always be successfully recovered by automatic retries.
+
+After the data load we double checked the row count.
+
+
+We check the row count on the object storage bucket:
+```sql
+SELECT
+    count() AS count,
+    formatReadableQuantity(count) AS count_formatted
+FROM s3Cluster(
+    'default',
+    'https://storage.googleapis.com/clickhouse-pypi/file_downloads/file_downloads-*.parquet',
+    <ACCESS_KEY>,
+    <SECRET_KEY>,
+    'Parquet'
+)
+
+┌────────count─┬─count_formatted─┐
+│ 625572951817 │ 625.57 billion  │
+└──────────────┴─────────────────┘
+
+1 row in set. Elapsed: 7781.338 sec. Processed 625.57 billion rows, 31.82 MB (80.39 million rows/s., 4.09 KB/s.)
+Peak memory usage: 651.00 MiB.
+```
+
+We check the row count in the target table
+```sql
+SELECT count()
+FROM pypi.pypi
+
+┌──────count()─┐
+│ 625572951817 │
+└──────────────┘
+
+1 row in set. Elapsed: 0.019 sec.
+```
