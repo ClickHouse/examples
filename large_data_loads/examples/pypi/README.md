@@ -28,13 +28,13 @@ Note that we used Keeper nodes with 6 GB of RAM. As noted in the [pre-requisites
 
 We use the [gsutil cli tool](https://cloud.google.com/storage/docs/gsutil) for creating a local file containing the object storage urls of the ~1.5 million parquet files:
 ```shell
-gsutil ls 'gs://clickhouse-pypi/file_downloads/*.parquet' | sed 's|gs://|https://storage.googleapis.com/%7C' > pypi-files.txt
+gsutil ls 'gs://clickhouse-pypi/file_downloads/*.parquet' | sed 's|gs://|https://storage.googleapis.com/%7C' > /opt/pypi/pypi-files.txt
 ```
 
 Note that the call above uses `sed` to slightly transform the urls to be compatible with the format required by the ClickHouse [s3/gcs](https://clickhouse.com/docs/en/sql-reference/table-functions/s3) table function:
 
 ```shell
-head pypi-files.txt
+head /opt/pypi/pypi-files.txt
 https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/file_downloads-000000000000.parquet
 https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/file_downloads-000000000001.parquet
 https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/file_downloads-000000000002.parquet
@@ -49,21 +49,14 @@ https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/fi
 
 We verify that the file contains all ~1.5 million parquet file urls:
 ```shell
-wc -l pypi-files.txt
+wc -l /opt/pypi/pypi-files.txt
 1584055 
 ```
 
 ## Step ②: Scheduling the object storage files for ClickHouse import
 
 ```shell
-python queue_files.py \
---host <CLICKHOUSE_HOST> \
---port 8443 \
---username default \
---password <PASSWORD> \
---file 'pypi-files.txt' \
---task_database default \
---task_table tasks
+python queue_files.py --host ${CLICKHOUSE_HOST} --port ${CLICKHOUSE_PORT} --username default --password ${CLICKHOUSE_PASSWORD} --file "/opt/pypi/pypi-files.txt" --task_database default --task_table tasks --files_chunk_size_min 500 --files_chunk_size_max 1000
 ```
 
 ## Step ③: Spinning up 100 workers
@@ -179,3 +172,37 @@ FROM pypi.pypi
 
 1 row in set. Elapsed: 0.019 sec.
 ```
+
+
+## Setting up a continuous data load
+
+Each worker executes an [endless loop](https://github.com/ClickHouse/examples/blob/cc4287fe759e67fd7af0ab3a5a79b42ac0c5a969/large_data_loads/src/worker.py#L191) checking for unprocessed tasks in the task queue with [sleep breaks](https://github.com/ClickHouse/examples/blob/cc4287fe759e67fd7af0ab3a5a79b42ac0c5a969/large_data_loads/src/worker.py#L203C16-L203C16) in case no new task is found. This allows the easy implementation of a continuous data ingestion process by simply adding new tasks with new file url chunks into the task table in case new files are detected in the object storage bucket. The running workers will then automatically claim these new scheduled tasks.
+
+For our pypi application we export all new rows once a day - at midnight utc - from the original [public table in BigQuery](https://packaging.python.org/en/latest/guides/analyzing-pypi-package-downloads/#id10) into parquet files in our (private) gcs bucket into a folder reflecting the epoch timestamp for midnight UTC. 
+
+Then we run the following cronjob on our gce vm once per hour:
+```shell
+#!/bin/bash
+
+# Get the current date in epoch format
+current_date_epoch=$(date -u +%s)
+
+# The number of seconds in a day (86400 seconds)
+seconds_in_a_day=86400
+
+# Calculate the previous day's date in epoch format
+previous_day_epoch=$((current_date_epoch - seconds_in_a_day))
+
+# Calculate the epoch timestamp for midnight UTC
+midnight_utc_epoch=$((previous_day_epoch / seconds_in_a_day * seconds_in_a_day))
+
+file_path="https://storage.googleapis.com/clickhouse-pypi/file_downloads/incremental/${midnight_utc_epoch}-*.parquet"
+
+gsutil ls "gs://clickhouse-pypi/file_downloads/incremental/${midnight_utc_epoch}-*.parquet" | sed 's|gs://|https://storage.googleapis.com/%7C' > /opt/pypi/pypi-${midnight_utc_epoch}.txt
+
+python queue_files.py --host ${CLICKHOUSE_HOST} --port ${CLICKHOUSE_PORT} --username default --password ${CLICKHOUSE_PASSWORD} --file "/opt/pypi/pypi-${midnight_utc_epoch}.txt" --task_database default --task_table tasks --files_chunk_size_min 500 --files_chunk_size_max 1000
+```
+
+For most hourly calls the script will fail when the current day's daily export at midnight utc didn't occur yet. But once a day the script will pickup all new files from the daily export, and schedule them via `queue_files.py` into ClickLoad's task table triggering running workers to load the new files' data into the ClickHouse table(s).
+
+
