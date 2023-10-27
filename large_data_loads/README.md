@@ -61,7 +61,7 @@ usage: queue_files.py [-h]
 
 ### Starting a worker that continuosly imports scheduled files into ClickHouse
 ```shell
-usage: queue_files.py [-h] 
+usage: worker.py [-h] 
 # ① ClickHouse connection settings for the target instance
 --host HOST 
 --port PORT 
