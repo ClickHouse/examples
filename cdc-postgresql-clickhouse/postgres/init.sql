@@ -19,3 +19,5 @@ INSERT INTO demo_table1(message) VALUES ('demo1 message1');
 INSERT INTO demo_table1(message) VALUES ('demo1 message2');
 INSERT INTO demo_table2(message) VALUES ('demo2 message1');
 INSERT INTO demo_table2(message) VALUES ('demo2 message2');
+UPDATE demo_table1 SET message = 'demo1 message1 updated' WHERE id = 1;
+UPDATE demo_table2 SET message = 'demo2 message1 updated' WHERE id = 1;
