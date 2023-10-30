@@ -131,9 +131,9 @@ Based on this utilization numbers we could have started additional workers.
 
 How long did the loading of the 625.57 billion rows stored in ~1.5 million parquet files take?
 
-With 6 ClickHouse servers we could reliably load `600 billion rows per 20 hours` which gives a insert throughput of `8 million rows per second`.
+With 6 ClickHouse servers we could reliably load `30 billion rows per hour` which gives a insert throughput of `8 million rows per second`.
 
-With 3 ClickHouse servers we could reliably load `600 billion rows per 40 hours` which gives a insert throughput of `4 million rows per second`.
+With 3 ClickHouse servers we could reliably load `15 billion rows per hour` which gives a insert throughput of `4 million rows per second`.
 
 In the worker's log files we could see some retries meaning that some things transiently went wrong but this situations could always be successfully recovered by automatic retries.
 
