@@ -2,7 +2,7 @@
 
 Orchestration for loading a large dataset with trillions of rows incrementally and reliably over a long period of time. 
 
-We described the data loading orchestration mechanism used by the script in detail in a [blog](todo).
+We described the data loading orchestration mechanism used by the script in detail in a [blog](https://clickhouse.com/blog/supercharge-your-clickhouse-data-loads-part3).
 
 
 ## Capabilities
