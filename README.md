@@ -9,7 +9,7 @@ A collection of data required to back our own ClickHouse official [Blogs](clickh
 
 ## ClickHouse docker compose recipes
 
-A [list](./docker-compose-recipes/README.md) of ClickHouse recipes using docker compose recipes:
+A [list](./docker-compose-recipes/README.md) of ClickHouse recipes using docker compose:
 
 - Clickhouse single node with Keeper
 - ClickHouse and Grafana
