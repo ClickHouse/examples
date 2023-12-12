@@ -2,6 +2,7 @@
 
 A list of ClickHouse docker compose recipes
 
+- [Clickhouse single node with Keeper](./recipes/ch-1S_1K/README.md)
 - [ClickHouse and Grafana](./recipes/ch-and-grafana/README.md)
 - [ClickHouse and MinIO S3](./recipes/ch-and-minio-S3/README.md)
 - [Clickhouse and LDAP (OpenLDAP)](./recipes/ch-and-openldap/README.md)
