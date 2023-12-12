@@ -2,8 +2,6 @@
 
 Single node ClickHouse instance leveraging 1 ClickHouse Keeper
 
-1 Shard node on clickhouse and 1 Keeper on clickhouse-keeper
-
 By default the version of ClickHouse used will be `latest`, and ClickHouse Keeper
 will be `latest-alpine`.  You can specify specific versions by setting environment
 variables before running `docker compose up`.
