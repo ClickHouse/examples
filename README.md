@@ -9,8 +9,9 @@ A collection of data required to back our own ClickHouse official [Blogs](clickh
 
 ## ClickHouse docker compose recipes
 
-A list of ClickHouse [docker compose](https://docs.docker.com/compose/) recipes:
+A [list](./docker-compose-recipes/README.md) of ClickHouse recipes using docker compose recipes:
 
+- Clickhouse single node with Keeper
 - ClickHouse and Grafana
 - ClickHouse and Minio S3
 - Clickhouse and LDAP (OpenLDAP)
@@ -25,7 +26,5 @@ A list of ClickHouse [docker compose](https://docs.docker.com/compose/) recipes:
 - Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) with inter-nodes and keeper digest authentication
 
 These recipes are meant to provide a quick n dirty way to get started and try out specific type of ClickHouse integration or clustered environment locally.
-
-See [this page](./docker-compose-recipes/README.md) to get started using ClickHouse docker compose recipes.
 
 Last but not least, feel free to contribute by submitting a PR!
