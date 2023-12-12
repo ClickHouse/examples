@@ -11,7 +11,3 @@ export CHVER=23.4
 export CHKVER=23.4-alpine
 docker compose up
 ```
-
-This Docker compose file deploys a configuration matching [this
-example in the documentation](https://clickhouse.com/docs/en/architecture/replication).
-See the docs for information on terminology, configuration, and testing.
