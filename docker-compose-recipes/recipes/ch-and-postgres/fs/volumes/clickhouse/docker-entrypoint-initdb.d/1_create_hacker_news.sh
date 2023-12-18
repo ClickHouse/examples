@@ -3,6 +3,9 @@ set -e
 clickhouse client -n <<-EOSQL
 # EXPERIMENTAL materialized postgres database https://clickhouse.com/docs/en/integrations/postgresql#using-the-materializedpostgresql-database-engine
 SET allow_experimental_database_materialized_postgresql=1;
+
+SET allow_experimental_materialized_postgresql_table=1;
+
 CREATE DATABASE postgres_materialized_db ENGINE = MaterializedPostgreSQL('postgres:5432', 'clickhouse_pg_db', 'admin', 'password');
 
 # materialized postgres table (hacker_news) https://clickhouse.com/docs/en/engines/table-engines/integrations/materialized-postgresql
