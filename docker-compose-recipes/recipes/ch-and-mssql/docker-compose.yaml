@@ -1,0 +1,51 @@
+version: '1.0'
+services:
+  clickhouse:
+    user: '101:101'
+    container_name: clickhouse-odbc
+    hostname: clickhouse-odbc
+    build:
+      context: ${PWD}/docker_files/
+      dockerfile: clickhouse-odbc.Dockerfile
+    volumes:
+      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
+      - ${PWD}/fs/volumes/clickhouse/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ${PWD}/fs/volumes/clickhouse/odbc/odbc.ini:/etc/odbc.ini
+      - ${PWD}/fs/volumes/clickhouse/odbc/odbcinst.ini:/etc/odbcinst.ini
+    ports:
+      - '127.0.0.1:8123:8123'
+      - '127.0.0.1:9000:9000'
+    depends_on:
+      create-dataset:
+        condition: service_completed_successfully
+  mssql:
+    container_name: mssql
+    hostname: mssql
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - MSSQL_PID=Developer
+      - SA_PASSWORD=Mssql_Password123
+      - ACCEPT_EULA=Y
+    ports:
+      - '127.0.0.1:1433:1433'
+    healthcheck:
+      interval: 5s
+      timeout: 3s
+      start_period: 10s
+      retries: 10
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "$$SA_PASSWORD" -Q "SELECT 1" -b -o /dev/null
+  create-dataset:
+    image: mcr.microsoft.com/mssql-tools
+    volumes:
+      - ${PWD}/fs/volumes/create-dataset/create_table.sql:/tmp/create_table.sql
+      - ${PWD}/fs/volumes/create-dataset/insert.sql:/tmp/insert.sql
+    depends_on:
+      mssql:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P Mssql_Password123 -i /tmp/create_table.sql;
+      /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P Mssql_Password123 -i /tmp/insert.sql;
+      exit 0;
+      "

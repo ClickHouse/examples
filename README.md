@@ -13,13 +13,15 @@ A [list](./docker-compose-recipes/README.md) of ClickHouse recipes using docker 
 
 - Clickhouse single node with Keeper
 - ClickHouse and Grafana
-- ClickHouse and Minio S3
+- ClickHouse and MSSQL Server 2022
+- ClickHouse and MinIO S3
 - Clickhouse and LDAP (OpenLDAP)
 - ClickHouse and Postgres
 - Clickhouse and Vector syslog and apache demo data
 - Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas)
 - Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica)
 - Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas)
+- Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) with inter-nodes and keeper digest authentication
 - Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas) - CH Proxy LB
 - Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica) - CH Proxy LB
 - Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) - CH Proxy LB
