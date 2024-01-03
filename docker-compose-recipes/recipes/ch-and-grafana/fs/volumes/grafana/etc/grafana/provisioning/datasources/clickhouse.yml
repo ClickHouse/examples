@@ -6,7 +6,5 @@ datasources:
       defaultDatabase: default
       port: 9000
       server: clickhouse
-      username: admin
+      username: default
       tlsSkipVerify: false
-    secureJsonData:
-      password: password

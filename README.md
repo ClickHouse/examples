@@ -15,7 +15,6 @@ A [list](./docker-compose-recipes/README.md) of ClickHouse recipes using docker 
 - ClickHouse and Grafana
 - ClickHouse and MSSQL Server 2022
 - ClickHouse and MinIO S3
-- Clickhouse and LDAP (OpenLDAP) - WIP
 - Clickhouse and LDAP (OpenLDAP)
 - ClickHouse and Postgres
 - Clickhouse and Vector syslog and apache demo data
@@ -26,6 +25,7 @@ A [list](./docker-compose-recipes/README.md) of ClickHouse recipes using docker 
 - Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas) - CH Proxy LB
 - Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica) - CH Proxy LB
 - Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) - CH Proxy LB
+- Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) with inter-nodes and keeper digest authentication
 
 These recipes are meant to provide a quick n dirty way to get started and try out specific type of ClickHouse integration or clustered environment locally.
 

@@ -1,0 +1,37 @@
+{
+  "before": null,
+  "after": {
+    "id": 55507462,
+    "price": 247500,
+    "date": 13693,
+    "postcode1": "MK12",
+    "postcode2": "5GY",
+    "type": "semi-detached",
+    "is_new": 0,
+    "duration": "freehold",
+    "addr1": "35",
+    "addr2": "",
+    "street": "TURNEYS DRIVE",
+    "locality": "WOLVERTON MILL",
+    "town": "MILTON KEYNES",
+    "district": "MILTON KEYNES",
+    "county": "MILTON KEYNES"
+  },
+  "source": {
+    "version": "1.9.6.Final",
+    "connector": "postgresql",
+    "name": "postgres_server",
+    "ts_ms": 1685379350955,
+    "snapshot": "false",
+    "db": "postgres",
+    "sequence": "[\"247967255240\",\"247967257096\"]",
+    "schema": "public",
+    "table": "uk_price_paid",
+    "txId": 106955,
+    "lsn": 247967257096,
+    "xmin": null
+  },
+  "op": "c",
+  "ts_ms": 1685379351723,
+  "transaction": null
+}

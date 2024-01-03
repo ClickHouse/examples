@@ -1,0 +1,21 @@
+---
+global:
+  scrape_interval:     1s
+  evaluation_interval: 1s
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: clickhouse
+    static_configs:
+      - targets: [ {%- for hostname in node_hostnames %} '{{hostname}}:{{ch_prometheus_port}}', {% endfor -%}]
+
+  - job_name: keeper
+    static_configs:
+      - targets: [ {%- for hostname in keeper_hostnames %} '{{hostname}}:{{keeper_prometheus_port}}', {% endfor -%}]
+
+  - job_name: cadvisor
+    static_configs:
+      - targets: ['cadvisor:8080']

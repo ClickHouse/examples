@@ -1,7 +1,7 @@
-version: '1.0'
+version: '3.8'
 services:
   clickhouse-01:
-    image: clickhouse/clickhouse-server
+    image: "clickhouse/clickhouse-server:${CHVER:-latest}"
     user: "101:101"
     container_name: clickhouse-01
     hostname: clickhouse-01
@@ -16,7 +16,7 @@ services:
       - clickhouse-keeper-02
       - clickhouse-keeper-03
   clickhouse-02:
-    image: clickhouse/clickhouse-server
+    image: "clickhouse/clickhouse-server:${CHVER:-latest}"
     user: "101:101"
     container_name: clickhouse-02
     hostname: clickhouse-02
@@ -31,7 +31,7 @@ services:
       - clickhouse-keeper-02
       - clickhouse-keeper-03
   clickhouse-keeper-01:
-    image: clickhouse/clickhouse-keeper
+    image: "clickhouse/clickhouse-keeper:${CHKVER:-latest-alpine}"
     user: "101:101"
     container_name: clickhouse-keeper-01
     hostname: clickhouse-keeper-01
@@ -40,7 +40,7 @@ services:
     ports:
         - "127.0.0.1:9181:9181"
   clickhouse-keeper-02:
-    image: clickhouse/clickhouse-keeper
+    image: "clickhouse/clickhouse-keeper:${CHKVER:-latest-alpine}"
     user: "101:101"
     container_name: clickhouse-keeper-02
     hostname: clickhouse-keeper-02
@@ -49,7 +49,7 @@ services:
     ports:
         - "127.0.0.1:9182:9181"
   clickhouse-keeper-03:
-    image: clickhouse/clickhouse-keeper
+    image: "clickhouse/clickhouse-keeper:${CHKVER:-latest-alpine}"
     user: "101:101"
     container_name: clickhouse-keeper-03
     hostname: clickhouse-keeper-03

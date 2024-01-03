@@ -46,8 +46,8 @@ skip_unknown_fields = false
 
   [sinks.clickhouse-syslog-data.auth]
   strategy = "basic"
-  user = "admin"
-  password = "password"
+  user = "default"
+  password = ""
 
   [sinks.clickhouse-syslog-data.request]
   retry_attempts = 0
@@ -62,8 +62,8 @@ skip_unknown_fields = false
 
   [sinks.clickhouse-apache-data.auth]
   strategy = "basic"
-  user = "admin"
-  password = "password"
+  user = "default"
+  password = ""
 
   [sinks.clickhouse-apache-data.request]
   retry_attempts = 0
