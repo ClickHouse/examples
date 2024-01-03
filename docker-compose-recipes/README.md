@@ -2,14 +2,17 @@
 
 A list of ClickHouse docker compose recipes
 
+- [Clickhouse single node with Keeper](./recipes/ch-1S_1K/README.md)
 - [ClickHouse and Grafana](./recipes/ch-and-grafana/README.md)
+- [ClickHouse and MSSQL Server 2022](./recipes/ch-and-mssql/README.md)
 - [ClickHouse and MinIO S3](./recipes/ch-and-minio-S3/README.md)
-- [Clickhouse and LDAP (OpenLDAP) - WIP](./recipes/ch-and-openldap/README.md)
+- [Clickhouse and LDAP (OpenLDAP)](./recipes/ch-and-openldap/README.md)
 - [ClickHouse and Postgres](./recipes/ch-and-postgres/README.md)
 - [Clickhouse and Vector syslog and apache demo data](./recipes/ch-and-vector/README.md)
 - [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas)](./recipes/cluster_1S_2R/README.md)
 - [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica)](./recipes/cluster_2S_1R/README.md)
 - [Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas)](./recipes/cluster_2S_2R/README.md)
+- [Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) with inter-nodes and keeper digest authentication](./recipes/cluster_2S_2R_auth/README.md)
 - [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas) - CH Proxy LB](./recipes/cluster_1S_2R_ch_proxy/README.md)
 - [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica) - CH Proxy LB](./recipes/cluster_2S_1R_ch_proxy/README.md)
 - [Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) - CH Proxy LB](./recipes/cluster_2S_2R_ch_proxy/README.md)
@@ -30,11 +33,40 @@ Each recipe runs as a pre-configured docker compose setup.
 - ctrl+C will abort execution
 - once done, run `docker compose down` to tear down the environment
 
-
 ## Resources
 
 Make sure enough cpu cores, memory and disk are allocated for docker containers through docker settings.
 Some of these recipes do use up to 8 different containers.
+
+## Configuration files
+
+The configuration files for ClickHouse server, ClickHouse Keeper, and all of the other components that
+are deployed by the recipes are located in the `fs/volumes/` subdirectory of each recipe.  For example,
+to learn how ClickHouse Keeper is configured for the `cluster_1S_2R` recipe, you would look at [keeper_config.xml](./recipes/cluster_1S_2R/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper/keeper_config.xml) and the similar files for the other two Keeper servers.
+
+## Connecting to ClickHouse
+
+All recipes have the `default` user configured with no password and full privileges.
+
+If you have `clickhouse client` on your workstation you can generally run `clickhouse client` and connect to the Docker ClickHouse instance.
+
+If running a recipe with multiple ClickHouse ([example](https://github.com/ClickHouse/examples/tree/main/docker-compose-recipes/recipes/cluster_2S_1R)), while the first instance normally binds to your localhost as the default ClickHouse native protocol port [9000](https://github.com/ClickHouse/examples//blob/93291fe2ca143d7d0ec1ec02ad61f50dc2f83788/docker-compose-recipes/recipes/cluster_2S_2R/docker-compose.yaml#L13-L14) normally, however other instances will use a different port to bind the ClickHouse native TCP connection to your localhost ([example](https://github.com/ClickHouse/examples/blob/93291fe2ca143d7d0ec1ec02ad61f50dc2f83788/docker-compose-recipes/recipes/cluster_2S_2R/docker-compose.yaml#L28) where `clickhouse-02` binds on localhost port `9001`), in this case you will want to specify:
+
+`clickhouse client --port 9001`
+
+
+You may want to run `clickhouse client` within one of more of the containers so that the version of the client matches the version
+of the server.  You can run a command like this:
+
+```bash
+docker compose exec clickhouse-01 clickhouse-client
+```
+
+Or, to open a shell on the server you can run the following and then look around or run `clickhouse client` from the shell:
+
+```bash
+docker compose exec clickhouse-01 bash
+```
 
 ## Example use
 
@@ -94,4 +126,3 @@ clickhouse                       | Processing configuration file '/etc/clickhous
 clickhouse                       | Merging configuration file '/etc/clickhouse-server/users.d/users.xml'.
 clickhouse                       | Saved preprocessed configuration to '/var/lib/clickhouse/preprocessed_configs/users.xml'.
 ```
-
