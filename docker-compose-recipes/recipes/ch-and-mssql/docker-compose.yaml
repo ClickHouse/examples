@@ -34,7 +34,7 @@ services:
       timeout: 3s
       start_period: 10s
       retries: 10
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "$$SA_PASSWORD" -Q "SELECT 1" -b -o /dev/null
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Mssql_Password123 -Q "SELECT 1" -b -o /dev/null
   create-dataset:
     image: mcr.microsoft.com/mssql-tools
     volumes:
