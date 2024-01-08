@@ -2,7 +2,9 @@
 
 A list of ClickHouse docker compose recipes
 
+- [Clickhouse single node with Keeper](./recipes/ch-1S_1K/README.md)
 - [ClickHouse and Grafana](./recipes/ch-and-grafana/README.md)
+- [ClickHouse and MSSQL Server 2022](./recipes/ch-and-mssql/README.md)
 - [ClickHouse and MinIO S3](./recipes/ch-and-minio-S3/README.md)
 - [Clickhouse and LDAP (OpenLDAP)](./recipes/ch-and-openldap/README.md)
 - [ClickHouse and Postgres](./recipes/ch-and-postgres/README.md)
@@ -10,6 +12,7 @@ A list of ClickHouse docker compose recipes
 - [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas)](./recipes/cluster_1S_2R/README.md)
 - [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica)](./recipes/cluster_2S_1R/README.md)
 - [Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas)](./recipes/cluster_2S_2R/README.md)
+- [Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) with inter-nodes and keeper digest authentication](./recipes/cluster_2S_2R_auth/README.md)
 - [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas) - CH Proxy LB](./recipes/cluster_1S_2R_ch_proxy/README.md)
 - [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica) - CH Proxy LB](./recipes/cluster_2S_1R_ch_proxy/README.md)
 - [Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) - CH Proxy LB](./recipes/cluster_2S_2R_ch_proxy/README.md)
@@ -123,4 +126,3 @@ clickhouse                       | Processing configuration file '/etc/clickhous
 clickhouse                       | Merging configuration file '/etc/clickhouse-server/users.d/users.xml'.
 clickhouse                       | Saved preprocessed configuration to '/var/lib/clickhouse/preprocessed_configs/users.xml'.
 ```
-
