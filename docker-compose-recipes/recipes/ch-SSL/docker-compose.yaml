@@ -30,7 +30,6 @@ services:
       - ${PWD}/fs/volumes/client/clickhouse-java-ssl-client:/clickhouse-java-ssl-client
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/certs/clickhouse_test_CA.pem:/clickhouse-java-ssl-client/certs/clickhouse_test_CA.pem
     entrypoint: >
-      #WIP
       /bin/bash -c "echo 123;
       echo 456;
       uname -a;
@@ -43,10 +42,11 @@ services:
       mvn -q compile;
       find .;
       echo "456";
-      java -version
-      java target/classes/com/clickhousesupport/examples/Main
-      echo "exiting";
-      ";
+      java -version;
+      top;
+      # java target/classes/com/clickhousesupport/examples/Main;
+      # echo "exiting";
+      "
     # entrypoint: >
     #   /bin/bash -c "
     #   # import cert to JVM keystore

@@ -1,14 +1,13 @@
 package com.clickhousesupport.examples;
 
-import com.clickhouse.jdbc.ClickHouseDataSource;
+import static java.lang.System.exit;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Properties;
 
-import static java.lang.System.exit;
+import com.clickhouse.jdbc.ClickHouseDataSource;
 
 public class Main {
 
@@ -38,7 +37,7 @@ public class Main {
             if (conn == null) {
                 throw new Exception("Invalid datasource connection");
             }
-            System.out.println("launchin query...");
+            System.out.println("launching query...");
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("select * from numbers(5)");
             while (rs.next()) {
