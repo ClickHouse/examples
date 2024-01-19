@@ -3,6 +3,7 @@
 A list of ClickHouse docker compose recipes
 
 - [Clickhouse single node with Keeper](./recipes/ch-1S_1K/README.md)
+- [Clickhouse single node with Keeper and IMDB dataset](./recipes/ch-1S_1K_IMDB_dataset/README.md)
 - [ClickHouse and Grafana](./recipes/ch-and-grafana/README.md)
 - [ClickHouse and MSSQL Server 2022](./recipes/ch-and-mssql/README.md)
 - [ClickHouse and MinIO S3](./recipes/ch-and-minio-S3/README.md)
