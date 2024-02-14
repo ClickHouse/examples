@@ -45,4 +45,7 @@
             </s3_main>
         </policies>
     </storage_configuration>
+    <backups>
+        <allowed_disk>s3</allowed_disk>
+    </backups>
 </clickhouse>
