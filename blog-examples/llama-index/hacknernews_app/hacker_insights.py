@@ -44,13 +44,13 @@ stackoverflow_table = st.secrets.clickhouse.stackoverflow_table
 database = st.secrets.clickhouse.database
 
 st.set_page_config(
-    page_title="Get summaries of Hacker News posts enriched with Stackoverflow survey results, powered by LlamaIndex and CLickHouse",
+    page_title="Get summaries of Hacker News posts enriched with Stackoverflow survey results, powered by LlamaIndex and ClickHouse",
     page_icon="🦙🚀", layout="centered", initial_sidebar_state="auto", menu_items=None)
 st.title("💬HackBot powered by LlamaIndex 🦙 and ClickHouse 🚀")
 st.info(
     "Check out the full [blog post](https://blog.streamlit.io/build-a-chatbot-with-custom-data-sources-powered-by-llamaindex/) for this app",
     icon="📃")
-st.caption("A streamlit chatbot for Hacker News powered by 💬🦙 and ClickHouse 🚀")
+st.caption("A Streamlit chatbot 💬 for Hacker News powered by LlamaIndex 🦙 and ClickHouse 🚀")
 
 
 @st.cache_resource
