@@ -58,6 +58,7 @@ def load_embedding():
     return FastEmbedEmbedding(
         model_name="sentence-transformers/all-MiniLM-L6-v2",
         max_length=384,
+        cache_dir="./embeddings/"
     )
 
 
@@ -94,8 +95,8 @@ CLICKHOUSE_TEXT_TO_SQL_PROMPT = PromptTemplate(
     CLICKHOUSE_TEXT_TO_SQL_TMPL,
     prompt_type=PromptType.TEXT_TO_SQL,
 )
-CLICKHOUSE_CUSTOM_SUFFIX = """
 
+CLICKHOUSE_CUSTOM_SUFFIX = """
 The following is the datasource schema to work with. 
 IMPORTANT: Make sure that filters are only used as needed and only suggest filters for fields in the data source.
 
@@ -208,7 +209,7 @@ with st.sidebar:
     openai_api_key = st.text_input("Open API Key", key="chatbot_api_key", type="password")
     openai.api_key = openai_api_key
     "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
-    "[View the source code](https://github.com/clickhouse/examples/blob/main/Chatbot.py)"
+    "[View the source code](https://github.com/ClickHouse/examples/blob/main/blog-examples/llama-index/hacknernews_app/hacker_insights.py)"
     "[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ClickHouse/examples?quickstart=1)"
 
 if not openai_api_key:
