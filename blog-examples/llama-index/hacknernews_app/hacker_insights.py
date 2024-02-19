@@ -48,7 +48,7 @@ st.set_page_config(
     page_icon="🦙🚀", layout="centered", initial_sidebar_state="auto", menu_items=None)
 st.title("💬HackBot powered by LlamaIndex 🦙 and ClickHouse 🚀")
 st.info(
-    "Check out the full [blog post](https://blog.streamlit.io/build-a-chatbot-with-custom-data-sources-powered-by-llamaindex/) for this app",
+    "Check out the full [blog post](https://clickhouse.com/blog/building-a-hackernews-chat-bot-with-llama-index-with-clickhouse/) for this app",
     icon="📃")
 st.caption("A Streamlit chatbot 💬 for Hacker News powered by LlamaIndex 🦙 and ClickHouse 🚀")
 
