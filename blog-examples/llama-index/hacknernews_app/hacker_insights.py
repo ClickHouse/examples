@@ -58,6 +58,7 @@ def load_embedding():
     return FastEmbedEmbedding(
         model_name="sentence-transformers/all-MiniLM-L6-v2",
         max_length=384,
+        cache_dir="./embeddings/"
     )
 
 
@@ -94,8 +95,8 @@ CLICKHOUSE_TEXT_TO_SQL_PROMPT = PromptTemplate(
     CLICKHOUSE_TEXT_TO_SQL_TMPL,
     prompt_type=PromptType.TEXT_TO_SQL,
 )
-CLICKHOUSE_CUSTOM_SUFFIX = """
 
+CLICKHOUSE_CUSTOM_SUFFIX = """
 The following is the datasource schema to work with. 
 IMPORTANT: Make sure that filters are only used as needed and only suggest filters for fields in the data source.
 

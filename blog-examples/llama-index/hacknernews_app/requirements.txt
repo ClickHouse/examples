@@ -93,10 +93,10 @@ leb128==1.0.5
 llama-index-agent-openai==0.1.1
 llama-index-core==0.10.5
 llama-index-embeddings-fastembed==0.1.1
+llama-index-embeddings-openai==0.1.1
 llama-index-llms-openai==0.1.1
 llama-index-program-openai==0.1.1
--e git+ssh://git@github.com/ClickHouse/llama_index.git@acc35049dbfa9c5c026bb8a2cdd77c9eaf38b8e9#egg=llama_index_readers_clickhouse&subdirectory=llama-index-integrations/readers/llama-index-readers-clickhouse
--e git+ssh://git@github.com/ClickHouse/llama_index.git@acc35049dbfa9c5c026bb8a2cdd77c9eaf38b8e9#egg=llama_index_vector_stores_clickhouse&subdirectory=llama-index-integrations/vector_stores/llama-index-vector-stores-clickhouse
+llama-index-vector-stores-clickhouse==0.1.1
 lz4==4.3.3
 markdown-it-py==3.0.0
 MarkupSafe==2.1.5
