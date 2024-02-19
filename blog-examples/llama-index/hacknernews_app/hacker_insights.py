@@ -210,7 +210,6 @@ with st.sidebar:
     openai.api_key = openai_api_key
     "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
     "[View the source code](https://github.com/ClickHouse/examples/blob/main/blog-examples/llama-index/hacknernews_app/hacker_insights.py)"
-    "[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ClickHouse/examples?quickstart=1)"
 
 if not openai_api_key:
     st.info("Please add your OpenAI API key to continue.")
