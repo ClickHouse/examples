@@ -188,6 +188,7 @@ def get_engine(min_length, score, min_date):
     )
 
 
+# identify the value ranges for our score, length and date widgets
 if "max_score" not in st.session_state.keys():
     client = clickhouse()
     st.session_state.max_score = int(
@@ -197,10 +198,12 @@ if "max_score" not in st.session_state.keys():
     st.session_state.min_date, st.session_state.max_date = client.query(
         "SELECT min(toDate(time)), max(toDate(time)) FROM default.hackernews_llama WHERE time != '1970-01-01 00:00:00'").first_row
 
+# set the initial message on load. Store in the session.
 if "messages" not in st.session_state:
     st.session_state.messages = [
         {"role": "assistant", "content": "Ask me a question about opinions on Hacker News and Stackoverflow!"}]
 
+# build the sidebar with our filters
 with st.sidebar:
     score = st.slider('Min Score', 0, st.session_state.max_score, value=0)
     min_length = st.slider('Min comment Length (tokens)', 0, st.session_state.max_length, value=20)
@@ -210,14 +213,14 @@ with st.sidebar:
     openai.api_key = openai_api_key
     "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
     "[View the source code](https://github.com/ClickHouse/examples/blob/main/blog-examples/llama-index/hacknernews_app/hacker_insights.py)"
-
+# grab the users OPENAI api key. Don’t allow questions if not entered.
 if not openai_api_key:
     st.info("Please add your OpenAI API key to continue.")
     st.stop()
 
 if prompt := st.chat_input(placeholder="Your question about Hacker News"):
     st.session_state.messages.append({"role": "user", "content": prompt})
-
+# Display the prior chat messages
 for message in st.session_state.messages:  # Display the prior chat messages
     with st.chat_message(message["role"]):
         st.write(message["content"])
@@ -226,6 +229,7 @@ for message in st.session_state.messages:  # Display the prior chat messages
 if st.session_state.messages[-1]["role"] != "assistant":
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
+            # Query our engine for the answer and write to the page
             response = str(get_engine(min_length, score, min_date).query(prompt))
             st.write(response)
             st.session_state.messages.append({"role": "assistant", "content": response})

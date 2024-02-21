@@ -142,7 +142,7 @@ Modify the `secrets.toml` configuration to reflect the location of your ClickHou
 # install dependencies
 pip install -r requirements.txt
 # run application
-streamlit run hacker_insights.py
+streamlit run hackbot.py
 ```
 
 ## Capabilities
@@ -177,3 +177,11 @@ Users can ask questions which:
     ![screenshot_4.png](./screenshot_4.png)
 
 Note: Currently, this metadata is limited to usernames and time of the post. If survey results from other years were added, the latter could be used to answer questions such as "What was the most popular database in 2022 and what were people's opinions?". We leave this as an area for further work.
+
+## Misc
+
+This repo includes 3 notebooks which can be used to explore the building blocks of the app:
+
+- [structured_nl_to_sql](./structured_nl_to_sql.ipynb) - Provides an example of converting a natural language question to a SQL query. Used as part of the structured pipeline above to query from Stack Overflow surveys.
+- [unstructured_nl_with_vector_store](./unstructured_nl_with_vector_store.ipynb) -  Provides an example of converting a natural language question to an embedding and using this to query ClickHouse for context. This context is provided to the LLM to answer the question. Questions are about opinions Hacker News post.
+- [question_to_answer](./question_to_answer.ipynb) - Combines the above examples. A question is first analyzed (via an LLM) to identify the structured component. This is converted to a SQL query to obtain an answer (from Stack Overflow surveys). The original question is modified (by the LLM) and converted to an embedding. This is then used to obtain context, using a ClickHouse vector search, to help the LLM generate an answer.
