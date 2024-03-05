@@ -1,5 +1,7 @@
 # Passwordless authentication
 
+Video: https://www.youtube.com/watch?v=Rhe-kUyrFUE
+
 Install ClickHouse
 
 ```bash
