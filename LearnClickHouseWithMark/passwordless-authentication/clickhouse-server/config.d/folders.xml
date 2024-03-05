@@ -1,0 +1,3 @@
+<clickhouse>
+        <access_control_path>my_access_folder</access_control_path>
+</clickhouse>
