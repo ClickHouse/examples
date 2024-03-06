@@ -1,0 +1,76 @@
+dn: ou=Groups,dc=clickhouse,dc=test
+changetype: add
+objectclass: organizationalUnit
+ou: Groups
+
+dn: ou=Users,dc=clickhouse,dc=test
+changetype: add
+objectclass: organizationalUnit
+ou: Users
+
+# GROUPS used for role mapping
+
+# Admins
+dn: cn=clickhouse_Admins,ou=Groups,dc=clickhouse,dc=test
+changetype: add
+cn: clickhouse_Admins
+objectclass: groupOfUniqueNames
+uniqueMember: cn=ldapadmin,ou=Users,dc=clickhouse,dc=test
+
+# Development
+dn: cn=clickhouse_Development,ou=Groups,dc=clickhouse,dc=test
+changetype: add
+cn: clickhouse_Development
+objectclass: groupOfUniqueNames
+uniqueMember: cn=bob,ou=Users,dc=clickhouse,dc=test
+
+# Sales
+dn: cn=clickhouse_Sales,ou=Groups,dc=clickhouse,dc=test
+changetype: add
+cn: clickhouse_Sales
+objectclass: groupOfUniqueNames
+uniqueMember: cn=alice,ou=Users,dc=clickhouse,dc=test
+
+# AllUsers
+dn: cn=clickhouse_AllUsers,ou=Groups,dc=clickhouse,dc=test
+changetype: add
+cn: clickhouse_AllUsers
+objectclass: groupOfUniqueNames
+uniqueMember: cn=bob,ou=Users,dc=clickhouse,dc=test
+uniqueMember: cn=alice,ou=Users,dc=clickhouse,dc=test
+uniqueMember: cn=ldapadmin,ou=Users,dc=clickhouse,dc=test
+
+#USERS
+
+#alice (Sales)
+dn: cn=alice,ou=Users,dc=clickhouse,dc=test
+changetype: add
+objectclass: inetOrgPerson
+cn: alice
+givenname: alice
+sn: alice
+displayname: Alice
+mail: alice@clickhouse.test
+userPassword:: cGFzc3dvcmQ=      
+
+#bob (Development)
+dn: cn=bob,ou=Users,dc=clickhouse,dc=test
+changetype: add
+objectclass: inetOrgPerson
+cn: bob
+givenname: bob
+sn: bob
+displayname: Bob
+mail: bob@clickhouse.test
+userPassword:: cGFzc3dvcmQ=
+
+#ldapadmin 
+dn: cn=ldapadmin,ou=Users,dc=clickhouse,dc=test
+changetype: add
+objectclass: inetOrgPerson
+cn: ldapadmin
+givenname: ldapadmin
+sn: LDAPAdmin
+displayname: LDAP Admin User
+mail: ldapadmin@clickhouse.test
+userPassword:: cGFzc3dvcmQ=

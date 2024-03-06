@@ -1,0 +1,9 @@
+# REQUIRES: brew install ldapvi
+
+
+# search all objectclass=* - auth by admin
+ldapsearch -x -D 'cn=admin,dc=clickhouse,dc=test'  -b'dc=clickhouse,dc=test'  -H ldap://localhost:389 -W 
+
+ldapsearch -x -D 'cn=admin,dc=clickhouse,dc=test'  -b'dc=clickhouse,dc=test'  -H ldap://localhost:389 -W "(cn=john)"
+
+ldapsearch -x -D 'cn=john,dc=clickhouse,dc=test'  -b'dc=clickhouse,dc=test'  -H ldap://localhost:389 -W 

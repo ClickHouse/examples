@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "streamlit-chdb"
+version = "0.1.0"
+description = ""
+authors = ["Mark Needham <m.h.needham@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+chdb = "^1.2.0"
+pandas = "^2.1.4"
+numpy = "^1.26.3"
+streamlit = "^1.30.0"
+plotly = "^5.18.0"
+dateparser = "^1.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

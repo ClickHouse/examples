@@ -1,0 +1,53 @@
+{
+  "before": {
+    "id": 50658675,
+    "price": 227500,
+    "date": 11905,
+    "postcode1": "SP2",
+    "postcode2": "7EN",
+    "type": "detached",
+    "is_new": 0,
+    "duration": "freehold",
+    "addr1": "31",
+    "addr2": "",
+    "street": "CHRISTIE MILLER ROAD",
+    "locality": "SALISBURY",
+    "town": "SALISBURY",
+    "district": "SALISBURY",
+    "county": "WILTSHIRE"
+  },
+  "after": {
+    "id": 50658675,
+    "price": 227500,
+    "date": 11905,
+    "postcode1": "SP2",
+    "postcode2": "7EN",
+    "type": "terraced",
+    "is_new": 0,
+    "duration": "freehold",
+    "addr1": "31",
+    "addr2": "",
+    "street": "CHRISTIE MILLER ROAD",
+    "locality": "SALISBURY",
+    "town": "SALISBURY",
+    "district": "SALISBURY",
+    "county": "WILTSHIRE"
+  },
+  "source": {
+    "version": "1.9.6.Final",
+    "connector": "postgresql",
+    "name": "postgres_server",
+    "ts_ms": 1685378780355,
+    "snapshot": "false",
+    "db": "postgres",
+    "sequence": "[\"247833040488\",\"247833042536\"]",
+    "schema": "public",
+    "table": "uk_price_paid",
+    "txId": 106940,
+    "lsn": 247833042536,
+    "xmin": null
+  },
+  "op": "u",
+  "ts_ms": 1685378780514,
+  "transaction": null
+}

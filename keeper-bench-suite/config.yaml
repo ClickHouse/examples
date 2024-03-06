@@ -1,0 +1,19 @@
+experiment:
+  num_repeat: 3
+  config_concurrency: [3, 30, 300, 500] 
+  config_iterations: [10000, 40000, 160000, 640000, 2560000, 10240000]
+  workload_file: ["multi_read.yaml.jinja", "multi_write_70_pct.yaml.jinja"]
+keeper:
+  host_info: "m6a.24xlarge"
+  keeper_type: ["zookeeper", "chkeeper"]
+  keeper_count: 3
+  resource:
+    - "keeper_cpu": 1
+      "keeper_memory": "2048m"
+    - "keeper_cpu": 3
+      "keeper_memory": "2048m"
+    - "keeper_cpu": 6
+      "keeper_memory": "6144m"
+    - "keeper_cpu": 16
+      "keeper_memory": "6144m"
+  no_keeper_prometheus_metric: False

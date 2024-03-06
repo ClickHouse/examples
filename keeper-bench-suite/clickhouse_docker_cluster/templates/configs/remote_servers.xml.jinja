@@ -1,0 +1,20 @@
+<clickhouse>
+	<remote_servers replace="true">
+		<{{ cluster_name }}>
+			{%- set count = namespace(value=0) %} 
+			{%- for shard in range(num_shard) %}
+			<shard>
+				{%- if internal_replication %} 
+				<internal_replication>true</internal_replication> 
+				{%- endif %}
+				{%- for replica in range(num_replica) %}
+				<replica>
+					<host>{{ hostnames[count.value] }}</host>
+					<port>9000</port> {% set count.value = count.value + 1 %}
+				</replica>
+				{%- endfor %}
+			</shard>
+			{%- endfor %}
+		</{{ cluster_name }}>
+	</remote_servers>
+</clickhouse>

@@ -1,0 +1,69 @@
+[sources.src_syslog]
+type = "demo_logs"
+format = "syslog"
+
+[sources.src_apache_http_json]
+type = "demo_logs"
+format = "json"
+
+[transforms.parse_syslog]
+type = "remap"
+inputs = [ "src_syslog" ]
+source = """
+  structured = parse_syslog!(.message)
+  . = merge(., structured)
+"""
+
+[transforms.parse_apache_http_json]
+type = "remap"
+inputs = [ "src_apache_http_json" ]
+source = """
+  json = parse_json!(.message)
+  . = json
+"""
+
+[sinks.emit_syslog]
+inputs = [ "parse_syslog" ]
+type = "console"
+
+  [sinks.emit_syslog.encoding]
+  codec = "json"
+
+[sinks.emit_apache]
+inputs = [ "parse_apache_http_json" ]
+type = "console"
+
+  [sinks.emit_apache.encoding]
+  codec = "json"
+
+[sinks.clickhouse-syslog-data]
+type = "clickhouse"
+inputs = [ "parse_syslog" ]
+endpoint = "http://clickhouse:8123"
+database = "default"
+table = "syslog_raw_data"
+skip_unknown_fields = false
+
+  [sinks.clickhouse-syslog-data.auth]
+  strategy = "basic"
+  user = "default"
+  password = ""
+
+  [sinks.clickhouse-syslog-data.request]
+  retry_attempts = 0
+
+[sinks.clickhouse-apache-data]
+type = "clickhouse"
+inputs = [ "parse_apache_http_json" ]
+endpoint = "http://clickhouse:8123"
+database = "default"
+table = "apache_raw_data"
+skip_unknown_fields = false
+
+  [sinks.clickhouse-apache-data.auth]
+  strategy = "basic"
+  user = "default"
+  password = ""
+
+  [sinks.clickhouse-apache-data.request]
+  retry_attempts = 0

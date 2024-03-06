@@ -1,0 +1,27 @@
+apiVersion: 1
+
+deleteDatasources:
+  {%- for hostname in hostnames %}
+  - name: ClickHouse-{{hostname}}
+  {%- endfor %}
+
+datasources:
+  {%- for n in range(hostnames|length) %}
+  - name: ClickHouse-{{ hostnames[n] }}
+    type: grafana-clickhouse-datasource
+    {%- if n == 0 %}
+    isDefault: 1 
+    {%- endif %}
+    jsonData:
+      defaultDatabase: default
+      port: 9000
+      server: {{ hostnames[n] }}
+      username: default
+      tlsSkipVerify: true
+    secureJsonData:
+      password: 
+  {%- endfor %}
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090

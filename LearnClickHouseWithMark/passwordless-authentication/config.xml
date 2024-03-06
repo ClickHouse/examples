@@ -1,0 +1,4 @@
+<config>
+    <user>alexey</user>
+    <ssh-key-file>ssh-key/ch_key</ssh-key-file>
+</config>

@@ -1,0 +1,37 @@
+{
+  "before": null,
+  "after": {
+    "id": 41794967,
+    "price": 205000,
+    "date": 15932,
+    "postcode1": "PO13",
+    "postcode2": "9BH",
+    "type": "detached",
+    "is_new": 1,
+    "duration": "freehold",
+    "addr1": "9",
+    "addr2": "",
+    "street": "CHESTER CRESCENT",
+    "locality": "",
+    "town": "LEE-ON-THE-SOLENT",
+    "district": "GOSPORT",
+    "county": "HAMPSHIRE"
+  },
+  "source": {
+    "version": "1.9.6.Final",
+    "connector": "postgresql",
+    "name": "postgres_server",
+    "ts_ms": 1685379446120,
+    "snapshot": "false",
+    "db": "postgres",
+    "sequence": "[\"247967259768\",\"247967261784\"]",
+    "schema": "public",
+    "table": "uk_price_paid",
+    "txId": 106958,
+    "lsn": 247967261784,
+    "xmin": null
+  },
+  "op": "u",
+  "ts_ms": 1685379446255,
+  "transaction": null
+}
