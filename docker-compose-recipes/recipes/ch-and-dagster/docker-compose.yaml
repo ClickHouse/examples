@@ -13,8 +13,6 @@ services:
       - '127.0.0.1:9000:9000'
     depends_on:
       - clickhouse-keeper
-    networks:
-      - network1
 
   clickhouse-keeper:
     image: 'clickhouse/clickhouse-keeper:${CHKVER:-latest-alpine}'
@@ -25,11 +23,8 @@ services:
       - ${PWD}/fs/volumes/clickhouse-keeper/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
     ports:
       - '127.0.0.1:9181:9181'
-    networks:
-      - network1
 
   dagster_webserver:
-  # todo: for production, set up dagster-webserver and the dagster-daemon
     build:
       context: .
       dockerfile: ./dagster/Dockerfile
@@ -38,11 +33,3 @@ services:
       - 3000:3000
     volumes: 
       - ${PWD}/user_code:/opt/dagster/dagster_home/user_code
-    networks:
-      - network1
-
-
-networks:
-  network1:
-    driver: bridge
-    name: network1
