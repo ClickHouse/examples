@@ -1,0 +1,19 @@
+scheduler:
+  module: dagster.core.scheduler
+  class: DagsterDaemonScheduler
+
+run_coordinator:
+  module: dagster.core.run_coordinator
+  class: QueuedRunCoordinator
+
+run_launcher:
+  module: dagster.core.launcher
+  class: DefaultRunLauncher
+
+storage:
+  sqlite:
+    base_dir: 
+      env: DAGSTER_HOME
+
+telemetry:
+  enabled: false
