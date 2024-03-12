@@ -2,21 +2,22 @@
 
 A list of ClickHouse docker compose recipes
 
-- [Clickhouse single node with Keeper](./recipes/ch-1S_1K/README.md)
-- [Clickhouse single node with Keeper and IMDB dataset](./recipes/ch-1S_1K_IMDB_dataset/README.md)
+- [ClickHouse single node with Keeper](./recipes/ch-1S_1K/README.md)
+- [ClickHouse single node with Keeper and IMDB dataset](./recipes/ch-1S_1K_IMDB_dataset/README.md)
+- [ClickHouse and Dagster](./recipes/ch-and-dagster/README.md)
 - [ClickHouse and Grafana](./recipes/ch-and-grafana/README.md)
 - [ClickHouse and MSSQL Server 2022](./recipes/ch-and-mssql/README.md)
 - [ClickHouse and MinIO S3](./recipes/ch-and-minio-S3/README.md)
-- [Clickhouse and LDAP (OpenLDAP)](./recipes/ch-and-openldap/README.md)
 - [ClickHouse and Postgres](./recipes/ch-and-postgres/README.md)
-- [Clickhouse and Vector syslog and apache demo data](./recipes/ch-and-vector/README.md)
-- [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas)](./recipes/cluster_1S_2R/README.md)
-- [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica)](./recipes/cluster_2S_1R/README.md)
-- [Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas)](./recipes/cluster_2S_2R/README.md)
-- [Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) with inter-nodes and keeper digest authentication](./recipes/cluster_2S_2R_auth/README.md)
-- [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas) - CH Proxy LB](./recipes/cluster_1S_2R_ch_proxy/README.md)
-- [Clickhouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica) - CH Proxy LB](./recipes/cluster_2S_1R_ch_proxy/README.md)
-- [Clickhouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) - CH Proxy LB](./recipes/cluster_2S_2R_ch_proxy/README.md)
+- [ClickHouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas) - CH Proxy LB](./recipes/cluster_1S_2R_ch_proxy/README.md)
+- [ClickHouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas)](./recipes/cluster_1S_2R/README.md)
+- [ClickHouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica) - CH Proxy LB](./recipes/cluster_2S_1R_ch_proxy/README.md)
+- [ClickHouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica)](./recipes/cluster_2S_1R/README.md)
+- [ClickHouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) - CH Proxy LB](./recipes/cluster_2S_2R_ch_proxy/README.md)
+- [ClickHouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas) with inter-nodes and keeper digest authentication](./recipes/cluster_2S_2R_auth/README.md)
+- [ClickHouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas)](./recipes/cluster_2S_2R/README.md)
+- [ClickHouse and LDAP (OpenLDAP)](./recipes/ch-and-openldap/README.md)
+- [ClickHouse and Vector syslog and apache demo data](./recipes/ch-and-vector/README.md)
 
 These recipes are provided "AS-IS" and intended strictly and only for local quick and dirty testing.
 
