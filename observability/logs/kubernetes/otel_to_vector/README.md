@@ -38,14 +38,14 @@ Download the agent and aggregator value files for the helm chart.
 
 ```
 wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/otel_to_vector/agent.yml
-wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/otel_to_vector/aggregator.yml
+wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/otel_to_vector/aggregator.yaml
 ```
 
 ## Aggregator Configuration
 
-The [aggregator.yml](./aggregator.yml) provides a full sample Vector aggregator configuration, requiring only minor changes for most cases.
+The [aggregator.yaml](./aggregator.yaml) provides a full sample Vector aggregator configuration, requiring only minor changes for most cases.
 
-Key configuration is the use of the otel source to recieve logs from the OTEL agent i.e.
+Key configuration is the use of the otel source to receive logs from the OTEL agent i.e.
 
 ```yaml
   sources:

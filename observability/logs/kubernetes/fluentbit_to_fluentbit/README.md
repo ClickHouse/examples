@@ -45,7 +45,7 @@ wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/lo
 
 ## Aggregator Configuration
 
-The [aggregator.yml](./aggregator.yml) provides a full sample aggregator configuration, requiring only minor changes for most cases.
+The [aggregator.yaml](./aggregator.yaml) provides a full sample aggregator configuration, requiring only minor changes for most cases.
 
 
 **Important Note on asynchronous inserts**
