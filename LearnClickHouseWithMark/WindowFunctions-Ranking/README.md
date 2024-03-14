@@ -65,22 +65,29 @@ LIMIT 10;
 Filter rankings
 
 ```sql
-WITH windowedSalaries AS (
-    FROM salaries
-    SELECT *,
-        rank() OVER (ORDER BY salary DESC) AS rank,
-        rank() OVER (PARTITION BY team ORDER BY salary DESC) AS teamRank,
-        rank() OVER (PARTITION BY position ORDER BY salary DESC) AS posRank
-    ORDER BY salary DESC
-)
-SELECT player, position, salary, 
-       bar(
-         salary,
-         0,
-         (SELECT max(salary) FROM windowedSalaries LIMIT 1),
-         10
-       ) AS plot, teamRank, posRank, rank
+WITH windowedSalaries AS
+    (
+        SELECT
+            *,
+            rank() OVER (ORDER BY salary DESC) AS rank,
+            rank() OVER (PARTITION BY team ORDER BY salary DESC) AS teamRank,
+            rank() OVER (PARTITION BY position ORDER BY salary DESC) AS posRank
+        FROM salaries
+        ORDER BY salary DESC
+    )
+SELECT
+    player,
+    position,
+    salary,
+    bar(salary, 0, (
+        SELECT max(salary)
+        FROM windowedSalaries
+        LIMIT 1
+    ), 10) AS plot,
+    teamRank,
+    posRank,
+    rank
 FROM windowedSalaries
-WHERE team LIKE '%Devinmouth Eagles%'
+WHERE team LIKE '%Claireberg Vikings%'
 LIMIT 15;
 ```
