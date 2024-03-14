@@ -1,0 +1,510 @@
+team,player,weeklySalary,position
+North Johntown Bears,Andrew Gutierrez,301000,M
+North Johntown Bears,Jesus Harper,110000,F
+North Johntown Bears,Stephen Garrison,19000,D
+North Johntown Bears,Michael Durham,20000,D
+North Johntown Bears,Darren Ford,392000,F
+North Johntown Bears,Aaron Hansen,231000,GK
+North Johntown Bears,Matthew Franco,109000,M
+North Johntown Bears,Corey Marquez,149000,D
+North Johntown Bears,Patrick Huff MD,370000,D
+North Johntown Bears,Brad White,344000,D
+North Johntown Bears,Frederick Wallace DVM,110000,M
+North Johntown Bears,Reginald Farley,276000,D
+North Johntown Bears,David Gonzalez,80000,D
+North Johntown Bears,Raymond Davis,235000,D
+North Johntown Bears,Christopher Juarez,45000,D
+North Johntown Bears,Theodore Miller,62000,F
+North Johntown Bears,Matthew Mooney,223000,GK
+North Johntown Bears,Bryan Lopez,373000,M
+North Johntown Bears,Lucas Thompson,350000,D
+North Johntown Bears,Daniel Burns Jr.,241000,M
+North Johntown Bears,Zachary Bennett,213000,M
+Lake Jessica Lions,Wesley Baker,46000,D
+Lake Jessica Lions,Travis Gordon,201000,M
+Lake Jessica Lions,Michael Young,28000,F
+Lake Jessica Lions,Paul Horne,60000,F
+Lake Jessica Lions,Joel Martinez,280000,M
+Lake Jessica Lions,Christopher Ross,49000,M
+Lake Jessica Lions,Jesus Anderson,145000,F
+Lake Jessica Lions,Eric Torres,117000,D
+Lake Jessica Lions,James Brown,375000,F
+Lake Jessica Lions,Matthew Klein,12000,D
+Lake Jessica Lions,Jason Rodriguez,258000,D
+Lake Jessica Lions,Tony Mills,326000,D
+Lake Jessica Lions,Eric Johnson,34000,D
+Lake Jessica Lions,Joseph Reyes,304000,GK
+Lake Jessica Lions,Jason Byrd,348000,M
+Lake Jessica Lions,William Maxwell,149000,D
+Lake Jessica Lions,Christopher Taylor,295000,D
+Lake Jessica Lions,Tony Oneal,197000,M
+Lake Jessica Lions,Rodney Rodriguez,113000,F
+Lake Jessica Lions,Joseph Murray,56000,D
+Lake Jessica Lions,Mr. David Shaffer,25000,F
+Lake Jessica Lions,Carl Wilson,365000,D
+Lake Jessica Lions,Steven Allen,162000,GK
+Lake Jessica Lions,Curtis Martinez,77000,M
+Lake Jessica Lions,Eric Adams,329000,F
+East Matthewmouth Wolves,Dennis Harvey,387000,D
+East Matthewmouth Wolves,Keith Hill,32000,GK
+East Matthewmouth Wolves,Jordan Ray,332000,GK
+East Matthewmouth Wolves,Joe Summers,87000,F
+East Matthewmouth Wolves,Lee Spencer,249000,GK
+East Matthewmouth Wolves,Jason Gonzalez,89000,M
+East Matthewmouth Wolves,Nathaniel Perez,112000,M
+East Matthewmouth Wolves,Brian Jones,385000,GK
+East Matthewmouth Wolves,Carl Thompson,186000,M
+East Matthewmouth Wolves,Adrian Fitzgerald,222000,F
+East Matthewmouth Wolves,Eugene Schroeder,161000,F
+East Matthewmouth Wolves,Jeff Valencia,256000,D
+East Matthewmouth Wolves,Brent Baldwin,379000,F
+East Matthewmouth Wolves,Vincent Lowery,240000,D
+East Matthewmouth Wolves,Terry Vance,39000,D
+East Matthewmouth Wolves,Patrick Ferguson,131000,M
+East Matthewmouth Wolves,Jon Singh,346000,M
+East Matthewmouth Wolves,James Young,186000,M
+East Matthewmouth Wolves,James Cantrell,214000,GK
+East Matthewmouth Wolves,Kevin Phillips,157000,M
+East Matthewmouth Wolves,Scott Peters,138000,M
+East Matthewmouth Wolves,David Collins,387000,F
+East Matthewmouth Wolves,Stephen Mayo,261000,M
+East Matthewmouth Wolves,Christopher Meyer,113000,F
+East Matthewmouth Wolves,Rodney Macias,248000,D
+East Matthewmouth Wolves,Cameron Lyons,32000,M
+Louismouth Wolves,Brent Wilson,275000,M
+Louismouth Wolves,Devin Hernandez,31000,GK
+Louismouth Wolves,Timothy Hamilton,305000,M
+Louismouth Wolves,Edward Patterson,181000,F
+Louismouth Wolves,Justin White,160000,M
+Louismouth Wolves,Paul Wise,294000,M
+Louismouth Wolves,Juan Sanchez,114000,F
+Louismouth Wolves,Jeffrey Young,93000,D
+Louismouth Wolves,Robert Davis,286000,D
+Louismouth Wolves,Austin Cervantes,229000,F
+Louismouth Wolves,John Santos,236000,M
+Louismouth Wolves,Jeffery George,44000,F
+Louismouth Wolves,Sean Smith,320000,D
+Louismouth Wolves,Bradley Dunn,121000,GK
+Louismouth Wolves,Paul Coleman,330000,F
+Louismouth Wolves,Stephen Williams,79000,F
+Louismouth Wolves,Kenneth Butler,357000,M
+Louismouth Wolves,Brandon Mckinney,20000,M
+Louismouth Wolves,Mark Johnson,146000,D
+Louismouth Wolves,James Hancock,177000,F
+Louismouth Wolves,Christopher Brown,247000,GK
+Louismouth Wolves,Mark Haley,340000,F
+Louismouth Wolves,Alexander Mejia,97000,D
+Louismouth Wolves,Matthew Stone,71000,GK
+Louismouth Wolves,Jason Moody,284000,D
+Louismouth Wolves,Gregory West,149000,D
+Louismouth Wolves,Larry Mullen,18000,F
+Louismouth Wolves,Brian Rodriguez,55000,D
+East Pamela Bears,James Conner,147000,F
+East Pamela Bears,Brett Romero,270000,M
+East Pamela Bears,Carlos King,315000,D
+East Pamela Bears,Robert Zamora,259000,M
+East Pamela Bears,David Coleman,261000,M
+East Pamela Bears,Frank Bryant,287000,D
+East Pamela Bears,Jason Stewart,94000,D
+East Pamela Bears,Shane Horn,61000,F
+East Pamela Bears,Jonathan Rodriguez,275000,D
+East Pamela Bears,David Weber,119000,M
+East Pamela Bears,Anthony Patton,279000,GK
+East Pamela Bears,Steven Smith,41000,D
+East Pamela Bears,James Miller,338000,M
+East Pamela Bears,Brad Joseph,339000,F
+East Pamela Bears,Jacob Thomas,198000,M
+East Pamela Bears,Scott Ruiz,310000,M
+East Pamela Bears,Michael Freeman,299000,M
+East Pamela Bears,Frank Stephens,297000,M
+East Pamela Bears,Thomas Wood,52000,F
+East Pamela Bears,Leonard Simpson,169000,M
+East Pamela Bears,Michael Hawkins,247000,D
+East Pamela Bears,Kenneth Landry,352000,D
+East Pamela Bears,Joseph Carter,106000,D
+East Pamela Bears,Christian Clark,345000,M
+East Pamela Bears,Samuel Glenn,187000,M
+East Pamela Bears,Matthew Edwards,193000,D
+East Pamela Bears,John Castaneda,101000,D
+New Joseph Hawks,Isaiah Burton,69000,D
+New Joseph Hawks,George Vang,250000,D
+New Joseph Hawks,Nathaniel Leonard,383000,D
+New Joseph Hawks,Cameron Cervantes,294000,D
+New Joseph Hawks,Joseph Bowers,297000,GK
+New Joseph Hawks,Eduardo Hayden,241000,F
+New Joseph Hawks,Robert Garcia,245000,M
+New Joseph Hawks,Antonio Ferrell,392000,GK
+New Joseph Hawks,Brian Johnson,91000,D
+New Joseph Hawks,Bryan Rose,309000,GK
+New Joseph Hawks,Joshua Buckley,95000,D
+New Joseph Hawks,Jeremy Hamilton,123000,M
+New Joseph Hawks,Sean Wagner,341000,GK
+New Joseph Hawks,Austin Santiago,77000,F
+New Joseph Hawks,Andrew Grant,211000,F
+New Joseph Hawks,David Bell,258000,F
+New Joseph Hawks,Tommy Hamilton,197000,GK
+New Joseph Hawks,Robert Cooper,234000,M
+New Joseph Hawks,Bradley Anderson,138000,M
+New Joseph Hawks,Ryan Mcclure,195000,D
+New Joseph Hawks,Daniel Ferguson,331000,M
+New Joseph Hawks,Greg Leonard,288000,GK
+New Joseph Hawks,Kevin Reed,307000,D
+New Joseph Hawks,Marcus Moody,335000,GK
+New Joseph Hawks,Mario Nelson,99000,GK
+New Joseph Hawks,John Bentley,210000,F
+New Joseph Hawks,Bradley Nolan,218000,M
+New Joseph Hawks,Ernest Anderson,51000,M
+New Joseph Hawks,Jason Dodson,304000,GK
+New Davidstad Panthers,David Martin,267000,GK
+New Davidstad Panthers,Christopher Ramos,4000,D
+New Davidstad Panthers,William Higgins,395000,D
+New Davidstad Panthers,Mark Roberts,233000,GK
+New Davidstad Panthers,Jonathan Barnes,387000,M
+New Davidstad Panthers,Joseph Edwards,110000,M
+New Davidstad Panthers,Jonathan Young,160000,D
+New Davidstad Panthers,Micheal Valdez,73000,M
+New Davidstad Panthers,Kevin Higgins,338000,M
+New Davidstad Panthers,Zachary Arnold,146000,D
+New Davidstad Panthers,Eric Rosario,3000,M
+New Davidstad Panthers,Cory Figueroa,362000,M
+New Davidstad Panthers,Michael Salazar,136000,D
+New Davidstad Panthers,Michael Strong,94000,M
+New Davidstad Panthers,Cameron Lester,358000,GK
+New Davidstad Panthers,Cody Wallace,312000,M
+New Davidstad Panthers,Scott Daniels,246000,F
+New Davidstad Panthers,Kevin Key,157000,D
+New Davidstad Panthers,Steven Lara,209000,GK
+New Davidstad Panthers,Joshua Allen,368000,M
+New Davidstad Panthers,David Rodriguez,92000,F
+New Davidstad Panthers,Craig Jones,62000,D
+New Davidstad Panthers,Todd Johnson,4000,D
+New Davidstad Panthers,Christopher Odom,225000,D
+New Davidstad Panthers,James Evans,280000,D
+New Davidstad Panthers,Steven Hensley,274000,F
+New Davidstad Panthers,Donald Miller,133000,GK
+New Davidstad Panthers,Brian Jones,332000,M
+Blairside Eagles,Eric Saunders,174000,D
+Blairside Eagles,Christopher Boyle,168000,D
+Blairside Eagles,John Johnson,367000,F
+Blairside Eagles,Kenneth Guzman,277000,F
+Blairside Eagles,Charles Williamson,316000,D
+Blairside Eagles,Mr. Jeffrey Rodgers MD,326000,D
+Blairside Eagles,Wyatt Lopez,299000,GK
+Blairside Eagles,Michael Wood,307000,M
+Blairside Eagles,Peter White,391000,D
+Blairside Eagles,Anthony Carter,307000,GK
+Blairside Eagles,Jay Dawson,270000,D
+Blairside Eagles,Norman Wright,241000,D
+Blairside Eagles,David Jennings,364000,D
+Blairside Eagles,Kevin Moore,343000,F
+Blairside Eagles,Joshua Mclaughlin,142000,M
+Blairside Eagles,William Pace,99000,M
+Blairside Eagles,Randall Long,376000,M
+Blairside Eagles,Glenn Gonzalez,70000,M
+Blairside Eagles,James Shepherd,163000,M
+Blairside Eagles,Mark Ortiz,199000,M
+Blairside Eagles,Alexis Leblanc,124000,F
+Blairside Eagles,James Ellis,345000,M
+Blairside Eagles,Bryan Ramos,390000,F
+Blairside Eagles,Joe Lopez,273000,GK
+Blairside Eagles,Eric Lucero,21000,F
+Blairside Eagles,Ryan Lynch,19000,M
+Blairside Eagles,Luis Hampton,71000,M
+Devinmouth Eagles,John Trujillo,31000,M
+Devinmouth Eagles,Daniel Sims,120000,GK
+Devinmouth Eagles,Mr. Richard Smith,95000,D
+Devinmouth Eagles,Joseph Smith,78000,F
+Devinmouth Eagles,Joshua Hill,141000,M
+Devinmouth Eagles,Michael Taylor,275000,GK
+Devinmouth Eagles,Bryce Jimenez,265000,M
+Devinmouth Eagles,Cameron Kelley,319000,F
+Devinmouth Eagles,Robert Garcia,310000,D
+Devinmouth Eagles,Brandon Allen,370000,F
+Devinmouth Eagles,Jeffrey Jackson,90000,D
+Devinmouth Eagles,Joseph Graham,369000,GK
+Devinmouth Eagles,Jonathan Martinez,226000,M
+Devinmouth Eagles,Eric Stephens,341000,D
+Devinmouth Eagles,Christopher Brown,374000,D
+Devinmouth Eagles,Ronald Sweeney,206000,F
+Devinmouth Eagles,Scott Ryan,305000,D
+Devinmouth Eagles,Danny Ramirez,121000,M
+Devinmouth Eagles,Jonathan Ramirez,138000,M
+Devinmouth Eagles,Daniel Chavez,300000,GK
+Devinmouth Eagles,Cory Grant,397000,F
+Devinmouth Eagles,Edward Larson,60000,F
+Devinmouth Eagles,Levi Aguilar,111000,F
+Devinmouth Eagles,Randall Mendoza,196000,D
+Scottport Hawks,Eric Washington,191000,D
+Scottport Hawks,Christopher Nichols,285000,M
+Scottport Hawks,Cameron Farley,58000,F
+Scottport Hawks,Brian Velez,321000,M
+Scottport Hawks,Jeffery Edwards,229000,M
+Scottport Hawks,Joseph Cline,322000,M
+Scottport Hawks,Steve Miller,235000,D
+Scottport Hawks,Mr. Robert Johnson,122000,F
+Scottport Hawks,Mr. Jay Chen,101000,D
+Scottport Hawks,Michael Perez,240000,GK
+Scottport Hawks,Justin Boyd,53000,D
+Scottport Hawks,Rodney Leon,49000,M
+Scottport Hawks,Alvin Durham,49000,M
+Scottport Hawks,James Garcia,295000,F
+Scottport Hawks,Christopher Odom,228000,F
+Scottport Hawks,Jeffery Garza,390000,F
+Scottport Hawks,Richard Diaz,25000,F
+Scottport Hawks,James Werner,68000,D
+Scottport Hawks,Alexander Reynolds,266000,M
+Scottport Hawks,James Fleming,319000,D
+Scottport Hawks,Edward Hill,208000,F
+Scottport Hawks,Matthew Brown,125000,F
+Scottport Hawks,Noah Hansen,279000,M
+Scottport Hawks,Brandon Murray,332000,D
+Port Andrea Falcons,Andre Frazier,157000,D
+Port Andrea Falcons,Russell Santana,189000,M
+Port Andrea Falcons,Andre Armstrong,133000,D
+Port Andrea Falcons,Kevin Key,290000,F
+Port Andrea Falcons,Robert Joyce,223000,M
+Port Andrea Falcons,Ian Bennett,154000,D
+Port Andrea Falcons,Justin Beasley,221000,M
+Port Andrea Falcons,Joseph Cook,250000,GK
+Port Andrea Falcons,Joshua Thompson,237000,M
+Port Andrea Falcons,Glenn Russell,381000,GK
+Port Andrea Falcons,Alexander Johnson,185000,D
+Port Andrea Falcons,Michael Contreras,342000,F
+Port Andrea Falcons,Jeffrey Torres,209000,M
+Port Andrea Falcons,John Reynolds,53000,M
+Port Andrea Falcons,Michael Garcia,261000,F
+Port Andrea Falcons,Jeffery Howard,227000,D
+Port Andrea Falcons,Adam Lopez,249000,M
+Port Andrea Falcons,Samuel Harmon,92000,M
+Port Andrea Falcons,Scott Wolf,62000,GK
+Port Andrea Falcons,Jason Thompson,331000,M
+Port Andrea Falcons,Jeremy Benson,109000,D
+Port Andrea Falcons,Bradley Anderson,259000,M
+Port Andrea Falcons,Patrick Martin,74000,M
+Port Andrea Falcons,Justin Skinner,106000,M
+Lake Amy Wolves,Ronald Flores,243000,F
+Lake Amy Wolves,Matthew Frey,54000,D
+Lake Amy Wolves,James Smith,242000,D
+Lake Amy Wolves,Anthony Hawkins,167000,F
+Lake Amy Wolves,Ryan Klein,225000,F
+Lake Amy Wolves,Matthew Wagner,38000,F
+Lake Amy Wolves,Steven Meyer,321000,D
+Lake Amy Wolves,Chad Hodges,14000,D
+Lake Amy Wolves,Ryan Butler,32000,M
+Lake Amy Wolves,Stephen Rhodes,272000,D
+Lake Amy Wolves,Thomas Delgado,202000,M
+Lake Amy Wolves,Edward Richardson,352000,F
+Lake Amy Wolves,Eric Davis,213000,F
+Lake Amy Wolves,Nicholas Willis,298000,M
+Lake Amy Wolves,Jeffrey Jackson,55000,D
+Lake Amy Wolves,Robert Chambers,305000,D
+Lake Amy Wolves,William Lang,269000,D
+Lake Amy Wolves,David Sullivan,327000,GK
+Lake Amy Wolves,Stephen Stanley,276000,F
+Lake Amy Wolves,Eric Garza,37000,GK
+Lake Amy Wolves,Jeremy Quinn,379000,F
+Lake Amy Wolves,Casey Morrison,174000,D
+Lake Amy Wolves,Mark Horne,54000,D
+Lake Amy Wolves,Michael Smith,26000,F
+Lake Amy Wolves,Wesley Ward,123000,F
+Chavezfurt Wolves,Charles Peterson,85000,D
+Chavezfurt Wolves,Travis Wallace,284000,F
+Chavezfurt Wolves,Matthew Thomas,309000,GK
+Chavezfurt Wolves,Travis Alexander,194000,M
+Chavezfurt Wolves,Alec Donovan,157000,M
+Chavezfurt Wolves,James Benjamin,108000,F
+Chavezfurt Wolves,Gregory Brady,116000,M
+Chavezfurt Wolves,Andrew Gonzales,9000,F
+Chavezfurt Wolves,Jeffrey Ryan,375000,M
+Chavezfurt Wolves,Daniel Green,199000,D
+Chavezfurt Wolves,Brian Stone,237000,F
+Chavezfurt Wolves,Scott Reyes,256000,GK
+Chavezfurt Wolves,Cody Davis,82000,GK
+Chavezfurt Wolves,Kevin Walker,45000,M
+Chavezfurt Wolves,James Vargas,253000,F
+Chavezfurt Wolves,Bobby Anderson,383000,D
+Chavezfurt Wolves,Tristan Bentley,315000,GK
+Chavezfurt Wolves,Paul Berger,357000,GK
+Chavezfurt Wolves,Adam Aguilar,158000,F
+Chavezfurt Wolves,John Patterson,102000,F
+Chavezfurt Wolves,Bryan Howard,237000,M
+Chavezfurt Wolves,Brian Peterson,351000,M
+Chavezfurt Wolves,Ernest Simon,200000,F
+Deleonmouth Bears,James Carrillo,66000,F
+Deleonmouth Bears,Brian Turner,192000,M
+Deleonmouth Bears,Paul Fernandez,53000,GK
+Deleonmouth Bears,Mike Padilla,381000,D
+Deleonmouth Bears,Ricky Lamb,70000,M
+Deleonmouth Bears,Michael Porter,251000,D
+Deleonmouth Bears,Michael Rogers,164000,D
+Deleonmouth Bears,Michael Green,379000,D
+Deleonmouth Bears,Jerry Galvan,312000,M
+Deleonmouth Bears,Marc Baker,178000,D
+Deleonmouth Bears,Shawn Baker,336000,D
+Deleonmouth Bears,Jerry Dominguez,360000,D
+Deleonmouth Bears,Edward Moore,275000,D
+Deleonmouth Bears,Alexander Miller,248000,D
+Deleonmouth Bears,Joseph Shaffer,43000,M
+Deleonmouth Bears,Randall Lopez,223000,F
+Deleonmouth Bears,Peter Bird,4000,GK
+Deleonmouth Bears,Shawn Silva,20000,D
+Deleonmouth Bears,Roy Fowler,284000,M
+Deleonmouth Bears,Joseph Lane,117000,D
+Deleonmouth Bears,Hector Paul,99000,F
+Deleonmouth Bears,Kevin Allen,365000,D
+Deleonmouth Bears,Daniel Robertson,76000,M
+Deleonmouth Bears,Juan Franco,326000,M
+Deleonmouth Bears,Anthony Moore,374000,F
+Deleonmouth Bears,Jacob Ford,23000,F
+East Nicholas Falcons,Robert Mann,389000,D
+East Nicholas Falcons,Christopher Small,330000,M
+East Nicholas Falcons,Brett Rocha,53000,D
+East Nicholas Falcons,Thomas Watson,370000,GK
+East Nicholas Falcons,Connor Wilson,295000,M
+East Nicholas Falcons,Timothy Welch,135000,GK
+East Nicholas Falcons,Stuart Wells,214000,F
+East Nicholas Falcons,Mark Jones,317000,D
+East Nicholas Falcons,George Stephens,359000,D
+East Nicholas Falcons,James Ross,171000,M
+East Nicholas Falcons,Joshua Acosta,9000,M
+East Nicholas Falcons,Matthew Levine,54000,GK
+East Nicholas Falcons,Juan Williams,25000,D
+East Nicholas Falcons,Darius Garcia,107000,D
+East Nicholas Falcons,William Wolfe,360000,D
+East Nicholas Falcons,Jerry Lopez,267000,F
+East Nicholas Falcons,Thomas Graves,350000,D
+East Nicholas Falcons,Joseph Thomas,388000,GK
+East Nicholas Falcons,Michael Mills,177000,D
+East Nicholas Falcons,Randy Wood,272000,D
+East Nicholas Falcons,Zachary Norris,43000,M
+East Nicholas Falcons,Kenneth Ayala,326000,M
+East Nicholas Falcons,Jeremy Fernandez,98000,M
+East Nicholas Falcons,Charles Camacho,65000,GK
+East Nicholas Falcons,Johnathan Evans,25000,D
+East Nicholas Falcons,Kenneth Caldwell,269000,M
+East Nicholas Falcons,Albert Smith,316000,M
+East Nicholas Falcons,Jim Peters,185000,D
+South Candace Sharks,Edward Little,287000,F
+South Candace Sharks,Manuel Pierce,14000,D
+South Candace Sharks,David Fields,265000,D
+South Candace Sharks,Daniel Howell,137000,F
+South Candace Sharks,Joshua Medina,285000,F
+South Candace Sharks,William Cooley,320000,F
+South Candace Sharks,Casey Morrison,389000,M
+South Candace Sharks,Donald Parker,208000,M
+South Candace Sharks,Mathew Lang,196000,M
+South Candace Sharks,Adam Lewis,369000,F
+South Candace Sharks,Christopher Chapman,299000,M
+South Candace Sharks,Carlos Lopez,239000,D
+South Candace Sharks,Anthony Carter,384000,D
+South Candace Sharks,James Williams,168000,M
+South Candace Sharks,James Parks,32000,D
+South Candace Sharks,Richard Bates,33000,D
+South Candace Sharks,Christopher Harmon,155000,M
+South Candace Sharks,Matthew Stewart,347000,D
+South Candace Sharks,Steven Vincent,118000,M
+South Candace Sharks,Nicholas Lopez,320000,D
+South Candace Sharks,Edward Henry,124000,GK
+South Candace Sharks,Andrew Cochran,215000,D
+South Candace Sharks,Raymond Conway,223000,M
+South Candace Sharks,Donald Cisneros,199000,M
+South Candace Sharks,Mr. Christopher Herrera,329000,D
+South Candace Sharks,Lawrence Mueller,269000,D
+South Candace Sharks,Christopher Simmons,94000,D
+South Candace Sharks,Robert Rowe,345000,GK
+South Michael Panthers,Kevin Diaz,100000,M
+South Michael Panthers,Eric Hart,77000,M
+South Michael Panthers,Michael Lindsey,140000,D
+South Michael Panthers,Douglas Cook,272000,M
+South Michael Panthers,Kevin Campbell,250000,M
+South Michael Panthers,Christopher Moran,351000,F
+South Michael Panthers,Kevin Morales,69000,F
+South Michael Panthers,Jon Mclaughlin,369000,F
+South Michael Panthers,Samuel House,317000,D
+South Michael Panthers,Austin Collins,205000,M
+South Michael Panthers,Raymond Porter,297000,F
+South Michael Panthers,John Jensen,223000,F
+South Michael Panthers,Tyler Fields,141000,M
+South Michael Panthers,Robert Evans,37000,M
+South Michael Panthers,Keith Walker,384000,D
+South Michael Panthers,Eric Johnson,79000,M
+South Michael Panthers,John Price,202000,M
+South Michael Panthers,David Coleman,350000,M
+South Michael Panthers,Thomas Collins,142000,F
+South Michael Panthers,Kevin Francis,53000,F
+South Michael Panthers,Christopher Torres,79000,D
+South Michael Panthers,Jimmy Morgan,172000,D
+South Michael Panthers,James Davis,82000,GK
+South Michael Panthers,Luke Mitchell,338000,M
+South Michael Panthers,Tyler Martin,343000,GK
+South Michael Panthers,Jeff Miles,272000,F
+South Michael Panthers,David Mooney,95000,F
+Herreraville Wolves,James Vang,110000,GK
+Herreraville Wolves,Adrian Thompson,179000,D
+Herreraville Wolves,Dr. Donald Strickland,114000,M
+Herreraville Wolves,David Gardner,65000,D
+Herreraville Wolves,Daniel Keith,171000,D
+Herreraville Wolves,Robert Larson,89000,GK
+Herreraville Wolves,Aaron Benjamin,195000,D
+Herreraville Wolves,Nicholas Williams,70000,F
+Herreraville Wolves,Scott Martinez,76000,M
+Herreraville Wolves,David Holmes,272000,D
+Herreraville Wolves,Joseph Noble,4000,D
+Herreraville Wolves,Michael Riddle,81000,GK
+Herreraville Wolves,Timothy Stephens,373000,F
+Herreraville Wolves,Kevin Morgan,33000,M
+Herreraville Wolves,David Roach,309000,D
+Herreraville Wolves,Manuel Bruce,394000,D
+Herreraville Wolves,Thomas Richardson,281000,M
+Herreraville Wolves,Kyle Allen,341000,D
+Herreraville Wolves,Brandon Martinez,299000,M
+Herreraville Wolves,Michael Reid,221000,D
+Herreraville Wolves,Juan Walsh,253000,D
+Herreraville Wolves,James Herrera,312000,M
+Herreraville Wolves,Miguel Lewis,13000,D
+Herreraville Wolves,Vincent Smith Jr.,132000,GK
+Herreraville Wolves,Michael Walker,262000,F
+Herreraville Wolves,Justin Snyder,277000,M
+South Josephshire Tigers,Juan Rivas,131000,D
+South Josephshire Tigers,Marc Sanchez,226000,M
+South Josephshire Tigers,Andrew Swanson,233000,F
+South Josephshire Tigers,Bruce Guzman,11000,GK
+South Josephshire Tigers,Joe Perez,385000,D
+South Josephshire Tigers,Brian Wall,165000,GK
+South Josephshire Tigers,Christopher Ward,122000,D
+South Josephshire Tigers,David Werner,153000,D
+South Josephshire Tigers,David Frazier,392000,D
+South Josephshire Tigers,Seth Sanchez,146000,M
+South Josephshire Tigers,Scott Zimmerman,340000,D
+South Josephshire Tigers,Anthony Brown,218000,F
+South Josephshire Tigers,Robert Gilmore,379000,D
+South Josephshire Tigers,Ronald Richardson,212000,D
+South Josephshire Tigers,Nicholas Andrade,268000,D
+South Josephshire Tigers,Bryan Taylor,285000,M
+South Josephshire Tigers,Mr. John Underwood MD,376000,GK
+South Josephshire Tigers,Dan Merritt,75000,F
+South Josephshire Tigers,James Johnson,82000,M
+South Josephshire Tigers,Eric Singh,245000,F
+South Josephshire Tigers,Jeff Huffman,135000,M
+South Josephshire Tigers,Patrick Ruiz,174000,F
+South Josephshire Tigers,Brent Fisher,199000,D
+Lake Lisa Sharks,Gregory Brown,275000,M
+Lake Lisa Sharks,Kevin Carter,280000,D
+Lake Lisa Sharks,Scott Knight,235000,M
+Lake Lisa Sharks,Mr. Stephen Nelson DDS,305000,GK
+Lake Lisa Sharks,Brian Martin,168000,M
+Lake Lisa Sharks,Francis Keller,48000,M
+Lake Lisa Sharks,Robert Harrington,106000,D
+Lake Lisa Sharks,David Oconnor,350000,D
+Lake Lisa Sharks,Jerry Wang,163000,D
+Lake Lisa Sharks,Jeremy Clark,297000,D
+Lake Lisa Sharks,Richard Yu,300000,M
+Lake Lisa Sharks,Cesar Moore,268000,GK
+Lake Lisa Sharks,Bradley Payne,287000,D
+Lake Lisa Sharks,Carlos Wu,345000,M
+Lake Lisa Sharks,Richard Ramsey,300000,GK
+Lake Lisa Sharks,Andrew Nguyen,201000,D
+Lake Lisa Sharks,Robert Simmons,287000,M
+Lake Lisa Sharks,Ricky Green,132000,D
+Lake Lisa Sharks,Mr. Michael Rodriguez,198000,M
+Lake Lisa Sharks,James Davis,228000,M
