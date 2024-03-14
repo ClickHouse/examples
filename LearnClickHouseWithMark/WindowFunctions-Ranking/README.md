@@ -1,6 +1,6 @@
 # Window Functions - Ranking
 
-Video: https://www.youtube.com/watch?v=nnvtLLFy8fc
+Video: https://youtu.be/Yku9mmBYm_4
 
 Install ClickHouse
 
