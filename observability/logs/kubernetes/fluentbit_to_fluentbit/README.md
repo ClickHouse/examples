@@ -99,9 +99,9 @@ fluent-aggregator-fluent-bit-5d89dd49dd-hsc5d   1/1     Running   0          16m
 
 ## Agent Configuration
 
-The [agent.yml](./agent.yml) provides a full sample agent configuration, requiring only minor changes for most cases.
+The [agent.yaml](./agent.yaml) provides a full sample agent configuration, requiring only minor changes for most cases.
 
-The principal configuration changes is the specification of a `forward` output to commmunicate with the aggregator:
+The principal configuration changes is the specification of a `forward` output to communicate with the aggregator:
 
 ```yaml
 outputs: |

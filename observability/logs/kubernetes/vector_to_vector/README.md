@@ -140,7 +140,7 @@ vector-aggregator-0   1/1     Running   0          39s
 
 ## Agent Configuration
 
-The [agent.yml](./agent.yml) provides a full sample agent configuration.
+The [agent.yaml](./agent.yaml) provides a full sample agent configuration.
 
 Vector agents communicate over the [Vector sink](https://vector.dev/docs/reference/configuration/sinks/vector/) to the aggregator instance using an equivalent [source](https://vector.dev/docs/reference/configuration/sources/vector/). Our key configuration:
 

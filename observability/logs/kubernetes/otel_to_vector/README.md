@@ -37,7 +37,7 @@ Remember to adapt you [ORDER BY key](https://clickhouse.com/docs/en/guides/impro
 Download the agent and aggregator value files for the helm chart.
 
 ```
-wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/otel_to_vector/agent.yml
+wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/otel_to_vector/agent.yaml
 wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/otel_to_vector/aggregator.yaml
 ```
 
@@ -80,7 +80,7 @@ vector-aggregator-otel-0   1/1     Running   0          39s
 
 ## Agent Configuration
 
-The [agent.yml](./agent.yml) provides a full sample OTEL agent configuration for log location, requiring only minor changes for most cases.
+The [agent.yaml](./agent.yaml) provides a full sample OTEL agent configuration for log location, requiring only minor changes for most cases.
 
 We set the mode to `daemonset` and enable the logs' collection and enrichment with k8s metadata.
 
@@ -116,7 +116,7 @@ config:
 Installs the OTEL collector as a daemonset:
 
 ```bash
-helm install otel-agent-vector open-telemetry/opentelemetry-collector --values agent.yml --namespace otel-vector
+helm install otel-agent-vector open-telemetry/opentelemetry-collector --values agent.yaml --namespace otel-vector
 ```
 
 ## Confirm logs are arriving

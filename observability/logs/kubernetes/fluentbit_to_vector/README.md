@@ -38,7 +38,7 @@ Remember to adapt you [ORDER BY key](https://clickhouse.com/docs/en/guides/impro
 Download the agent and aggregator value files for the helm chart.
 
 ```
-wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/fluentbit_to_vector/agent.yml
+wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/fluentbit_to_vector/agent.yaml
 wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/fluentbit_to_vector/aggregator.yaml
 ```
 
@@ -57,7 +57,7 @@ sources:
 
 **Important**
 
-Ensure you configure your the [ClickHouse host and access credentials](./aggregator.yaml#L298-L304) and adapt [resources](./aggregator.yaml#L167) as required.
+Ensure you configure your [ClickHouse host and access credentials](./aggregator.yaml#L298-L304) and adapt [resources](./aggregator.yaml#L167) as required.
 
 ## Install the aggregator
 
@@ -72,9 +72,9 @@ helm install vector-aggregator-fluent vector/vector \
 
 ## Agent Configuration
 
-The [agent.yml](./agent.yml) provides a full sample Fluent Bit configuration for log location, requiring only minor changes for most cases.
+The [agent.yaml](./agent.yaml) provides a full sample Fluent Bit configuration for log location, requiring only minor changes for most cases.
 
-The principal configuration changes is the specification of a `forward` output to commmunicate with the aggregator:
+The principal configuration changes is the specification of a `forward` output to communicate with the aggregator:
 
 ```yaml
 outputs: |
