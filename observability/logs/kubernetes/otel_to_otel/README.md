@@ -17,13 +17,13 @@ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm
 Download the agent and aggregator value files for the helm chart.
 
 ```
-wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/otel_to_otel/agent.yml
-wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/otel_to_otel/gateway.yml
+wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/otel_to_otel/agent.yaml
+wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/logs/kubernetes/otel_to_otel/gateway.yaml
 ```
 
 ## Gateway Configuration
 
-The [gateway.yml](./gateway.yml) provides a full sample gateway configuration, requiring only minor changes for most cases.
+The [gateway.yaml](./gateway.yaml) provides a full sample gateway configuration, requiring only minor changes for most cases.
 
 Deploying the Collector as a gateway requires a few simple configuration changes:
 
@@ -37,7 +37,7 @@ Deploying the Collector as a gateway requires a few simple configuration changes
 
 **Important**
 
-Ensure you modify the [target ClickHouse cluster](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/otel_to_otel/gateway.yml#L78) via the `dsn` key and [resources](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/otel_to_otel/gateway.yml#L223-L226) to fit your environment.
+Ensure you modify the [target ClickHouse cluster](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/otel_to_otel/gateway.yaml#L78) via the `dsn` key and [resources](https://github.com/ClickHouse/examples/blob/main/observability/logs/kubernetes/otel_to_otel/gateway.yaml#L223-L226) to fit your environment.
 
 ```yaml
 config:
@@ -87,7 +87,7 @@ config:
 Install the collector as a deployment. 
 
 ```bash
-helm install otel-collector open-telemetry/opentelemetry-collector --values gateway.yml --create-namespace --namespace otel
+helm install otel-collector open-telemetry/opentelemetry-collector --values gateway.yaml --create-namespace --namespace otel
 
 kubectl -n=otel get pods
 NAME                                 READY   STATUS    RESTARTS   AGE
@@ -124,7 +124,7 @@ SETTINGS index_granularity = 8192, ttl_only_drop_parts = 1
 
 ## Agent Configuration
 
-The [agent.yml](./agent.yml) provides a full sample agent configuration.
+The [agent.yaml](./agent.yaml) provides a full sample agent configuration.
 
 Once we have an aggregator in our cluster, we can deploy the OTEL collector as an agent. In this case, we set the mode to `daemonset` and enable the logs' collection and enrichment with k8s metadata.
 
@@ -157,10 +157,10 @@ config:
 
 ## Install the Agent
 
-Installs the collector as a daemonset. Ensure you modify the [resources](./agent.yml#L251-L254) to fit your environment.
+Installs the collector as a daemonset. Ensure you modify the [resources](./agent.yaml#L251-L254) to fit your environment.
 
 ```bash
-helm install otel-agent open-telemetry/opentelemetry-collector --values agent.yml --create-namespace --namespace otel
+helm install otel-agent open-telemetry/opentelemetry-collector --values agent.yaml --create-namespace --namespace otel
 
  
 kubectl -n=otel get pods

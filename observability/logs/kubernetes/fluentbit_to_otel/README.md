@@ -6,7 +6,7 @@ Installs the OTEL Collector as a deployment (for an aggregator) and an Fluent Bi
 
 ## Under development
 
-Currently this configuration causes Fluent Bit to crash:
+Currently, this configuration causes Fluent Bit to crash:
 
 [issue](https://github.com/fluent/fluent-bit/issues/6512#issuecomment-1366003651)
 

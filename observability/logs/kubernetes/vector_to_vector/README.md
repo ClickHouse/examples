@@ -56,7 +56,7 @@ wget https://raw.githubusercontent.com/ClickHouse/examples/main/observability/lo
 
 ## Aggregator Configuration
 
-The [aggregator.yml](./aggregator.yml) provides a full sample aggregator configuration, requiring only minor changes for most cases.
+The [aggregator.yaml](./aggregator.yaml) provides a full sample aggregator configuration, requiring only minor changes for most cases.
 
 To deploy an aggregator, we make a few key configuration changes to the charts `values.yaml`:
   - Set the `role` to “Aggregator”
@@ -140,7 +140,7 @@ vector-aggregator-0   1/1     Running   0          39s
 
 ## Agent Configuration
 
-The [agent.yml](./agent.yml) provides a full sample agent configuration.
+The [agent.yaml](./agent.yaml) provides a full sample agent configuration.
 
 Vector agents communicate over the [Vector sink](https://vector.dev/docs/reference/configuration/sinks/vector/) to the aggregator instance using an equivalent [source](https://vector.dev/docs/reference/configuration/sources/vector/). Our key configuration:
 
