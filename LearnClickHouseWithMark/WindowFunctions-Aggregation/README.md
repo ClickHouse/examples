@@ -1,6 +1,6 @@
 # Window Functions - Aggregate
 
-Video: https://youtu.be/Yku9mmBYm_4
+Video: https://youtu.be/lLd96kaSJ9Y
 
 Install ClickHouse
 
