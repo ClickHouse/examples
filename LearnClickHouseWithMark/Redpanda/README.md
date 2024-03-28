@@ -19,7 +19,7 @@ rpk topic describe wiki_events -p
 Ingest Wiki changes data into Redpanda
 
 ```bash
-curl -N https://stream.wikimedia.org/v2/stream/recentchange  |
+curl -N https://stream.wikimedia.org/v2/stream/recentchange 2>/dev/null |
 awk '/^data: /{gsub(/^data: /, ""); print}' |
 jq -cr --arg sep ø '[.meta.id, tostring] | join($sep)' |
 kcat -P -b localhost:9092 -t wiki_events -Kø
