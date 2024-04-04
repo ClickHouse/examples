@@ -1,6 +1,6 @@
 # Aggregation States
 
-Video: https://www.youtube.com/watch?v=1O27sis1nLE
+Video: https://youtu.be/pryhI4F_zqQ
 
 Tools: [rpk](https://docs.redpanda.com/current/reference/rpk/), [kcat](https://github.com/edenhill/kcat)
 
