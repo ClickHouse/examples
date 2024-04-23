@@ -824,6 +824,84 @@ GET pypi_1b_by_project_country_code/_search?request_cache=false
 }
 ```
 
+## Data loading
+
+### Elasticsearch
+
+#### Logstash configuration
+```
+input {
+ stdin {}
+}
+
+filter {
+    csv {
+        separator => ","
+        columns => ["timestamp","country_code","url","project"]
+    }
+
+    date {
+      match => [ "timestamp", "yyyy-MM-dd HH:mm:ss.SSSSSS"]
+      target => "@timestamp"
+      remove_field => ["timestamp"]
+    }
+
+    mutate {
+        remove_field => [ "%{@index}","%{@version}","%{@type}", "host", "log", "event", "message", "@version"]
+    }
+}
+
+output {
+  elasticsearch {
+    hosts => [...]
+    index => "pypi-1b-ns"
+    action => "create"
+    user => "elastic"
+    password => "..."
+    ssl => true
+    cacert => "..."
+  }
+}
+```
+#### Load call
+```
+clickhouse local  -q "
+SELECT
+    timestamp,
+    country_code,
+    url,
+    project
+FROM s3(
+    'https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/sample/2023/{0..61}-*.parquet',
+    'Parquet',
+    'timestamp DateTime64(6), country_code LowCardinality(String), url String, project String')
+FORMAT CSV
+SETTINGS
+    input_format_null_as_default = 1,
+    input_format_parquet_import_nested = 1;
+" |  /home/ubuntu/logstash-8.13.2/bin/logstash -r -f "/home/ubuntu/logstash-8.13.2/config/pypi.conf"
+```
+
+
+### ClickHouse
+
+#### Load SQL query
+```
+INSERT INTO pypi_1b
+SELECT
+    timestamp,
+    country_code,
+    url,
+    project
+FROM s3(
+    'https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/sample/2023/{0..61}-*.parquet',
+    'Parquet',
+    'timestamp DateTime, country_code LowCardinality(String), url String, project String, `file.filename` String, `file.project` String, `file.version` String, `file.type` String, `installer.name` String, `installer.version` String, python String, `implementation.name` String, `implementation.version` String, `distro.name` String, `distro.version` String, `distro.id` String, `distro.libc.lib` String, `distro.libc.version` String, `system.name` String, `system.release` String, cpu String, openssl_version String, setuptools_version String, rustc_version String,tls_protocol String, tls_cipher String')
+SETTINGS
+    input_format_null_as_default = 1,
+    input_format_parquet_import_nested = 1,
+    max_insert_threads = 30;
+```
 
 ## Storage sizes
 
