@@ -1,4 +1,4 @@
-# On-disk format and insert processing primer
+# Query processing primer
 
 
 ## Elasticsearch
