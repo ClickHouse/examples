@@ -934,7 +934,28 @@ GET _data_stream/pypi-1b-s/_stats?human=true
 ```
 #### Elasticsearch - LZ4 compression, without _source
 ```
-TODO
+GET _data_stream/pypi-1b-ns/_stats?human=true
+
+{
+  "_shards": {
+    "total": 6,
+    "successful": 6,
+    "failed": 0
+  },
+  "data_stream_count": 1,
+  "backing_indices": 6,
+  "total_store_size": "37.7gb",
+  "total_store_size_bytes": 40502403385,
+  "data_streams": [
+    {
+      "data_stream": "pypi-1b-ns",
+      "backing_indices": 6,
+      "store_size": "37.7gb",
+      "store_size_bytes": 40502403385,
+      "maximum_timestamp": 1687509239000
+    }
+  ]
+}
 ```
 #### ClickHouse - LZ4 compression
 ```
