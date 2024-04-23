@@ -1126,6 +1126,66 @@ TODO
 
 #### ClickHouse Cloud with 4 CPU cores per node - SQL
 ```
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    count() AS count
+FROM pypi_1b
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 30, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 32af5808-24d6-4822-a36c-cddd05080f65
+
+┌─project──┬────count─┐
+│ boto3    │ 28202786 │
+│ urllib3  │ 15992012 │
+│ requests │ 14390575 │
+└──────────┴──────────┘
+
+3 rows in set. Elapsed: 4.672 sec. Processed 1.01 billion rows, 19.08 GB (216.72 million rows/s., 4.08 GB/s.)
+Peak memory usage: 257.99 MiB.
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    count() AS count
+FROM pypi_1b
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 30, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 3314f248-55f8-41b8-8a53-c9ce8f6a7fcf
+
+┌─project──┬────count─┐
+│ boto3    │ 28202786 │
+│ urllib3  │ 15992012 │
+│ requests │ 14390575 │
+└──────────┴──────────┘
+
+3 rows in set. Elapsed: 4.657 sec. Processed 1.01 billion rows, 19.08 GB (217.46 million rows/s., 4.10 GB/s.)
+Peak memory usage: 257.99 MiB.
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    count() AS count
+FROM pypi_1b
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 30, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: f4797fc0-52c1-4f33-9f79-d061e7a08cbb
+
+┌─project──┬────count─┐
+│ boto3    │ 28202786 │
+│ urllib3  │ 15992012 │
+│ requests │ 14390575 │
+└──────────┴──────────┘
+
+3 rows in set. Elapsed: 4.639 sec. Processed 1.01 billion rows, 19.08 GB (218.30 million rows/s., 4.11 GB/s.)
+Peak memory usage: 257.99 MiB.
 
 ```
 
