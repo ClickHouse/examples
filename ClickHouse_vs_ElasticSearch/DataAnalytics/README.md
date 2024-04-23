@@ -1119,6 +1119,16 @@ TODO
 TODO
 ```
 
+#### ClickHouse Cloud - SQL
+```
+TODO
+```
+
+#### ClickHouse Cloud with 4 CPU cores per node - SQL
+```
+
+```
+
 
 ### 1 billion row data set -  pre-calculated `downloads per project` 
 
@@ -1149,6 +1159,18 @@ TODO
 ```
 TODO
 ```
+
+
+## Misc
+
+### Process for dropping filesystem cache for Elasticsearch
+
+- stopping the Elasticsearch node
+- running a Linux command for dropping the os-level filesystem cache:
+`echo 3 | sudo tee /proc/sys/vm/drop_caches` 
+- restarting the Elasticsearch node
+
+
 
 
 
