@@ -28,3 +28,5 @@ Background part merges continue the incremental data transformation:
 The diagram above shows how the partial aggregation states for `avg` are combined during a background part merge.
 
 Users can consolidate the partial aggregation states in the materialized view’s target table using `avg()` with the -[Merge](https://clickhouse.com/docs/en/sql-reference/aggregate-functions/combinators#-merge) extension to obtain the final result.
+
+Note that all [over 90 aggregate functions](https://clickhouse.com/docs/en/sql-reference/aggregate-functions/reference), including their combination with aggregate function [combinators](https://www.youtube.com/watch?v=7ApwD0cfAFI), support partial aggregation states. To give one additional example, the partial state for [uniqExact](https://clickhouse.com/docs/en/sql-reference/aggregate-functions/reference/uniqexact) is a hashtable containing unique value hashes.
