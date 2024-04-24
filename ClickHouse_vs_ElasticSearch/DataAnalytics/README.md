@@ -1292,6 +1292,16 @@ Peak memory usage: 1.95 GiB.
 
 #### Variant 2 - table to table copy into a Null table engine table with a connected materialized view
 
+Depending on the cardinality of the raw data set, variant 1 is a memory-intensive approach. Alternatively, users can utilize an approach requiring minimal memory by 
+
+1. Creating a temporary table with a [Null table engine](https://clickhouse.com/docs/en/engines/table-engines/special/null) 
+2. Connecting a copy of the normally used materialized view to that temporary table
+3. Using an INSERT INTO SELECT query, copying all data from the raw data set into that temporary table
+4. Dropping the temporary table
+
+With that approach, rows from the raw data set are copied block-wise into the temporary table (which doesn’t store any of these rows), and for each block of rows, a [partial state](https://github.com/ClickHouse/examples/blob/main/ClickHouse_vs_ElasticSearch/DataAnalytics/internals/Continuous_data_transformation/README.md#clickhouse) is calculated and written to the target table, where these states are [incrementally merged](https://github.com/ClickHouse/examples/blob/main/ClickHouse_vs_ElasticSearch/DataAnalytics/internals/Continuous_data_transformation/README.md#clickhouse) in the background.
+
+
 ```
 CREATE OR REPLACE TABLE pypi_10b_null
 (
