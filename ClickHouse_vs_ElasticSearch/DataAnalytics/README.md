@@ -909,11 +909,12 @@ SETTINGS
 
 #### Elasticsearch - LZ4 compression, with _source
 ```
+#################################################
 GET _data_stream/pypi-1b-s/_stats?human=true
 
 {
   "_shards": {
-    "total": 20,
+    "total": 10,
     "successful": 10,
     "failed": 0
   },
@@ -931,9 +932,23 @@ GET _data_stream/pypi-1b-s/_stats?human=true
     }
   ]
 }
+
+#################################################
+GET pypi-1b-s/_count
+
+{
+  "count": 1012638142,
+  "_shards": {
+    "total": 10,
+    "successful": 10,
+    "skipped": 0,
+    "failed": 0
+  }
+}
 ```
 #### Elasticsearch - LZ4 compression, without _source
 ```
+#################################################
 GET _data_stream/pypi-1b-ns/_stats?human=true
 
 {
@@ -955,6 +970,19 @@ GET _data_stream/pypi-1b-ns/_stats?human=true
       "maximum_timestamp": 1687509239000
     }
   ]
+}
+
+#################################################
+GET pypi-1b-ns/_count
+
+{
+  "count": 1012638142,
+  "_shards": {
+    "total": 6,
+    "successful": 6,
+    "skipped": 0,
+    "failed": 0
+  }
 }
 ```
 #### ClickHouse - LZ4 compression

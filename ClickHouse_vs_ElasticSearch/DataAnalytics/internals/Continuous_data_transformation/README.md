@@ -1,5 +1,8 @@
 # Continuous data transformation techniques
 
+Based on the [Elasticsearch on-disk format](../On-disk_format_and_insert_processing/README.md#elasticsearch) and [ClickHouse on-disk format](../On-disk_format_and_insert_processing/README.md#clickhouse), we describe how their techniques for continuous data transformation work in detail here.
+
+
 ## Elasticsearch
 
 Elasticsearch provides a mechanism called [transforms](https://www.elastic.co/guide/en/elasticsearch/reference/current/transforms.html) for batch-converting existing indices into summarized indices or continuously converting index data.   
@@ -8,7 +11,7 @@ The following diagram sketches abstractly how continuous transforms work (note t
 
 ![](es-transforms.png)
 
-Continuous transforms use transform [checkpoints](https://www.elastic.co/guide/en/elasticsearch/reference/current/transform-checkpoints.html) based on a configurable check interval time (transform [frequency](https://www.elastic.co/guide/en/elasticsearch/reference/current/put-transform.html) with a default value of 1 minute). In the diagram above, we assume ① a new checkpoint is created after the check interval time has elapsed. Now Elasticsearch checks for changes in the transforms’ source index and detects three new `blue` documents (11, 12, and 13) that exist since the previous checkpoint. Therefore the source index is filtered for all existing `blue` documents, and, with a [composite aggregation](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-composite-aggregation.html), the aggregate values are recalculated (and the destination index is updated with a document replacing the document containing the previous aggregation values). Similarly, at ② and ③, new checkpoints are processed by checking for changes and recalculating the aggregate values from all existing documents belonging to the same ‘blue’ bucket.
+Continuous transforms use transform [checkpoints](https://www.elastic.co/guide/en/elasticsearch/reference/current/transform-checkpoints.html) based on a configurable check interval time (transform [frequency](https://www.elastic.co/guide/en/elasticsearch/reference/current/put-transform.html) with a default value of 1 minute). In the diagram above, we assume ① a new checkpoint is created after the check interval time has elapsed. Now Elasticsearch checks for changes in the transforms’ source index and detects three new `blue` documents (11, 12, and 13) that exist since the previous checkpoint. Therefore the source index is filtered for all existing `blue` documents, and, with a [composite aggregation](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-composite-aggregation.html) (to utilize result [pagination](https://www.elastic.co/guide/en/elasticsearch/reference/current/paginate-search-results.html)), the aggregate values are recalculated (and the destination index is updated with a document replacing the document containing the previous aggregation values). Similarly, at ② and ③, new checkpoints are processed by checking for changes and recalculating the aggregate values from all existing documents belonging to the same ‘blue’ bucket.
 
 You can see a more concrete example of Elasticsearch transforms [here](./README.md#elasticsearch-transforms). 
 
