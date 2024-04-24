@@ -1258,7 +1258,72 @@ TODO
 `echo 3 | sudo tee /proc/sys/vm/drop_caches` 
 - restarting the Elasticsearch node
 
+### Timings for backfilling pre-aggregations in Elasticsearch using a batch transform
 
+### Process for backfilling pre-aggregations in ClickHouse
+
+#### Variant 1 - directly inserting into the target table by using the materialized view's transformation query
+
+CREATE OR REPLACE TABLE pypi_10b_by_project_country_code_backfilled
+(
+    `project` String,
+    `country_code` LowCardinality(String),
+    `count` SimpleAggregateFunction(sum, Int64)
+)
+ENGINE = AggregatingMergeTree
+ORDER BY (project, country_code);
+
+
+INSERT INTO pypi_10b_by_project_country_code_backfilled
+SELECT
+    project,
+    country_code,
+    count() AS count
+FROM pypi_10b
+GROUP BY project, country_code
+SETTINGS
+    max_threads = 32,
+    max_insert_threads = 32;
+
+0 rows in set. Elapsed: 19.901 sec. Processed 10.01 billion rows, 198.63 GB (503.10 million rows/s., 9.98 GB/s.)
+Peak memory usage: 1.95 GiB.
+
+#### Variant 2 - table to table copy into a Null table engine table with a connected materialized view
+
+CREATE OR REPLACE TABLE pypi_10b_null
+(
+    `timestamp` DateTime,
+    `country_code` LowCardinality(String),
+    `url` String,
+    `project` String
+)
+ENGINE = Null;
+
+
+CREATE OR REPLACE TABLE pypi_10b_by_project_country_code_backfilled
+(
+    `project` String,
+    `country_code` LowCardinality(String),
+    `count` SimpleAggregateFunction(sum, Int64)
+)
+ENGINE = AggregatingMergeTree
+ORDER BY (project, country_code);
+
+
+CREATE MATERIALIZED VIEW pypi_10b_by_project_country_code_mv_backfilled TO pypi_10b_by_project_country_code_backfilled AS
+SELECT
+    project,
+    country_code,
+    count() AS count
+FROM pypi_10b_null
+GROUP BY project, country_code;
+
+
+INSERT INTO pypi_10b_null
+SELECT * FROM pypi_10b
+SETTINGS
+    max_threads = 30,
+    max_insert_threads = 30;
 
 
 
