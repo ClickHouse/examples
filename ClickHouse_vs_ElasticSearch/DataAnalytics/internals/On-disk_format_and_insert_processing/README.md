@@ -30,7 +30,7 @@ ClickHouse stores rows in tables. Similar to an Elasticsearch index, the data of
 
 
 
-* [Column data files](https://clickhouse.com/docs/en/optimize/sparse-primary-indexes#data-is-stored-on-disk-ordered-by-primary-key-columns) contain the table’s compressed ([LZ4](https://en.wikipedia.org/wiki/LZ4_(compression_algorithm)) by default, optionally [ZSTD](https://en.wikipedia.org/wiki/Zstd)) column data.
+* [Column data files](https://clickhouse.com/docs/en/optimize/sparse-primary-indexes#data-is-stored-on-disk-ordered-by-primary-key-columns) contain the table’s compressed column data. By default, ClickHouse applies [LZ4](https://en.wikipedia.org/wiki/LZ4_(compression_algorithm)) compression in the self-managed version, and [ZSTD](https://en.wikipedia.org/wiki/Zstd) in ClickHouse Cloud. But other [general purpose](https://clickhouse.com/docs/en/sql-reference/statements/create/table#general-purpose-codecs) and [specialized codecs](https://clickhouse.com/docs/en/sql-reference/statements/create/table#specialized-codecs) can be used and also [combined](https://clickhouse.com/blog/optimize-clickhouse-codecs-compression-schema), instead.
 * [Primary index](https://clickhouse.com/docs/en/optimize/sparse-primary-indexes#clickhouse-index-design) is used for skipping data during query processing.
 * [Skipping indexes](https://clickhouse.com/docs/en/optimize/skipping-indexes) are secondary indexes for skipping data during query processing.
 * [Column statistics](https://clickhouse.com/blog/clickhouse-release-23-11#column-statistics-for-prewhere) enable better query optimization.
