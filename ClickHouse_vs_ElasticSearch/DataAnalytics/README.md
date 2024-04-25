@@ -641,12 +641,12 @@ GET pypi-1b-ns/_search?request_cache=false
 {
   "size": 0,
   "aggregations": {
-	"projects": {
-	  "terms": {
-		"field": "project",
-		"size": 3
-	  }
-	 }
+    "projects": {
+      "terms": {
+        "field": "project",
+        "size": 3
+      }
+    }
   }
 }
 ```
@@ -691,14 +691,18 @@ SETTINGS
 GET pypi-1b-ns/_search?request_cache=false
 {
   "size": 0,
-  "query": { "term": { "project": "boto3" } },
+  "query": {
+    "term": {
+      "project": "boto3"
+    }
+  },
   "aggregations": {
-	"countries": {
-	  "terms": {
-		"field": "country_code",
-		"size": 3
-	  }
-	 }
+    "countries": {
+      "terms": {
+        "field": "country_code",
+        "size": 3
+      }
+    }
   }
 }
 ```
@@ -716,15 +720,6 @@ POST /_query?format=txt
   """
 }
 ```
-
-
-
-
-
-
-
-
-
 
 
 ## Queries on pre-aggregated data sets
@@ -1332,27 +1327,51 @@ ORDER BY `table` ASC
 
 ## Query runtimes
 
-### 1 billion row data set - raw data
+### 1 billion row data set - raw data - downloads per project
 
 #### Elasticsearch - Query DSL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
+
 ```
+GET pypi-1b-ns/_search?request_cache=false
+{
+  "size": 0,
+  "aggregations": {
+	"projects": {
+	  "terms": {
+		"field": "project",
+		"size": 3
+	  }
+	 }
+  }
+}
+
 TODO
 ```
 #### Elasticsearch - ESQL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
 ```
+POST /_query?format=txt
+{
+  "query": """
+    FROM pypi-1b-ns 
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  """
+}
+
 TODO
 ```
 #### ClickHouse - SQL
-```
-TODO
-```
-
-#### ClickHouse Cloud - SQL
-```
-TODO
-```
-
-#### ClickHouse Cloud with 4 CPU cores per node - SQL
 ```
 ------------------------------------------------------------------------------------------------------------------------
 SELECT
@@ -1362,7 +1381,73 @@ FROM pypi_1b
 GROUP BY project
 ORDER BY count DESC
 LIMIT 3
-SETTINGS max_threads = 30, enable_filesystem_cache = 0, use_query_cache = 0
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 64587b99-921a-4bb6-a9f9-57f5f664c449
+
+   ┌─project──┬────count─┐
+1. │ boto3    │ 28202786 │
+2. │ urllib3  │ 15992012 │
+3. │ requests │ 14390575 │
+   └──────────┴──────────┘
+
+3 rows in set. Elapsed: 0.768 sec. Processed 1.01 billion rows, 19.08 GB (1.32 billion rows/s., 24.84 GB/s.)
+Peak memory usage: 265.46 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    count() AS count
+FROM pypi_1b
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 41ab1297-69f4-4507-8e0c-e9a98b0b0aa1
+
+   ┌─project──┬────count─┐
+1. │ boto3    │ 28202786 │
+2. │ urllib3  │ 15992012 │
+3. │ requests │ 14390575 │
+   └──────────┴──────────┘
+
+3 rows in set. Elapsed: 0.794 sec. Processed 1.01 billion rows, 19.08 GB (1.27 billion rows/s., 24.02 GB/s.)
+Peak memory usage: 265.23 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    count() AS count
+FROM pypi_1b
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: c0a6947a-ad7f-4323-8201-403330edff39
+
+   ┌─project──┬────count─┐
+1. │ boto3    │ 28202786 │
+2. │ urllib3  │ 15992012 │
+3. │ requests │ 14390575 │
+   └──────────┴──────────┘
+
+3 rows in set. Elapsed: 0.765 sec. Processed 1.01 billion rows, 19.08 GB (1.32 billion rows/s., 24.94 GB/s.)
+Peak memory usage: 265.24 MiB.
+```
+
+#### ClickHouse Cloud - 1 node with 4 CPU cores per node - SQL
+```
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    count() AS count
+FROM pypi_1b
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 4, enable_filesystem_cache = 0, use_query_cache = 0
 
 Query id: 32af5808-24d6-4822-a36c-cddd05080f65
 
@@ -1417,36 +1502,786 @@ Peak memory usage: 257.99 MiB.
 
 ```
 
+### 1 billion row data set - raw data - downloads per country for a specific project
+
+#### Elasticsearch - Query DSL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
+```
+GET pypi-1b-ns/_search?request_cache=false
+{
+  "size": 0,
+  "query": {
+    "term": {
+      "project": "boto3"
+    }
+  },
+  "aggregations": {
+    "countries": {
+      "terms": {
+        "field": "country_code",
+        "size": 3
+      }
+    }
+  }
+}
+
+
+TODO
+```
+#### Elasticsearch - ESQL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
+```
+POST /_query?format=txt
+{
+  "query": """
+    FROM pypi-1b-ns
+    | WHERE project == "boto3"
+    | STATS count = COUNT() BY country_code 
+    | SORT count DESC 
+    | LIMIT 3
+  """
+}
+
+
+TODO
+```
+#### ClickHouse - SQL
+```
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    country_code,
+    count() AS count
+FROM pypi_1b
+WHERE project = 'boto3'
+GROUP BY country_code
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 9e71fa34-17fd-4561-b61a-d003bacbdeae
+
+   ┌─country_code─┬────count─┐
+1. │ US           │ 20605160 │
+2. │ IE           │  1738337 │
+3. │ SG           │  1608552 │
+   └──────────────┴──────────┘
+
+3 rows in set. Elapsed: 0.033 sec. Processed 28.21 million rows, 423.33 MB (853.12 million rows/s., 12.80 GB/s.)
+Peak memory usage: 1.77 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    country_code,
+    count() AS count
+FROM pypi_1b
+WHERE project = 'boto3'
+GROUP BY country_code
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 3a9d2e33-4f46-42d2-99a1-b7681640205e
+
+   ┌─country_code─┬────count─┐
+1. │ US           │ 20605160 │
+2. │ IE           │  1738337 │
+3. │ SG           │  1608552 │
+   └──────────────┴──────────┘
+
+3 rows in set. Elapsed: 0.035 sec. Processed 28.21 million rows, 423.33 MB (815.28 million rows/s., 12.23 GB/s.)
+Peak memory usage: 1.23 MiB.
+
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    country_code,
+    count() AS count
+FROM pypi_1b
+WHERE project = 'boto3'
+GROUP BY country_code
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 081d1207-19f3-4014-b8b2-da49b7f52621
+
+   ┌─country_code─┬────count─┐
+1. │ US           │ 20605160 │
+2. │ IE           │  1738337 │
+3. │ SG           │  1608552 │
+   └──────────────┴──────────┘
+
+3 rows in set. Elapsed: 0.034 sec. Processed 28.21 million rows, 423.33 MB (827.62 million rows/s., 12.42 GB/s.)
+Peak memory usage: 1.75 MiB.
+
+```
+
 
 ### 1 billion row data set -  pre-calculated `downloads per project` 
 
 #### Elasticsearch - Query DSL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
 ```
-TODO
-```
-#### Elasticsearch - ESQL
-```
-TODO
-```
-#### ClickHouse - SQL
-```
+GET pypi_1b_by_project/_search?request_cache=false
+{
+  "size": 3,
+  "query": {
+    "match_all": {}
+  },
+  "sort": {
+    "_script": {
+      "type": "Number",
+      "order": "desc",
+      "script": {
+        "lang": "painless",
+        "source": """
+        String s = doc['project.terms'].value;
+          int idvalue = Integer.parseInt(s);
+          return idvalue;
+        """
+      }
+    }
+  }
+}
+
 TODO
 ```
 
-### 1 billion row data set -  pre-calculated `downloads per project per country` 
+#### ClickHouse - SQL
+```
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    sum(count) AS count
+FROM pypi_1b_by_project
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 9102dbd5-42cd-40e2-997a-e552a071a889
+
+   ┌─project──┬────count─┐
+1. │ boto3    │ 28202786 │
+2. │ urllib3  │ 15992012 │
+3. │ requests │ 14390575 │
+   └──────────┴──────────┘
+
+3 rows in set. Elapsed: 0.030 sec. Processed 434.78 thousand rows, 13.10 MB (14.65 million rows/s., 441.30 MB/s.)
+Peak memory usage: 72.06 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    sum(count) AS count
+FROM pypi_1b_by_project
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: fdfd4f83-485c-4f43-b1a0-e388ddeae40e
+
+   ┌─project──┬────count─┐
+1. │ boto3    │ 28202786 │
+2. │ urllib3  │ 15992012 │
+3. │ requests │ 14390575 │
+   └──────────┴──────────┘
+
+3 rows in set. Elapsed: 0.028 sec. Processed 434.78 thousand rows, 13.10 MB (15.29 million rows/s., 460.50 MB/s.)
+Peak memory usage: 72.06 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    sum(count) AS count
+FROM pypi_1b_by_project
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: b9556961-4a75-4a3c-8daf-bf06ad35e4e5
+
+   ┌─project──┬────count─┐
+1. │ boto3    │ 28202786 │
+2. │ urllib3  │ 15992012 │
+3. │ requests │ 14390575 │
+   └──────────┴──────────┘
+
+3 rows in set. Elapsed: 0.025 sec. Processed 434.78 thousand rows, 13.10 MB (17.69 million rows/s., 532.90 MB/s.)
+Peak memory usage: 72.06 MiB.
+```
+
+### 1 billion row data set - pre-calculated `downloads per project per country` 
 
 #### Elasticsearch - Query DSL
 ```
+GET pypi_1b_by_project_country_code/_search?request_cache=false
+{
+  "size": 3,
+  "query": {
+    "term": {
+      "projects": "boto3"
+    }
+  },
+  "sort": {
+    "_script": {
+      "type": "Number",
+      "order": "desc",
+      "script": {
+        "lang": "painless",
+        "source": """
+        String s = doc['country_code.terms'].value;
+          int idvalue = Integer.parseInt(s);
+          return idvalue;
+        """
+      }
+    }
+  }
+}
+
+
+TODO
+```
+
+#### ClickHouse - SQL
+```
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    country_code,
+    sum(count) AS count
+FROM pypi_1b_by_project_country_code
+WHERE project = 'boto3'
+GROUP BY
+    project,
+    country_code
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 676c8507-daff-4309-a76d-420abc9b9c16
+
+   ┌─country_code─┬────count─┐
+1. │ US           │ 20605160 │
+2. │ IE           │  1738337 │
+3. │ SG           │  1608552 │
+   └──────────────┴──────────┘
+
+3 rows in set. Elapsed: 0.004 sec. Processed 8.19 thousand rows, 236.83 KB (1.92 million rows/s., 55.63 MB/s.)
+Peak memory usage: 97.08 KiB.
+
+------------------------------------------------------------------------------------------------------------------------
+
+SELECT
+    country_code,
+    sum(count) AS count
+FROM pypi_1b_by_project_country_code
+WHERE project = 'boto3'
+GROUP BY
+    project,
+    country_code
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: e25feef9-8bb0-4aa5-ba58-37e88a38774f
+
+   ┌─country_code─┬────count─┐
+1. │ US           │ 20605160 │
+2. │ IE           │  1738337 │
+3. │ SG           │  1608552 │
+   └──────────────┴──────────┘
+
+3 rows in set. Elapsed: 0.004 sec. Processed 8.19 thousand rows, 236.83 KB (1.95 million rows/s., 56.50 MB/s.)
+Peak memory usage: 97.11 KiB.
+------------------------------------------------------------------------------------------------------------------------
+
+SELECT
+    country_code,
+    sum(count) AS count
+FROM pypi_1b_by_project_country_code
+WHERE project = 'boto3'
+GROUP BY
+    project,
+    country_code
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 9360976e-17df-490f-9a08-7ff7ce2c9b11
+
+   ┌─country_code─┬────count─┐
+1. │ US           │ 20605160 │
+2. │ IE           │  1738337 │
+3. │ SG           │  1608552 │
+   └──────────────┴──────────┘
+
+3 rows in set. Elapsed: 0.004 sec. Processed 8.19 thousand rows, 236.83 KB (2.08 million rows/s., 60.14 MB/s.)
+Peak memory usage: 99.61 KiB.
+```
+
+
+
+
+### 10 billion row data set - raw data - downloads per project
+
+#### Elasticsearch - Query DSL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
+```
+GET pypi-10b-ns/_search?request_cache=false
+{
+  "size": 0,
+  "aggregations": {
+	"projects": {
+	  "terms": {
+		"field": "project",
+		"size": 3
+	  }
+	 }
+  }
+}
+
+
 TODO
 ```
 #### Elasticsearch - ESQL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
 ```
+POST /_query?format=txt
+{
+  "query": """
+    FROM pypi-10b-ns 
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  """
+}
+
+
 TODO
 ```
 #### ClickHouse - SQL
 ```
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    count() AS count
+FROM pypi_10b
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: ef12d292-5e34-478f-954b-62421b20b1e6
+
+   ┌─project──┬─────count─┐
+1. │ boto3    │ 278873617 │
+2. │ urllib3  │ 158164615 │
+3. │ requests │ 142282585 │
+   └──────────┴───────────┘
+
+3 rows in set. Elapsed: 7.374 sec. Processed 10.01 billion rows, 188.61 GB (1.36 billion rows/s., 25.58 GB/s.)
+Peak memory usage: 272.34 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    count() AS count
+FROM pypi_10b
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: b8a35e6d-b868-46e0-8a04-d4e41abf449b
+
+   ┌─project──┬─────count─┐
+1. │ boto3    │ 278873617 │
+2. │ urllib3  │ 158164615 │
+3. │ requests │ 142282585 │
+   └──────────┴───────────┘
+
+3 rows in set. Elapsed: 7.439 sec. Processed 10.01 billion rows, 188.61 GB (1.35 billion rows/s., 25.35 GB/s.)
+Peak memory usage: 268.36 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+    project,
+    count() AS count
+FROM pypi_10b
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 6e595a46-5660-4678-807d-b06d192ceb38
+
+   ┌─project──┬─────count─┐
+1. │ boto3    │ 278873617 │
+2. │ urllib3  │ 158164615 │
+3. │ requests │ 142282585 │
+   └──────────┴───────────┘
+
+3 rows in set. Elapsed: 7.366 sec. Processed 10.01 billion rows, 188.61 GB (1.36 billion rows/s., 25.60 GB/s.)
+Peak memory usage: 269.40 MiB.
+```
+
+### 10 billion row data set - raw data - downloads per country for a specific project
+
+#### Elasticsearch - Query DSL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
+```
+GET pypi-10b-ns/_search?request_cache=false
+{
+  "size": 0,
+  "query": {
+    "term": {
+      "project": "boto3"
+    }
+  },
+  "aggregations": {
+    "countries": {
+      "terms": {
+        "field": "country_code",
+        "size": 3
+      }
+    }
+  }
+}
+
+
 TODO
 ```
+#### Elasticsearch - ESQL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
+```
+POST /_query?format=txt
+{
+  "query": """
+    FROM pypi-10b-ns
+    | WHERE project == "boto3"
+    | STATS count = COUNT() BY country_code 
+    | SORT count DESC 
+    | LIMIT 3
+  """
+}
+
+
+TODO
+```
+#### ClickHouse - SQL
+```
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    country_code,
+    count() AS count
+FROM pypi_10b
+WHERE project = 'boto3'
+GROUP BY country_code
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: abbe7fc9-5aca-44f6-8bbc-45dcb9ee8088
+
+   ┌─country_code─┬─────count─┐
+1. │ US           │ 203759297 │
+2. │ IE           │  17175943 │
+3. │ SG           │  15901152 │
+   └──────────────┴───────────┘
+
+3 rows in set. Elapsed: 0.213 sec. Processed 278.88 million rows, 4.18 GB (1.31 billion rows/s., 19.67 GB/s.)
+Peak memory usage: 3.05 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    country_code,
+    count() AS count
+FROM pypi_10b
+WHERE project = 'boto3'
+GROUP BY country_code
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 6b3bc566-34b8-46ba-bee1-a30eda80396a
+
+   ┌─country_code─┬─────count─┐
+1. │ US           │ 203759297 │
+2. │ IE           │  17175943 │
+3. │ SG           │  15901152 │
+   └──────────────┴───────────┘
+
+3 rows in set. Elapsed: 0.210 sec. Processed 278.88 million rows, 4.18 GB (1.33 billion rows/s., 19.94 GB/s.)
+Peak memory usage: 2.00 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    country_code,
+    count() AS count
+FROM pypi_10b
+WHERE project = 'boto3'
+GROUP BY country_code
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: a85f6f72-bfc2-43ce-9494-448d593700d7
+
+   ┌─country_code─┬─────count─┐
+1. │ US           │ 203759297 │
+2. │ IE           │  17175943 │
+3. │ SG           │  15901152 │
+   └──────────────┴───────────┘
+
+3 rows in set. Elapsed: 0.205 sec. Processed 278.88 million rows, 4.18 GB (1.36 billion rows/s., 20.40 GB/s.)
+Peak memory usage: 2.78 MiB.
+```
+
+
+### 10 billion row data set -  pre-calculated `downloads per project` 
+
+#### Elasticsearch - Query DSL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
+```
+GET pypi_10b_by_project/_search?request_cache=false
+{
+  "size": 3,
+  "query": {
+    "match_all": {}
+  },
+  "sort": {
+    "_script": {
+      "type": "Number",
+      "order": "desc",
+      "script": {
+        "lang": "painless",
+        "source": """
+        String s = doc['project.terms'].value;
+          int idvalue = Integer.parseInt(s);
+          return idvalue;
+        """
+      }
+    }
+  }
+}
+
+TODO
+```
+
+#### ClickHouse - SQL
+```
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    sum(count) AS count
+FROM pypi_10b_by_project
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: ac6af0a9-a253-49f0-8954-080fe99d81d8
+
+   ┌─project──┬─────count─┐
+1. │ boto3    │ 278873617 │
+2. │ urllib3  │ 158164615 │
+3. │ requests │ 142282585 │
+   └──────────┴───────────┘
+
+3 rows in set. Elapsed: 0.027 sec. Processed 465.98 thousand rows, 14.06 MB (17.26 million rows/s., 520.81 MB/s.)
+Peak memory usage: 64.05 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    sum(count) AS count
+FROM pypi_10b_by_project
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: cac3dceb-18d8-4b07-8848-e03f1c95aaea
+
+   ┌─project──┬─────count─┐
+1. │ boto3    │ 278873617 │
+2. │ urllib3  │ 158164615 │
+3. │ requests │ 142282585 │
+   └──────────┴───────────┘
+
+3 rows in set. Elapsed: 0.028 sec. Processed 465.98 thousand rows, 14.06 MB (16.58 million rows/s., 500.17 MB/s.)
+Peak memory usage: 64.05 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    sum(count) AS count
+FROM pypi_10b_by_project
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 96975613-5f4e-47e1-a846-01dd45ae9105
+
+   ┌─project──┬─────count─┐
+1. │ boto3    │ 278873617 │
+2. │ urllib3  │ 158164615 │
+3. │ requests │ 142282585 │
+   └──────────┴───────────┘
+
+3 rows in set. Elapsed: 0.025 sec. Processed 465.98 thousand rows, 14.06 MB (18.45 million rows/s., 556.57 MB/s.)
+Peak memory usage: 64.05 MiB.
+```
+
+### 10 billion row data set -  pre-calculated `downloads per project per country` 
+
+#### Elasticsearch - Query DSL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
+```
+GET pypi_10b_by_project_country_code/_search?request_cache=false
+{
+  "size": 3,
+  "query": {
+    "term": {
+      "projects": "boto3"
+    }
+  },
+  "sort": {
+    "_script": {
+      "type": "Number",
+      "order": "desc",
+      "script": {
+        "lang": "painless",
+        "source": """
+        String s = doc['country_code.terms'].value;
+          int idvalue = Integer.parseInt(s);
+          return idvalue;
+        """
+      }
+    }
+  }
+}
+
+
+TODO
+```
+
+#### ClickHouse - SQL
+```
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    country_code,
+    sum(count) AS count
+FROM pypi_10b_by_project_country_code
+WHERE project = 'boto3'
+GROUP BY
+    project,
+    country_code
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 67968b60-50f2-46a9-983a-6c2097924cf3
+
+   ┌─country_code─┬─────count─┐
+1. │ US           │ 203759297 │
+2. │ IE           │  17175943 │
+3. │ SG           │  15901152 │
+   └──────────────┴───────────┘
+
+3 rows in set. Elapsed: 0.004 sec. Processed 8.19 thousand rows, 300.10 KB (1.87 million rows/s., 68.46 MB/s.)
+Peak memory usage: 101.06 KiB.
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    country_code,
+    sum(count) AS count
+FROM pypi_10b_by_project_country_code
+WHERE project = 'boto3'
+GROUP BY
+    project,
+    country_code
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 5e0ab147-4ebc-4ce8-a821-e0d7e1f1ec88
+
+   ┌─country_code─┬─────count─┐
+1. │ US           │ 203759297 │
+2. │ IE           │  17175943 │
+3. │ SG           │  15901152 │
+   └──────────────┴───────────┘
+
+3 rows in set. Elapsed: 0.005 sec. Processed 8.19 thousand rows, 300.10 KB (1.74 million rows/s., 63.66 MB/s.)
+Peak memory usage: 101.09 KiB.
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    country_code,
+    sum(count) AS count
+FROM pypi_10b_by_project_country_code
+WHERE project = 'boto3'
+GROUP BY
+    project,
+    country_code
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: f0d2c5a6-55ac-4c57-b81b-254cc317967f
+
+   ┌─country_code─┬─────count─┐
+1. │ US           │ 203759297 │
+2. │ IE           │  17175943 │
+3. │ SG           │  15901152 │
+   └──────────────┴───────────┘
+
+3 rows in set. Elapsed: 0.004 sec. Processed 8.19 thousand rows, 300.10 KB (1.85 million rows/s., 67.69 MB/s.)
+Peak memory usage: 101.06 KiB.
+```
+
+
+
+
 
 
 ## Misc
