@@ -1066,15 +1066,6 @@ ORDER BY `table` ASC
 ```
 
 
-
-
-
-
-
-
-
-
-
 ### 1 billion row data set -  pre-calculated `downloads per project per country` 
 
 #### Elasticsearch - LZ4 compression, without _source
@@ -1118,6 +1109,215 @@ ORDER BY `table` ASC
 ┌─table───────────────────────────┬─rows─────────┬─size_uncompressed─┬─size_compressed─┬─codec───┐
 │ pypi_1b_by_project_country_code │ 3.52 million │ 76.24 MiB         │ 7.87 MiB        │ ZSTD(1) │
 └─────────────────────────────────┴──────────────┴───────────────────┴─────────────────┴─────────┘
+```
+
+
+
+
+### 10 billion row data set - raw data
+
+#### Elasticsearch - LZ4 compression, with _source
+```
+#################################################
+GET _data_stream/pypi-10b-s/_stats?human=true
+
+{
+  "_shards": {
+    "total": 82,
+    "successful": 82,
+    "failed": 0
+  },
+  "data_stream_count": 1,
+  "backing_indices": 82,
+  "total_store_size": "1.3tb",
+  "total_store_size_bytes": 1470795109997,
+  "data_streams": [
+    {
+      "data_stream": "pypi-10b-s",
+      "backing_indices": 82,
+      "store_size": "1.3tb",
+      "store_size_bytes": 1470795109997,
+      "maximum_timestamp": 1687509239000
+    }
+  ]
+}
+
+#################################################
+GET pypi-10b-s/_count
+
+{
+  "count": 10012252471,
+  "_shards": {
+    "total": 82,
+    "successful": 82,
+    "skipped": 0,
+    "failed": 0
+  }
+}
+```
+#### Elasticsearch - LZ4 compression, without _source
+```
+#################################################
+GET _data_stream/pypi-10b-ns/_stats?human=true
+
+{
+  "_shards": {
+    "total": 53,
+    "successful": 53,
+    "failed": 0
+  },
+  "data_stream_count": 1,
+  "backing_indices": 53,
+  "total_store_size": "522.2gb",
+  "total_store_size_bytes": 560727639492,
+  "data_streams": [
+    {
+      "data_stream": "pypi-10b-ns",
+      "backing_indices": 53,
+      "store_size": "522.2gb",
+      "store_size_bytes": 560727639492,
+      "maximum_timestamp": 1687509239000
+    }
+  ]
+}
+
+#################################################
+GET pypi-10b-ns/_count
+
+{
+  "count": 10012252471,
+  "_shards": {
+    "total": 53,
+    "successful": 53,
+    "skipped": 0,
+    "failed": 0
+  }
+}
+```
+#### ClickHouse - LZ4 compression
+```
+SELECT
+    `table`,
+    formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableSize(sum(data_uncompressed_bytes)) AS size_uncompressed,
+    formatReadableSize(sum(data_compressed_bytes)) AS size_compressed,
+    any(default_compression_codec) AS codec
+FROM system.parts
+WHERE active AND (database = 'default') AND (`table` = 'pypi_10b')
+GROUP BY `table`
+ORDER BY `table` ASC
+
+   ┌─table────┬─rows──────────┬─size_uncompressed─┬─size_compressed─┬─codec─┐
+1. │ pypi_10b │ 10.01 billion │ 1.22 TiB          │ 77.27 GiB       │ LZ4   │
+   └──────────┴───────────────┴───────────────────┴─────────────────┴───────┘
+```
+
+#### ClickHouse Cloud - ZSTD compression
+```
+SELECT
+    `table`,
+    formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableSize(sum(data_uncompressed_bytes)) AS size_uncompressed,
+    formatReadableSize(sum(data_compressed_bytes)) AS size_compressed,
+    any(default_compression_codec) AS codec
+FROM system.parts
+WHERE active AND (database = 'default') AND (`table` = 'pypi_10b')
+GROUP BY `table`
+ORDER BY `table` ASC
+
+┌─table────┬─rows──────────┬─size_uncompressed─┬─size_compressed─┬─codec───┐
+│ pypi_10b │ 10.01 billion │ 1.22 TiB          │ 35.08 GiB       │ ZSTD(1) │
+└──────────┴───────────────┴───────────────────┴─────────────────┴─────────┘
+```
+
+### 10 billion row data set -  pre-calculated `downloads per project` 
+
+#### Elasticsearch - LZ4 compression, without _source
+```
+GET _cat/indices/pypi_10b_by_project?v&h=index,docs.count,pri.store.size&s=index
+
+index              docs.count pri.store.size
+pypi_10b_by_project     465978         45.6mb
+```
+
+#### ClickHouse - LZ4 compression
+```
+SELECT
+    `table`,
+    formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableSize(sum(data_uncompressed_bytes)) AS size_uncompressed,
+    formatReadableSize(sum(data_compressed_bytes)) AS size_compressed,
+    any(default_compression_codec) AS codec
+FROM system.parts
+WHERE active AND (database = 'default') AND (`table` = 'pypi_10b_by_project')
+GROUP BY `table`
+ORDER BY `table` ASC
+
+   ┌─table───────────────┬─rows────────────┬─size_uncompressed─┬─size_compressed─┬─codec─┐
+1. │ pypi_10b_by_project │ 465.98 thousand │ 9.85 MiB          │ 5.39 MiB        │ LZ4   │
+   └─────────────────────┴─────────────────┴───────────────────┴─────────────────┴───────┘
+```
+#### ClickHouse Cloud - ZSTD compression
+```
+SELECT
+    `table`,
+    formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableSize(sum(data_uncompressed_bytes)) AS size_uncompressed,
+    formatReadableSize(sum(data_compressed_bytes)) AS size_compressed,
+    any(default_compression_codec) AS codec
+FROM system.parts
+WHERE active AND (database = 'default') AND (`table` = 'pypi_10b_by_project')
+GROUP BY `table`
+ORDER BY `table` ASC
+
+┌─table───────────────┬─rows────────────┬─size_uncompressed─┬─size_compressed─┬─codec───┐
+│ pypi_10b_by_project │ 465.98 thousand │ 9.85 MiB          │ 3.32 MiB        │ ZSTD(1) │
+└─────────────────────┴─────────────────┴───────────────────┴─────────────────┴─────────┘
+```
+
+
+### 10 billion row data set -  pre-calculated `downloads per project per country` 
+
+#### Elasticsearch - LZ4 compression, without _source
+```
+GET _cat/indices/pypi_1b_by_project_country_code?v&h=index,docs.count,pri.store.size&s=index
+
+TODO
+```
+
+#### ClickHouse - LZ4 compression
+```
+SELECT
+    `table`,
+    formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableSize(sum(data_uncompressed_bytes)) AS size_uncompressed,
+    formatReadableSize(sum(data_compressed_bytes)) AS size_compressed,
+    any(default_compression_codec) AS codec
+FROM system.parts
+WHERE active AND (database = 'default') AND (`table` = 'pypi_10b_by_project_country_code')
+GROUP BY `table`
+ORDER BY `table` ASC
+
+   ┌─table────────────────────────────┬─rows─────────┬─size_uncompressed─┬─size_compressed─┬─codec─┐
+1. │ pypi_10b_by_project_country_code │ 8.79 million │ 190.99 MiB        │ 32.81 MiB       │ LZ4   │
+   └──────────────────────────────────┴──────────────┴───────────────────┴─────────────────┴───────┘
+```
+#### ClickHouse Cloud - ZSTD compression
+```
+SELECT
+    `table`,
+    formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableSize(sum(data_uncompressed_bytes)) AS size_uncompressed,
+    formatReadableSize(sum(data_compressed_bytes)) AS size_compressed,
+    any(default_compression_codec) AS codec
+FROM system.parts
+WHERE active AND (database = 'default') AND (`table` = 'pypi_10b_by_project_country_code')
+GROUP BY `table`
+ORDER BY `table` ASC
+
+┌─table────────────────────────────┬─rows─────────┬─size_uncompressed─┬─size_compressed─┬─codec───┐
+│ pypi_10b_by_project_country_code │ 8.79 million │ 191.55 MiB        │ 15.09 MiB       │ ZSTD(1) │
+└──────────────────────────────────┴──────────────┴───────────────────┴─────────────────┴─────────┘
 ```
 
 
