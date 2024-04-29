@@ -1072,7 +1072,7 @@ SETTINGS
 
 ## Storage sizes
 
-### 1 billion row data set - raw data
+### 1 billion raw data set - raw data
 
 #### Elasticsearch
 
@@ -1434,7 +1434,7 @@ Query id: 09cdd33d-2bcf-46e7-9c5e-0631c7a9ecb6
    └──────────────┴──────────────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
 
-### 1 billion row data set -  pre-calculated `downloads per project` 
+### 1 billion raw data set -  pre-calculated `downloads per project` 
 
 #### Elasticsearch - Without _source, LZ4 codec
 ```
@@ -1464,7 +1464,7 @@ Query id: f4b746ad-2791-4e40-81a5-ad5627f64778
    └────────────────────┴─────────────────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
 
-### 1 billion row data set -  pre-calculated `downloads per country per project` 
+### 1 billion raw data set -  pre-calculated `downloads per country per project` 
 
 #### Elasticsearch - Without _source, LZ4 compression 
 ```
@@ -1497,7 +1497,7 @@ Query id: bf5cc2d7-1d42-40d5-8bfe-f6b6c86b6f00
 
 
 
-### 10 billion row data set - raw data
+### 10 billion raw data set - raw data
 
 #### Elasticsearch
 
@@ -1783,7 +1783,7 @@ Query id: d967d7f4-d97c-4284-9ae1-20d0db53f6b8
    └───────────────┴───────────────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
 
-### 10 billion row data set -  pre-calculated `downloads per project` 
+### 10 billion raw data set -  pre-calculated `downloads per project` 
 
 #### Elasticsearch - Without _source, LZ4 codec
 ```
@@ -1813,7 +1813,7 @@ Query id: 8f2850e6-ec44-46df-9923-fac085ecbd41
    └─────────────────────┴─────────────────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
 
-### 10 billion row data set -  pre-calculated `downloads per country per project` 
+### 10 billion raw data set -  pre-calculated `downloads per country per project` 
 
 #### Elasticsearch - Without _source, LZ4 compression 
 ```
@@ -1846,7 +1846,7 @@ Query id: 44a34a95-f7df-4c7b-868c-b1e9e920fb05
 
 ## Query runtimes
 
-### 1 billion row data set - raw data - downloads per project
+### 1 billion raw data set - raw data - downloads per project
 
 #### Elasticsearch - Query DSL
 
@@ -2237,7 +2237,7 @@ Peak memory usage: 186.00 MiB.
 
 ```
 
-### 1 billion row data set - raw data - downloads per project for a specific country
+### 1 billion raw data set - raw data - downloads per project for a specific country
 
 #### Elasticsearch - Query DSL
 
@@ -2590,7 +2590,7 @@ Peak memory usage: 15.31 MiB.
 ```
 
 
-### 1 billion row data set -  pre-calculated `downloads per project` 
+### 1 billion raw data set -  pre-calculated `downloads per project` 
 
 #### Elasticsearch - Query DSL
 
@@ -2917,7 +2917,7 @@ Query id: b9556961-4a75-4a3c-8daf-bf06ad35e4e5
 Peak memory usage: 72.06 MiB.
 ```
 
-### 1 billion row data set - pre-calculated `downloads per country per project` 
+### 1 billion raw data set - pre-calculated `downloads per country per project` 
 
 #### Elasticsearch - Query DSL
 ```
@@ -3257,8 +3257,1188 @@ Peak memory usage: 13.11 MiB.
 
 
 
+### 10 billion raw data set - raw data - downloads per project
+
+#### Elasticsearch - Query DSL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
 
 
+```
+#################################################
+
+GET pypi-10b-ns-index_sorting/_search?request_cache=false
+{
+  "size": 0,
+  "aggregations": {
+    "projects": {
+      "terms": {
+        "field": "project",
+        "size": 3
+      }
+    }
+  }
+}
+
+{
+  "took": 33773,
+  "timed_out": false,
+  "_shards": {
+    "total": 48,
+    "successful": 48,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": []
+  },
+  "aggregations": {
+    "projects": {
+      "doc_count_error_upper_bound": 86015065,
+      "sum_other_doc_count": 9432931654,
+      "buckets": [
+        {
+          "key": "boto3",
+          "doc_count": 278873617
+        },
+        {
+          "key": "urllib3",
+          "doc_count": 158164615
+        },
+        {
+          "key": "requests",
+          "doc_count": 142282585
+        }
+      ]
+    }
+  }
+}
+
+
+
+#################################################
+
+GET pypi-10b-ns-index_sorting/_search?request_cache=false
+{
+  "size": 0,
+  "aggregations": {
+    "projects": {
+      "terms": {
+        "field": "project",
+        "size": 3
+      }
+    }
+  }
+}
+
+{
+  "took": 33326,
+  "timed_out": false,
+  "_shards": {
+    "total": 48,
+    "successful": 48,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": []
+  },
+  "aggregations": {
+    "projects": {
+      "doc_count_error_upper_bound": 86015065,
+      "sum_other_doc_count": 9432931654,
+      "buckets": [
+        {
+          "key": "boto3",
+          "doc_count": 278873617
+        },
+        {
+          "key": "urllib3",
+          "doc_count": 158164615
+        },
+        {
+          "key": "requests",
+          "doc_count": 142282585
+        }
+      ]
+    }
+  }
+}
+
+
+#################################################
+
+GET pypi-10b-ns-index_sorting/_search?request_cache=false
+{
+  "size": 0,
+  "aggregations": {
+    "projects": {
+      "terms": {
+        "field": "project",
+        "size": 3
+      }
+    }
+  }
+}
+
+{
+  "took": 33470,
+  "timed_out": false,
+  "_shards": {
+    "total": 48,
+    "successful": 48,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": []
+  },
+  "aggregations": {
+    "projects": {
+      "doc_count_error_upper_bound": 86015065,
+      "sum_other_doc_count": 9432931654,
+      "buckets": [
+        {
+          "key": "boto3",
+          "doc_count": 278873617
+        },
+        {
+          "key": "urllib3",
+          "doc_count": 158164615
+        },
+        {
+          "key": "requests",
+          "doc_count": 142282585
+        }
+      ]
+    }
+  }
+}
+
+```
+#### Elasticsearch - ESQL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
+```
+#################################################
+POST /_query?format=txt
+{
+  "query": """
+    FROM pypi-10b-ns-index_sorting 
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  """
+}
+
+     count     |    project    
+---------------+---------------
+278873617      |boto3          
+158164615      |urllib3        
+142282585      |requests       
+
+Finished execution of ESQL query.
+Query string: [
+    FROM pypi-10b-ns-index_sorting 
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  ]
+Execution time: [31457]ms
+
+
+#################################################
+POST /_query?format=txt
+{
+  "query": """
+    FROM pypi-10b-ns-index_sorting 
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  """
+}
+
+     count     |    project    
+---------------+---------------
+278873617      |boto3          
+158164615      |urllib3        
+142282585      |requests       
+
+Finished execution of ESQL query.
+Query string: [
+    FROM pypi-10b-ns-index_sorting 
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  ]
+Execution time: [30387]ms
+ 
+#################################################
+POST /_query?format=txt
+{
+  "query": """
+    FROM pypi-10b-ns-index_sorting 
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  """
+}
+
+     count     |    project    
+---------------+---------------
+278873617      |boto3          
+158164615      |urllib3        
+142282585      |requests 
+
+Finished execution of ESQL query.
+Query string: [
+    FROM pypi-10b-ns-index_sorting 
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  ]
+Execution time: [34295]ms  
+
+```
+#### ClickHouse - SQL
+```
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    count() AS count
+FROM pypi_10b
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 93e8f96d-e500-4dd3-8fd2-24fba4baa35c
+
+   ┌─project──┬─────count─┐
+1. │ boto3    │ 278873617 │
+2. │ urllib3  │ 158164615 │
+3. │ requests │ 142282585 │
+   └──────────┴───────────┘
+
+3 rows in set. Elapsed: 6.839 sec. Processed 10.01 billion rows, 188.61 GB (1.46 billion rows/s., 27.58 GB/s.)
+Peak memory usage: 567.95 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    count() AS count
+FROM pypi_10b
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: de6c5f4d-ef5a-4198-93f5-cdf366e94dc2
+
+   ┌─project──┬─────count─┐
+1. │ boto3    │ 278873617 │
+2. │ urllib3  │ 158164615 │
+3. │ requests │ 142282585 │
+   └──────────┴───────────┘
+
+3 rows in set. Elapsed: 6.863 sec. Processed 10.01 billion rows, 188.61 GB (1.46 billion rows/s., 27.48 GB/s.)
+Peak memory usage: 569.06 MiB.
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    count() AS count
+FROM pypi_10b
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: d762a041-2c53-4a29-bcac-3d1742856416
+
+   ┌─project──┬─────count─┐
+1. │ boto3    │ 278873617 │
+2. │ urllib3  │ 158164615 │
+3. │ requests │ 142282585 │
+   └──────────┴───────────┘
+
+3 rows in set. Elapsed: 6.803 sec. Processed 10.01 billion rows, 188.61 GB (1.47 billion rows/s., 27.73 GB/s.)
+Peak memory usage: 574.23 MiB.
+```
+
+### 10 billion raw data set - raw data - downloads per project for a specific country
+
+#### Elasticsearch - Query DSL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
+```
+#################################################
+GET pypi-10b-ns-index_sorting/_search?request_cache=false
+{
+  "size": 0,
+  "query": {
+    "term": {
+      "country_code": "NL"
+    }
+  },
+  "aggregations": {
+    "countries": {
+      "terms": {
+        "field": "project",
+        "size": 3
+      }
+    }
+  }
+}
+
+{
+  "took": 1982,
+  "timed_out": false,
+  "_shards": {
+    "total": 48,
+    "successful": 48,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": []
+  },
+  "aggregations": {
+    "countries": {
+      "doc_count_error_upper_bound": 2405679,
+      "sum_other_doc_count": 308182638,
+      "buckets": [
+        {
+          "key": "cryptography",
+          "doc_count": 6108765
+        },
+        {
+          "key": "typing-extensions",
+          "doc_count": 5562752
+        },
+        {
+          "key": "pyjwt",
+          "doc_count": 4362553
+        }
+      ]
+    }
+  }
+}
+
+
+#################################################
+GET pypi-10b-ns-index_sorting/_search?request_cache=false
+{
+  "size": 0,
+  "query": {
+    "term": {
+      "country_code": "NL"
+    }
+  },
+  "aggregations": {
+    "countries": {
+      "terms": {
+        "field": "project",
+        "size": 3
+      }
+    }
+  }
+}
+
+{
+  "took": 1847,
+  "timed_out": false,
+  "_shards": {
+    "total": 48,
+    "successful": 48,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": []
+  },
+  "aggregations": {
+    "countries": {
+      "doc_count_error_upper_bound": 2405679,
+      "sum_other_doc_count": 308182638,
+      "buckets": [
+        {
+          "key": "cryptography",
+          "doc_count": 6108765
+        },
+        {
+          "key": "typing-extensions",
+          "doc_count": 5562752
+        },
+        {
+          "key": "pyjwt",
+          "doc_count": 4362553
+        }
+      ]
+    }
+  }
+}
+
+
+
+#################################################
+GET pypi-10b-ns-index_sorting/_search?request_cache=false
+{
+  "size": 0,
+  "query": {
+    "term": {
+      "country_code": "NL"
+    }
+  },
+  "aggregations": {
+    "countries": {
+      "terms": {
+        "field": "project",
+        "size": 3
+      }
+    }
+  }
+}
+
+{
+  "took": 1832,
+  "timed_out": false,
+  "_shards": {
+    "total": 48,
+    "successful": 48,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": []
+  },
+  "aggregations": {
+    "countries": {
+      "doc_count_error_upper_bound": 2405679,
+      "sum_other_doc_count": 308182638,
+      "buckets": [
+        {
+          "key": "cryptography",
+          "doc_count": 6108765
+        },
+        {
+          "key": "typing-extensions",
+          "doc_count": 5562752
+        },
+        {
+          "key": "pyjwt",
+          "doc_count": 4362553
+        }
+      ]
+    }
+  }
+}
+
+
+
+```
+#### Elasticsearch - ESQL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
+```
+#################################################
+POST /_query?format=txt
+{
+  "query": """
+    FROM pypi-10b-ns
+    | WHERE country_code == "NL"
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  """
+}
+
+     count     |     project     
+---------------+-----------------
+6108765        |cryptography     
+5562752        |typing-extensions
+4362553        |pyjwt            
+
+Finished execution of ESQL query.
+Query string: [
+    FROM pypi-10b-ns
+    | WHERE country_code == "NL"
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  ]
+Execution time: [96158]ms
+
+
+#################################################
+POST /_query?format=txt
+{
+  "query": """
+    FROM pypi-10b-ns
+    | WHERE country_code == "NL"
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  """
+}
+
+     count     |     project     
+---------------+-----------------
+6108765        |cryptography     
+5562752        |typing-extensions
+4362553        |pyjwt            
+
+Finished execution of ESQL query.
+Query string: [
+    FROM pypi-10b-ns
+    | WHERE country_code == "NL"
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  ]
+Execution time: [95710]ms
+
+
+#################################################
+POST /_query?format=txt
+{
+  "query": """
+    FROM pypi-10b-ns
+    | WHERE country_code == "NL"
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  """
+}
+
+     count     |     project     
+---------------+-----------------
+6108765        |cryptography     
+5562752        |typing-extensions
+4362553        |pyjwt            
+
+Finished execution of ESQL query.
+Query string: [
+    FROM pypi-10b-ns
+    | WHERE country_code == "NL"
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  ]
+Execution time: [95797]ms
+```
+#### ClickHouse - SQL
+```
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    count() AS count
+FROM pypi_10b
+WHERE country_code = 'NL'
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 97160b9b-96e8-4816-a191-bc6b90bce1dc
+
+   ┌─project───────────┬───count─┐
+1. │ cryptography      │ 6108765 │
+2. │ typing-extensions │ 5562752 │
+3. │ pyjwt             │ 4362553 │
+   └───────────────────┴─────────┘
+
+3 rows in set. Elapsed: 0.273 sec. Processed 324.23 million rows, 6.82 GB (1.19 billion rows/s., 24.98 GB/s.)
+Peak memory usage: 261.27 MiB.
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    count() AS count
+FROM pypi_10b
+WHERE country_code = 'NL'
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 6b26f7b8-198e-418f-badf-ff6264da1f27
+
+   ┌─project───────────┬───count─┐
+1. │ cryptography      │ 6108765 │
+2. │ typing-extensions │ 5562752 │
+3. │ pyjwt             │ 4362553 │
+   └───────────────────┴─────────┘
+
+3 rows in set. Elapsed: 0.289 sec. Processed 324.23 million rows, 6.82 GB (1.12 billion rows/s., 23.63 GB/s.)
+Peak memory usage: 261.27 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+
+SELECT
+    project,
+    count() AS count
+FROM pypi_10b
+WHERE country_code = 'NL'
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: c3b12d6c-c836-409e-9ecb-75ec531fcabf
+
+   ┌─project───────────┬───count─┐
+1. │ cryptography      │ 6108765 │
+2. │ typing-extensions │ 5562752 │
+3. │ pyjwt             │ 4362553 │
+   └───────────────────┴─────────┘
+
+3 rows in set. Elapsed: 0.276 sec. Processed 324.23 million rows, 6.82 GB (1.18 billion rows/s., 24.73 GB/s.)
+Peak memory usage: 261.27 MiB.
+
+```
+
+
+### 10 billion raw data set -  pre-calculated `downloads per project` 
+
+#### Elasticsearch - Query DSL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
+```
+#################################################
+GET pypi_10b_by_project/_search?request_cache=false
+{
+  "size": 3,
+  "query": {
+    "match_all": {}
+  },
+  "sort": {
+    "_script": {
+      "type": "Number",
+      "order": "desc",
+      "script": {
+        "lang": "painless",
+        "source": """
+        String s = doc['project.terms'].value;
+          int idvalue = Integer.parseInt(s);
+          return idvalue;
+        """
+      }
+    }
+  },
+  "docvalue_fields": ["project_group"]
+}
+
+
+{
+  "took": 315,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": [
+      {
+        "_index": "pypi_10b_by_project",
+        "_id": "Ym2v7vrgBfGHbIXoKBiYIQoAAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "boto3"
+          ]
+        },
+        "sort": [
+          278873617
+        ]
+      },
+      {
+        "_index": "pypi_10b_by_project",
+        "_id": "dZxJAQcMZDD0ErAB4qmqulAAAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "urllib3"
+          ]
+        },
+        "sort": [
+          158164615
+        ]
+      },
+      {
+        "_index": "pypi_10b_by_project",
+        "_id": "chgGbKKTZg4TZe-Dpm7MUJAAAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "requests"
+          ]
+        },
+        "sort": [
+          142282585
+        ]
+      }
+    ]
+  }
+}
+
+
+#################################################
+GET pypi_10b_by_project/_search?request_cache=false
+{
+  "size": 3,
+  "query": {
+    "match_all": {}
+  },
+  "sort": {
+    "_script": {
+      "type": "Number",
+      "order": "desc",
+      "script": {
+        "lang": "painless",
+        "source": """
+        String s = doc['project.terms'].value;
+          int idvalue = Integer.parseInt(s);
+          return idvalue;
+        """
+      }
+    }
+  },
+  "docvalue_fields": ["project_group"]
+}
+
+{
+  "took": 318,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": [
+      {
+        "_index": "pypi_10b_by_project",
+        "_id": "Ym2v7vrgBfGHbIXoKBiYIQoAAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "boto3"
+          ]
+        },
+        "sort": [
+          278873617
+        ]
+      },
+      {
+        "_index": "pypi_10b_by_project",
+        "_id": "dZxJAQcMZDD0ErAB4qmqulAAAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "urllib3"
+          ]
+        },
+        "sort": [
+          158164615
+        ]
+      },
+      {
+        "_index": "pypi_10b_by_project",
+        "_id": "chgGbKKTZg4TZe-Dpm7MUJAAAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "requests"
+          ]
+        },
+        "sort": [
+          142282585
+        ]
+      }
+    ]
+  }
+}
+
+
+
+
+#################################################
+GET pypi_10b_by_project/_search?request_cache=false
+{
+  "size": 3,
+  "query": {
+    "match_all": {}
+  },
+  "sort": {
+    "_script": {
+      "type": "Number",
+      "order": "desc",
+      "script": {
+        "lang": "painless",
+        "source": """
+        String s = doc['project.terms'].value;
+          int idvalue = Integer.parseInt(s);
+          return idvalue;
+        """
+      }
+    }
+  },
+  "docvalue_fields": ["project_group"]
+}
+
+{
+  "took": 312,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": [
+      {
+        "_index": "pypi_10b_by_project",
+        "_id": "Ym2v7vrgBfGHbIXoKBiYIQoAAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "boto3"
+          ]
+        },
+        "sort": [
+          278873617
+        ]
+      },
+      {
+        "_index": "pypi_10b_by_project",
+        "_id": "dZxJAQcMZDD0ErAB4qmqulAAAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "urllib3"
+          ]
+        },
+        "sort": [
+          158164615
+        ]
+      },
+      {
+        "_index": "pypi_10b_by_project",
+        "_id": "chgGbKKTZg4TZe-Dpm7MUJAAAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "requests"
+          ]
+        },
+        "sort": [
+          142282585
+        ]
+      }
+    ]
+  }
+}
+
+```
+
+#### ClickHouse - SQL
+```
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    sum(count) AS count
+FROM pypi_10b_by_project
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: b9c29ce3-c0f4-461c-905f-72e140f7a027
+
+   ┌─project──┬─────count─┐
+1. │ boto3    │ 278873617 │
+2. │ urllib3  │ 158164615 │
+3. │ requests │ 142282585 │
+   └──────────┴───────────┘
+
+3 rows in set. Elapsed: 0.028 sec. Processed 465.98 thousand rows, 14.06 MB (16.47 million rows/s., 496.89 MB/s.)
+Peak memory usage: 64.05 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    sum(count) AS count
+FROM pypi_10b_by_project
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 50053d32-c9a6-4293-a1f0-44019093b824
+
+   ┌─project──┬─────count─┐
+1. │ boto3    │ 278873617 │
+2. │ urllib3  │ 158164615 │
+3. │ requests │ 142282585 │
+   └──────────┴───────────┘
+
+3 rows in set. Elapsed: 0.025 sec. Processed 465.98 thousand rows, 14.06 MB (18.50 million rows/s., 558.09 MB/s.)
+Peak memory usage: 64.05 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    sum(count) AS count
+FROM pypi_10b_by_project
+GROUP BY project
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 932cd62f-b347-47c3-9691-1f6fd0efa43e
+
+   ┌─project──┬─────count─┐
+1. │ boto3    │ 278873617 │
+2. │ urllib3  │ 158164615 │
+3. │ requests │ 142282585 │
+   └──────────┴───────────┘
+
+3 rows in set. Elapsed: 0.027 sec. Processed 465.98 thousand rows, 14.06 MB (17.29 million rows/s., 521.76 MB/s.)
+Peak memory usage: 64.05 MiB.
+```
+
+### 10 billion raw data set - pre-calculated `downloads per country per project` 
+
+#### Elasticsearch - Query DSL
+```
+#################################################
+GET pypi_1b_by_country_code_project/_search?request_cache=false
+{
+  "size": 3,
+  "query": {
+    "term": {
+      "country_code_group": "NL"
+    }
+  },
+  "sort": {
+    "_script": {
+      "type": "Number",
+      "order": "desc",
+      "script": {
+        "lang": "painless",
+        "source": """
+        String s = doc['project.terms'].value;
+          int idvalue = Integer.parseInt(s);
+          return idvalue;
+        """
+      }
+    }
+  },
+  "docvalue_fields": ["project_group"]
+}
+
+TODO
+
+
+#################################################
+GET pypi_1b_by_country_code_project/_search?request_cache=false
+{
+  "size": 3,
+  "query": {
+    "term": {
+      "country_code_group": "NL"
+    }
+  },
+  "sort": {
+    "_script": {
+      "type": "Number",
+      "order": "desc",
+      "script": {
+        "lang": "painless",
+        "source": """
+        String s = doc['project.terms'].value;
+          int idvalue = Integer.parseInt(s);
+          return idvalue;
+        """
+      }
+    }
+  },
+  "docvalue_fields": ["project_group"]
+}
+
+TODO
+
+#################################################
+GET pypi_1b_by_country_code_project/_search?request_cache=false
+{
+  "size": 3,
+  "query": {
+    "term": {
+      "country_code_group": "NL"
+    }
+  },
+  "sort": {
+    "_script": {
+      "type": "Number",
+      "order": "desc",
+      "script": {
+        "lang": "painless",
+        "source": """
+        String s = doc['project.terms'].value;
+          int idvalue = Integer.parseInt(s);
+          return idvalue;
+        """
+      }
+    }
+  },
+  "docvalue_fields": ["project_group"]
+}
+
+TODO
+
+```
+
+#### ClickHouse - SQL
+```
+------------------------------------------------------------------------------------------------------------------------
+SELECT
+    project,
+    sum(count) AS count
+FROM pypi_10b_by_country_code_project
+WHERE country_code = 'NL'
+GROUP BY
+    project,
+    country_code
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 787a190e-2d98-4fd9-aef6-dd3ecbba8cbe
+
+   ┌─project───────────┬───count─┐
+1. │ cryptography      │ 6108765 │
+2. │ typing-extensions │ 5562752 │
+3. │ pyjwt             │ 4362553 │
+   └───────────────────┴─────────┘
+
+3 rows in set. Elapsed: 0.037 sec. Processed 131.07 thousand rows, 4.02 MB (3.51 million rows/s., 107.63 MB/s.)
+Peak memory usage: 18.22 MiB.
+
+------------------------------------------------------------------------------------------------------------------------
+
+SELECT
+    project,
+    sum(count) AS count
+FROM pypi_10b_by_country_code_project
+WHERE country_code = 'NL'
+GROUP BY
+    project,
+    country_code
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 2c97cd09-5e71-489b-8083-e3035d3737e5
+
+   ┌─project───────────┬───count─┐
+1. │ cryptography      │ 6108765 │
+2. │ typing-extensions │ 5562752 │
+3. │ pyjwt             │ 4362553 │
+   └───────────────────┴─────────┘
+
+3 rows in set. Elapsed: 0.036 sec. Processed 131.07 thousand rows, 4.02 MB (3.67 million rows/s., 112.52 MB/s.)
+Peak memory usage: 18.22 MiB.
+------------------------------------------------------------------------------------------------------------------------
+
+SELECT
+    project,
+    sum(count) AS count
+FROM pypi_10b_by_country_code_project
+WHERE country_code = 'NL'
+GROUP BY
+    project,
+    country_code
+ORDER BY count DESC
+LIMIT 3
+SETTINGS max_threads = 32, enable_filesystem_cache = 0, use_query_cache = 0
+
+Query id: 83da24a7-8b7b-491d-9185-74f04eb59054
+
+   ┌─project───────────┬───count─┐
+1. │ cryptography      │ 6108765 │
+2. │ typing-extensions │ 5562752 │
+3. │ pyjwt             │ 4362553 │
+   └───────────────────┴─────────┘
+
+3 rows in set. Elapsed: 0.035 sec. Processed 131.07 thousand rows, 4.02 MB (3.73 million rows/s., 114.41 MB/s.)
+Peak memory usage: 18.22 MiB.
+```
 
 
 
