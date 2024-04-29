@@ -1670,14 +1670,14 @@ GET _data_stream/pypi-10b-ns-index_sorting/_stats?human=true
   },
   "data_stream_count": 1,
   "backing_indices": 48,
-  "total_store_size": "399.7gb",
-  "total_store_size_bytes": 429178506141,
+  "total_store_size": "379.2gb",
+  "total_store_size_bytes": 407202599622,
   "data_streams": [
     {
       "data_stream": "pypi-10b-ns-index_sorting",
       "backing_indices": 48,
-      "store_size": "399.7gb",
-      "store_size_bytes": 429178506141,
+      "store_size": "379.2gb",
+      "store_size_bytes": 407202599622,
       "maximum_timestamp": 1687509239000
     }
   ]
