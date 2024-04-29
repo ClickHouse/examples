@@ -711,7 +711,7 @@ PUT _transform/pypi_10b_by_project
     }
   },
   "dest": {
-    "index": "pypi_1b_by_project"
+    "index": "pypi_10b_by_project"
   },
   "sync": {
     "time": {
@@ -1014,6 +1014,8 @@ SETTINGS
 ### ClickHouse
 
 #### Load SQL query
+
+##### 1 billion row dataset
 ```
 INSERT INTO pypi_1b
 SELECT
@@ -1028,8 +1030,45 @@ FROM s3(
 SETTINGS
     input_format_null_as_default = 1,
     input_format_parquet_import_nested = 1,
-    max_insert_threads = 30;
+    max_insert_threads = 32;
 ```
+
+```
+INSERT INTO pypi_1b_zstd
+SELECT * FROM pypi_1b
+SETTINGS
+    max_threads=32,
+    max_insert_threads=32;
+```
+
+##### 10 billion row dataset
+
+```
+INSERT INTO pypi_10b
+SELECT
+    timestamp,
+    country_code,
+    url,
+    project
+FROM s3(
+    'https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/sample/2023/{0..612}-*.parquet',
+    'Parquet',
+    'timestamp DateTime, country_code LowCardinality(String), url String, project String, `file.filename` String, `file.project` String, `file.version` String, `file.type` String, `installer.name` String, `installer.version` String, python String, `implementation.name` String, `implementation.version` String, `distro.name` String, `distro.version` String, `distro.id` String, `distro.libc.lib` String, `distro.libc.version` String, `system.name` String, `system.release` String, cpu String, openssl_version String, setuptools_version String, rustc_version String,tls_protocol String, tls_cipher String')
+SETTINGS
+    input_format_null_as_default = 1,
+    input_format_parquet_import_nested = 1,
+    max_insert_threads = 32;
+```
+
+```
+INSERT INTO pypi_10b_zstd
+SELECT * FROM pypi_10b
+SETTINGS
+    max_threads=10,
+    max_insert_threads=10;
+```
+
+
 
 ## Storage sizes
 
@@ -1044,20 +1083,20 @@ GET _data_stream/pypi-1b-s/_stats?human=true
 
 {
   "_shards": {
-    "total": 10,
-    "successful": 10,
+    "total": 12,
+    "successful": 12,
     "failed": 0
   },
   "data_stream_count": 1,
-  "backing_indices": 10,
-  "total_store_size": "137.1gb",
-  "total_store_size_bytes": 147266949543,
+  "backing_indices": 12,
+  "total_store_size": "135.6gb",
+  "total_store_size_bytes": 145666640935,
   "data_streams": [
     {
       "data_stream": "pypi-1b-s",
-      "backing_indices": 10,
-      "store_size": "137.1gb",
-      "store_size_bytes": 147266949543,
+      "backing_indices": 12,
+      "store_size": "135.6gb",
+      "store_size_bytes": 145666640935,
       "maximum_timestamp": 1687509239000
     }
   ]
@@ -1071,6 +1110,45 @@ GET pypi-1b-s/_count
   "_shards": {
     "total": 10,
     "successful": 10,
+    "skipped": 0,
+    "failed": 0
+  }
+}
+```
+##### Without `_source`, No index sorting, `LZ4` codec
+```
+#################################################
+GET _data_stream/pypi-1b-ns/_stats?human=true
+
+{
+  "_shards": {
+    "total": 6,
+    "successful": 6,
+    "failed": 0
+  },
+  "data_stream_count": 1,
+  "backing_indices": 6,
+  "total_store_size": "37.7gb",
+  "total_store_size_bytes": 40502403386,
+  "data_streams": [
+    {
+      "data_stream": "pypi-1b-ns",
+      "backing_indices": 6,
+      "store_size": "37.7gb",
+      "store_size_bytes": 40502403386,
+      "maximum_timestamp": 1687509239000
+    }
+  ]
+}
+
+#################################################
+GET pypi-1b-ns/_count
+
+{
+  "count": 1012638142,
+  "_shards": {
+    "total": 6,
+    "successful": 6,
     "skipped": 0,
     "failed": 0
   }
@@ -1321,18 +1399,19 @@ GET pypi-1b-ns-index_sorting-best_compression/_count
 SELECT
     `table`,
     formatReadableQuantity(sum(rows)) AS rows,
-    formatReadableSize(sum(data_uncompressed_bytes)) AS size_uncompressed,
-    formatReadableSize(sum(data_compressed_bytes)) AS size_compressed
+    formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
+    formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
+    formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
 FROM system.parts
 WHERE active AND (database = 'default') AND (`table` = 'pypi_1b')
 GROUP BY `table`
 ORDER BY `table` ASC
 
-Query id: f2a55c56-b521-4360-8ca0-3a373372874a
+Query id: d816c837-ff42-4c8f-a8e5-3b68ca754fd7
 
-   ┌─table───┬─rows─────────┬─size_uncompressed─┬─size_compressed─┐
-1. │ pypi_1b │ 1.01 billion │ 126.63 GiB        │ 5.24 GiB        │
-   └─────────┴──────────────┴───────────────────┴─────────────────┘
+   ┌─table───┬─rows─────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_1b │ 1.01 billion │ 126.63 GiB             │ 5.24 GiB             │ 5.24 GiB           │
+   └─────────┴──────────────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
 #### ClickHouse
 ##### ZSTD compression
@@ -1340,18 +1419,19 @@ Query id: f2a55c56-b521-4360-8ca0-3a373372874a
 SELECT
     `table`,
     formatReadableQuantity(sum(rows)) AS rows,
-    formatReadableSize(sum(data_uncompressed_bytes)) AS size_uncompressed,
-    formatReadableSize(sum(data_compressed_bytes)) AS size_compressed
+    formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
+    formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
+    formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
 FROM system.parts
 WHERE active AND (database = 'default') AND (`table` = 'pypi_1b_zstd')
 GROUP BY `table`
 ORDER BY `table` ASC
 
-Query id: 73795d4f-52eb-4239-a054-94c31d132af3
+Query id: 09cdd33d-2bcf-46e7-9c5e-0631c7a9ecb6
 
-   ┌─table────────┬─rows─────────┬─size_uncompressed─┬─size_compressed─┐
-1. │ pypi_1b_zstd │ 1.01 billion │ 126.63 GiB        │ 3.45 GiB        │
-   └──────────────┴──────────────┴───────────────────┴─────────────────┘
+   ┌─table────────┬─rows─────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_1b_zstd │ 1.01 billion │ 126.63 GiB             │ 3.45 GiB             │ 3.46 GiB           │
+   └──────────────┴──────────────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
 
 ### 1 billion row data set -  pre-calculated `downloads per project` 
@@ -1369,20 +1449,20 @@ pypi_1b_by_project     434776         49.3mb
 SELECT
     `table`,
     formatReadableQuantity(sum(rows)) AS rows,
-    formatReadableSize(sum(data_uncompressed_bytes)) AS size_uncompressed,
-    formatReadableSize(sum(data_compressed_bytes)) AS size_compressed
+    formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
+    formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
+    formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
 FROM system.parts
 WHERE active AND (database = 'default') AND (`table` = 'pypi_1b_by_project')
 GROUP BY `table`
 ORDER BY `table` ASC
 
-Query id: 47597e25-552a-4977-8942-d3dcae9bddcf
+Query id: f4b746ad-2791-4e40-81a5-ad5627f64778
 
-   ┌─table──────────────┬─rows────────────┬─size_uncompressed─┬─size_compressed─┐
-1. │ pypi_1b_by_project │ 434.78 thousand │ 9.17 MiB          │ 4.94 MiB        │
-   └────────────────────┴─────────────────┴───────────────────┴─────────────────┘
+   ┌─table──────────────┬─rows────────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_1b_by_project │ 434.78 thousand │ 9.17 MiB               │ 4.94 MiB             │ 4.94 MiB           │
+   └────────────────────┴─────────────────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
-
 
 ### 1 billion row data set -  pre-calculated `downloads per country per project` 
 
@@ -1399,22 +1479,368 @@ pypi_1b_by_country_code_project    3523898        355.2mb
 SELECT
     `table`,
     formatReadableQuantity(sum(rows)) AS rows,
-    formatReadableSize(sum(data_uncompressed_bytes)) AS size_uncompressed,
-    formatReadableSize(sum(data_compressed_bytes)) AS size_compressed
+    formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
+    formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
+    formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
 FROM system.parts
 WHERE active AND (database = 'default') AND (`table` = 'pypi_1b_by_country_code_project')
 GROUP BY `table`
 ORDER BY `table` ASC
 
-Query id: 67977a9f-a640-4f54-99f7-5adbfcbc2e72
+Query id: bf5cc2d7-1d42-40d5-8bfe-f6b6c86b6f00
 
-   ┌─table───────────────────────────┬─rows─────────┬─size_uncompressed─┬─size_compressed─┐
-1. │ pypi_1b_by_country_code_project │ 3.52 million │ 76.02 MiB         │ 38.27 MiB       │
-   └─────────────────────────────────┴──────────────┴───────────────────┴─────────────────┘
+   ┌─table───────────────────────────┬─rows─────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_1b_by_country_code_project │ 3.52 million │ 76.02 MiB              │ 38.27 MiB            │ 38.28 MiB          │
+   └─────────────────────────────────┴──────────────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
 
 
 
+
+### 10 billion row data set - raw data
+
+#### Elasticsearch
+
+##### With `_source`, No index sorting, `LZ4` codec
+```
+#################################################
+GET _data_stream/pypi-10b-s/_stats?human=true
+
+{
+  "_shards": {
+    "total": 82,
+    "successful": 82,
+    "failed": 0
+  },
+  "data_stream_count": 1,
+  "backing_indices": 82,
+  "total_store_size": "1.3tb",
+  "total_store_size_bytes": 1470795110077,
+  "data_streams": [
+    {
+      "data_stream": "pypi-10b-s",
+      "backing_indices": 82,
+      "store_size": "1.3tb",
+      "store_size_bytes": 1470795110077,
+      "maximum_timestamp": 1687509239000
+    }
+  ]
+}
+
+#################################################
+GET pypi-10b-s/_count
+
+{
+  "count": 10012252471,
+  "_shards": {
+    "total": 82,
+    "successful": 82,
+    "skipped": 0,
+    "failed": 0
+  }
+}
+```
+##### Without `_source`, No index sorting, `LZ4` codec
+```
+#################################################
+GET _data_stream/pypi-10b-ns/_stats?human=true
+
+{
+  "_shards": {
+    "total": 53,
+    "successful": 53,
+    "failed": 0
+  },
+  "data_stream_count": 1,
+  "backing_indices": 53,
+  "total_store_size": "477.3gb",
+  "total_store_size_bytes": 512510392507,
+  "data_streams": [
+    {
+      "data_stream": "pypi-10b-ns",
+      "backing_indices": 53,
+      "store_size": "477.3gb",
+      "store_size_bytes": 512510392507,
+      "maximum_timestamp": 1687509239000
+    }
+  ]
+}
+
+#################################################
+GET pypi-10b-ns/_count
+
+{
+  "count": 10012252471,
+  "_shards": {
+    "total": 53,
+    "successful": 53,
+    "skipped": 0,
+    "failed": 0
+  }
+}
+```
+##### With `_source`, Index sorting, `LZ4` codec
+```
+#################################################
+GET _data_stream/pypi-10b-s-index_sorting/_stats?human=true
+
+{
+  "_shards": {
+    "total": 58,
+    "successful": 58,
+    "failed": 0
+  },
+  "data_stream_count": 1,
+  "backing_indices": 58,
+  "total_store_size": "550.8gb",
+  "total_store_size_bytes": 591453032505,
+  "data_streams": [
+    {
+      "data_stream": "pypi-10b-s-index_sorting",
+      "backing_indices": 58,
+      "store_size": "550.8gb",
+      "store_size_bytes": 591453032505,
+      "maximum_timestamp": 1687509239000
+    }
+  ]
+}
+
+#################################################
+GET pypi-10b-s-index_sorting/_count
+{
+  "count": 10012252471,
+  "_shards": {
+    "total": 58,
+    "successful": 58,
+    "skipped": 0,
+    "failed": 0
+  }
+}
+```
+##### With `_source`, Index sorting, `DEFLATE` codec
+```
+#################################################
+GET _data_stream/pypi-10b-s-index_sorting-best_compression/_stats?human=true
+
+{
+  "_shards": {
+    "total": 49,
+    "successful": 49,
+    "failed": 0
+  },
+  "data_stream_count": 1,
+  "backing_indices": 49,
+  "total_store_size": "469.3gb",
+  "total_store_size_bytes": 503978432885,
+  "data_streams": [
+    {
+      "data_stream": "pypi-10b-s-index_sorting-best_compression",
+      "backing_indices": 49,
+      "store_size": "469.3gb",
+      "store_size_bytes": 503978432885,
+      "maximum_timestamp": 1687509239000
+    }
+  ]
+}
+
+#################################################
+GET pypi-10b-s-index_sorting-best_compression/_count
+
+{
+  "count": 10012252471,
+  "_shards": {
+    "total": 49,
+    "successful": 49,
+    "skipped": 0,
+    "failed": 0
+  }
+}
+```
+
+##### Without `_source`, Index sorting, `LZ4` codec
+```
+#################################################
+GET _data_stream/pypi-10b-ns-index_sorting/_stats?human=true
+
+{
+  "_shards": {
+    "total": 48,
+    "successful": 48,
+    "failed": 0
+  },
+  "data_stream_count": 1,
+  "backing_indices": 48,
+  "total_store_size": "399.7gb",
+  "total_store_size_bytes": 429178506141,
+  "data_streams": [
+    {
+      "data_stream": "pypi-10b-ns-index_sorting",
+      "backing_indices": 48,
+      "store_size": "399.7gb",
+      "store_size_bytes": 429178506141,
+      "maximum_timestamp": 1687509239000
+    }
+  ]
+}
+
+#################################################
+GET pypi-10b-ns-index_sorting/_count
+
+{
+  "count": 10012252471,
+  "_shards": {
+    "total": 48,
+    "successful": 48,
+    "skipped": 0,
+    "failed": 0
+  }
+}
+```
+
+##### Without `_source`, Index sorting, `DEFLATE` codec
+```
+#################################################
+GET _data_stream/pypi-10b-ns-index_sorting-best_compression/_stats?human=true
+
+{
+  "_shards": {
+    "total": 48,
+    "successful": 48,
+    "failed": 0
+  },
+  "data_stream_count": 1,
+  "backing_indices": 48,
+  "total_store_size": "382.4gb",
+  "total_store_size_bytes": 410654203292,
+  "data_streams": [
+    {
+      "data_stream": "pypi-10b-ns-index_sorting-best_compression",
+      "backing_indices": 48,
+      "store_size": "382.4gb",
+      "store_size_bytes": 410654203292,
+      "maximum_timestamp": 1687509239000
+    }
+  ]
+}
+
+#################################################
+GET pypi-10b-ns-index_sorting-best_compression/_count
+
+{
+  "count": 10012252471,
+  "_shards": {
+    "total": 48,
+    "successful": 48,
+    "skipped": 0,
+    "failed": 0
+  }
+}
+```
+
+
+
+#### ClickHouse
+##### LZ4 compression
+```
+SELECT
+    `table`,
+    formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
+    formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
+    formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
+FROM system.parts
+WHERE active AND (database = 'default') AND (`table` = 'pypi_10b')
+GROUP BY `table`
+ORDER BY `table` ASC
+
+Query id: 20c51a6b-0a53-443c-b242-0b2ea56e4ce3
+
+Connecting to localhost:9000 as user default.
+Connected to ClickHouse server version 24.4.1.
+
+   ┌─table────┬─rows──────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_10b │ 10.01 billion │ 1.22 TiB               │ 39.10 GiB            │ 39.12 GiB          │
+   └──────────┴───────────────┴────────────────────────┴──────────────────────┴────────────────────┘
+```
+#### ClickHouse
+##### ZSTD compression
+```
+SELECT
+    `table`,
+    formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
+    formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
+    formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
+FROM system.parts
+WHERE active AND (database = 'default') AND (`table` = 'pypi_10b_zstd')
+GROUP BY `table`
+ORDER BY `table` ASC
+
+Query id: d967d7f4-d97c-4284-9ae1-20d0db53f6b8
+
+   ┌─table─────────┬─rows──────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_10b_zstd │ 10.01 billion │ 1.22 TiB               │ 23.43 GiB            │ 23.45 GiB          │
+   └───────────────┴───────────────┴────────────────────────┴──────────────────────┴────────────────────┘
+```
+
+### 10 billion row data set -  pre-calculated `downloads per project` 
+
+#### Elasticsearch - Without _source, LZ4 codec
+```
+GET _cat/indices/pypi_10b_by_project?v&h=index,docs.count,pri.store.size&s=index
+
+index               docs.count pri.store.size
+pypi_10b_by_project     465978           48mb
+```
+
+#### ClickHouse - LZ4 compression
+```
+SELECT
+    `table`,
+    formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
+    formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
+    formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
+FROM system.parts
+WHERE active AND (database = 'default') AND (`table` = 'pypi_10b_by_project')
+GROUP BY `table`
+ORDER BY `table` ASC
+
+Query id: 8f2850e6-ec44-46df-9923-fac085ecbd41
+
+   ┌─table───────────────┬─rows────────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_10b_by_project │ 465.98 thousand │ 9.85 MiB               │ 5.39 MiB             │ 5.39 MiB           │
+   └─────────────────────┴─────────────────┴────────────────────────┴──────────────────────┴────────────────────┘
+```
+
+### 10 billion row data set -  pre-calculated `downloads per country per project` 
+
+#### Elasticsearch - Without _source, LZ4 compression 
+```
+GET _cat/indices/pypi_10b_by_country_code_project?v&h=index,docs.count,pri.store.size&s=index
+
+TODO
+```
+
+#### ClickHouse - LZ4 compression
+```
+SELECT
+    `table`,
+    formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
+    formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
+    formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
+FROM system.parts
+WHERE active AND (database = 'default') AND (`table` = 'pypi_10b_by_country_code_project')
+GROUP BY `table`
+ORDER BY `table` ASC
+
+Query id: 44a34a95-f7df-4c7b-868c-b1e9e920fb05
+
+   ┌─table────────────────────────────┬─rows─────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_10b_by_country_code_project │ 8.79 million │ 190.99 MiB             │ 97.46 MiB            │ 97.48 MiB          │
+   └──────────────────────────────────┴──────────────┴────────────────────────┴──────────────────────┴────────────────────┘
+```
 
 
 
@@ -2851,24 +3277,24 @@ Peak memory usage: 13.11 MiB.
 
 #### Variant 1 - directly inserting into the target table by using the materialized view's transformation query
 ```
-CREATE OR REPLACE TABLE pypi_10b_by_project_country_code_backfilled
+CREATE OR REPLACE TABLE pypi_10b_by_country_code_project_backfilled
 (
-    `project` String,
     `country_code` LowCardinality(String),
+    `project` String,
     `count` SimpleAggregateFunction(sum, Int64)
 )
 ENGINE = AggregatingMergeTree
-ORDER BY (project, country_code);
+ORDER BY (country_code, project);
 ```
 
 ```
-INSERT INTO pypi_10b_by_project_country_code_backfilled
+INSERT INTO pypi_10b_by_country_code_project_backfilled
 SELECT
-    project,
     country_code,
+    project,
     count() AS count
 FROM pypi_10b
-GROUP BY project, country_code
+GROUP BY country_code, project
 SETTINGS
     max_threads = 32,
     max_insert_threads = 32;
@@ -2901,24 +3327,24 @@ ENGINE = Null;
 ```
 
 ```
-CREATE OR REPLACE TABLE pypi_10b_by_project_country_code_backfilled
+CREATE OR REPLACE TABLE pypi_10b_by_country_code_project_backfilled
 (
-    `project` String,
     `country_code` LowCardinality(String),
+    `project` String,
     `count` SimpleAggregateFunction(sum, Int64)
 )
 ENGINE = AggregatingMergeTree
-ORDER BY (project, country_code);
+ORDER BY (country_code, project);
 ```
 
 ```
-CREATE MATERIALIZED VIEW pypi_10b_by_project_country_code_mv_backfilled TO pypi_10b_by_project_country_code_backfilled AS
+CREATE MATERIALIZED VIEW pypi_10b_by_country_code_project_mv_backfilled TO pypi_10b_by_country_code_project_backfilled AS
 SELECT
-    project,
     country_code,
+    project,
     count() AS count
 FROM pypi_10b_null
-GROUP BY project, country_code;
+GROUP BY country_code, project;
 ```
 ```
 INSERT INTO pypi_10b_null
