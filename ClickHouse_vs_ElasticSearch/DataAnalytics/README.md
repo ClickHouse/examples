@@ -513,8 +513,8 @@ PUT _index_template/pypi_by_project
 #### by-country_code-project transforms destination indexes
 ```
 PUT pypi_1b_by_country_code_project
-PUT pypi_1b_by_country_code_project
-PUT pypi_1b_by_country_code_project
+PUT pypi_10b_by_country_code_project
+PUT pypi_100b_by_country_code_project
 ```
 
 #### by-project transforms destination indexes
@@ -1512,7 +1512,7 @@ Query id: a0b795b3-1598-43d8-9490-19556ce50663
 1. │ pypi_1b │ 1.01 billion │ 1.00  │ 126.63 GiB             │ 5.24 GiB             │ 5.24 GiB           │
    └─────────┴──────────────┴───────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
-#### ClickHouse
+
 ##### ZSTD compression
 ```
 SELECT
@@ -2101,7 +2101,6 @@ Query id: 13fc1d1d-cc5f-4604-8621-17ecad3927fa
 1. │ pypi_10b │ 10.01 billion │ 1.00  │ 1.22 TiB               │ 39.10 GiB            │ 39.12 GiB          │
    └──────────┴───────────────┴───────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
-#### ClickHouse
 ##### ZSTD compression
 ```
 SELECT
