@@ -4877,6 +4877,7 @@ SETTINGS
 ### ClickHouse PyPi table without LowCardinality type
 
 #### DDL
+```
 CREATE OR REPLACE TABLE pypi_1b_strings_only
 (
     `timestamp` DateTime,
@@ -4885,15 +4886,19 @@ CREATE OR REPLACE TABLE pypi_1b_strings_only
     `project` String
 )
 ORDER BY (country_code, project, url, timestamp);
+```
 
 #### Load data
+```
 INSERT INTO pypi_1b_strings_only
 SELECT * FROM pypi_1b
 SETTINGS
     max_threads=32,
     max_insert_threads=32;
+```
 
 #### Check sizes
+```
 SELECT
     `table`,
     formatReadableQuantity(sum(rows)) AS rows,
@@ -4912,3 +4917,4 @@ Query id: 31b057a6-1ea7-462f-afab-f16b03cd78fd
 1. │ pypi_1b              │ 1.01 billion │ 1.00  │ 126.63 GiB             │ 5.24 GiB             │ 5.24 GiB           │
 2. │ pypi_1b_strings_only │ 1.01 billion │ 1.00  │ 128.52 GiB             │ 5.24 GiB             │ 5.25 GiB           │
    └──────────────────────┴──────────────┴───────┴────────────────────────┴──────────────────────┴────────────────────┘
+```
