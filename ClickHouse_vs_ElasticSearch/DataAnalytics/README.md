@@ -2159,7 +2159,8 @@ Query id: f8e7d78d-1a70-4f66-9845-f324ed43674c
 ```
 GET _cat/indices/pypi_10b_by_country_code_project?v&h=index,docs.count,pri.store.size&s=index
 
-TODO
+index                            docs.count pri.store.size
+pypi_10b_by_country_code_project    8785501        715.2mb
 ```
 
 #### ClickHouse - LZ4 compression
@@ -3261,6 +3262,11 @@ Peak memory usage: 72.06 MiB.
 ### 1 billion raw data set - pre-calculated `downloads per country per project` 
 
 #### Elasticsearch - Query DSL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
 ```
 #################################################
 GET pypi_1b_by_country_code_project/_search?request_cache=false
@@ -4617,9 +4623,14 @@ Peak memory usage: 64.05 MiB.
 ### 10 billion raw data set - pre-calculated `downloads per country per project` 
 
 #### Elasticsearch - Query DSL
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache
+
 ```
 #################################################
-GET pypi_1b_by_country_code_project/_search?request_cache=false
+GET pypi_10b_by_country_code_project/_search?request_cache=false
 {
   "size": 3,
   "query": {
@@ -4644,11 +4655,69 @@ GET pypi_1b_by_country_code_project/_search?request_cache=false
   "docvalue_fields": ["project_group"]
 }
 
-TODO
+
+{
+  "took": 148,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": [
+      {
+        "_index": "pypi_10b_by_country_code_project",
+        "_id": "TmNKfms74JVDZN0PrGH40s4AAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "cryptography"
+          ]
+        },
+        "sort": [
+          6108765
+        ]
+      },
+      {
+        "_index": "pypi_10b_by_country_code_project",
+        "_id": "TnTuSbQMBDhFN3O1ZtdKIicFAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "typing-extensions"
+          ]
+        },
+        "sort": [
+          5562752
+        ]
+      },
+      {
+        "_index": "pypi_10b_by_country_code_project",
+        "_id": "TnAhWLwU_ErYFfh6s3N9hxohAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "pyjwt"
+          ]
+        },
+        "sort": [
+          4362553
+        ]
+      }
+    ]
+  }
+}
 
 
 #################################################
-GET pypi_1b_by_country_code_project/_search?request_cache=false
+GET pypi_10b_by_country_code_project/_search?request_cache=false
 {
   "size": 3,
   "query": {
@@ -4673,10 +4742,68 @@ GET pypi_1b_by_country_code_project/_search?request_cache=false
   "docvalue_fields": ["project_group"]
 }
 
-TODO
+
+{
+  "took": 189,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": [
+      {
+        "_index": "pypi_10b_by_country_code_project",
+        "_id": "TmNKfms74JVDZN0PrGH40s4AAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "cryptography"
+          ]
+        },
+        "sort": [
+          6108765
+        ]
+      },
+      {
+        "_index": "pypi_10b_by_country_code_project",
+        "_id": "TnTuSbQMBDhFN3O1ZtdKIicFAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "typing-extensions"
+          ]
+        },
+        "sort": [
+          5562752
+        ]
+      },
+      {
+        "_index": "pypi_10b_by_country_code_project",
+        "_id": "TnAhWLwU_ErYFfh6s3N9hxohAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "pyjwt"
+          ]
+        },
+        "sort": [
+          4362553
+        ]
+      }
+    ]
+  }
+}
 
 #################################################
-GET pypi_1b_by_country_code_project/_search?request_cache=false
+GET pypi_10b_by_country_code_project/_search?request_cache=false
 {
   "size": 3,
   "query": {
@@ -4701,7 +4828,65 @@ GET pypi_1b_by_country_code_project/_search?request_cache=false
   "docvalue_fields": ["project_group"]
 }
 
-TODO
+
+{
+  "took": 151,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": [
+      {
+        "_index": "pypi_10b_by_country_code_project",
+        "_id": "TmNKfms74JVDZN0PrGH40s4AAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "cryptography"
+          ]
+        },
+        "sort": [
+          6108765
+        ]
+      },
+      {
+        "_index": "pypi_10b_by_country_code_project",
+        "_id": "TnTuSbQMBDhFN3O1ZtdKIicFAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "typing-extensions"
+          ]
+        },
+        "sort": [
+          5562752
+        ]
+      },
+      {
+        "_index": "pypi_10b_by_country_code_project",
+        "_id": "TnAhWLwU_ErYFfh6s3N9hxohAAAAAAAA",
+        "_score": null,
+        "fields": {
+          "project_group": [
+            "pyjwt"
+          ]
+        },
+        "sort": [
+          4362553
+        ]
+      }
+    ]
+  }
+}
 
 ```
 
