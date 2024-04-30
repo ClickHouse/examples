@@ -204,6 +204,9 @@ PUT _ilm/policy/pypi-lifecycle-policy
           "rollover": {
             "max_primary_shard_size": "10gb",
             "max_primary_shard_docs" : 200000000
+          },
+           "forcemerge" : {
+            "max_num_segments": 1
           }
         }
       }
