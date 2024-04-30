@@ -403,7 +403,7 @@ PUT _data_stream/pypi-100b-s-index_sorting
 ```
 PUT _data_stream/pypi-1b-s-index_sorting-best_compression
 PUT _data_stream/pypi-10b-s-index_sorting-best_compression
-PUT _data_stream/pypi-1b00-s-index_sorting-best_compression
+PUT _data_stream/pypi-100b-s-index_sorting-best_compression
 ```
 ##### Without `_source`, Index sorting, `LZ4` codec
 ```
