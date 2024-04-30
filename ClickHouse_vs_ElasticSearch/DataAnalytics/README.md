@@ -1103,6 +1103,23 @@ GET _data_stream/pypi-1b-s/_stats?human=true
 }
 
 #################################################
+GET _cat/segments/.ds-pypi-1b-s-2024*?v=true&h=index,shard,segment,docs.count,size&s=index
+
+index                           shard segment docs.count   size
+.ds-pypi-1b-s-2024.04.25-000001 0     _131      79501500 10.6gb
+.ds-pypi-1b-s-2024.04.25-000002 0     _1ng      83556500 11.2gb
+.ds-pypi-1b-s-2024.04.25-000003 0     _175      88098500 11.8gb
+.ds-pypi-1b-s-2024.04.25-000004 0     _183      86458500 11.5gb
+.ds-pypi-1b-s-2024.04.25-000005 0     _1au      91207000 12.2gb
+.ds-pypi-1b-s-2024.04.25-000006 0     _1ab      90580500   12gb
+.ds-pypi-1b-s-2024.04.25-000007 0     _1i1      89393500   12gb
+.ds-pypi-1b-s-2024.04.25-000008 0     _1jb      92265000 12.3gb
+.ds-pypi-1b-s-2024.04.25-000009 0     _1db      85419500 11.4gb
+.ds-pypi-1b-s-2024.04.25-000010 0     _17g      85570500 11.4gb
+.ds-pypi-1b-s-2024.04.25-000011 0     _180      97376000   13gb
+.ds-pypi-1b-s-2024.04.25-000012 0     _o5       43211142  5.7gb
+
+#################################################
 GET pypi-1b-s/_count
 
 {
@@ -1140,6 +1157,18 @@ GET _data_stream/pypi-1b-ns/_stats?human=true
     }
   ]
 }
+
+#################################################
+GET _cat/segments/.ds-pypi-1b-ns-2024*?v=true&h=index,shard,segment,docs.count,size&s=index
+
+index                            shard segment docs.count  size
+.ds-pypi-1b-ns-2024.04.22-000001 0     _2py     184986000 6.8gb
+.ds-pypi-1b-ns-2024.04.22-000002 0     _27p     199505000 7.4gb
+.ds-pypi-1b-ns-2024.04.22-000003 0     _2t1     192391000 7.1gb
+.ds-pypi-1b-ns-2024.04.22-000004 0     _2if     194322500 7.2gb
+.ds-pypi-1b-ns-2024.04.22-000005 0     _2fc     195489500 7.2gb
+.ds-pypi-1b-ns-2024.04.22-000006 0     _m6       45944142 1.7gb
+
 
 #################################################
 GET pypi-1b-ns/_count
@@ -1181,6 +1210,20 @@ GET _data_stream/pypi-1b-s-best_compression/_stats?human=true
 }
 
 #################################################
+GET _cat/segments/.ds-pypi-1b-s-best_compression-2024*?v=true&h=index,shard,segment,docs.count,size&s=index
+
+index                                            shard segment docs.count   size
+.ds-pypi-1b-s-best_compression-2024.04.25-000001 0     _1am     109129000  9.8gb
+.ds-pypi-1b-s-best_compression-2024.04.25-000002 0     _193     114992500 10.4gb
+.ds-pypi-1b-s-best_compression-2024.04.25-000003 0     _1ay     113481500 10.2gb
+.ds-pypi-1b-s-best_compression-2024.04.25-000004 0     _1d2     119589500 10.8gb
+.ds-pypi-1b-s-best_compression-2024.04.25-000005 0     _1cr     120156000 10.8gb
+.ds-pypi-1b-s-best_compression-2024.04.25-000006 0     _17b     123711000 11.2gb
+.ds-pypi-1b-s-best_compression-2024.04.25-000007 0     _1af     110272000  9.9gb
+.ds-pypi-1b-s-best_compression-2024.04.25-000008 0     _189     126567500 11.4gb
+.ds-pypi-1b-s-best_compression-2024.04.25-000009 0     _v9       74739142  6.7gb
+
+#################################################
 GET pypi-1b-s-best_compression/_count
 
 {
@@ -1218,6 +1261,17 @@ GET _data_stream/pypi-1b-ns-best_compression/_stats?human=true
     }
   ]
 }
+
+#################################################
+GET _cat/segments/.ds-pypi-1b-ns-best_compression-2024*?v=true&h=index,shard,segment,docs.count,size&s=index
+
+index                                             shard segment docs.count  size
+.ds-pypi-1b-ns-best_compression-2024.04.25-000001 0     _2je     224116000 7.8gb
+.ds-pypi-1b-ns-best_compression-2024.04.25-000002 0     _25f     204698000 7.1gb
+.ds-pypi-1b-ns-best_compression-2024.04.25-000003 0     _272     209775000 7.3gb
+.ds-pypi-1b-ns-best_compression-2024.04.25-000004 0     _2ao     201817500   7gb
+.ds-pypi-1b-ns-best_compression-2024.04.25-000005 0     _1ok     172231642   6gb
+
 
 #################################################
 GET pypi-1b-ns-best_compression/_count
@@ -1259,6 +1313,17 @@ GET _data_stream/pypi-1b-s-index_sorting/_stats?human=true
 }
 
 #################################################
+GET _cat/segments/.ds-pypi-1b-s-index_sorting-2024*?v=true&h=index,shard,segment,docs.count,size&s=index
+
+index                                         shard segment docs.count  size
+.ds-pypi-1b-s-index_sorting-2024.04.25-000001 0     _3fp     175407500 8.8gb
+.ds-pypi-1b-s-index_sorting-2024.04.25-000002 0     _30l     185472000 9.3gb
+.ds-pypi-1b-s-index_sorting-2024.04.25-000003 0     _2k9     172620000 8.7gb
+.ds-pypi-1b-s-index_sorting-2024.04.25-000004 0     _2je     172705000 8.7gb
+.ds-pypi-1b-s-index_sorting-2024.04.26-000005 0     _2x0     189458000 9.5gb
+.ds-pypi-1b-s-index_sorting-2024.04.26-000006 0     _1nf     116975642 5.9gb
+
+#################################################
 GET pypi-1b-s-index_sorting/_count
 
 {
@@ -1296,6 +1361,16 @@ GET _data_stream/pypi-1b-s-index_sorting-best_compression/_stats?human=true
     }
   ]
 }
+
+#################################################
+GET _cat/segments/.ds-pypi-1b-s-index_sorting-best_compression-2024*?v=true&h=index,shard,segment,docs.count,size&s=index
+
+index                                                          shard segment docs.count  size
+.ds-pypi-1b-s-index_sorting-best_compression-2024.04.25-000001 0     _3zf     218601500 9.6gb
+.ds-pypi-1b-s-index_sorting-best_compression-2024.04.25-000002 0     _3jp     203318500 8.9gb
+.ds-pypi-1b-s-index_sorting-best_compression-2024.04.25-000003 0     _2vn     196172000 8.6gb
+.ds-pypi-1b-s-index_sorting-best_compression-2024.04.26-000004 0     _380     214236500 9.4gb
+.ds-pypi-1b-s-index_sorting-best_compression-2024.04.26-000005 0     _2qd     180309642 7.9gb
 
 #################################################
 GET pypi-1b-s-index_sorting-best_compression/_count
@@ -1338,6 +1413,16 @@ GET _data_stream/pypi-1b-ns-index_sorting/_stats?human=true
 }
 
 #################################################
+GET _cat/segments/.ds-pypi-1b-ns-index_sorting-2024*?v=true&h=index,shard,segment,docs.count,size&s=index
+
+index                                          shard segment docs.count  size
+.ds-pypi-1b-ns-index_sorting-2024.04.25-000001 0     _3pu     218599500 8.2gb
+.ds-pypi-1b-ns-index_sorting-2024.04.25-000002 0     _3ki     203320500 7.7gb
+.ds-pypi-1b-ns-index_sorting-2024.04.25-000003 0     _36w     217146000 8.2gb
+.ds-pypi-1b-ns-index_sorting-2024.04.26-000004 0     _36s     213804000   8gb
+.ds-pypi-1b-ns-index_sorting-2024.04.26-000005 0     _2fr     159768142   6gb
+
+#################################################
 GET pypi-1b-ns-index_sorting/_count
 
 {
@@ -1378,6 +1463,16 @@ GET _data_stream/pypi-1b-ns-index_sorting-best_compression/_stats?human=true
 }
 
 #################################################
+GET _cat/segments/.ds-pypi-1b-ns-index_sorting-best_compression-2024*?v=true&h=index,shard,segment,docs.count,size&s=index
+
+index                                                           shard segment docs.count  size
+.ds-pypi-1b-ns-index_sorting-best_compression-2024.04.25-000001 0     _46d     218596000 7.8gb
+.ds-pypi-1b-ns-index_sorting-best_compression-2024.04.25-000002 0     _3dz     203311000 7.3gb
+.ds-pypi-1b-ns-index_sorting-best_compression-2024.04.25-000003 0     _34v     217153000 7.7gb
+.ds-pypi-1b-ns-index_sorting-best_compression-2024.04.26-000004 0     _32k     213808000 7.6gb
+.ds-pypi-1b-ns-index_sorting-best_compression-2024.04.26-000005 0     _2fs     159770142 5.7gb
+
+#################################################
 GET pypi-1b-ns-index_sorting-best_compression/_count
 
 {
@@ -1399,6 +1494,7 @@ GET pypi-1b-ns-index_sorting-best_compression/_count
 SELECT
     `table`,
     formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableQuantity(count()) AS parts,
     formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
     formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
     formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
@@ -1407,11 +1503,11 @@ WHERE active AND (database = 'default') AND (`table` = 'pypi_1b')
 GROUP BY `table`
 ORDER BY `table` ASC
 
-Query id: d816c837-ff42-4c8f-a8e5-3b68ca754fd7
+Query id: a0b795b3-1598-43d8-9490-19556ce50663
 
-   ┌─table───┬─rows─────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
-1. │ pypi_1b │ 1.01 billion │ 126.63 GiB             │ 5.24 GiB             │ 5.24 GiB           │
-   └─────────┴──────────────┴────────────────────────┴──────────────────────┴────────────────────┘
+   ┌─table───┬─rows─────────┬─parts─┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_1b │ 1.01 billion │ 1.00  │ 126.63 GiB             │ 5.24 GiB             │ 5.24 GiB           │
+   └─────────┴──────────────┴───────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
 #### ClickHouse
 ##### ZSTD compression
@@ -1419,6 +1515,7 @@ Query id: d816c837-ff42-4c8f-a8e5-3b68ca754fd7
 SELECT
     `table`,
     formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableQuantity(count()) AS parts,
     formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
     formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
     formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
@@ -1427,11 +1524,11 @@ WHERE active AND (database = 'default') AND (`table` = 'pypi_1b_zstd')
 GROUP BY `table`
 ORDER BY `table` ASC
 
-Query id: 09cdd33d-2bcf-46e7-9c5e-0631c7a9ecb6
+Query id: 5bff60e7-a836-4427-ba2e-e967035b116a
 
-   ┌─table────────┬─rows─────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
-1. │ pypi_1b_zstd │ 1.01 billion │ 126.63 GiB             │ 3.45 GiB             │ 3.46 GiB           │
-   └──────────────┴──────────────┴────────────────────────┴──────────────────────┴────────────────────┘
+   ┌─table────────┬─rows─────────┬─parts─┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_1b_zstd │ 1.01 billion │ 1.00  │ 126.63 GiB             │ 3.45 GiB             │ 3.46 GiB           │
+   └──────────────┴──────────────┴───────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
 
 ### 1 billion raw data set -  pre-calculated `downloads per project` 
@@ -1449,6 +1546,7 @@ pypi_1b_by_project     434776         49.3mb
 SELECT
     `table`,
     formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableQuantity(count()) AS parts,
     formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
     formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
     formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
@@ -1457,11 +1555,11 @@ WHERE active AND (database = 'default') AND (`table` = 'pypi_1b_by_project')
 GROUP BY `table`
 ORDER BY `table` ASC
 
-Query id: f4b746ad-2791-4e40-81a5-ad5627f64778
+Query id: 5536e6e3-fb58-4453-b0e5-8a7204b319b1
 
-   ┌─table──────────────┬─rows────────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
-1. │ pypi_1b_by_project │ 434.78 thousand │ 9.17 MiB               │ 4.94 MiB             │ 4.94 MiB           │
-   └────────────────────┴─────────────────┴────────────────────────┴──────────────────────┴────────────────────┘
+   ┌─table──────────────┬─rows────────────┬─parts─┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_1b_by_project │ 434.78 thousand │ 1.00  │ 9.17 MiB               │ 4.94 MiB             │ 4.94 MiB           │
+   └────────────────────┴─────────────────┴───────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
 
 ### 1 billion raw data set -  pre-calculated `downloads per country per project` 
@@ -1479,6 +1577,7 @@ pypi_1b_by_country_code_project    3523898        355.2mb
 SELECT
     `table`,
     formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableQuantity(count()) AS parts,
     formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
     formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
     formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
@@ -1487,11 +1586,11 @@ WHERE active AND (database = 'default') AND (`table` = 'pypi_1b_by_country_code_
 GROUP BY `table`
 ORDER BY `table` ASC
 
-Query id: bf5cc2d7-1d42-40d5-8bfe-f6b6c86b6f00
+Query id: 9efbf7b2-fba4-4ebf-9907-644b2c8b8c9e
 
-   ┌─table───────────────────────────┬─rows─────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
-1. │ pypi_1b_by_country_code_project │ 3.52 million │ 76.02 MiB              │ 38.27 MiB            │ 38.28 MiB          │
-   └─────────────────────────────────┴──────────────┴────────────────────────┴──────────────────────┴────────────────────┘
+   ┌─table───────────────────────────┬─rows─────────┬─parts─┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_1b_by_country_code_project │ 3.52 million │ 1.00  │ 76.02 MiB              │ 38.27 MiB            │ 38.28 MiB          │
+   └─────────────────────────────────┴──────────────┴───────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
 
 
@@ -1528,6 +1627,11 @@ GET _data_stream/pypi-10b-s/_stats?human=true
 }
 
 #################################################
+GET _cat/segments/.ds-pypi-10b-s-2024*?v=true&h=index,shard,segment,docs.count,size&s=index
+
+TODO
+
+#################################################
 GET pypi-10b-s/_count
 
 {
@@ -1553,18 +1657,77 @@ GET _data_stream/pypi-10b-ns/_stats?human=true
   },
   "data_stream_count": 1,
   "backing_indices": 53,
-  "total_store_size": "477.3gb",
-  "total_store_size_bytes": 512510392507,
+  "total_store_size": "373.9gb",
+  "total_store_size_bytes": 401489958522,
   "data_streams": [
     {
       "data_stream": "pypi-10b-ns",
       "backing_indices": 53,
-      "store_size": "477.3gb",
-      "store_size_bytes": 512510392507,
+      "store_size": "373.9gb",
+      "store_size_bytes": 401489958522,
       "maximum_timestamp": 1687509239000
     }
   ]
 }
+
+#################################################
+GET _cat/segments/.ds-pypi-10b-ns-2024*?v=true&h=index,shard,segment,docs.count,size&s=index
+
+index                             shard segment docs.count  size
+.ds-pypi-10b-ns-2024.04.22-000001 0     _2w5     228727000 8.5gb
+.ds-pypi-10b-ns-2024.04.22-000002 0     _1rh     178243500 6.6gb
+.ds-pypi-10b-ns-2024.04.22-000003 0     _1te     191560000 7.1gb
+.ds-pypi-10b-ns-2024.04.22-000004 0     _1vg     194514500 7.2gb
+.ds-pypi-10b-ns-2024.04.22-000005 0     _1ox     189106500   7gb
+.ds-pypi-10b-ns-2024.04.22-000006 0     _1s6     186727500 6.9gb
+.ds-pypi-10b-ns-2024.04.22-000007 0     _1rz     192047000 7.1gb
+.ds-pypi-10b-ns-2024.04.22-000008 0     _1pc     181723500 6.7gb
+.ds-pypi-10b-ns-2024.04.22-000009 0     _1rl     183896500 6.8gb
+.ds-pypi-10b-ns-2024.04.22-000010 0     _1q2     188222000   7gb
+.ds-pypi-10b-ns-2024.04.22-000011 0     _1sg     187789500   7gb
+.ds-pypi-10b-ns-2024.04.23-000012 0     _1r1     191362500 7.1gb
+.ds-pypi-10b-ns-2024.04.23-000013 0     _1q1     182315500 6.8gb
+.ds-pypi-10b-ns-2024.04.23-000014 0     _1ph     192329000 7.1gb
+.ds-pypi-10b-ns-2024.04.23-000015 0     _1wb     184553000 6.9gb
+.ds-pypi-10b-ns-2024.04.23-000016 0     _1sw     172540000 6.4gb
+.ds-pypi-10b-ns-2024.04.23-000017 0     _1p5     189490500   7gb
+.ds-pypi-10b-ns-2024.04.23-000018 0     _1t3     186351500 6.9gb
+.ds-pypi-10b-ns-2024.04.23-000019 0     _2bc     246814500 9.1gb
+.ds-pypi-10b-ns-2024.04.23-000020 0     _2bt     242481000   9gb
+.ds-pypi-10b-ns-2024.04.23-000021 0     _1tn     183527500 6.8gb
+.ds-pypi-10b-ns-2024.04.23-000022 0     _1qs     185087000 6.9gb
+.ds-pypi-10b-ns-2024.04.23-000023 0     _1sz     183574000 6.8gb
+.ds-pypi-10b-ns-2024.04.23-000024 0     _1q7     170948500 6.3gb
+.ds-pypi-10b-ns-2024.04.23-000025 0     _25o     193354000 7.2gb
+.ds-pypi-10b-ns-2024.04.23-000026 0     _1o4     183611500 6.8gb
+.ds-pypi-10b-ns-2024.04.23-000027 0     _1ra     190365500 7.1gb
+.ds-pypi-10b-ns-2024.04.23-000028 0     _1th     169727500 6.3gb
+.ds-pypi-10b-ns-2024.04.23-000029 0     _1t4     178358500 6.6gb
+.ds-pypi-10b-ns-2024.04.23-000030 0     _1vk     188202000   7gb
+.ds-pypi-10b-ns-2024.04.23-000031 0     _2gd     245283000 9.1gb
+.ds-pypi-10b-ns-2024.04.23-000032 0     _1qx     184019000 6.8gb
+.ds-pypi-10b-ns-2024.04.23-000033 0     _1t7     187466000   7gb
+.ds-pypi-10b-ns-2024.04.23-000034 0     _1tn     184488000 6.8gb
+.ds-pypi-10b-ns-2024.04.23-000035 0     _1su     184503000 6.9gb
+.ds-pypi-10b-ns-2024.04.23-000036 0     _1s3     189439000   7gb
+.ds-pypi-10b-ns-2024.04.23-000037 0     _1pn     185800500 6.9gb
+.ds-pypi-10b-ns-2024.04.23-000038 0     _1v8     197997500 7.3gb
+.ds-pypi-10b-ns-2024.04.23-000039 0     _1sr     189444500   7gb
+.ds-pypi-10b-ns-2024.04.23-000040 0     _1ns     182612500 6.8gb
+.ds-pypi-10b-ns-2024.04.23-000041 0     _1ry     193063000 7.2gb
+.ds-pypi-10b-ns-2024.04.23-000042 0     _1t0     187342500 6.9gb
+.ds-pypi-10b-ns-2024.04.23-000043 0     _1uj     168749000 6.3gb
+.ds-pypi-10b-ns-2024.04.23-000044 0     _1tr     188218500   7gb
+.ds-pypi-10b-ns-2024.04.23-000045 0     _1py     190888000 7.1gb
+.ds-pypi-10b-ns-2024.04.23-000046 0     _29y     252997500 9.4gb
+.ds-pypi-10b-ns-2024.04.23-000047 0     _17m     129914500 4.8gb
+.ds-pypi-10b-ns-2024.04.23-000048 0     _1x1     188511500   7gb
+.ds-pypi-10b-ns-2024.04.23-000049 0     _1rj     183570500 6.8gb
+.ds-pypi-10b-ns-2024.04.23-000050 0     _1uc     190892000 7.1gb
+.ds-pypi-10b-ns-2024.04.23-000051 0     _1u8     182102000 6.8gb
+.ds-pypi-10b-ns-2024.04.23-000052 0     _1pk     188807500   7gb
+.ds-pypi-10b-ns-2024.04.23-000053 0     _15m     118591971 4.4gb
+
 
 #################################################
 GET pypi-10b-ns/_count
@@ -1592,18 +1755,81 @@ GET _data_stream/pypi-10b-s-index_sorting/_stats?human=true
   },
   "data_stream_count": 1,
   "backing_indices": 58,
-  "total_store_size": "550.8gb",
-  "total_store_size_bytes": 591453032505,
+  "total_store_size": "500.7gb",
+  "total_store_size_bytes": 537663435910,
   "data_streams": [
     {
       "data_stream": "pypi-10b-s-index_sorting",
       "backing_indices": 58,
-      "store_size": "550.8gb",
-      "store_size_bytes": 591453032505,
+      "store_size": "500.7gb",
+      "store_size_bytes": 537663435910,
       "maximum_timestamp": 1687509239000
     }
   ]
 }
+
+#################################################
+GET _cat/segments/.ds-pypi-10b-s-index_sorting-2024*?v=true&h=index,shard,segment,docs.count,size&s=index
+
+index                                          shard segment docs.count    size
+.ds-pypi-10b-s-index_sorting-2024.04.26-000001 0     _2dq     174859500   8.7gb
+.ds-pypi-10b-s-index_sorting-2024.04.26-000002 0     _1t2     178617000   8.9gb
+.ds-pypi-10b-s-index_sorting-2024.04.26-000003 0     _1lj     172798500   8.6gb
+.ds-pypi-10b-s-index_sorting-2024.04.26-000004 0     _224     209459500  10.4gb
+.ds-pypi-10b-s-index_sorting-2024.04.26-000005 0     _1qd     169734500   8.5gb
+.ds-pypi-10b-s-index_sorting-2024.04.26-000006 0     _1nr     172021000   8.5gb
+.ds-pypi-10b-s-index_sorting-2024.04.26-000007 0     _1m9     176094000   8.8gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000008 0     _1ok     168770500   8.4gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000009 0     _1mz     174009500   8.7gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000010 0     _1z2     204780000  10.1gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000011 0     _1ld     175783500   8.7gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000012 0     _1nb     170941500   8.5gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000013 0     _206     172043500   8.6gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000014 0     _1mc     174944500   8.7gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000015 0     _1mi     173727500   8.6gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000016 0     _1o4     167157500   8.3gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000017 0     _1o1     168932000   8.4gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000018 0     _1qp     170033500   8.5gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000019 0     _1un     168456000   8.4gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000020 0     _1l8     172513000   8.6gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000021 0     _23o     205642000  10.2gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000022 0     _1lx     171037000   8.5gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000023 0     _22o     204269500  10.1gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000024 0     _1pw     173909500   8.7gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000025 0     _1ol     167083500   8.3gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000026 0     _1nx     167820000   8.4gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000027 0     _1n2     172155500   8.6gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000028 0     _1pb     169251000   8.4gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000029 0     _233     204868500  10.1gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000030 0     _1nf     174689500   8.7gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000031 0     _1q6     165013000   8.2gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000032 0     _1nb     166924500   8.3gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000033 0     _1s7     173617500   8.6gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000034 0     _1n9     164585500   8.2gb
+.ds-pypi-10b-s-index_sorting-2024.04.27-000035 0     _1js     173348500   8.6gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000036 0     _1qi     169820500   8.5gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000037 0     _1pk     170016500   8.5gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000038 0     _1lk     168849500   8.4gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000039 0     _1qq     172494500   8.6gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000040 0     _1lf     171062000   8.5gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000041 0     _1mu     165688000   8.3gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000042 0     _1ot     173053500   8.6gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000043 0     _31e     166521500   8.3gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000044 0     _1ry     165656500   8.3gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000045 0     _1oe     170981000   8.5gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000046 0     _21n     203779000  10.1gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000047 0     _1ns     167126500   8.3gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000048 0     _1or     169385000   8.4gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000049 0     _1m0     173274000   8.6gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000050 0     _22r     202612500    10gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000051 0     _28s     202889000    10gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000052 0     _1ov     176032500   8.8gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000053 0     _1ns     167885500   8.4gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000054 0     _2fo     170549000   8.5gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000055 0     _1sy     167458000   8.3gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000056 0     _1pa     168174000   8.4gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000057 0     _1pv     172712500   8.6gb
+.ds-pypi-10b-s-index_sorting-2024.04.28-000058 0     _8f        6339971 367.4mb
 
 #################################################
 GET pypi-10b-s-index_sorting/_count
@@ -1644,6 +1870,11 @@ GET _data_stream/pypi-10b-s-index_sorting-best_compression/_stats?human=true
 }
 
 #################################################
+GET _cat/segments/.ds-pypi-10b-s-index_sorting-best_compression-2024*?v=true&h=index,shard,segment,docs.count,size&s=index
+
+TODO
+
+#################################################
 GET pypi-10b-s-index_sorting-best_compression/_count
 
 {
@@ -1670,18 +1901,71 @@ GET _data_stream/pypi-10b-ns-index_sorting/_stats?human=true
   },
   "data_stream_count": 1,
   "backing_indices": 48,
-  "total_store_size": "379.2gb",
-  "total_store_size_bytes": 407202599622,
+  "total_store_size": "374.9gb",
+  "total_store_size_bytes": 402573259709,
   "data_streams": [
     {
       "data_stream": "pypi-10b-ns-index_sorting",
       "backing_indices": 48,
-      "store_size": "379.2gb",
-      "store_size_bytes": 407202599622,
+      "store_size": "374.9gb",
+      "store_size_bytes": 402573259709,
       "maximum_timestamp": 1687509239000
     }
   ]
 }
+
+#################################################
+GET _cat/segments/.ds-pypi-10b-ns-index_sorting-2024*?v=true&h=index,shard,segment,docs.count,size&s=index
+
+index                                           shard segment docs.count  size
+.ds-pypi-10b-ns-index_sorting-2024.04.26-000001 0     _1r2     210063000 7.8gb
+.ds-pypi-10b-ns-index_sorting-2024.04.26-000002 0     _223     212242500 7.9gb
+.ds-pypi-10b-ns-index_sorting-2024.04.26-000003 0     _24r     209858000 7.8gb
+.ds-pypi-10b-ns-index_sorting-2024.04.26-000004 0     _1ze     205762500 7.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.26-000005 0     _1yf     207232500 7.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.26-000006 0     _20w     208411000 7.8gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000007 0     _24n     202985500 7.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000008 0     _22c     206615000 7.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000009 0     _206     207349500 7.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000010 0     _25f     208179500 7.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000011 0     _22t     208160000 7.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000012 0     _20b     207984500 7.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000013 0     _22l     207151500 7.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000014 0     _2dc     232482500 8.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000015 0     _1yo     207351500 7.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000016 0     _2e7     235701500 8.8gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000017 0     _20r     203027500 7.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000018 0     _23m     207271500 7.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000019 0     _1zq     203644000 7.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000020 0     _20s     207908500 7.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000021 0     _1zw     204699000 7.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000022 0     _20v     201346000 7.5gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000023 0     _23n     203596000 7.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000024 0     _20f     206374000 7.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000025 0     _21r     204029500 7.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000026 0     _1zs     205305000 7.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000027 0     _2e1     233608500 8.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000028 0     _20p     205758500 7.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000029 0     _2e6     236355500 8.8gb
+.ds-pypi-10b-ns-index_sorting-2024.04.27-000030 0     _22d     205133500 7.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000031 0     _24t     204135500 7.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000032 0     _21m     201766000 7.5gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000033 0     _1zb     207584000 7.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000034 0     _2dn     234852000 8.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000035 0     _20u     206936000 7.7gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000036 0     _2bv     231093000 8.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000037 0     _23f     202999000 7.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000038 0     _21w     203448500 7.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000039 0     _205     203526500 7.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000040 0     _216     202382500 7.5gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000041 0     _234     205353500 7.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000042 0     _21z     205512000 7.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000043 0     _25n     201747000 7.5gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000044 0     _1zx     210159000 7.8gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000045 0     _1yy     203670000 7.6gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000046 0     _1zs     199866000 7.4gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000047 0     _20l     202582000 7.5gb
+.ds-pypi-10b-ns-index_sorting-2024.04.28-000048 0     _1ru     179052471 6.7gb
 
 #################################################
 GET pypi-10b-ns-index_sorting/_count
@@ -1710,18 +1994,72 @@ GET _data_stream/pypi-10b-ns-index_sorting-best_compression/_stats?human=true
   },
   "data_stream_count": 1,
   "backing_indices": 48,
-  "total_store_size": "382.4gb",
-  "total_store_size_bytes": 410654203292,
+  "total_store_size": "355gb",
+  "total_store_size_bytes": 381264723814,
   "data_streams": [
     {
       "data_stream": "pypi-10b-ns-index_sorting-best_compression",
       "backing_indices": 48,
-      "store_size": "382.4gb",
-      "store_size_bytes": 410654203292,
+      "store_size": "355gb",
+      "store_size_bytes": 381264723814,
       "maximum_timestamp": 1687509239000
     }
   ]
 }
+
+#################################################
+GET _cat/segments/.ds-pypi-10b-ns-index_sorting-best_compression-2024*?v=true&h=index,shard,segment,docs.count,size&s=index
+
+index                                                            shard segment docs.count  size
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.26-000001 0     _1xl     210063000 7.4gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.26-000002 0     _1vn     212242500 7.5gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.26-000003 0     _1yl     209851000 7.4gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.26-000004 0     _1vk     205769500 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.26-000005 0     _1we     207232500 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.26-000006 0     _1wf     208411000 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000007 0     _1tz     202985500 7.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000008 0     _1w4     206610500 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000009 0     _1wv     207354000 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000010 0     _211     208179500 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000011 0     _1zi     208151500 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000012 0     _1vk     207991500 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000013 0     _1vh     207151000 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000014 0     _28u     232484500 8.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000015 0     _1ys     207341500 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000016 0     _23z     201329500 7.1gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000017 0     _1ts     204975000 7.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000018 0     _1wf     207427500 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000019 0     _1wd     203567500 7.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000020 0     _1zo     205782500 7.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000021 0     _1u7     207873500 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000022 0     _2a4     232652500 8.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000023 0     _1ue     203596000 7.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000024 0     _1z3     206359000 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000025 0     _200     204043000 7.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000026 0     _210     205291500 7.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000027 0     _2b7     233609500 8.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000028 0     _1wu     205757500 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000029 0     _2eq     236355500 8.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.27-000030 0     _1z4     205148500 7.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000031 0     _1w6     204135500 7.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000032 0     _20s     201766000 7.1gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000033 0     _1ua     207569000 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000034 0     _28d     234852500 8.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000035 0     _20c     206950500 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000036 0     _2cj     231087500 8.1gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000037 0     _1zl     203003000 7.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000038 0     _1zb     203450000 7.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000039 0     _1vv     203526500 7.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000040 0     _2c0     234870500 8.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000041 0     _21j     206768000 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000042 0     _1yk     206294500 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000043 0     _2bx     238256000 8.4gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000044 0     _1vo     204528500 7.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000045 0     _1u9     204907500 7.2gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000046 0     _29v     234984500 8.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000047 0     _1xj     205664500 7.3gb
+.ds-pypi-10b-ns-index_sorting-best_compression-2024.04.28-000048 0     _tm       74050471 2.6gb
+
 
 #################################################
 GET pypi-10b-ns-index_sorting-best_compression/_count
@@ -1745,6 +2083,7 @@ GET pypi-10b-ns-index_sorting-best_compression/_count
 SELECT
     `table`,
     formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableQuantity(count()) AS parts,
     formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
     formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
     formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
@@ -1753,14 +2092,11 @@ WHERE active AND (database = 'default') AND (`table` = 'pypi_10b')
 GROUP BY `table`
 ORDER BY `table` ASC
 
-Query id: 20c51a6b-0a53-443c-b242-0b2ea56e4ce3
+Query id: 13fc1d1d-cc5f-4604-8621-17ecad3927fa
 
-Connecting to localhost:9000 as user default.
-Connected to ClickHouse server version 24.4.1.
-
-   ┌─table────┬─rows──────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
-1. │ pypi_10b │ 10.01 billion │ 1.22 TiB               │ 39.10 GiB            │ 39.12 GiB          │
-   └──────────┴───────────────┴────────────────────────┴──────────────────────┴────────────────────┘
+   ┌─table────┬─rows──────────┬─parts─┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_10b │ 10.01 billion │ 1.00  │ 1.22 TiB               │ 39.10 GiB            │ 39.12 GiB          │
+   └──────────┴───────────────┴───────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
 #### ClickHouse
 ##### ZSTD compression
@@ -1768,6 +2104,7 @@ Connected to ClickHouse server version 24.4.1.
 SELECT
     `table`,
     formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableQuantity(count()) AS parts,
     formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
     formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
     formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
@@ -1776,11 +2113,11 @@ WHERE active AND (database = 'default') AND (`table` = 'pypi_10b_zstd')
 GROUP BY `table`
 ORDER BY `table` ASC
 
-Query id: d967d7f4-d97c-4284-9ae1-20d0db53f6b8
+Query id: cf771596-1b63-4fae-861c-eb24b5c418bc
 
-   ┌─table─────────┬─rows──────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
-1. │ pypi_10b_zstd │ 10.01 billion │ 1.22 TiB               │ 23.43 GiB            │ 23.45 GiB          │
-   └───────────────┴───────────────┴────────────────────────┴──────────────────────┴────────────────────┘
+   ┌─table─────────┬─rows──────────┬─parts─┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_10b_zstd │ 10.01 billion │ 1.00  │ 1.22 TiB               │ 23.43 GiB            │ 23.45 GiB          │
+   └───────────────┴───────────────┴───────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
 
 ### 10 billion raw data set -  pre-calculated `downloads per project` 
@@ -1798,6 +2135,7 @@ pypi_10b_by_project     465978           48mb
 SELECT
     `table`,
     formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableQuantity(count()) AS parts,
     formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
     formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
     formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
@@ -1806,11 +2144,11 @@ WHERE active AND (database = 'default') AND (`table` = 'pypi_10b_by_project')
 GROUP BY `table`
 ORDER BY `table` ASC
 
-Query id: 8f2850e6-ec44-46df-9923-fac085ecbd41
+Query id: f8e7d78d-1a70-4f66-9845-f324ed43674c
 
-   ┌─table───────────────┬─rows────────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
-1. │ pypi_10b_by_project │ 465.98 thousand │ 9.85 MiB               │ 5.39 MiB             │ 5.39 MiB           │
-   └─────────────────────┴─────────────────┴────────────────────────┴──────────────────────┴────────────────────┘
+   ┌─table───────────────┬─rows────────────┬─parts─┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_10b_by_project │ 465.98 thousand │ 1.00  │ 9.85 MiB               │ 5.39 MiB             │ 5.39 MiB           │
+   └─────────────────────┴─────────────────┴───────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
 
 ### 10 billion raw data set -  pre-calculated `downloads per country per project` 
@@ -1827,6 +2165,7 @@ TODO
 SELECT
     `table`,
     formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableQuantity(count()) AS parts,
     formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
     formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
     formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
@@ -1835,11 +2174,11 @@ WHERE active AND (database = 'default') AND (`table` = 'pypi_10b_by_country_code
 GROUP BY `table`
 ORDER BY `table` ASC
 
-Query id: 44a34a95-f7df-4c7b-868c-b1e9e920fb05
+Query id: 047886ce-65df-43a4-891f-7e681797e81c
 
-   ┌─table────────────────────────────┬─rows─────────┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
-1. │ pypi_10b_by_country_code_project │ 8.79 million │ 190.99 MiB             │ 97.46 MiB            │ 97.48 MiB          │
-   └──────────────────────────────────┴──────────────┴────────────────────────┴──────────────────────┴────────────────────┘
+   ┌─table────────────────────────────┬─rows─────────┬─parts─┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_10b_by_country_code_project │ 8.79 million │ 1.00  │ 190.99 MiB             │ 97.46 MiB            │ 97.48 MiB          │
+   └──────────────────────────────────┴──────────────┴───────┴────────────────────────┴──────────────────────┴────────────────────┘
 ```
 
 
@@ -4535,3 +4874,41 @@ SETTINGS
 ```
 
 
+### ClickHouse PyPi table without LowCardinality type
+
+#### DDL
+CREATE OR REPLACE TABLE pypi_1b_strings_only
+(
+    `timestamp` DateTime,
+    `country_code` String,
+    `url` String,
+    `project` String
+)
+ORDER BY (country_code, project, url, timestamp);
+
+#### Load data
+INSERT INTO pypi_1b_strings_only
+SELECT * FROM pypi_1b
+SETTINGS
+    max_threads=32,
+    max_insert_threads=32;
+
+#### Check sizes
+SELECT
+    `table`,
+    formatReadableQuantity(sum(rows)) AS rows,
+    formatReadableQuantity(count()) AS parts,
+    formatReadableSize(sum(data_uncompressed_bytes)) AS data_size_uncompressed,
+    formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
+    formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
+FROM system.parts
+WHERE active AND (database = 'default') AND ((`table` = 'pypi_1b_strings_only') OR (`table` = 'pypi_1b'))
+GROUP BY `table`
+ORDER BY `table` ASC
+
+Query id: 31b057a6-1ea7-462f-afab-f16b03cd78fd
+
+   ┌─table────────────────┬─rows─────────┬─parts─┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_1b              │ 1.01 billion │ 1.00  │ 126.63 GiB             │ 5.24 GiB             │ 5.24 GiB           │
+2. │ pypi_1b_strings_only │ 1.01 billion │ 1.00  │ 128.52 GiB             │ 5.24 GiB             │ 5.25 GiB           │
+   └──────────────────────┴──────────────┴───────┴────────────────────────┴──────────────────────┴────────────────────┘
