@@ -1071,6 +1071,32 @@ SETTINGS
     max_insert_threads=10;
 ```
 
+##### 100 billion row dataset
+
+```
+INSERT INTO pypi_100b
+SELECT
+    timestamp,
+    country_code,
+    url,
+    project
+FROM s3(
+    'https://storage.googleapis.com/clickhouse_public_datasets/pypi/file_downloads/*/*/*.parquet',
+    'Parquet',
+    'timestamp DateTime, country_code LowCardinality(String), url String, project String, `file.filename` String, `file.project` String, `file.version` String, `file.type` String, `installer.name` String, `installer.version` String, python String, `implementation.name` String, `implementation.version` String, `distro.name` String, `distro.version` String, `distro.id` String, `distro.libc.lib` String, `distro.libc.version` String, `system.name` String, `system.release` String, cpu String, openssl_version String, setuptools_version String, rustc_version String,tls_protocol String, tls_cipher String')
+SETTINGS
+    input_format_null_as_default = 1,
+    input_format_parquet_import_nested = 1,
+    max_insert_threads = 32;
+```
+
+```
+INSERT INTO pypi_100b_zstd
+SELECT * FROM pypi_100b
+SETTINGS
+    max_threads=10,
+    max_insert_threads=10;
+```
 
 
 ## Storage sizes
@@ -2955,9 +2981,9 @@ GET pypi_1b_by_project/_search?request_cache=false
       "script": {
         "lang": "painless",
         "source": """
-        String s = doc['project.terms'].value;
-          int idvalue = Integer.parseInt(s);
-          return idvalue;
+          String s = doc['project.terms'].value;
+          int int_value = Integer.parseInt(s);
+          return int_value;
         """
       }
     }
@@ -3038,9 +3064,9 @@ GET pypi_1b_by_project/_search?request_cache=false
       "script": {
         "lang": "painless",
         "source": """
-        String s = doc['project.terms'].value;
-          int idvalue = Integer.parseInt(s);
-          return idvalue;
+          String s = doc['project.terms'].value;
+          int int_value = Integer.parseInt(s);
+          return int_value;
         """
       }
     }
@@ -3122,9 +3148,9 @@ GET pypi_1b_by_project/_search?request_cache=false
       "script": {
         "lang": "painless",
         "source": """
-        String s = doc['project.terms'].value;
-          int idvalue = Integer.parseInt(s);
-          return idvalue;
+          String s = doc['project.terms'].value;
+          int int_value = Integer.parseInt(s);
+          return int_value;
         """
       }
     }
@@ -3284,9 +3310,9 @@ GET pypi_1b_by_country_code_project/_search?request_cache=false
       "script": {
         "lang": "painless",
         "source": """
-        String s = doc['project.terms'].value;
-          int idvalue = Integer.parseInt(s);
-          return idvalue;
+          String s = doc['project.terms'].value;
+          int int_value = Integer.parseInt(s);
+          return int_value;
         """
       }
     }
@@ -3370,9 +3396,9 @@ GET pypi_1b_by_country_code_project/_search?request_cache=false
       "script": {
         "lang": "painless",
         "source": """
-        String s = doc['project.terms'].value;
-          int idvalue = Integer.parseInt(s);
-          return idvalue;
+          String s = doc['project.terms'].value;
+          int int_value = Integer.parseInt(s);
+          return int_value;
         """
       }
     }
@@ -3455,9 +3481,9 @@ GET pypi_1b_by_country_code_project/_search?request_cache=false
       "script": {
         "lang": "painless",
         "source": """
-        String s = doc['project.terms'].value;
-          int idvalue = Integer.parseInt(s);
-          return idvalue;
+          String s = doc['project.terms'].value;
+          int int_value = Integer.parseInt(s);
+          return int_value;
         """
       }
     }
@@ -4312,9 +4338,9 @@ GET pypi_10b_by_project/_search?request_cache=false
       "script": {
         "lang": "painless",
         "source": """
-        String s = doc['project.terms'].value;
-          int idvalue = Integer.parseInt(s);
-          return idvalue;
+          String s = doc['project.terms'].value;
+          int int_value = Integer.parseInt(s);
+          return int_value;
         """
       }
     }
@@ -4397,9 +4423,9 @@ GET pypi_10b_by_project/_search?request_cache=false
       "script": {
         "lang": "painless",
         "source": """
-        String s = doc['project.terms'].value;
-          int idvalue = Integer.parseInt(s);
-          return idvalue;
+          String s = doc['project.terms'].value;
+          int int_value = Integer.parseInt(s);
+          return int_value;
         """
       }
     }
@@ -4483,9 +4509,9 @@ GET pypi_10b_by_project/_search?request_cache=false
       "script": {
         "lang": "painless",
         "source": """
-        String s = doc['project.terms'].value;
-          int idvalue = Integer.parseInt(s);
-          return idvalue;
+          String s = doc['project.terms'].value;
+          int int_value = Integer.parseInt(s);
+          return int_value;
         """
       }
     }
@@ -4645,9 +4671,9 @@ GET pypi_10b_by_country_code_project/_search?request_cache=false
       "script": {
         "lang": "painless",
         "source": """
-        String s = doc['project.terms'].value;
-          int idvalue = Integer.parseInt(s);
-          return idvalue;
+          String s = doc['project.terms'].value;
+          int int_value = Integer.parseInt(s);
+          return int_value;
         """
       }
     }
@@ -4732,9 +4758,9 @@ GET pypi_10b_by_country_code_project/_search?request_cache=false
       "script": {
         "lang": "painless",
         "source": """
-        String s = doc['project.terms'].value;
-          int idvalue = Integer.parseInt(s);
-          return idvalue;
+          String s = doc['project.terms'].value;
+          int int_value = Integer.parseInt(s);
+          return int_value;
         """
       }
     }
@@ -4818,9 +4844,9 @@ GET pypi_10b_by_country_code_project/_search?request_cache=false
       "script": {
         "lang": "painless",
         "source": """
-        String s = doc['project.terms'].value;
-          int idvalue = Integer.parseInt(s);
-          return idvalue;
+          String s = doc['project.terms'].value;
+          int int_value = Integer.parseInt(s);
+          return int_value;
         """
       }
     }
