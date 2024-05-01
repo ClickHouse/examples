@@ -944,7 +944,7 @@ GET pypi_1b_by_country_code_project/_search?request_cache=false
       "script": {
         "lang": "painless",
         "source": """
-        String s = doc['project.terms'].value;
+          String s = doc['project.terms'].value;
           int idvalue = Integer.parseInt(s);
           return idvalue;
         """
