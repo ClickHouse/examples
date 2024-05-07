@@ -2702,15 +2702,15 @@ SELECT
     formatReadableSize(sum(data_compressed_bytes)) AS data_size_compressed,
     formatReadableSize(sum(bytes_on_disk)) AS total_size_on_disk
 FROM system.parts
-WHERE active AND (database = 'default') AND (`table` = 'pypi_100b')
+WHERE active AND (database = 'default') AND (`table` = 'pypi_100b_zstd')
 GROUP BY `table`
 ORDER BY `table` ASC
 
-Query id: 32f36379-902d-4d29-959d-873ea1b2a76f
+Query id: fcca179c-d508-481a-9461-53a086899f8b
 
-   ┌─table─────┬─rows───────────┬─parts─┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
-1. │ pypi_100b │ 110.21 billion │ 16.00 │ 13.46 TiB              │ 384.28 GiB           │ 384.54 GiB         │
-   └───────────┴────────────────┴───────┴────────────────────────┴──────────────────────┴────────────────────┘
+   ┌─table──────────┬─rows───────────┬─parts─┬─data_size_uncompressed─┬─data_size_compressed─┬─total_size_on_disk─┐
+1. │ pypi_100b_zstd │ 110.21 billion │ 15.00 │ 13.46 TiB              │ 131.91 GiB           │ 132.11 GiB         │
+   └────────────────┴────────────────┴───────┴────────────────────────┴──────────────────────┴────────────────────┘
 
 ```
 
