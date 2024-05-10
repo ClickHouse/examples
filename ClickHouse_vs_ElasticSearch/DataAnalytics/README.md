@@ -2767,6 +2767,7 @@ Query id: 0a441e48-f5a4-4779-bcdb-b1e625018d42
 ### 1 billion raw data set - raw data - downloads per project
 
 #### Elasticsearch - Query DSL
+#####  Index with index sorting (and without `_source`)
 
 Before each query run, we 
 - manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
@@ -2937,7 +2938,185 @@ GET pypi-1b-ns-index_sorting/_search?request_cache=false
   }
 }
 ```
+
+
+#####  Index without index sorting (and without `_source`)
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
+
+```
+#################################################
+
+GET pypi-1b-ns/_search?request_cache=false
+{
+  "size": 0,
+  "aggregations": {
+    "projects": {
+      "terms": {
+        "field": "project",
+        "size": 3
+      }
+    }
+  }
+}
+
+{
+  "took": 9101,
+  "timed_out": false,
+  "_shards": {
+    "total": 6,
+    "successful": 6,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": []
+  },
+  "aggregations": {
+    "projects": {
+      "doc_count_error_upper_bound": 8705840,
+      "sum_other_doc_count": 954052769,
+      "buckets": [
+        {
+          "key": "boto3",
+          "doc_count": 28202786
+        },
+        {
+          "key": "urllib3",
+          "doc_count": 15992012
+        },
+        {
+          "key": "requests",
+          "doc_count": 14390575
+        }
+      ]
+    }
+  }
+}
+
+#################################################
+
+GET pypi-1b-ns/_search?request_cache=false
+{
+  "size": 0,
+  "aggregations": {
+    "projects": {
+      "terms": {
+        "field": "project",
+        "size": 3
+      }
+    }
+  }
+}
+
+{
+  "took": 9045,
+  "timed_out": false,
+  "_shards": {
+    "total": 6,
+    "successful": 6,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": []
+  },
+  "aggregations": {
+    "projects": {
+      "doc_count_error_upper_bound": 8705840,
+      "sum_other_doc_count": 954052769,
+      "buckets": [
+        {
+          "key": "boto3",
+          "doc_count": 28202786
+        },
+        {
+          "key": "urllib3",
+          "doc_count": 15992012
+        },
+        {
+          "key": "requests",
+          "doc_count": 14390575
+        }
+      ]
+    }
+  }
+}
+
+
+
+#################################################
+
+GET pypi-1b-ns/_search?request_cache=false
+{
+  "size": 0,
+  "aggregations": {
+    "projects": {
+      "terms": {
+        "field": "project",
+        "size": 3
+      }
+    }
+  }
+}
+
+{
+  "took": 9039,
+  "timed_out": false,
+  "_shards": {
+    "total": 6,
+    "successful": 6,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": null,
+    "hits": []
+  },
+  "aggregations": {
+    "projects": {
+      "doc_count_error_upper_bound": 8705840,
+      "sum_other_doc_count": 954052769,
+      "buckets": [
+        {
+          "key": "boto3",
+          "doc_count": 28202786
+        },
+        {
+          "key": "urllib3",
+          "doc_count": 15992012
+        },
+        {
+          "key": "requests",
+          "doc_count": 14390575
+        }
+      ]
+    }
+  }
+}
+
+```
+
 #### Elasticsearch - ESQL
+
+#####  Index with index sorting (and without `_source`)
 
 Before each query run, we 
 - manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
@@ -3024,6 +3203,97 @@ Execution time: [6078]ms
     
 
 ```
+
+#####  Index without index sorting (and without `_source`)
+
+Before each query run, we 
+- manually dropped the request and query caches via the [clear cache API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clearcache.html) 
+- manually [dropped](./README.md#process-for-dropping-filesystem-cache-for-elasticsearch)  the filesystem cache 
+
+```
+#################################################
+POST /_query?format=txt
+{
+  "query": """
+    FROM pypi-1b-ns
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  """
+}
+
+     count     |    project    
+---------------+---------------
+28202786       |boto3          
+15992012       |urllib3        
+14390575       |requests 
+
+Finished execution of ESQL query.
+Query string: [
+    FROM pypi-1b-ns
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  ]
+Execution time: [9574]ms
+
+
+#################################################
+POST /_query?format=txt
+{
+  "query": """
+    FROM pypi-1b-ns 
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  """
+}
+     count     |    project    
+---------------+---------------
+28202786       |boto3          
+15992012       |urllib3        
+14390575       |requests  
+
+Finished execution of ESQL query.
+Query string: [
+    FROM pypi-1b-ns
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  ]
+Execution time: [9584]ms
+ 
+#################################################
+POST /_query?format=txt
+{
+  "query": """
+    FROM pypi-1b-ns 
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  """
+}
+
+     count     |    project    
+---------------+---------------
+28202786       |boto3          
+15992012       |urllib3        
+14390575       |requests   
+
+Finished execution of ESQL query.
+Query string: [
+    FROM pypi-1b-ns
+    | STATS count = COUNT() BY project 
+    | SORT count DESC 
+    | LIMIT 3
+  ]
+Execution time: [9498]ms
+    
+
+```
+
+
+
 #### ClickHouse - SQL
 ```
 ------------------------------------------------------------------------------------------------------------------------
