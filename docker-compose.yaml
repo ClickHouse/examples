@@ -1,0 +1,19 @@
+clickhouse:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: clikhouse:v1
+    container_name: clickhouse
+    hostname: clickhouse
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+      - "9009:9009"
+    networks:
+      - apinet
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+volumes:
+   clickhouse_data:
+
+
