@@ -1,0 +1,324 @@
+---
+networks:
+  example.com:
+    name: "example.com"
+    driver: bridge
+services:
+  zookeeper1:
+    cpus: 0.7
+    image: confluentinc/cp-zookeeper:7.7.1
+    hostname: zookeeper1
+    container_name: zookeeper1
+    ports:
+      - "1181:1181"
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 1181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: "zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888"
+      KAFKA_OPTS: -Dzookeeper.4lw.commands.whitelist=*
+    volumes:
+      - ./zookeeper/zookeeper1:/var/lib/zookeeper
+    networks:
+      example.com: {}
+
+  zookeeper2:
+    cpus: 0.7
+    image: confluentinc/cp-zookeeper:7.7.1
+    hostname: zookeeper2
+    container_name: zookeeper2
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: "zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888"
+      KAFKA_OPTS: -Dzookeeper.4lw.commands.whitelist=*
+    volumes:
+      - ./zookeeper/zookeeper2:/var/lib/zookeeper
+    networks:
+      example.com: {}
+
+
+  zookeeper3:
+    cpus: 0.7
+    image: confluentinc/cp-zookeeper:7.7.1
+    hostname: zookeeper3
+    container_name: zookeeper3
+    ports:
+      - "3181:3181"
+    environment:
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_CLIENT_PORT: 3181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: "zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888"
+      KAFKA_OPTS: -Dzookeeper.4lw.commands.whitelist=*
+    volumes:
+      - ./zookeeper/zookeeper3:/var/lib/zookeeper
+    networks:
+      example.com: {}
+
+  clickhouse01:
+    image: clickhouse/clickhouse-server:24.6.1
+    hostname: clickhouse01
+    container_name: clickhouse01
+    cpus: 2
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    ports:
+    - 9001:9000
+    - 8123:8123
+    networks:
+      example.com: {}
+    volumes:
+    - ./config/clickhouse01:/etc/clickhouse-server/config.d
+    - ./config/users.xml:/etc/clickhouse-server/users.d/users.xml
+    - ./log/clickhouse01:/var/log/clickhouse-server
+  clickhouse02:
+    image: clickhouse/clickhouse-server:24.6.1
+    hostname: clickhouse02
+    container_name: clickhouse02
+    cpus: 2
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    ports:
+    - 9002:9000
+    - 8124:8123
+    networks:
+      example.com: {}
+    volumes:
+    - ./config/clickhouse02:/etc/clickhouse-server/config.d
+    - ./config/users.xml:/etc/clickhouse-server/users.d/users.xml
+    - ./log/clickhouse02:/var/log/clickhouse-server
+
+  kafka1:
+    cpus: 0.7
+    image: confluentinc/cp-server:7.7.1
+    hostname: kafka1
+    container_name: kafka1
+    restart: on-failure:3
+    ports:
+      - 9091:9091
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:1181,zookeeper2:2181,zookeeper3:3181"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,SECURE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:19092,SECURE://localhost:9091
+      CONFLUENT_METRICS_ENABLE: 'false'
+      KAFKA_CONFLUENT_REPORTERS_TELEMETRY_AUTO_ENABLE: 'false'
+      KAFKA_CONFLUENT_SECURITY_EVENT_LOGGER_ENABLE: 'false'
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+      #KAFKA_LOG4J_LOGGERS: "kafka.authorizer.logger=DEBUG"
+
+      KAFKA_METRIC_REPORTERS: "io.confluent.metrics.reporter.ConfluentMetricsReporter"
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: INTERNAL://kafka1:19092,INTERNAL://kafka2:19092,INTERNAL://kafka3:19092
+      CONFLUENT_METRICS_REPORTER_SECURITY_PROTOCOL: PLAINTEXT
+      CONFLUENT_METRICS_REPORTER_MAX_REQUEST_SIZE: 10485760
+      CONFLUENT_METRICS_REPORTER_TOPIC_CREATE: 'true'
+
+      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schemaregistry:8081
+
+      KAFKA_CONFLUENT_BALANCER_ENABLE: 'true'
+
+      KAFKA_CONFLUENT_HTTP_SERVER_LISTENERS: http://kafka1:1090
+
+      #Embedded Rest Proxy config required for http server
+      KAFKA_KAFKA_REST_CLIENT_SECURITY_PROTOCOL: PLAINTEXT
+    networks:
+      example.com: {}
+
+  kafka2:
+    cpus: 0.7
+    image: confluentinc/cp-server:7.7.1
+    hostname: kafka2
+    container_name: kafka2
+    restart: on-failure:3
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:1182,zookeeper2:2181,zookeeper3:3181"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,SECURE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka2:19092,SECURE://localhost:9092
+      CONFLUENT_METRICS_ENABLE: 'false'
+      KAFKA_CONFLUENT_REPORTERS_TELEMETRY_AUTO_ENABLE: 'false'
+      KAFKA_CONFLUENT_SECURITY_EVENT_LOGGER_ENABLE: 'false'
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+
+      KAFKA_METRIC_REPORTERS: "io.confluent.metrics.reporter.ConfluentMetricsReporter"
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: INTERNAL://kafka1:19092,INTERNAL://kafka2:19092,INTERNAL://kafka3:19092
+      CONFLUENT_METRICS_REPORTER_SECURITY_PROTOCOL: PLAINTEXT
+      CONFLUENT_METRICS_REPORTER_MAX_REQUEST_SIZE: 10485760
+      CONFLUENT_METRICS_REPORTER_TOPIC_CREATE: 'true'
+
+      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schemaregistry:8081
+
+      KAFKA_CONFLUENT_BALANCER_ENABLE: 'true'
+
+      KAFKA_CONFLUENT_HTTP_SERVER_LISTENERS: http://kafka2:2090
+
+      KAFKA_KAFKA_REST_CLIENT_SECURITY_PROTOCOL: PLAINTEXT
+    networks:
+      example.com: {}
+
+  kafka3:
+    cpus: 0.7
+    image: confluentinc/cp-server:7.7.1
+    hostname: kafka3
+    container_name: kafka3
+    restart: on-failure:3
+    ports:
+      - 9093:9093
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:1182,zookeeper2:2181,zookeeper3:3181"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,SECURE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka3:19092,SECURE://localhost:9093
+      CONFLUENT_METRICS_ENABLE: 'false'
+      KAFKA_CONFLUENT_REPORTERS_TELEMETRY_AUTO_ENABLE: 'false'
+      KAFKA_CONFLUENT_SECURITY_EVENT_LOGGER_ENABLE: 'false'
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+
+      KAFKA_METRIC_REPORTERS: "io.confluent.metrics.reporter.ConfluentMetricsReporter"
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: INTERNAL://kafka1:19092,INTERNAL://kafka2:19092,INTERNAL://kafka3:19092
+      CONFLUENT_METRICS_REPORTER_SECURITY_PROTOCOL: PLAINTEXT
+      CONFLUENT_METRICS_REPORTER_MAX_REQUEST_SIZE: 10485760
+      CONFLUENT_METRICS_REPORTER_TOPIC_CREATE: 'true'
+
+      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schemaregistry:8081
+
+      KAFKA_CONFLUENT_BALANCER_ENABLE: 'true'
+
+
+      KAFKA_CONFLUENT_HTTP_SERVER_LISTENERS: http://kafka3:3090
+
+      KAFKA_KAFKA_REST_CLIENT_SECURITY_PROTOCOL: PLAINTEXT
+    networks:
+      example.com: {}
+
+  schemaregistry:
+    image: confluentinc/cp-schema-registry:7.7.1
+    hostname: schemaregistry
+    container_name: schemaregistry
+    restart: on-failure:3
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+    ports:
+    - 8081:8081
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schemaregistry
+      SCHEMA_REGISTRY_GROUP_ID: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'kafka1:19092,kafka2:19092,kafka3:19092'
+      SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: PLAINTEXT
+      SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: INFO
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_DEBUG: 'true'
+    networks:
+      example.com: {}
+
+  connect:
+    image: confluentinc/cp-server-connect:7.5.1
+    hostname: connect
+    container_name: connect
+    networks:
+      example.com: {}
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+      - schemaregistry
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./confluent-hub-components:/usr/share/confluent-hub-components
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: 'kafka1:19092,kafka2:19092,kafka3:19092'
+      CONNECT_LISTENERS: http://0.0.0.0:8083
+      CONNECT_PRODUCER_CLIENT_ID: "connect-worker-producer"
+      CONNECT_PRODUCER_ENABLE_IDEMPOTENCE: 'true'
+      CONNECT_SECURITY_PROTOCOL: PLAINTEXT
+      CONNECT_REST_ADVERTISED_HOST_NAME: connect
+      CONNECT_GROUP_ID: connect-group
+      CONNECT_CONFIG_STORAGE_TOPIC: connect-configs
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 2
+      CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
+      CONNECT_OFFSET_STORAGE_TOPIC: connect-offsets
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 2
+      CONNECT_STATUS_STORAGE_TOPIC: connect-status
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 2
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schemaregistry:8081
+
+      CONNECT_CONNECTOR_CLIENT_CONFIG_OVERRIDE_POLICY: 'All'
+      CONNECT_PRODUCER_SECURITY_PROTOCOL: PLAINTEXT
+
+      CONNECT_PRODUCER_MAX_BLOCK_MS: 60000
+      CONNECT_PRODUCER_CONFLUENT_MONITORING_INTERCEPTOR_SECURITY_PROTOCOL: PLAINTEXT
+
+      CONNECT_CONSUMER_SECURITY_PROTOCOL: PLAINTEXT
+      CONNECT_CONSUMER_MAX_BLOCK_MS: 60000
+
+      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-7.5.0.jar
+      CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
+      CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+      CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
+      CONNECT_LOG4J_ROOT_LOGLEVEL: INFO
+
+  controlcenter:
+    image: confluentinc/cp-enterprise-control-center:7.5.1
+    hostname: controlcenter
+    container_name: controlcenter
+    restart: always
+    networks:
+      example.com: {}
+    volumes:
+      - ./secrets:/etc/kafka/secrets
+    ports:
+      - "9021:9021"
+    environment:
+      CUB_CLASSPATH: '/usr/share/java/confluent-control-center/*:/usr/share/java/rest-utils/*:/usr/share/java/confluent-common/*:/usr/share/java/confluent-security/kafka-rest/*:/usr/share/java/kafka-rest/:/usr/share/java/cp-base-new/*'
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: kafka1:19092,kafka2:19092,kafka3:19092
+      CONTROL_CENTER_STREAMS_SECURITY_PROTOCOL: PLAINTEXT
+      CONTROL_CENTER_STREAMS_CACHE_MAX_BYTES_BUFFERING: 100000000
+      CONTROL_CENTER_STREAMS_CONSUMER_REQUEST_TIMEOUT_MS: "960032"
+
+      CONTROL_CENTER_REPLICATION_FACTOR: 2
+
+      CONTROL_CENTER_REST_LISTENERS: http://0.0.0.0:9021
+
+      CONTROL_CENTER_CONNECT_CONNECT-CLUSTER_CLUSTER: http://connect:8083
+
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: http://schemaregistry:8081
+
+      # Used by Control Center to connect to the Admin API for Self Balancing Clusters
+      #CONTROL_CENTER_STREAMS_CPREST_URL: http://kafka1:1090
+
+        #CONFLUENT_METADATA_BOOTSTRAP_SERVER_URLS: http://kafka1:1090
+        #CONFLUENT_METADATA_BASIC_AUTH_USER_INFO: admin:admin
+
+
+      CONTROL_CENTER_LOG4J_ROOT_LOGLEVEL: INFO
