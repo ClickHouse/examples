@@ -73,7 +73,8 @@ services:
     ports:
         - "127.0.0.1:9183:9181"
   ch-proxy:
-    image: tacyuuhon/clickhouse-chproxy
+    image: contentsquareplatform/chproxy:v1.26.4
+    platform: linux/amd64
     container_name: ch-proxy
     hostname: ch-proxy
     networks:
@@ -86,7 +87,8 @@ services:
       - ${PWD}/fs/volumes/ch-proxy/config/config.yml:/opt/config.yml
     depends_on:
       - clickhouse-01
-      - clickhouse-02         
+      - clickhouse-02
+    command: [-config, /opt/config.yml]         
 networks:
   cluster_1S_2R_ch_proxy:
     driver: bridge
