@@ -19,6 +19,26 @@ SET output_format_pretty_row_numbers=0;
 ```
 
 ```sql
+CREATE OR REPLACE FUNCTION normalizeValue AS (value, min_value, max_value) ->
+  if(value >= 0,
+    ((value - min_value) / (max_value - min_value)),
+    ((value - min_value) / (min_value - max_value))
+  );
+
+CREATE OR REPLACE FUNCTION drawBlock AS (x) ->
+  format('\x1b[38;2;{0};{1};{2}m█\x1b[0m', x.1, x.2, x.3);
+
+CREATE OR REPLACE FUNCTION getRGB AS (value, min, max, scale) ->
+  multiIf(
+    value = 0,
+    (128, 128, 128),
+    value > 0,
+    (toUInt8(255*scale*(1 - normalizeValue(value, min, max))), 0, 0),
+    (0, toUInt8(255*scale*(-normalizeValue(value, min, max))), 0)
+  );
+```
+
+```sql
 SELECT *
 FROM file('strava_Splits.csv')
 LIMIT 3;
