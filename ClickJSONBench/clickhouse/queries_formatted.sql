@@ -1,7 +1,6 @@
 ------------------------------------------------------------------------------------------------------------------------
--- Q1 - Top event types
+-- Q0 - Top event types - approximate number of users
 ------------------------------------------------------------------------------------------------------------------------
--- approximate
 SELECT
     data.commit.collection AS event,
     count() AS count,
@@ -12,8 +11,9 @@ WHERE data.kind = 'commit'
 GROUP BY event
 ORDER BY count DESC;
 
-
--- exact - much slower than uniq on larger datasets
+------------------------------------------------------------------------------------------------------------------------
+-- Q1 - Top event types - exact number users
+------------------------------------------------------------------------------------------------------------------------
 SELECT
     data.commit.collection AS event,
     count() AS count,
@@ -23,7 +23,6 @@ WHERE data.kind = 'commit'
   AND data.commit.operation = 'create'
 GROUP BY event
 ORDER BY count DESC;
-
 
 ------------------------------------------------------------------------------------------------------------------------
 -- Q2 - When do people use BlueSky
@@ -39,7 +38,6 @@ WHERE data.kind = 'commit'
 GROUP BY event, hour_of_day
 ORDER BY hour_of_day, event;
 
-
 ------------------------------------------------------------------------------------------------------------------------
 -- Q3 - top 3 post veterans
 ------------------------------------------------------------------------------------------------------------------------
@@ -53,7 +51,6 @@ WHERE data.kind = 'commit'
 GROUP BY user_id
 ORDER BY first_post_ts ASC
 LIMIT 3;
-
 
 ------------------------------------------------------------------------------------------------------------------------
 -- Q4 - top 3 users with longest activity
@@ -71,7 +68,6 @@ WHERE data.kind = 'commit'
 GROUP BY user_id
 ORDER BY activity_span DESC
 LIMIT 3;
-
 
 ------------------------------------------------------------------------------------------------------------------------
 -- Q5 - (self-)join query - top 3 most liked posts
