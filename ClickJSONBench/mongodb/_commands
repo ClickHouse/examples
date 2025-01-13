@@ -1,0 +1,51 @@
+chmod +x ./create_and_load.sh
+chmod +x ./load_data.sh
+
+chmod +x ./data_size.sh
+
+chmod +x ./run_queries.sh
+chmod +x ./benchmark.sh
+
+
+#bluesky_1m_snappy
+#bluesky_10m_snappy
+#bluesky_100m_snappy
+#bluesky_1000m_snappy
+
+./create_and_load.sh bluesky_1m_snappy bluesky ddl_snappy.js ~/data/bluesky 1 success.log error.log
+./data_size.sh bluesky_1m_snappy bluesky | tee m6i.8xlarge_bluesky_1m_snappy.data_size
+./benchmark bluesky_1m_snappy | tee m6i.8xlarge_bluesky_1m_snappy.result
+
+./create_and_load.sh bluesky_10m_snappy bluesky ddl_snappy.js ~/data/bluesky 10 success.log error.log
+./data_size.sh bluesky_10m_snappy bluesky | tee m6i.8xlarge_bluesky_10m_snappy.data_size
+./benchmark bluesky_10m_snappy | tee m6i.8xlarge_bluesky_10m_snappy.result
+
+./create_and_load.sh bluesky_100m_snappy bluesky ddl_snappy.js ~/data/bluesky 100 success.log error.log
+./data_size.sh bluesky_100m_snappy bluesky | tee m6i.8xlarge_bluesky_100m_snappy.data_size
+./benchmark bluesky_100m_snappy | tee m6i.8xlarge_bluesky_100m_snappy.result
+
+./create_and_load.sh bluesky_1000m_snappy bluesky ddl_snappy.js ~/data/bluesky 1000 success.log error.log
+./data_size.sh bluesky_1000m_snappy bluesky | tee m6i.8xlarge_bluesky_1000m_snappy.data_size
+./benchmark bluesky_1000m_snappy | tee m6i.8xlarge_bluesky_1000m_snappy.result
+
+
+#bluesky_1m_zstd
+#bluesky_10m_zstd
+#bluesky_100m_zstd
+#bluesky_1000m_zstd
+
+./create_and_load.sh bluesky_1m_zstd bluesky ddl_zstd.js ~/data/bluesky 1 success.log error.log
+./data_size.sh bluesky_1m_zstd bluesky | tee m6i.8xlarge_bluesky_1m_zstd.data_size
+./benchmark bluesky_1m_zstd | tee m6i.8xlarge_bluesky_1m_zstd.result
+
+./create_and_load.sh bluesky_10m_zstd bluesky ddl_zstd.js ~/data/bluesky 10 success.log error.log
+./data_size.sh bluesky_10m_zstd bluesky | tee m6i.8xlarge_bluesky_10m_zstd.data_size
+./benchmark bluesky_10m_zstd | tee m6i.8xlarge_bluesky_10m_zstd.result
+
+./create_and_load.sh bluesky_100m_zstd bluesky ddl_zstd.js ~/data/bluesky 100 success.log error.log
+./data_size.sh bluesky_100m_zstd | tee m6i.8xlarge_bluesky_100m_zstd.data_size
+./benchmark bluesky_100m_zstd | tee m6i.8xlarge_bluesky_100m_zstd.result
+
+./create_and_load.sh bluesky_1000m_zstd bluesky ddl_zstd.js ~/data/bluesky 1000 success.log error.log
+./data_size.sh bluesky_1000m_zstd bluesky | tee m6i.8xlarge_bluesky_1000m_zstd.data_size
+./benchmark bluesky_1000m_zstd | tee m6i.8xlarge_bluesky_1000m_zstd.result
