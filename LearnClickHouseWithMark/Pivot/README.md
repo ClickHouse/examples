@@ -1,5 +1,7 @@
 # PIVOT
 
+Video: https://youtu.be/nlRMOmwYtF4
+
 Install ClickHouse
 
 ```bash
