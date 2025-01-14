@@ -25,7 +25,7 @@ fi
 cat "$QUERY_FILE" | while read -r query; do
     # Clear cache (Linux-specific, requires sudo)
     sync
-    echo 3 | sudo tee /proc/sys/vm/drop_caches
+    echo 3 | sudo tee /proc/sys/vm/drop_caches >/dev/null
 
     # Print the query
     echo "Running query: $query"
