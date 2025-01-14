@@ -17,13 +17,13 @@ fi
 
 
 # 1m
-./data_size.sh "$DATA_DIRECTORY" 1 | tee "${OUTPUT_PREFIX}_1m_size"
+./data_size.sh "$DATA_DIRECTORY" 1 | tee "${OUTPUT_PREFIX}_1m.data_size"
 
 # 10m
-./data_size.sh "$DATA_DIRECTORY" 10 | tee "${OUTPUT_PREFIX}_10m_size"
+./data_size.sh "$DATA_DIRECTORY" 10 | tee "${OUTPUT_PREFIX}_10m.data_size"
 
 # 100m
-./data_size.sh "$DATA_DIRECTORY" 100 | tee "${OUTPUT_PREFIX}_100m_size"
+./data_size.sh "$DATA_DIRECTORY" 100 | tee "${OUTPUT_PREFIX}_100m.data_size"
 
 # 1000m
-./data_size.sh "$DATA_DIRECTORY" 1000 | tee "${OUTPUT_PREFIX}_1000m_size"
+./data_size.sh "$DATA_DIRECTORY" 1000 | tee "${OUTPUT_PREFIX}_1000m.data_size"

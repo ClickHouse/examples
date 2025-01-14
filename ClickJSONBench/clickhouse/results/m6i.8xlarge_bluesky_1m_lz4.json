@@ -9,5 +9,6 @@
   "num_documents": "1m",
   "data_compression": "lz4",
   "data_size": ,
-  "result": []
+  "result": [],
+  "memory_usage": []
 }

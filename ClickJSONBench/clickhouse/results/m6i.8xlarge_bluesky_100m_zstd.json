@@ -9,5 +9,6 @@
   "num_documents": "100m",
   "data_compression": "zstd",
   "data_size": ,
-  "result": []
+  "result": [],
+  "memory_usage": []
 }
