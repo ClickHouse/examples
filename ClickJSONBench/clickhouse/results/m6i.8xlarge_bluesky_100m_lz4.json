@@ -11,6 +11,12 @@
   "data_compression": "lz4",
   "data_size": 17343870348,
   "data_size_readable": "17.34 GB",
+  "timeout_query_ids": [],
+  "timeout_threshold": 7200,
+  "timeout_threshold_readable": "2 hours",
+  "oom_query_ids": [],
+  "oom_threshold": 68719476736,
+  "oom_threshold_readable": "64 GB",
   "result": [],
   "memory_usage": []
 }
