@@ -10,6 +10,5 @@
   "num_documents_readable": "1m",
   "data_compression": "zstd(1)",
   "data_size": 126734406,
-  "data_size_readable": "126.73 MB",
-  "result": []
+  "data_size_readable": "126.73 MB"
 }
