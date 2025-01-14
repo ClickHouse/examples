@@ -11,7 +11,7 @@ SUCCESS_LOG="${2:-success.log}"
 ERROR_LOG="${3:-error.log}"
 
 # Define prefix for output files
-OUTPUT_PREFIX="${4:-m6i.8xlarge}"
+OUTPUT_PREFIX="${4:-_m6i.8xlarge}"
 
 # Check if the directory exists
 if [[ ! -d "$DATA_DIRECTORY" ]]; then
