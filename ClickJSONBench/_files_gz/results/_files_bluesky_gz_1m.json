@@ -10,6 +10,5 @@
   "num_documents_readable": "1m",
   "data_compression": "gz",
   "data_size": 135176827,
-  "data_size_readable": "135.17 MB",
-  "result": []
+  "data_size_readable": "135.17 MB"
 }

@@ -23,9 +23,12 @@ fi
 
 # Read and execute each query
 cat "$QUERY_FILE" | while read -r query; do
-    # Clear cache (Linux-specific, requires sudo)
+
+    # Clear the Linux file system cache
+    echo "Clearing file system cache..."
     sync
     echo 3 | sudo tee /proc/sys/vm/drop_caches >/dev/null
+    echo "File system cache cleared."
 
     # Print the query
     echo "Running query: $query"

@@ -10,6 +10,5 @@
   "num_documents_readable": "100m",
   "data_compression": "lz4",
   "data_size": 20591959778,
-  "data_size_readable": "20.59 GB",
-  "result": []
+  "data_size_readable": "20.59 GB"
 }
