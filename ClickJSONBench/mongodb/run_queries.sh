@@ -23,9 +23,37 @@ fi
 
 # Read and execute each query
 cat "$QUERY_FILE" | while read -r query; do
-    # Clear cache (Linux-specific, requires sudo)
+
+    # Stop MongoDB service
+    echo "Stopping MongoDB service..."
+    sudo systemctl stop mongod
+
+    # Wait for MongoDB to stop
+    echo "Waiting for 10 seconds for MongoDB service to stop..."
+    sleep 10
+    while systemctl is-active --quiet mongod; do
+        sleep 1
+    done
+    echo "MongoDB service stopped."
+
+
+    # Clear the Linux file system cache
+    echo "Clearing file system cache..."
     sync
     echo 3 | sudo tee /proc/sys/vm/drop_caches >/dev/null
+    echo "File system cache cleared."
+
+    # Start MongoDB service
+    echo "Starting MongoDB service..."
+    sudo systemctl start mongod
+
+    # Wait for MongoDB to start
+    echo "Waiting for 10 seconds for MongoDB service to start..."
+    sleep 10
+    while ! systemctl is-active --quiet mongod; do
+        sleep 1
+    done
+    echo "MongoDB service is running."
 
     # Print the query
     echo "Running query: $query"
