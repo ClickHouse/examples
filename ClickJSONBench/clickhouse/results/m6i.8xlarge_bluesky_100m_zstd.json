@@ -6,9 +6,11 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": "100m",
+  "num_documents": 100000000,
+  "num_documents_readable": "100m",
   "data_compression": "zstd",
-  "data_size": ,
+  "data_size": 10240978125,
+  "data_size_readable": "10.24 GB",
   "result": [],
   "memory_usage": []
 }

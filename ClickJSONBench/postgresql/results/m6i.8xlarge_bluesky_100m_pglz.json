@@ -6,8 +6,10 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": "100m",
+  "num_documents": 100000000,
+  "num_documents_readable": "100m",
   "data_compression": "pglz",
-  "data_size": ,
+  "data_size": 66182094848,
+  "data_size_readable": "66.18 GB",
   "result": []
 }
