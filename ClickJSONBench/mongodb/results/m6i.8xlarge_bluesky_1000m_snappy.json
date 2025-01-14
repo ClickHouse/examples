@@ -6,8 +6,10 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": "1000m",
+  "num_documents": 1000000000,
+  "num_documents_readable": "1000m",
   "data_compression": "snappy",
-  "data_size": ,
+  "data_size": 245411815424,
+  "data_size_readable": "245.41 GB",
   "result": []
 }
