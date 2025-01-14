@@ -10,6 +10,5 @@
   "num_documents_readable": "1000m",
   "data_compression": "zstd(1)",
   "data_size": ,
-  "data_size_readable": "",
-  "result": []
+  "data_size_readable": ""
 }
