@@ -21,11 +21,25 @@ echo "Running queries on database: $DB_NAME"
 ./run_queries.sh "$DB_NAME" 2>&1 | tee "$QUERY_LOG_FILE"
 
 # Process the query log and prepare the result
-RUNTIME_RESULTS=$(grep -v '^SELECT' "$QUERY_LOG_FILE" | awk 'NR % 2 == 1' | grep -oP '^\d+(\.\d+)?' | \
-awk '{ if (i % 3 == 0) { printf "[" }; printf $1; if (i % 3 != 2) { printf ", " } else { print "]," }; ++i; }')
+RUNTIME_RESULTS=$(grep -E '^[0-9]' "$QUERY_LOG_FILE" | awk 'NR % 2 == 1' | awk '{
+    if (NR % 3 == 1) { printf "["; }
+    printf $1;
+    if (NR % 3 == 0) {
+        print "],";
+    } else {
+        printf ", ";
+    }
+}')
 
-MEMORY_RESULTS=$(grep -v '^SELECT' "$QUERY_LOG_FILE" | awk 'NR % 2 == 0' | grep -oP '^\d+(\.\d+)?' | \
-awk '{ if (i % 3 == 0) { printf "[" }; printf $1; if (i % 3 != 2) { printf ", " } else { print "]," }; ++i; }')
+MEMORY_RESULTS=$(grep -E '^[0-9]' "$QUERY_LOG_FILE" | awk 'NR % 2 == 0' | awk '{
+    if (NR % 3 == 1) { printf "["; }
+    printf $1;
+    if (NR % 3 == 0) {
+        print "],";
+    } else {
+        printf ", ";
+    }
+}')
 
 # Output the runtime results
 echo "$RUNTIME_RESULTS" > "$RESULT_FILE_RUNTIMES"

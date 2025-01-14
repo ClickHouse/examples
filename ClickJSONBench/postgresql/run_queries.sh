@@ -12,8 +12,36 @@ DB_NAME="$1"
 TRIES=3
 
 cat queries.sql | while read -r query; do
+
+    # Stop PostgreSQL service
+    echo "Stopping PostgreSQL service..."
+    sudo systemctl stop postgresql
+
+    # Wait for PostgreSQL to stop
+    echo "Waiting for 10 seconds for PostgreSQL service to stop..."
+    sleep 10
+    while systemctl is-active --quiet postgresql; do
+        sleep 1
+    done
+    echo "PostgreSQL service stopped."
+
+    # Clear the Linux file system cache
+    echo "Clearing file system cache..."
     sync
     echo 3 | sudo tee /proc/sys/vm/drop_caches >/dev/null
+    echo "File system cache cleared."
+
+    # Start PostgreSQL service
+    echo "Starting PostgreSQL service..."
+    sudo systemctl start postgresql
+
+    # Wait for PostgreSQL to start
+    echo "Waiting for 10 seconds for PostgreSQL service to start..."
+    sleep 10
+    while ! systemctl is-active --quiet postgresql; do
+        sleep 1
+    done
+    echo "PostgreSQL service is running."
 
     echo "$query";
     for i in $(seq 1 $TRIES); do
