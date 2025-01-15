@@ -11,16 +11,29 @@
   "data_compression": "lz4",
   "total_size": 17343870348,
   "total_size_readable": "17.34 GB",
-  "data_size":,
-  "data_size_readable": "",
-  "index_size":,
-  "index_size_readable": "",
-  "timeout_query_ids": [],
-  "timeout_threshold": 7200,
-  "timeout_threshold_readable": "2 hours",
-  "oom_query_ids": [],
-  "oom_threshold": 68719476736,
-  "oom_threshold_readable": "64 GB",
-  "result": [],
-  "memory_usage": []
+  "data_size": 17322471795,
+  "data_size_readable": "17.32 GB",
+  "index_size": 21398482,
+  "index_size_readable": " 21.40 MB",
+  "result": [
+    [0.046, 0.037, 0.038],
+    [15.859, 2.306, 2.275],
+    [1.341, 0.226, 0.236],
+    [1.341, 0.152, 0.146],
+    [1.445, 0.156, 0.155]
+  ],
+  "memory_usage": [
+    [1800840, 1016236, 839339],
+    [2274175933, 2303903392, 2408343192],
+    [141358362, 140633338, 140633338],
+    [905629413, 943512402, 952476397],
+    [1046983186, 1192041195, 1188093670]
+  ],
+  "memory_usage_readable": [
+    "1.80 MB, 1.02 MB, 839.34 KB",
+    "2.27 GB, 2.30 GB, 2.41 GB",
+    "141.36 MB, 140.63 MB, 140.63 MB",
+    "905.63 MB, 943.51 MB, 952.48 MB",
+    "1.05 GB, 1.19 GB, 1.19 GB"
+  ]
 }

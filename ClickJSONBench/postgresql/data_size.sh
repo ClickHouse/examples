@@ -11,5 +11,3 @@ DB_NAME="$1"
 TABLE_NAME="$2"
 
 sudo -u postgres psql -d "$DB_NAME" -t -c "SELECT pg_table_size('$TABLE_NAME')"
-
-

@@ -11,16 +11,29 @@
   "data_compression": "zstd",
   "total_size": 1058178020,
   "total_size_readable": "1.06 GB",
-  "data_size":,
-  "data_size_readable": "",
-  "index_size":,
-  "index_size_readable": "",
-  "timeout_query_ids": [],
-  "timeout_threshold": 7200,
-  "timeout_threshold_readable": "2 hours",
-  "oom_query_ids": [],
-  "oom_threshold": 68719476736,
-  "oom_threshold_readable": "64 GB",
-  "result": [],
-  "memory_usage": []
+  "data_size": 1056861138,
+  "data_size_readable": "1.06 GB",
+  "index_size": 1316848,
+  "index_size_readable": "1.32 MB",
+  "result": [
+    [0.014, 0.008, 0.008],
+    [0.342, 0.309, 0.307],
+    [0.055, 0.038, 0.040],
+    [0.049, 0.034, 0.029],
+    [0.048, 0.037, 0.031]
+  ],
+  "memory_usage": [
+    [612128, 500711, 960986],
+    [454122386, 448874897, 454008173],
+    [140170587, 139949595, 139949595],
+    [268875153, 268581277, 268528937],
+    [269233676, 269135166, 264860405]
+  ],
+  "memory_usage_readable": [
+    "612.13 KB, 500.71 KB, 960.99 KB",
+    "454.12 MB, 448.87 MB, 454.01 MB",
+    "140.17 MB, 139.95 MB, 139.95 MB",
+    "268.88 MB, 268.58 MB, 268.53 MB",
+    "269.23 MB, 269.14 MB, 264.86 MB"
+  ]
 }
