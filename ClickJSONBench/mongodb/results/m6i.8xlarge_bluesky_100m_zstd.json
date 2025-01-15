@@ -16,8 +16,21 @@
   "data_size_readable": "13.76 GB",
   "index_size": 2439716864,
   "index_size_readable": "2.44 GB",
-  "oom_query_ids": [],
+  "oom_query_ids": [1],
   "oom_threshold": 68719476736,
   "oom_threshold_readable": "64 GB",
-  "result": []
+  "result": [
+    [171.13,56.34,50.349],
+    [0,0,0.0],
+    [208.486,183.036,160.959],
+    [45.227,41.365,43.751],
+    [47.175,44.368,41.472]
+  ],
+  "result_readable": [
+    "2 min 51.13 sec, 56.34 sec, 50.35 sec",
+    "0.00 msec, 0.00 msec, 0.00 msec",
+    "3 min 28.49 sec, 3 min 3.04 sec, 2 min 40.96 sec",
+    "45.23 sec, 41.37 sec, 43.75 sec",
+    "47.17 sec, 44.37 sec, 41.47 sec"
+  ]
 }
