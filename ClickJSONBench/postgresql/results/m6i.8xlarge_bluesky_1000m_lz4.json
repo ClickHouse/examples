@@ -1,0 +1,25 @@
+{
+  "system": "PostgreSQL",
+  "date": "2025-01-13",
+  "machine": "m6i.8xlarge, 10000gib gp3",
+  "cluster_size": 1,
+  "comment": "",
+  "tags": [
+  ],
+  "num_documents": 1000000000,
+  "num_documents_readable": "1000m",
+  "data_compression": "lz4",
+  "total_size": 621943373824,
+  "total_size_readable": "621.94 GB",
+  "data_size":,
+  "data_size_readable": "",
+  "index_size":,
+  "index_size_readable": "",
+  "timeout_query_ids": [0, 1],
+  "timeout_threshold": 7200,
+  "timeout_threshold_readable": "2 hours",
+  "oom_query_ids": [],
+  "oom_threshold": 68719476736,
+  "oom_threshold_readable": "64 GB",
+  "result": []
+}

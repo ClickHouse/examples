@@ -1,0 +1,14 @@
+{
+  "system": "_files_json",
+  "date": "2025-01-13",
+  "machine": "m6i.8xlarge, 10000gib gp3",
+  "cluster_size": 1,
+  "comment": "",
+  "tags": [
+  ],
+  "num_documents": 100000000,
+  "num_documents_readable": "100m",
+  "data_compression": "none",
+  "total_size": 47813179260,
+  "total_size_readable": "47.81 GB"
+}

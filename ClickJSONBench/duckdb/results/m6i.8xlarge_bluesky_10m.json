@@ -1,0 +1,27 @@
+{
+  "system": "DuckDB",
+  "date": "2025-01-14",
+  "machine": "m6i.8xlarge, 16000gib gp3",
+  "cluster_size": 1,
+  "comment": "",
+  "tags": [
+  ],
+  "num_documents": 10000000,
+  "num_documents_readable": "10m",
+  "data_compression": "Uncompressed",
+  "data_size": 4893442048,
+  "data_size_readable": "4.89 GB",
+  "timeout_query_ids": [],
+  "timeout_threshold": 7200,
+  "timeout_threshold_readable": "2 hours",
+  "oom_query_ids": [],
+  "oom_threshold": 68719476736,
+  "oom_threshold_readable": "64 GB",
+  "result": [
+    [37.332,1.179,1.196],
+    [37.361,1.639,1.645],
+    [37.343,1.598,1.613],
+    [37.363,1.060,1.065],
+    [37.439,1.183,1.213]
+  ]
+}
