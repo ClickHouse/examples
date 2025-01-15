@@ -7,7 +7,7 @@ st.set_page_config(layout="wide")
 
 client = clickhouse_connect.get_client(
   host='sql-clickhouse.clickhouse.com', 
-  username='demo'
+  username='demo',
   secure=True
 )
 
