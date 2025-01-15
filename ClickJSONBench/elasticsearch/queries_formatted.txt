@@ -1,0 +1,51 @@
+-- Q0 - Top event types
+
+POST /_query?format=txt
+{
+  "query": """FROM $INDEX_NAME
+| WHERE kind == "commit" AND commit.operation == "create"
+| STATS count = COUNT() BY commit.collection
+| SORT count DESC"""
+}
+
+-- Q1 - Top event types together with unique users per event type
+
+POST /_query?format=txt
+{
+  "query": """FROM $INDEX_NAME
+| WHERE kind == "commit" AND commit.operation == "create"
+| STATS users = COUNT_DISTINCT(did), count = COUNT() BY commit.collection
+| SORT count DESC"""
+}
+
+-- Q2 - When do people use BlueSky
+
+POST /_query?format=txt
+{
+  "query": """FROM $INDEX_NAME
+| WHERE kind == "commit" AND commit.operation == "create" AND commit.collection IN ("app.bsky.feed.post", "app.bsky.feed.repost", "app.bsky.feed.like")
+| STATS count = COUNT() BY commit.collection, DATE_EXTRACT("hour_of_day", time_us)
+| SORT count, commit.collection"""
+}
+
+-- Q3 - top 3 post veterans
+
+POST /_query?format=txt
+{
+  "query": """FROM $INDEX_NAME
+| WHERE kind == "commit" AND commit.operation == "create" AND commit.collection == "app.bsky.feed.post"
+| STATS first_post_ts = MIN(time_us) BY did
+| SORT first_post_ts ASC
+| LIMIT 3"""
+}
+
+-- Q4 - top 3 users with longest activity
+
+POST /_query?format=txt
+{
+  "query": """FROM $INDEX_NAME
+| WHERE kind == "commit" AND commit.operation == "create" AND commit.collection == "app.bsky.feed.post"
+| STATS activity_span = date_diff("millisecond",min(time_us), max(time_us)) BY did
+| SORT activity_span DESC
+| LIMIT 3"""
+}

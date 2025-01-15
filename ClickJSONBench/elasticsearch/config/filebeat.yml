@@ -1,0 +1,69 @@
+# ============================== Filebeat inputs ===============================
+filebeat.registry.flush: 5s
+filebeat.inputs:
+
+- type: filestream
+ id: bluesky-events
+
+ paths:
+   - /home/ubuntu/bluesky/json/1m/*
+ parsers:
+   - ndjson:
+       target: ""
+# ============================== Filebeat modules ==============================
+
+filebeat.config.modules:
+ # Glob pattern for configuration loading
+ path: ${path.config}/modules.d/*.yml
+
+ # Set to true to enable config reloading
+ reload.enabled: false
+
+# ======================= Elasticsearch template setting =======================
+
+setup.template.enabled: false
+
+# ================================== Outputs ===================================
+
+# Configure what output to use when sending the data collected by the beat.
+
+# ---------------------------- Elasticsearch Output ----------------------------
+
+output.elasticsearch:
+ # Array of hosts to connect to.
+ hosts: ["https://localhost:9200"]
+
+ # Performance preset - one of "balanced", "throughput", "scale",
+ # "latency", or "custom".
+ preset: throughput
+ compression_level: 1
+ idle_connection_timeout: 30s
+ # Protocol - either `http` (default) or `https`.
+ protocol: "https"
+ index: "bluesky-source-1m-lz4"
+ # Authentication credentials - either API key or username/password.
+ api_key: "<api_key>"
+ ssl:
+   enabled: true
+   verification_mode: "none"
+
+
+processors:
+ - rename:
+     when:
+       and:
+         - has_fields: ["commit.record.subject"]
+         - not:
+             has_fields: ["commit.record.subject.cid"]
+     fields:
+       - from: "commit.record.subject"
+         to: "commit.record.subject.value"
+ - rename:
+     when:
+       and:
+         - has_fields: ["commit.record.embed.images.data"]
+         - not:
+             has_fields: ["commit.record.subject.cid"]
+     fields:
+       - from: "commit.record.embed.images.data"
+         to: "commit.record.embed.images.data.value"
