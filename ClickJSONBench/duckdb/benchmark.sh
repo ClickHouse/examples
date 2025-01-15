@@ -17,8 +17,8 @@ echo "Running queries on database: $DB_NAME"
 ./run_queries.sh "$DB_NAME" 2>&1 | tee query_log.txt
 
 # Process the query log and prepare the result
-RESULT=$(cat query_log.txt | grep -oP 'Time: \d+\.\d+ ms' | sed -r -e 's/Time: ([0-9]+\.[0-9]+) ms/\1/' | \
-awk '{ if (i % 3 == 0) { printf "[" }; printf $1 / 1000; if (i % 3 != 2) { printf "," } else { print "]," }; ++i; }')
+RESULT=$(cat query_log.txt | grep -oP 'Real time: \d+\.\d+ seconds' | sed -r -e 's/Real time: ([0-9]+\.[0-9]+) seconds/\1/' | \
+awk '{ if (i % 3 == 0) { printf "[" }; printf $1; if (i % 3 != 2) { printf "," } else { print "]," }; ++i; }')
 
 # Output the result
 if [[ -n "$RESULT_FILE" ]]; then
