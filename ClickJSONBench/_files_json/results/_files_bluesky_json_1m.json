@@ -9,6 +9,6 @@
   "num_documents": 1000000,
   "num_documents_readable": "1m",
   "data_compression": "none",
-  "data_size": 480778277,
-  "data_size_readable": "480.78 MB"
+  "total_size": 480778277,
+  "total_size_readable": "480.78 MB"
 }
