@@ -1,5 +1,6 @@
 {
   "system": "MongoDB",
+  "version": "8.0.3",
   "date": "2025-01-13",
   "machine": "m6i.8xlarge, 10000gib gp3",
   "cluster_size": 1,
@@ -11,21 +12,22 @@
   "data_compression": "snappy",
   "total_size": 279212032,
   "total_size_readable": "279.21 MB",
-  "data_size":,
-  "data_size_readable": "",
-  "index_size":,
-  "index_size_readable": "",
-  "timeout_query_ids": [],
-  "timeout_threshold": 7200,
-  "timeout_threshold_readable": "2 hours",
-  "oom_query_ids": [],
-  "oom_threshold": 68719476736,
-  "oom_threshold_readable": "64 GB",
+  "data_size": 253288448,
+  "data_size_readable": "253.29 MB",
+  "index_size": 25923584,
+  "index_size_readable": "25.92 MB",
   "result": [
-    [1.739,1.677,1.718],
-    [1.726,1.737,1.738],
-    [1.432,1.429,1.435],
-    [0.242,0.238,0.239],
-    [0.271,0.268,0.271]
+    [0.375,0.365,0.368],
+    [1.789,1.759,1.752],
+    [1.431,1.421,1.436],
+    [0.237,0.235,0.235],
+    [0.257,0.255,0.263]
+  ],
+  "result_readable": [
+    "375.00 msec, 365.00 msec, 368.00 msec",
+    "1.79 sec, 1.76 sec, 1.75 sec",
+    "1.43 sec, 1.42 sec, 1.44 sec",
+    "237.00 msec, 235.00 msec, 235.00 msec",
+    "257.00 msec, 255.00 msec, 263.00 msec"
   ]
 }

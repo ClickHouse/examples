@@ -1,5 +1,6 @@
 {
   "system": "PostgreSQL",
+  "version": "16.6",
   "date": "2025-01-13",
   "machine": "m6i.8xlarge, 10000gib gp3",
   "cluster_size": 1,
@@ -11,15 +12,22 @@
   "data_compression": "lz4",
   "total_size": 5618540544,
   "total_size_readable": "5.62 GB",
-  "data_size":,
-  "data_size_readable": "",
-  "index_size":,
-  "index_size_readable": "",
-  "timeout_query_ids": [],
-  "timeout_threshold": 7200,
-  "timeout_threshold_readable": "2 hours",
-  "oom_query_ids": [],
-  "oom_threshold": 68719476736,
-  "oom_threshold_readable": "64 GB",
-  "result": []
+  "data_size": 4653383680,
+  "data_size_readable": "4.65 GB",
+  "index_size": 965156864,
+  "index_size_readable": "965.16 MB",
+  "result": [
+    [35.1697,0.943478,0.94341],
+    [41.7187,9.27541,9.33103],
+    [36.0874,2.50888,2.51102],
+    [40.023,1.78236,1.785],
+    [38.8073,1.91287,1.91521]
+  ],
+  "result_readable": [
+    "35.17 sec, 943.48 msec, 943.41 msec",
+    "41.72 sec, 9.28 sec, 9.33 sec",
+    "36.09 sec, 2.51 sec, 2.51 sec",
+    "40.02 sec, 1.78 sec, 1.78 sec",
+    "38.81 sec, 1.91 sec, 1.92 sec"
+  ]
 }
