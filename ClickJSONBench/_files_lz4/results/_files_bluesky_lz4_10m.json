@@ -9,6 +9,6 @@
   "num_documents": 10000000,
   "num_documents_readable": "10m",
   "data_compression": "lz4",
-  "data_size": 2084888024,
-  "data_size_readable": "2.08 GB"
+  "total_size": 2084888024,
+  "total_size_readable": "2.08 GB"
 }

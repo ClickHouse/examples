@@ -23,40 +23,40 @@ fi
 
 # bluesky_1m_lz4
 ./create_and_load.sh bluesky_1m_lz4 bluesky ddl_lz4.sql "$DATA_DIRECTORY" 1 "$SUCCESS_LOG" "$ERROR_LOG"
-./data_size.sh bluesky_1m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.data_size"
+./total_size.sh bluesky_1m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4".total_size""
 ./benchmark.sh bluesky_1m_lz4 "${OUTPUT_PREFIX}_bluesky_1m_lz4.results_runtime"
 
 # bluesky_1m_pglz
 ./create_and_load.sh bluesky_1m_pglz bluesky ddl_pglz.sql "$DATA_DIRECTORY" 1 "$SUCCESS_LOG" "$ERROR_LOG"
-./data_size.sh bluesky_1m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_pglz.data_size"
+./total_size.sh bluesky_1m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_pglz".total_size""
 ./benchmark.sh bluesky_1m_pglz "${OUTPUT_PREFIX}_bluesky_1m_pglz.results_runtime"
 
 # bluesky_10m_lz4
 ./create_and_load.sh bluesky_10m_lz4 bluesky ddl_lz4.sql "$DATA_DIRECTORY" 10 "$SUCCESS_LOG" "$ERROR_LOG"
-./data_size.sh bluesky_10m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.data_size"
+./total_size.sh bluesky_10m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4".total_size""
 ./benchmark.sh bluesky_10m_lz4 "${OUTPUT_PREFIX}_bluesky_10m_lz4.results_runtime"
 
 # bluesky_10m_pglz
 ./create_and_load.sh bluesky_10m_pglz bluesky ddl_pglz.sql "$DATA_DIRECTORY" 10 "$SUCCESS_LOG" "$ERROR_LOG"
-./data_size.sh bluesky_10m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_pglz.data_size"
+./total_size.sh bluesky_10m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_pglz".total_size""
 ./benchmark.sh bluesky_10m_pglz "${OUTPUT_PREFIX}_bluesky_10m_pglz.results_runtime"
 
 # bluesky_100m_lz4
 ./create_and_load.sh bluesky_100m_lz4 bluesky ddl_lz4.sql "$DATA_DIRECTORY" 100 "$SUCCESS_LOG" "$ERROR_LOG"
-./data_size.sh bluesky_100m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.data_size"
+./total_size.sh bluesky_100m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4".total_size""
 ./benchmark.sh bluesky_100m_lz4 "${OUTPUT_PREFIX}_bluesky_100m_lz4.results_runtime"
 
 # bluesky_100m_pglz
 ./create_and_load.sh bluesky_100m_pglz bluesky ddl_pglz.sql "$DATA_DIRECTORY" 100 "$SUCCESS_LOG" "$ERROR_LOG"
-./data_size.sh bluesky_100m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_pglz.data_size"
+./total_size.sh bluesky_100m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_pglz".total_size""
 ./benchmark.sh bluesky_100m_pglz "${OUTPUT_PREFIX}_bluesky_100m_pglz.results_runtime"
 
 # bluesky_1000m_lz4
 ./create_and_load.sh bluesky_1000m_lz4 bluesky ddl_lz4.sql "$DATA_DIRECTORY" 1000 "$SUCCESS_LOG" "$ERROR_LOG"
-./data_size.sh bluesky_1000m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.data_size"
+./total_size.sh bluesky_1000m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4".total_size""
 ./benchmark.sh bluesky_1000m_lz4 "${OUTPUT_PREFIX}_bluesky_1000m_lz4.results_runtime"
 
 # bluesky_1000m_pglz
 ./create_and_load.sh bluesky_1000m_pglz bluesky ddl_pglz.sql "$DATA_DIRECTORY" 1000 "$SUCCESS_LOG" "$ERROR_LOG"
-./data_size.sh bluesky_1000m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_pglz.data_size"
+./total_size.sh bluesky_1000m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_pglz".total_size""
 ./benchmark.sh bluesky_1000m_pglz "${OUTPUT_PREFIX}_bluesky_1000m_pglz.results_runtime"
