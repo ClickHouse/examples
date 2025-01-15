@@ -10,4 +10,6 @@ fi
 DB_NAME="$1"
 TABLE_NAME="$2"
 
-clickhouse-client --query "SELECT sum(bytes_on_disk) FROM system.parts WHERE database = '$DB_NAME' AND table = '$TABLE_NAME' AND active"
+sudo -u postgres psql -d "$DB_NAME" -t -c "SELECT pg_table_size('$TABLE_NAME')"
+
+
