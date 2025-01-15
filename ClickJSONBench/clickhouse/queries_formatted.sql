@@ -1,18 +1,15 @@
 ------------------------------------------------------------------------------------------------------------------------
--- Q0 - Top event types - approximate number of users
+-- Q0 - Top event types
 ------------------------------------------------------------------------------------------------------------------------
 SELECT
     data.commit.collection AS event,
-    count() AS count,
-	uniq(data.did) AS users
+    count() AS count
 FROM bluesky
-WHERE data.kind = 'commit'
-  AND data.commit.operation = 'create'
 GROUP BY event
 ORDER BY count DESC;
 
 ------------------------------------------------------------------------------------------------------------------------
--- Q1 - Top event types - exact number users
+-- Q1 - Top event types together with unique users per event type
 ------------------------------------------------------------------------------------------------------------------------
 SELECT
     data.commit.collection AS event,

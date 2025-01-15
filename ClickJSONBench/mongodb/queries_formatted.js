@@ -1,26 +1,11 @@
 // ------------------------------------------------------------------------------------------------------------------------
-// -- Q0 - Top event types - approximate number of users
+// -- Q0 - Top event types
 // ---------------------------------------------------------------------------------------------------------------------
 db.bluesky.aggregate([
   {
-    $match: {
-      "kind": "commit",
-      "commit.operation": "create"
-    }
-  },
-
-  {
     $group: {
       _id: "$commit.collection",
-      count: { $sum: 1 },
-      users: { $addToSet: "$did" }
-    }
-  },
-  {
-    $project: {
-      event: "$_id",
-      count: 1,
-      users: { $size: "$users" }
+      count: { $sum: 1 }
     }
   },
   {
@@ -29,7 +14,7 @@ db.bluesky.aggregate([
 ]);
 
 // ---------------------------------------------------------------------------------------------------------------------
-// -- Q1 - Top event types - exact number users
+// -- Q1 - Top event types together with unique users per event type
 // ---------------------------------------------------------------------------------------------------------------------
 db.bluesky.aggregate([
   {
