@@ -9,18 +9,31 @@
   "num_documents": 1000000000,
   "num_documents_readable": "1000m",
   "data_compression": "zstd",
-  "total_size": 104988577367,
-  "total_size_readable": "105 GB",
-  "data_size":,
-  "data_size_readable": "",
-  "index_size":,
-  "index_size_readable": "",
-  "timeout_query_ids": [],
-  "timeout_threshold": 7200,
-  "timeout_threshold_readable": "2 hours",
-  "oom_query_ids": [],
-  "oom_threshold": 68719476736,
-  "oom_threshold_readable": "64 GB",
-  "result": [],
-  "memory_usage": []
+  "total_size": 105559779073,
+  "total_size_readable": "105.56 GB",
+  "data_size": 104682038077,
+  "data_size_readable": "104.68 GB",
+  "index_size": 877740862,
+  "index_size_readable": "877.74 MB",
+  "result": [
+    [0.394, 0.383, 0.383],
+    [92.968, 16.855, 17.232],
+    [9.907, 2.569, 2.607],
+    [10.686, 1.284, 1.254],
+    [10.728, 1.390, 1.365]
+  ],
+  "memory_usage": [
+    [1809975, 1405566, 1104849],
+    [11909966509, 11946101677, 11960933059],
+    [140375689, 137282818, 138348509],
+    [4636628779, 4638462166, 4633084576],
+    [4647701916, 4672044580, 4674831294]
+  ],
+  "memory_usage_readable": [
+    "1.81 MB, 1.41 MB, 1.10 MB",
+    "11.91 GB, 11.95 GB, 11.96 GB",
+    "140.38 MB, 137.28 MB, 138.35 MB",
+    "4.64 GB, 4.64 GB, 4.63 GB",
+    "4.65 GB, 4.67 GB, 4.67 GB"
+  ]
 }
