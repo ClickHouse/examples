@@ -7,11 +7,11 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": 1000000,
-  "num_documents_readable": "1m",
-  "data_compression": "lz4",
-  "data_size": 466387901,
-  "data_size_readable": "444.7 MB",
+  "num_documents": 10000000,
+  "num_documents_readable": "10m",
+  "data_compression": "deflate",
+  "data_size": 2280594762,
+  "data_size_readable": "2.1 GB",
   "timeout_query_ids": [],
   "timeout_threshold": 7200,
   "timeout_threshold_readable": "2 hours",
@@ -19,5 +19,10 @@
   "oom_threshold": 68719476736,
   "oom_threshold_readable": "64 GB",
   "result": [
+    [0.563056,0.564767,0.564361],
+    [5.298571,5.378812,5.404454],
+    [1.406206,1.403458,1.412990],
+    [0.312461,0.315209,0.308742],
+    [0.447733,0.389062,0.393217]
   ]
 }
