@@ -24,39 +24,55 @@ fi
 # bluesky_1m_snappy
 ./create_and_load.sh bluesky_1m_snappy bluesky ddl_snappy.js "$DATA_DIRECTORY" 1 "$SUCCESS_LOG" "$ERROR_LOG"
 ./total_size.sh bluesky_1m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy".total_size""
+./data_size.sh bluesky_1m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy".data_size""
+./index_size.sh bluesky_1m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy".index_size""
 ./benchmark.sh bluesky_1m_snappy "${OUTPUT_PREFIX}_bluesky_1m_snappy.results_runtime"
 
 # bluesky_1m_zstd
 ./create_and_load.sh bluesky_1m_zstd bluesky ddl_zstd.js "$DATA_DIRECTORY" 1 "$SUCCESS_LOG" "$ERROR_LOG"
 ./total_size.sh bluesky_1m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd".total_size""
+./data_size.sh bluesky_1m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd".data_size""
+./index_size.sh bluesky_1m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd".index_size""
 ./benchmark.sh bluesky_1m_zstd "${OUTPUT_PREFIX}_bluesky_1m_zstd.results_runtime"
 
 # bluesky_10m_snappy
 ./create_and_load.sh bluesky_10m_snappy bluesky ddl_snappy.js "$DATA_DIRECTORY" 10 "$SUCCESS_LOG" "$ERROR_LOG"
 ./total_size.sh bluesky_10m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_snappy".total_size""
+./data_size.sh bluesky_10m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_snappy".data_size""
+./index_size.sh bluesky_10m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_snappy".index_size""
 ./benchmark.sh bluesky_10m_snappy "${OUTPUT_PREFIX}_bluesky_10m_snappy.results_runtime"
 
 # bluesky_10m_zstd
 ./create_and_load.sh bluesky_10m_zstd bluesky ddl_zstd.js "$DATA_DIRECTORY" 10 "$SUCCESS_LOG" "$ERROR_LOG"
 ./total_size.sh bluesky_10m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd".total_size""
+./data_size.sh bluesky_10m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd".data_size""
+./index_size.sh bluesky_10m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd".index_size""
 ./benchmark.sh bluesky_10m_zstd "${OUTPUT_PREFIX}_bluesky_10m_zstd.results_runtime"
 
 # bluesky_100m_snappy
 ./create_and_load.sh bluesky_100m_snappy bluesky ddl_snappy.js "$DATA_DIRECTORY" 100 "$SUCCESS_LOG" "$ERROR_LOG"
 ./total_size.sh bluesky_100m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_snappy".total_size""
+./data_size.sh bluesky_100m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_snappy".data_size""
+./index_size.sh bluesky_100m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_snappy".index_size""
 ./benchmark.sh bluesky_100m_snappy "${OUTPUT_PREFIX}_bluesky_100m_snappy.results_runtime"
 
 # bluesky_100m_zstd
 ./create_and_load.sh bluesky_100m_zstd bluesky ddl_zstd.js "$DATA_DIRECTORY" 100 "$SUCCESS_LOG" "$ERROR_LOG"
 ./total_size.sh bluesky_100m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd".total_size""
+./data_size.sh bluesky_100m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd".data_size""
+./index_size.sh bluesky_100m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd".index_size""
 ./benchmark.sh bluesky_100m_zstd "${OUTPUT_PREFIX}_bluesky_100m_zstd.results_runtime"
 
 # bluesky_1000m_snappy
 ./create_and_load.sh bluesky_1000m_snappy bluesky ddl_snappy.js "$DATA_DIRECTORY" 1000 "$SUCCESS_LOG" "$ERROR_LOG"
 ./total_size.sh bluesky_1000m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_snappy".total_size""
+./data_size.sh bluesky_1000m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_snappy".data_size""
+./index_size.sh bluesky_1000m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_snappy".index_size""
 ./benchmark.sh bluesky_1000m_snappy "${OUTPUT_PREFIX}_bluesky_1000m_snappy.results_runtime"
 
 # bluesky_1000m_zstd
 ./create_and_load.sh bluesky_1000m_zstd bluesky ddl_zstd.js "$DATA_DIRECTORY" 1000 "$SUCCESS_LOG" "$ERROR_LOG"
 ./total_size.sh bluesky_1000m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd".total_size""
+./data.sh bluesky_1000m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd".data_size""
+./index_size.sh bluesky_1000m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd".index_size""
 ./benchmark.sh bluesky_1000m_zstd "${OUTPUT_PREFIX}_bluesky_1000m_zstd.results_runtime"
