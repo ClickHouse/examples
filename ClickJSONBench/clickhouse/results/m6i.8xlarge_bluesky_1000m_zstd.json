@@ -1,5 +1,6 @@
 {
   "system": "ClickHouse",
+  "version": "25.1.1.2571",
   "date": "2025-01-13",
   "machine": "m6i.8xlarge, 10000gib gp3",
   "cluster_size": 1,
@@ -21,6 +22,13 @@
     [9.907, 2.569, 2.607],
     [10.686, 1.284, 1.254],
     [10.728, 1.390, 1.365]
+  ],
+  "result_readable": [
+    "394.00 msec, 383.00 msec, 383.00 msec",
+    "1 min 32.97 sec, 16.86 sec, 17.23 sec",
+    "9.91 sec, 2.57 sec, 2.61 sec",
+    "10.69 sec, 1.28 sec, 1.25 sec",
+    "10.73 sec, 1.39 sec, 1.36 sec"
   ],
   "memory_usage": [
     [1809975, 1405566, 1104849],
