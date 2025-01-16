@@ -14,7 +14,7 @@ node.name: node-1
 #
 # Path to directory where to store the data (separate multiple locations by comma):
 #
-path.data: /var/data/elasticsearch
+path.data: /var/lib/elasticsearch
 #
 # Path to log files:
 #
@@ -44,7 +44,7 @@ xpack.security.transport.ssl:
   truststore.path: certs/transport.p12
 # Create a new cluster with the current node only
 # Additional nodes can still join the cluster later
-cluster.initial_master_nodes: ["ip-172-31-13-215"]
+cluster.initial_master_nodes: ["node-1"]
 
 # Allow HTTP API connections from anywhere
 # Connections are encrypted and require user authentication

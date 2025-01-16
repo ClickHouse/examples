@@ -15,3 +15,8 @@ sudo cp config/jvm.options /etc/elasticsearch/jvm.options
 # Start elasticsearch
 sudo systemctl start elasticsearch.service
 
+# Reset and export elastic password
+export ELASTIC_PASSWORD=$(sudo /usr/share/elasticsearch/bin/elasticsearch-reset-password -s -a -b -u elastic)
+
+# Save elastic password in local file
+echo "ELASTIC_PASSWORD=$ELASTIC_PASSWORD" > .elastic_password

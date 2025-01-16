@@ -1,6 +1,6 @@
 {
     "index_patterns": [
-      "bluesky-no-source-*-deflate"
+      "${INDEX_NAME}"
     ],
     "data_stream": {},
     "template": {

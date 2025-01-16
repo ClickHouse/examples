@@ -1,6 +1,6 @@
 {
     "index_patterns": [
-      "bluesky-source-*-lz4"
+      "${INDEX_NAME}"
     ],
     "data_stream": {},
     "template": {

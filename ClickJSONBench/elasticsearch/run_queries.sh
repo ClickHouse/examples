@@ -27,10 +27,10 @@ cat 'queries.txt' | while read -r QUERY; do
     echo 3 | sudo tee /proc/sys/vm/drop_caches >/dev/null
     # Clear query cache between queries.
     curl -k -X POST 'https://localhost:9200/hits/_cache/clear?pretty' -u "elastic:${ELASTIC_PASSWORD}" &>/dev/null
-
+    eval "QUERY=\"${QUERY}\""
     echo "Running query: $QUERY"
     for i in $(seq 1 $TRIES); do
         CURL_DATA="{\"query\": \"$QUERY\"}"
-        curl -s -k -X GET "https://localhost:9200/_query" -u "elastic:${ELASTIC_PASSWORD}" -H 'Content-Type: application/json' -w '\n* Response time: %{time_total} s\n' -d "$CURL_DATA"
+        curl -s -k -X POST "https://localhost:9200/_query" -u "elastic:${ELASTIC_PASSWORD}" -H 'Content-Type: application/json' -w '\n* Response time: %{time_total} s\n' -d "$CURL_DATA"
     done
 done
