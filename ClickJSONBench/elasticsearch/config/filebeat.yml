@@ -6,7 +6,7 @@ filebeat.inputs:
  id: bluesky-events
 
  paths:
-   - /home/ubuntu/bluesky/json/1m/*
+   - <temp_dir>
  parsers:
    - ndjson:
        target: ""
@@ -40,13 +40,17 @@ output.elasticsearch:
  idle_connection_timeout: 30s
  # Protocol - either `http` (default) or `https`.
  protocol: "https"
- index: "bluesky-source-1m-lz4"
+ index: "<index_name>"
+ pipeline: "bluesky_ingest_filebeat"
  # Authentication credentials - either API key or username/password.
  api_key: "<api_key>"
  ssl:
    enabled: true
    verification_mode: "none"
 
+http.enabled: true
+http.host: localhost
+http.port: 5066
 
 processors:
  - rename:
@@ -67,3 +71,6 @@ processors:
      fields:
        - from: "commit.record.embed.images.data"
          to: "commit.record.embed.images.data.value"
+- drop_fields:
+     fields: ["log", "agent", "ecs","host", "input"]
+     ignore_missing: true
