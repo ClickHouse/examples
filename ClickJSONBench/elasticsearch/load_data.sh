@@ -75,9 +75,9 @@ trap "sudo service filebeat stop" EXIT  # Stop filebeat on exit
 total_processed=0
 max_events=$MAX_FILES*1000000
 while [[ $total_processed -lt $max_events ]]; do
-    total_processed=$(curl -k -s -XGET 'localhost:5066/stats' | jq '.filebeat.events.done')
+    sleep 30
+    total_processed=$(curl -k -s -XGET 'localhost:5066/stats' | jq .filebeat.events.done)
     echo "Total processed files: $total_processed"
-    sleep 60
 done
 
 echo "All files have been processed."

@@ -26,12 +26,12 @@ curl -s -k -X POST "https://localhost:9200/_security/api_key" -u "elastic:${ELAS
 {
   "name": "filebeat",
   "role_descriptors": {
-    "filebeat_writer": {
-      "cluster": ["monitor"],
+    "filebeat_writer": { 
+      "cluster": ["monitor", "read_ilm", "read_pipeline"],
       "index": [
         {
-          "names": ["*"],
-          "privileges": ["write"]
+          "names": ["bluesky-*"],
+          "privileges": ["view_index_metadata", "create_doc", "auto_configure"]
         }
       ]
     }
