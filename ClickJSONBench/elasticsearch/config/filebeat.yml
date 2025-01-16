@@ -3,13 +3,13 @@ filebeat.registry.flush: 5s
 filebeat.inputs:
 
 - type: filestream
- id: bluesky-events
+  id: bluesky-events
 
- paths:
-   - <temp_dir>
- parsers:
-   - ndjson:
-       target: ""
+  paths:
+    - <temp_dir>
+  parsers:
+    - ndjson:
+        target: ""
 # ============================== Filebeat modules ==============================
 
 filebeat.config.modules:
@@ -71,6 +71,6 @@ processors:
      fields:
        - from: "commit.record.embed.images.data"
          to: "commit.record.embed.images.data.value"
-- drop_fields:
+ - drop_fields:
      fields: ["log", "agent", "ecs","host", "input"]
      ignore_missing: true

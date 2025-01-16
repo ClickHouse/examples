@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 
 # Check if the required arguments are provided
 if [[ $# -lt 5 ]]; then
@@ -47,12 +47,8 @@ for file in $(ls "$DIRECTORY"/*.json.gz | sort); do
             continue
         fi
 
-        # Preprocess the file to remove null characters
-        cleaned_file="$TEMP_DIR/$(basename "${uncompressed_file%.json}_cleaned.json")"
-        sed 's/\\u0000//g' "$uncompressed_file" > "$cleaned_file"
-
         # Grant read permissions for the postgres user
-        chmod 644 "$cleaned_file"
+        chmod 644 "$uncompressed_file"
         # Stop processing if the max number of files is reached
         if [[ $counter -ge $MAX_FILES ]]; then
             echo "Processed maximum number of files: $MAX_FILES"
@@ -65,21 +61,21 @@ done
 
 echo "All files have been copied to temp location."
 
-echo "Prepare fileebeat for ingestion"
+echo "Prepare filebeat for ingestion"
 
 # Prepare Filebeat configuration
 FILEBEAT_API_KEY=$(cat .filebeat_api_key)
-FILEBEAT_CONFIG=$(cat "config/filebeat.yml" | sed "s/<api_key>/$FILEBEAT_API_KEY/g" | sed "s/<index_name>/$INDEX_NAME/g" | sed "s/<temp_dir>/$TEMP_DIR/g")
+FILEBEAT_CONFIG=$(sed -e "s|<api_key>|$FILEBEAT_API_KEY|g" -e "s|<index_name>|$INDEX_NAME|g" -e "s|<temp_dir>|"${TEMP_DIR}/*"|g" config/filebeat.yml)
 echo "$FILEBEAT_CONFIG" | sudo tee /etc/filebeat/filebeat.yml > /dev/null
 
-sudo service start filebeat.service
-trap "sudo service stop filebeat.service" EXIT  # Stop filebeat on exit
+sudo service filebeat start
+trap "sudo service filebeat stop" EXIT  # Stop filebeat on exit
 
 # wait until all files have been ingested 
 total_processed=0
 max_events=$MAX_FILES*1000000
-while total_processed -lt $max_events; do
-    total_processed=$(curl -k -s -XGET 'localhost:5066/stats' | jq '.beat.libbeat.output.events.total')
+while [[ $total_processed -lt $max_events ]]; do
+    total_processed=$(curl -k -s -XGET 'localhost:5066/stats' | jq '.filebeat.events.done')
     echo "Total processed files: $total_processed"
     sleep 60
 done

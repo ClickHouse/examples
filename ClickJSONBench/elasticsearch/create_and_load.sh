@@ -35,6 +35,14 @@ if [[ "$http_code" -eq 404 ]] ; then
     curl -s -k -X PUT "https://localhost:9200/_ilm/policy/filebeat" -u "elastic:${ELASTIC_PASSWORD}" -H 'Content-Type: application/json' -d "$ILM_POLICY"
 fi
 
+# Check if pipeline is installed, install if not
+http_code=$(curl -s -o /dev/null -k -w "%{http_code}" -X GET "https://localhost:9200/_ingest/pipeline/bluesky_ingest_filebeat" -u "elastic:${ELASTIC_PASSWORD}" -H 'Content-Type: application/json')
+if [[ "$http_code" -eq 404 ]] ; then
+    echo "Installing ingest pipeline"
+    INGEST_PIPELINE=$(cat "config/ingest_pipeline.json")
+    curl -s -k -X PUT "https://localhost:9200/_ingest/pipeline/bluesky_ingest_filebeat" -u "elastic:${ELASTIC_PASSWORD}" -H 'Content-Type: application/json' -d "$INGEST_PIPELINE"
+fi
+
 # Install index template
 # Read index template file json from config/$INDEX_TEMPLATE_FILE 
 INDEX_TEMPLATE=$(cat "$INDEX_TEMPLATE_FILE")
