@@ -80,4 +80,6 @@ while [[ $total_processed -lt $max_events ]]; do
     echo "Total processed files: $total_processed"
 done
 
+sudo service filebeat stop
+
 echo "All files have been processed."
