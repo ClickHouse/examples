@@ -10,3 +10,4 @@ sudo dpkg -i filebeat-8.17.0-amd64.deb
 
 # Start elasticsearch
 sudo systemctl start elasticsearch.service
+

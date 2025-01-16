@@ -10,8 +10,8 @@
   "num_documents": 1000000000,
   "num_documents_readable": "1000m",
   "data_compression": "deflate",
-  "data_size": 0,
-  "data_size_readable": "",
+  "data_size": 353918693833,
+  "data_size_readable": "329.6 GB",
   "timeout_query_ids": [],
   "timeout_threshold": 7200,
   "timeout_threshold_readable": "2 hours",
@@ -19,5 +19,10 @@
   "oom_threshold": 68719476736,
   "oom_threshold_readable": "64 GB",
   "result": [
+    [7.999799,8.252348,8.020748],
+    [134.937487,129.005777,132.970291],
+    [38.043753,37.771306,37.633381],
+    [7.638027,7.621318,7.557696],
+    [10.512108,10.495349,10.854406]
   ]
 }
