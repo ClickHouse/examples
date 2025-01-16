@@ -8,6 +8,10 @@ sudo apt-get update && sudo apt-get install elasticsearch
 curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.17.0-amd64.deb
 sudo dpkg -i filebeat-8.17.0-amd64.deb
 
+# Overwrite configuration files
+sudo cp config/elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
+sudo cp config/jvm.options /etc/elasticsearch/jvm.options
+
 # Start elasticsearch
 sudo systemctl start elasticsearch.service
 

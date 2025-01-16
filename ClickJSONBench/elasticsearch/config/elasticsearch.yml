@@ -14,7 +14,7 @@ node.name: node-1
 #
 # Path to directory where to store the data (separate multiple locations by comma):
 #
-path.data: /home/ubuntu/bluesky/elasticsearch/data
+path.data: /var/data/elasticsearch
 #
 # Path to log files:
 #
