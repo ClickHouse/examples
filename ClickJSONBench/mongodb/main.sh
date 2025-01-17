@@ -26,6 +26,7 @@ fi
 ./total_size.sh bluesky_1m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy.total_size"
 ./data_size.sh bluesky_1m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy.data_size"
 ./index_size.sh bluesky_1m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy.index_size"
+./index_usage.sh bluesky_1m_snappy | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy.index_usage"
 ./benchmark.sh bluesky_1m_snappy "${OUTPUT_PREFIX}_bluesky_1m_snappy.results_runtime"
 
 # bluesky_1m_zstd
@@ -33,6 +34,7 @@ fi
 ./total_size.sh bluesky_1m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.total_size"
 ./data_size.sh bluesky_1m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.data_size"
 ./index_size.sh bluesky_1m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.index_size"
+./index_usage.sh bluesky_1m_zstd | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.index_usage"
 ./benchmark.sh bluesky_1m_zstd "${OUTPUT_PREFIX}_bluesky_1m_zstd.results_runtime"
 
 # bluesky_10m_snappy
@@ -40,6 +42,7 @@ fi
 ./total_size.sh bluesky_10m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_snappy.total_size"
 ./data_size.sh bluesky_10m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_snappy.data_size"
 ./index_size.sh bluesky_10m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_snappy.index_size"
+./index_usage.sh bluesky_10m_snappy | tee "${OUTPUT_PREFIX}_bluesky_10m_snappy.index_usage"
 ./benchmark.sh bluesky_10m_snappy "${OUTPUT_PREFIX}_bluesky_10m_snappy.results_runtime"
 
 # bluesky_10m_zstd
@@ -47,6 +50,7 @@ fi
 ./total_size.sh bluesky_10m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.total_size"
 ./data_size.sh bluesky_10m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.data_size"
 ./index_size.sh bluesky_10m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.index_size"
+./index_usage.sh bluesky_10m_zstd | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.index_usage"
 ./benchmark.sh bluesky_10m_zstd "${OUTPUT_PREFIX}_bluesky_10m_zstd.results_runtime"
 
 # bluesky_100m_snappy
@@ -54,6 +58,7 @@ fi
 ./total_size.sh bluesky_100m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_snappy.total_size"
 ./data_size.sh bluesky_100m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_snappy.data_size"
 ./index_size.sh bluesky_100m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_snappy.index_size"
+./index_usage.sh bluesky_100m_snappy | tee "${OUTPUT_PREFIX}_bluesky_100m_snappy.index_usage"
 ./benchmark.sh bluesky_100m_snappy "${OUTPUT_PREFIX}_bluesky_100m_snappy.results_runtime"
 
 # bluesky_100m_zstd
@@ -61,6 +66,7 @@ fi
 ./total_size.sh bluesky_100m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.total_size"
 ./data_size.sh bluesky_100m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.data_size"
 ./index_size.sh bluesky_100m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.index_size"
+./index_usage.sh bluesky_100m_zstd | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.index_usage"
 ./benchmark.sh bluesky_100m_zstd "${OUTPUT_PREFIX}_bluesky_100m_zstd.results_runtime"
 
 # bluesky_1000m_snappy
@@ -68,6 +74,7 @@ fi
 ./total_size.sh bluesky_1000m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_snappy.total_size"
 ./data_size.sh bluesky_1000m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_snappy.data_size"
 ./index_size.sh bluesky_1000m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_snappy.index_size"
+./index_usage.sh bluesky_1000m_snappy | tee "${OUTPUT_PREFIX}_bluesky_1000m_snappy.index_usage"
 ./benchmark.sh bluesky_1000m_snappy "${OUTPUT_PREFIX}_bluesky_1000m_snappy.results_runtime"
 
 # bluesky_1000m_zstd
@@ -75,4 +82,5 @@ fi
 ./total_size.sh bluesky_1000m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.total_size"
 ./data_size.sh bluesky_1000m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.data_size"
 ./index_size.sh bluesky_1000m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.index_size"
+./index_usage.sh bluesky_1000m_zstd | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.index_usage"
 ./benchmark.sh bluesky_1000m_zstd "${OUTPUT_PREFIX}_bluesky_1000m_zstd.results_runtime"
