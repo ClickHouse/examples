@@ -27,6 +27,7 @@ fi
 ./data_size.sh bluesky_1m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy.data_size"
 ./index_size.sh bluesky_1m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy.index_size"
 ./index_usage.sh bluesky_1m_snappy | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy.index_usage"
+./query_results.sh bluesky_1m_snappy | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy.query_results"
 ./benchmark.sh bluesky_1m_snappy "${OUTPUT_PREFIX}_bluesky_1m_snappy.results_runtime"
 
 # bluesky_1m_zstd
