@@ -26,6 +26,7 @@ fi
 ./total_size.sh bluesky_1m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.total_size"
 ./data_size.sh bluesky_1m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.data_size"
 ./index_size.sh bluesky_1m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.index_size"
+./index_usage.sh bluesky_1m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.index_usage"
 ./benchmark.sh bluesky_1m_lz4 "${OUTPUT_PREFIX}_bluesky_1m_lz4.results_runtime" "${OUTPUT_PREFIX}_bluesky_1m_lz4.results_memory_usage"
 
 # bluesky_1m_zstd
@@ -33,6 +34,7 @@ fi
 ./total_size.sh bluesky_1m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.total_size"
 ./data_size.sh bluesky_1m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.data_size"
 ./index_size.sh bluesky_1m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.index_size"
+./index_usage.sh bluesky_1m_zstd | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.index_usage"
 ./benchmark.sh bluesky_1m_zstd "${OUTPUT_PREFIX}_bluesky_1m_zstd.results_runtime" "${OUTPUT_PREFIX}_bluesky_1m_zstd.results_memory_usage"
 
 # bluesky_10m_lz4
@@ -40,6 +42,7 @@ fi
 ./total_size.sh bluesky_10m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.total_size"
 ./data_size.sh bluesky_10m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.data_size"
 ./index_size.sh bluesky_10m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.index_size"
+./index_usage.sh bluesky_10m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.index_usage"
 ./benchmark.sh bluesky_10m_lz4 "${OUTPUT_PREFIX}_bluesky_10m_lz4.results_runtime" "${OUTPUT_PREFIX}_bluesky_10m_lz4.results_memory_usage"
 
 # bluesky_10m_zstd
@@ -47,6 +50,7 @@ fi
 ./total_size.sh bluesky_10m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.total_size"
 ./data_size.sh bluesky_10m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.data_size"
 ./index_size.sh bluesky_10m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.index_size"
+./index_usage.sh bluesky_10m_zstd | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.index_usage"
 ./benchmark.sh bluesky_10m_zstd "${OUTPUT_PREFIX}_bluesky_10m_zstd.results_runtime" "${OUTPUT_PREFIX}_bluesky_10m_zstd.results_memory_usage"
 
 # bluesky_100m_lz4
@@ -54,6 +58,7 @@ fi
 ./total_size.sh bluesky_100m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.total_size"
 ./data_size.sh bluesky_100m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.data_size"
 ./index_size.sh bluesky_100m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.index_size"
+./index_usage.sh bluesky_100m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.index_usage"
 ./benchmark.sh bluesky_100m_lz4 "${OUTPUT_PREFIX}_bluesky_100m_lz4.results_runtime" "${OUTPUT_PREFIX}_bluesky_100m_lz4.results_memory_usage"
 
 # bluesky_100m_zstd
@@ -61,6 +66,7 @@ fi
 ./total_size.sh bluesky_100m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.total_size"
 ./data_size.sh bluesky_100m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.data_size"
 ./index_size.sh bluesky_100m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.index_size"
+./index_usage.sh bluesky_100m_zstd | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.index_usage"
 ./benchmark.sh bluesky_100m_zstd "${OUTPUT_PREFIX}_bluesky_100m_zstd.results_runtime" "${OUTPUT_PREFIX}_bluesky_100m_zstd.results_memory_usage"
 
 # bluesky_1000m_lz4
@@ -68,6 +74,7 @@ fi
 ./total_size.sh bluesky_1000m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.total_size"
 ./data_size.sh bluesky_1000m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.data_size"
 ./index_size.sh bluesky_1000m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.index_size"
+./index_usage.sh bluesky_1000m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.index_usage"
 ./benchmark.sh bluesky_1000m_lz4 "${OUTPUT_PREFIX}_bluesky_1000m_lz4.results_runtime" "${OUTPUT_PREFIX}_bluesky_1000m_lz4.results_memory_usage"
 
 # bluesky_1000m_zstd
@@ -75,4 +82,5 @@ fi
 ./total_size.sh bluesky_1000m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.total_size"
 ./data_size.sh bluesky_1000m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.data_size"
 ./index_size.sh bluesky_1000m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.index_size"
+./index_usage.sh bluesky_1000m_zstd | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.index_usage"
 ./benchmark.sh bluesky_1000m_zstd "${OUTPUT_PREFIX}_bluesky_1000m_zstd.results_runtime" "${OUTPUT_PREFIX}_bluesky_1000m_zstd.results_memory_usage"

@@ -26,6 +26,7 @@ fi
 ./total_size.sh bluesky_1m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.total_size"
 ./data_size.sh bluesky_1m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.data_size"
 ./index_size.sh bluesky_1m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.index_size"
+./index_usage.sh bluesky_1m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.index_usage"
 ./benchmark.sh bluesky_1m_lz4 "${OUTPUT_PREFIX}_bluesky_1m_lz4.results_runtime"
 
 # bluesky_1m_pglz
@@ -33,6 +34,7 @@ fi
 ./total_size.sh bluesky_1m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_pglz.total_size"
 ./data_size.sh bluesky_1m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_pglz.data_size"
 ./index_size.sh bluesky_1m_pglz | tee "${OUTPUT_PREFIX}_bluesky_1m_pglz.index_size"
+./index_usage.sh bluesky_1m_pglz | tee "${OUTPUT_PREFIX}_bluesky_1m_pglz.index_usage"
 ./benchmark.sh bluesky_1m_pglz "${OUTPUT_PREFIX}_bluesky_1m_pglz.results_runtime"
 
 # bluesky_10m_lz4
@@ -40,6 +42,7 @@ fi
 ./total_size.sh bluesky_10m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.total_size"
 ./data_size.sh bluesky_10m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.data_size"
 ./index_size.sh bluesky_10m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.index_size"
+./index_usage.sh bluesky_10m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.index_usage"
 ./benchmark.sh bluesky_10m_lz4 "${OUTPUT_PREFIX}_bluesky_10m_lz4.results_runtime"
 
 # bluesky_10m_pglz
@@ -47,6 +50,7 @@ fi
 ./total_size.sh bluesky_10m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_pglz.total_size"
 ./data_size.sh bluesky_10m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_pglz.data_size"
 ./index_size.sh bluesky_10m_pglz | tee "${OUTPUT_PREFIX}_bluesky_10m_pglz.index_size"
+./index_usage.sh bluesky_10m_pglz | tee "${OUTPUT_PREFIX}_bluesky_10m_pglz.index_usage"
 ./benchmark.sh bluesky_10m_pglz "${OUTPUT_PREFIX}_bluesky_10m_pglz.results_runtime"
 
 # bluesky_100m_lz4
@@ -54,6 +58,7 @@ fi
 ./total_size.sh bluesky_100m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.total_size"
 ./data_size.sh bluesky_100m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.data_size"
 ./index_size.sh bluesky_100m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.index_size"
+./index_usage.sh bluesky_100m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.index_usage"
 ./benchmark.sh bluesky_100m_lz4 "${OUTPUT_PREFIX}_bluesky_100m_lz4.results_runtime"
 
 # bluesky_100m_pglz
@@ -61,6 +66,7 @@ fi
 ./total_size.sh bluesky_100m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_pglz.total_size"
 ./data_size.sh bluesky_100m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_pglz.data_size"
 ./index_size.sh bluesky_100m_pglz | tee "${OUTPUT_PREFIX}_bluesky_100m_pglz.index_size"
+./index_usage.sh bluesky_100m_pglz | tee "${OUTPUT_PREFIX}_bluesky_100m_pglz.index_usage"
 ./benchmark.sh bluesky_100m_pglz "${OUTPUT_PREFIX}_bluesky_100m_pglz.results_runtime"
 
 # bluesky_1000m_lz4
@@ -68,6 +74,7 @@ fi
 ./total_size.sh bluesky_1000m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.total_size"
 ./data_size.sh bluesky_1000m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.data_size"
 ./index_size.sh bluesky_1000m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.index_size"
+./index_usage.sh bluesky_1000m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.index_usage"
 ./benchmark.sh bluesky_1000m_lz4 "${OUTPUT_PREFIX}_bluesky_1000m_lz4.results_runtime"
 
 # bluesky_1000m_pglz
@@ -75,4 +82,5 @@ fi
 ./total_size.sh bluesky_1000m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_pglz.total_size"
 ./data_size.sh bluesky_1000m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_pglz.data_size"
 ./index_size.sh bluesky_1000m_pglz | tee "${OUTPUT_PREFIX}_bluesky_1000m_pglz.index_size"
+./index_usage.sh bluesky_1000m_pglz | tee "${OUTPUT_PREFIX}_bluesky_1000m_pglz.index_usage"
 ./benchmark.sh bluesky_1000m_pglz "${OUTPUT_PREFIX}_bluesky_1000m_pglz.results_runtime"
