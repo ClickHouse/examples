@@ -21,4 +21,7 @@ cat queries.sql | while read -r query; do
 
     sudo -u postgres psql -d "$DB_NAME" -t -c "EXPLAIN $query"
 
+    # Increment the query number
+    QUERY_NUM=$((QUERY_NUM + 1))
+
 done;
