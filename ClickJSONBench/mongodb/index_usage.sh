@@ -28,7 +28,7 @@ cat "$QUERY_FILE" | while read -r query; do
     echo
 
     # Modify the query to include the explain option inside the aggregate call
-    MODIFIED_QUERY=$(echo "$query" | sed 's/]);$/], { explain: "executionStats" });/')
+    MODIFIED_QUERY=$(echo "$query" | sed 's/]);$/], { explain: "queryPlanner" });/')
 
     # Escape the modified query for safe passing to mongosh
     ESCAPED_QUERY=$(echo "$MODIFIED_QUERY" | sed 's/\([\"\\]\)/\\\1/g' | sed 's/\$/\\$/g')
