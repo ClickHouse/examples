@@ -1,6 +1,6 @@
 {
   "system": "Elasticsearch",
-  "version": "8.15.3",
+  "version": "8.17.0",
   "date": "2025-01-14",
   "machine": "m6i.8xlarge, 16000gib gp3",
   "cluster_size": 1,

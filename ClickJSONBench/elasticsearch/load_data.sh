@@ -6,6 +6,12 @@ if [[ $# -lt 5 ]]; then
     exit 1
 fi
 
+# Check if ELASTIC_PASSWORD env variable is set, if set from not read from .elastic_password file
+if [[ -z "$ELASTIC_PASSWORD" ]]; then
+    [[ ! -f ".elastic_password" ]] && { echo "Error: ELASTIC_PASSWORD environment variable is not set and .elastic_password file does not exist."; exit 1; }
+    export $(cat .elastic_password)
+fi
+
 # Arguments
 DIRECTORY="$1"
 INDEX_NAME="$2"
@@ -79,6 +85,9 @@ while [[ $total_processed -lt $max_events ]]; do
     total_processed=$(curl -k -s -XGET 'localhost:5066/stats' | jq .filebeat.events.done)
     echo "Total processed files: $total_processed"
 done
+
+echo "Force merge indices"
+curl -k -X POST "https://localhost:9200/$INDEX_NAME/_forcemerge?max_num_segments=1" -u "elastic:${ELASTIC_PASSWORD}" -H 'Content-Type: application/json'
 
 sudo service filebeat stop
 
