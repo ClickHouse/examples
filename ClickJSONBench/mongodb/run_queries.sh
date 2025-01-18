@@ -21,6 +21,18 @@ if [[ ! -f "$QUERY_FILE" ]]; then
     exit 1
 fi
 
+# Set the internalQueryMaxAddToSetBytes parameter to 1 GB
+echo "Setting internalQueryMaxAddToSetBytes to 1 GB..."
+mongosh --quiet --eval "
+    const result = db.adminCommand({ setParameter: 1, internalQueryMaxAddToSetBytes: 1073741824 });
+    if (result.ok !== 1) {
+        print('Failed to set internalQueryMaxAddToSetBytes: ' + JSON.stringify(result));
+        quit(1);
+    } else {
+        print('Successfully set internalQueryMaxAddToSetBytes to 1 GB');
+    }
+"
+
 # Read and execute each query
 cat "$QUERY_FILE" | while read -r query; do
 
