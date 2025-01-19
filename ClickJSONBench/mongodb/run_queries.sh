@@ -33,6 +33,18 @@ mongosh --quiet --eval "
     }
 "
 
+# Set the internalQueryPlannerGenerateCoveredWholeIndexScans parameter to true
+echo "Setting internalQueryPlannerGenerateCoveredWholeIndexScans to true..."
+mongosh --quiet --eval "
+    const result = db.adminCommand({ setParameter: 1, internalQueryPlannerGenerateCoveredWholeIndexScans: true });
+    if (result.ok !== 1) {
+        print('Failed to set internalQueryPlannerGenerateCoveredWholeIndexScans: ' + JSON.stringify(result));
+        quit(1);
+    } else {
+        print('Successfully set internalQueryPlannerGenerateCoveredWholeIndexScans to true');
+    }
+"
+
 # Read and execute each query
 cat "$QUERY_FILE" | while read -r query; do
 
