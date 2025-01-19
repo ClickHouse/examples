@@ -7,5 +7,6 @@ ON bluesky (
     (data ->> 'kind'),
     (data -> 'commit' ->> 'operation'),
     (data -> 'commit' ->> 'collection'),
+    (data ->> 'did'),
     (TO_TIMESTAMP((data ->> 'time_us')::BIGINT / 1000000.0))
 );
