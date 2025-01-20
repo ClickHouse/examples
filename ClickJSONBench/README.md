@@ -28,7 +28,8 @@ The full dataset contains 1 billion rows, but the benchmark runs for different d
 Start by downloading the dataset using the script [`copy_data.sh`](./copy_data.sh). When running the script, you will be prompted the dataset size you want to download, if you just want to test it out, I'd recommend starting with the default 1m rows, if you're interested to reproduce results at scale, go with the full dataset, 1 billion rows. 
 
 ```
-ubuntu@8971ec18ce06:/mnt/test# ./copy_data.sh 
+./copy_data.sh 
+
 Select the dataset size to download:
 1) 1m (default)
 2) 10m
@@ -66,6 +67,8 @@ Enter the number corresponding to your choice:
 ```
 
 Enter the dataset size you want to run the benchmark for, then hit enter. 
+
+The script install the database system on the current machine, then prepare and run the benchmark.
 
 ### Retrieve results
 
