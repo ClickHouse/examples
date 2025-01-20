@@ -81,7 +81,7 @@ processors:
  - drop_fields:
      fields: ["log", "agent", "ecs","host", "input"]
      ignore_missing: true
-- script:
+ - script:
      lang: javascript
      source: >
        function process(event){
