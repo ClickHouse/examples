@@ -39,45 +39,45 @@ benchmark() {
 
 case $choice in
     2)
-        benchmark 10 no-source-best-compression
-        benchmark 10 source-best-compression
-        benchmark 10 source-default-compression
-        benchmark 10 no-source-default-compression
+        benchmark 10 no_source_best_compression
+        benchmark 10 source_best_compression
+        benchmark 10 source_default_compression
+        benchmark 10 no_source_default_compression
         ;;
     3)
-        benchmark 100 no-source-best-compression
-        benchmark 100 source-best-compression
-        benchmark 100 source-default-compression
-        benchmark 100 no-source-default-compression
+        benchmark 100 no_source_best_compression
+        benchmark 100 source_best_compression
+        benchmark 100 source_default_compression
+        benchmark 100 no_source_default_compression
         ;;
     4)
-        benchmark 1000 no-source-best-compression
-        benchmark 1000 source-best-compression
-        benchmark 1000 source-default-compression
-        benchmark 1000 no-source-default-compression
+        benchmark 1000 no_source_best_compression
+        benchmark 1000 source_best_compression
+        benchmark 1000 source_default_compression
+        benchmark 1000 no_source_default_compression
         ;;
     5)
-        benchmark 1 no-source-best-compression
-        benchmark 1 source-best-compression
-        benchmark 1 source-default-compression
-        benchmark 1 no-source-default-compression
-        benchmark 10 no-source-best-compression
-        benchmark 10 source-best-compression
-        benchmark 10 source-default-compression
-        benchmark 10 no-source-default-compression
-        benchmark 100 no-source-best-compression
-        benchmark 100 source-best-compression
-        benchmark 100 source-default-compression
-        benchmark 100 no-source-default-compression
-        benchmark 1000 no-source-best-compression
-        benchmark 1000 source-best-compression
-        benchmark 1000 source-default-compression
-        benchmark 1000 no-source-default-compression
+        benchmark 1 no_source_best_compression
+        benchmark 1 source_best_compression
+        benchmark 1 source_default_compression
+        benchmark 1 no_source_default_compression
+        benchmark 10 no_source_best_compression
+        benchmark 10 source_best_compression
+        benchmark 10 source_default_compression
+        benchmark 10 no_source_default_compression
+        benchmark 100 no_source_best_compression
+        benchmark 100 source_best_compression
+        benchmark 100 source_default_compression
+        benchmark 100 no_source_default_compression
+        benchmark 1000 no_source_best_compression
+        benchmark 1000 source_best_compression
+        benchmark 1000 source_default_compression
+        benchmark 1000 no_source_default_compression
         ;;
     *)
-        benchmark 1 no-source-best-compression
-        benchmark 1 source-best-compression
-        benchmark 1 source-default-compression
-        benchmark 1 no-source-default-compression
+        benchmark 1 no_source_best_compression
+        benchmark 1 source_best_compression
+        benchmark 1 source_default_compression
+        benchmark 1 no_source_default_compression
         ;;
 esac
