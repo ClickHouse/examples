@@ -10,4 +10,4 @@ fi
 DB_NAME="$1"
 TABLE_NAME="$2"
 
-clickhouse-client --database="$DB_NAME" --query "SELECT count() '$TABLE_NAME';"
+clickhouse-client --database="$DB_NAME" --query "SELECT count() FROM '$TABLE_NAME';"
