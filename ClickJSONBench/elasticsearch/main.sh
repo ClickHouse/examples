@@ -32,52 +32,52 @@ read -p "Enter the number corresponding to your choice: " choice
 benchmark() {
     local size=$1
     local template=$2
-    ./create_and_load.sh "bluesky-${template}-${size}" "index_template_${template}" "$DATA_DIRECTORY" "$size" "$SUCCESS_LOG" "$ERROR_LOG"
-    ./total_size.sh "bluesky-${template}-${size}" | tee "${OUTPUT_PREFIX}_bluesky-${template}-${size}.data_size"
-    ./benchmark.sh "bluesky-${template}-${size}" "${OUTPUT_PREFIX}_bluesky-${template}-${size}.results_runtime"
+    ./create_and_load.sh "bluesky-${template}-${size}m" "index_template_${template}" "$DATA_DIRECTORY" "$size" "$SUCCESS_LOG" "$ERROR_LOG"
+    ./total_size.sh "bluesky-${template}-${size}m" | tee "${OUTPUT_PREFIX}_bluesky-${template}-${size}m.data_size"
+    ./benchmark.sh "bluesky-${template}-${size}m" "${OUTPUT_PREFIX}_bluesky-${template}-${size}m.results_runtime"
 }
 
 case $choice in
     2)
-        benchmark 10m no-source-best-compression
-        benchmark 10m source-best-compression
-        benchmark 10m source-default-compression
-        benchmark 10m no-source-default-compression
+        benchmark 10 no-source-best-compression
+        benchmark 10 source-best-compression
+        benchmark 10 source-default-compression
+        benchmark 10 no-source-default-compression
         ;;
     3)
-        benchmark 100m no-source-best-compression
-        benchmark 100m source-best-compression
-        benchmark 100m source-default-compression
-        benchmark 100m no-source-default-compression
+        benchmark 100 no-source-best-compression
+        benchmark 100 source-best-compression
+        benchmark 100 source-default-compression
+        benchmark 100 no-source-default-compression
         ;;
     4)
-        benchmark 1000m no-source-best-compression
-        benchmark 1000m source-best-compression
-        benchmark 1000m source-default-compression
-        benchmark 1000m no-source-default-compression
+        benchmark 1000 no-source-best-compression
+        benchmark 1000 source-best-compression
+        benchmark 1000 source-default-compression
+        benchmark 1000 no-source-default-compression
         ;;
     5)
-        benchmark 1m no-source-best-compression
-        benchmark 1m source-best-compression
-        benchmark 1m source-default-compression
-        benchmark 1m no-source-default-compression
-        benchmark 10m no-source-best-compression
-        benchmark 10m source-best-compression
-        benchmark 10m source-default-compression
-        benchmark 10m no-source-default-compression
-        benchmark 100m no-source-best-compression
-        benchmark 100m source-best-compression
-        benchmark 100m source-default-compression
-        benchmark 100m no-source-default-compression
-        benchmark 1000m no-source-best-compression
-        benchmark 1000m source-best-compression
-        benchmark 1000m source-default-compression
-        benchmark 1000m no-source-default-compression
+        benchmark 1 no-source-best-compression
+        benchmark 1 source-best-compression
+        benchmark 1 source-default-compression
+        benchmark 1 no-source-default-compression
+        benchmark 10 no-source-best-compression
+        benchmark 10 source-best-compression
+        benchmark 10 source-default-compression
+        benchmark 10 no-source-default-compression
+        benchmark 100 no-source-best-compression
+        benchmark 100 source-best-compression
+        benchmark 100 source-default-compression
+        benchmark 100 no-source-default-compression
+        benchmark 1000 no-source-best-compression
+        benchmark 1000 source-best-compression
+        benchmark 1000 source-default-compression
+        benchmark 1000 no-source-default-compression
         ;;
     *)
-        benchmark 1m no-source-best-compression
-        benchmark 1m source-best-compression
-        benchmark 1m source-default-compression
-        benchmark 1m no-source-default-compression
+        benchmark 1 no-source-best-compression
+        benchmark 1 source-best-compression
+        benchmark 1 source-default-compression
+        benchmark 1 no-source-default-compression
         ;;
 esac

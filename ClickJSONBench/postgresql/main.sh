@@ -32,40 +32,40 @@ read -p "Enter the number corresponding to your choice: " choice
 benchmark() {
     local size=$1
     local compression=$2
-    ./create_and_load.sh "bluesky_${size}_${compression}" bluesky "ddl_${compression}.sql" "$DATA_DIRECTORY" "$size" "$SUCCESS_LOG" "$ERROR_LOG"
-    ./total_size.sh "bluesky_${size}_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.total_size"
-    ./data_size.sh "bluesky_${size}_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.data_size"
-    ./index_size.sh "bluesky_${size}_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.index_size"
-    ./index_usage.sh "bluesky_${size}_${compression}" | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.index_usage"
-    ./query_results.sh "bluesky_${size}_${compression}" | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.query_results"
-    ./benchmark.sh "bluesky_${size}_${compression}" "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.results_runtime"
+    ./create_and_load.sh "bluesky_${size}m_${compression}" bluesky "ddl_${compression}.sql" "$DATA_DIRECTORY" "$size" "$SUCCESS_LOG" "$ERROR_LOG"
+    ./total_size.sh "bluesky_${size}m_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}m_${compression}.total_size"
+    ./data_size.sh "bluesky_${size}m_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}m_${compression}.data_size"
+    ./index_size.sh "bluesky_${size}m_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}m_${compression}.index_size"
+    ./index_usage.sh "bluesky_${size}m_${compression}" | tee "${OUTPUT_PREFIX}_bluesky_${size}m_${compression}.index_usage"
+    ./query_results.sh "bluesky_${size}m_${compression}" | tee "${OUTPUT_PREFIX}_bluesky_${size}m_${compression}.query_results"
+    ./benchmark.sh "bluesky_${size}m_${compression}" "${OUTPUT_PREFIX}_bluesky_${size}m_${compression}.results_runtime"
 }
 
 case $choice in
     2)
-        benchmark 10m lz4
-        benchmark 10m pglz
+        benchmark 10 lz4
+        benchmark 10 pglz
         ;;
     3)
-        benchmark 100m lz4
-        benchmark 100m pglz
+        benchmark 100 lz4
+        benchmark 100 pglz
         ;;
     4)
-        benchmark 1000m lz4
-        benchmark 1000m pglz
+        benchmark 1000 lz4
+        benchmark 1000 pglz
         ;;
     5)
-        benchmark 1m lz4
-        benchmark 1m pglz
-        benchmark 10m lz4
-        benchmark 10m pglz
-        benchmark 100m lz4
-        benchmark 100m pglz
-        benchmark 1000m lz4
-        benchmark 1000m pglz
+        benchmark 1 lz4
+        benchmark 1 pglz
+        benchmark 10 lz4
+        benchmark 10 pglz
+        benchmark 100 lz4
+        benchmark 100 pglz
+        benchmark 1000 lz4
+        benchmark 1000 pglz
         ;;
     *)
-        benchmark 1m lz4
-        benchmark 1m pglz
+        benchmark 1 lz4
+        benchmark 1 pglz
         ;;
 esac

@@ -32,39 +32,39 @@ read -p "Enter the number corresponding to your choice: " choice
 benchmark() {
     local size=$1
     local compression=$2
-    ./create_and_load.sh "bluesky_${size}_${compression}" bluesky "ddl_${compression}.js" "$DATA_DIRECTORY" "$size" "$SUCCESS_LOG" "$ERROR_LOG"
-    ./total_size.sh "bluesky_${size}_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.total_size"
-    ./data_size.sh "bluesky_${size}_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.data_size"
-    ./index_size.sh "bluesky_${size}_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.index_size"
-    ./index_usage.sh "bluesky_${size}_${compression}" | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.index_usage"
-    ./benchmark.sh "bluesky_${size}_${compression}" "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.results_runtime"
+    ./create_and_load.sh "bluesky_${size}m_${compression}" bluesky "ddl_${compression}.js" "$DATA_DIRECTORY" "$size" "$SUCCESS_LOG" "$ERROR_LOG"
+    ./total_size.sh "bluesky_${size}m_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}m_${compression}.total_size"
+    ./data_size.sh "bluesky_${size}m_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}m_${compression}.data_size"
+    ./index_size.sh "bluesky_${size}m_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}m_${compression}.index_size"
+    ./index_usage.sh "bluesky_${size}m_${compression}" | tee "${OUTPUT_PREFIX}_bluesky_${size}m_${compression}.index_usage"
+    ./benchmark.sh "bluesky_${size}m_${compression}" "${OUTPUT_PREFIX}_bluesky_${size}m_${compression}.results_runtime"
 }
 
 case $choice in
     2)
-        benchmark 10m snappy
-        benchmark 10m zstd
+        benchmark 10 snappy
+        benchmark 10 zstd
         ;;
     3)
-        benchmark 100m snappy
-        benchmark 100m zstd
+        benchmark 100 snappy
+        benchmark 100 zstd
         ;;
     4)
-        benchmark 1000m snappy
-        benchmark 1000m zstd
+        benchmark 1000 snappy
+        benchmark 1000zstd
         ;;
     5)
-        benchmark 1m snappy
-        benchmark 1m zstd
-        benchmark 10m snappy
-        benchmark 10m zstd
-        benchmark 100m snappy
-        benchmark 100m zstd
-        benchmark 1000m snappy
-        benchmark 1000m zstd
+        benchmark 1 snappy
+        benchmark 1 zstd
+        benchmark 10 snappy
+        benchmark 10 zstd
+        benchmark 100 snappy
+        benchmark 100 zstd
+        benchmark 1000 snappy
+        benchmark 1000 zstd
         ;;
     *)
-        benchmark 1m snappy
-        benchmark 1m zstd
+        benchmark 1 snappy
+        benchmark 1 zstd
         ;;
 esac
