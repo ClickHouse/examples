@@ -73,7 +73,7 @@ echo "Prepare filebeat for ingestion"
 FILEBEAT_API_KEY=$(cat .filebeat_api_key)
 FILEBEAT_CONFIG=$(sed -e "s|<api_key>|$FILEBEAT_API_KEY|g" -e "s|<index_name>|$INDEX_NAME|g" -e "s|<temp_dir>|"${TEMP_DIR}/*"|g" config/filebeat.yml)
 echo "$FILEBEAT_CONFIG" | sudo tee /etc/filebeat/filebeat.yml > /dev/null
-
+sudo rm -rf /var/lib/filebeat/registry
 sudo service filebeat start
 trap "sudo service filebeat stop" EXIT  # Stop filebeat on exit
 
@@ -86,9 +86,9 @@ while [[ $total_processed -lt $max_events ]]; do
     echo "Total processed files: $total_processed"
 done
 
+sudo service filebeat stop
+
 echo "Force merge indices"
 curl -k -X POST "https://localhost:9200/$INDEX_NAME/_forcemerge?max_num_segments=1" -u "elastic:${ELASTIC_PASSWORD}" -H 'Content-Type: application/json'
-
-sudo service filebeat stop
 
 echo "All files have been processed."

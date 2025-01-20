@@ -14,6 +14,8 @@ TRIES=3
 
 # File containing Elasticsearch ES|SQL queries
 QUERY_FILE="queries.txt"
+LOG_FILE="query_log_$INDEX_NAME.log"
+> "$LOG_FILE"
 
 # Check if the query file exists
 if [[ ! -f "$QUERY_FILE" ]]; then
@@ -31,6 +33,11 @@ cat 'queries.txt' | while read -r QUERY; do
     echo "Running query: $QUERY"
     for i in $(seq 1 $TRIES); do
         CURL_DATA="{\"query\": \"$QUERY\"}"
-        curl -s -k -X POST "https://localhost:9200/_query" -u "elastic:${ELASTIC_PASSWORD}" -H 'Content-Type: application/json' -w '\n* Response time: %{time_total} s\n' -d "$CURL_DATA"
+        RESPONSE=$(curl -s -k -X POST "https://localhost:9200/_query" -u "elastic:${ELASTIC_PASSWORD}" -H 'Content-Type: application/json' -d "$CURL_DATA")
+        TOOK_MS=$(echo "$RESPONSE" | jq -r '.took' 2>/dev/null)
+        # Convert 'took' to seconds (from ms to s)
+        TOOK_S=$(bc <<< "scale=3; $TOOK_MS / 1000")
+        RESPONSE >> "$LOG_FILE"
+        echo "Response time: ${TOOK_S} s"
     done
 done

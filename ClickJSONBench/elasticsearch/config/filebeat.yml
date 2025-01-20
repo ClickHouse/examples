@@ -41,7 +41,6 @@ output.elasticsearch:
  # Protocol - either `http` (default) or `https`.
  protocol: "https"
  index: "<index_name>"
- pipeline: "bluesky_ingest_filebeat"
  # Authentication credentials - either API key or username/password.
  api_key: "<api_key>"
  ssl:
@@ -82,3 +81,16 @@ processors:
  - drop_fields:
      fields: ["log", "agent", "ecs","host", "input"]
      ignore_missing: true
+- script:
+     lang: javascript
+     source: >
+       function process(event){
+         var time_us = event.Get("time_us");
+         if (typeof time_us === 'string') {
+             time_us = BigInt(time_us);  // If time_us is a string, cast it to a BigInt
+         } else if (typeof time_us !== 'number') {
+             return;  // Exit the function if time_us is not a valid number
+         }
+         var time_us_ms = time_us / 1000;
+         event.Put("time_us", time_us_ms.toString());
+       }

@@ -29,9 +29,11 @@
               "kind",
               "commit.operation",
               "commit.collection",
+              "did",
               "time_us"
             ],
             "order": [
+              "asc",
               "asc",
               "asc",
               "asc",
@@ -69,6 +71,9 @@
                 "type": "keyword"
               }
             }
+          },
+          "did": {
+            "type": "keyword"
           },
           "time_us": {
             "type": "date"
