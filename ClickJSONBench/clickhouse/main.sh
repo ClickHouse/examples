@@ -32,40 +32,40 @@ read -p "Enter the number corresponding to your choice: " choice
 benchmark() {
     local size=$1
     local suffix=$2
-    ./create_and_load.sh "bluesky_${size}_${suffix}" bluesky "ddl_${suffix}.sql" "$DATA_DIRECTORY" "$size" "$SUCCESS_LOG" "$ERROR_LOG"
-    ./total_size.sh "bluesky_${size}_${suffix}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${suffix}.total_size"
-    ./data_size.sh "bluesky_${size}_${suffix}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${suffix}.data_size"
-    ./index_size.sh "bluesky_${size}_${suffix}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${suffix}.index_size"
-    ./index_usage.sh "bluesky_${size}_${suffix}" | tee "${OUTPUT_PREFIX}_bluesky_${size}_${suffix}.index_usage"
-    ./physical_query_plans.sh "bluesky_${size}_${suffix}" | tee "${OUTPUT_PREFIX}_bluesky_${size}_${suffix}.physical_query_plans"
-    ./benchmark.sh "bluesky_${size}_${suffix}" "${OUTPUT_PREFIX}_bluesky_${size}_${suffix}.results_runtime" "${OUTPUT_PREFIX}_bluesky_${size}_${suffix}.results_memory_usage"
+    ./create_and_load.sh "bluesky_${size}m_${suffix}" bluesky "ddl_${suffix}.sql" "$DATA_DIRECTORY" "$size" "$SUCCESS_LOG" "$ERROR_LOG"
+    ./total_size.sh "bluesky_${size}m_${suffix}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}m_${suffix}.total_size"
+    ./data_size.sh "bluesky_${size}m_${suffix}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}m_${suffix}.data_size"
+    ./index_size.sh "bluesky_${size}m_${suffix}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}m_${suffix}.index_size"
+    ./index_usage.sh "bluesky_${size}m_${suffix}" | tee "${OUTPUT_PREFIX}_bluesky_${size}m_${suffix}.index_usage"
+    ./physical_query_plans.sh "bluesky_${size}m_${suffix}" | tee "${OUTPUT_PREFIX}_bluesky_${size}m_${suffix}.physical_query_plans"
+    ./benchmark.sh "bluesky_${size}m_${suffix}" "${OUTPUT_PREFIX}_bluesky_${size}m_${suffix}.results_runtime" "${OUTPUT_PREFIX}_bluesky_${size}m_${suffix}.results_memory_usage"
 }
 
 case $choice in
     2)
-        benchmark 10m lz4
-        benchmark 10m zstd
+        benchmark 10 lz4
+        benchmark 10 zstd
         ;;
     3)
-        benchmark 100m lz4
-        benchmark 100m zstd
+        benchmark 100 lz4
+        benchmark 100 zstd
         ;;
     4)
-        benchmark 1000m lz4
-        benchmark 1000m zstd
+        benchmark 1000 lz4
+        benchmark 1000 zstd
         ;;
     5)
-        benchmark 1m lz4
-        benchmark 1m zstd
-        benchmark 10m lz4
-        benchmark 10m zstd
-        benchmark 100m lz4
-        benchmark 100m zstd
-        benchmark 1000m lz4
-        benchmark 1000m zstd
+        benchmark 1 lz4
+        benchmark 1 zstd
+        benchmark 10 lz4
+        benchmark 10 zstd
+        benchmark 100 lz4
+        benchmark 100 zstd
+        benchmark 1000 lz4
+        benchmark 1000 zstd
         ;;
     *)
-        benchmark 1m lz4
-        benchmark 1m zstd
+        benchmark 1 lz4
+        benchmark 1 zstd
         ;;
 esac
