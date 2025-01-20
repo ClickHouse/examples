@@ -19,85 +19,65 @@ if [[ ! -d "$DATA_DIRECTORY" ]]; then
     exit 1
 fi
 
+echo "Select the dataset size to benchmark:"
+echo "1) 1m (default)"
+echo "2) 10m"
+echo "3) 100m"
+echo "4) 1000m"
+echo "5) all"
+read -p "Enter the number corresponding to your choice: " choice
+
 ./install.sh
 
+benchmark() {
+    local size=$1
+    local template=$2
+    ./create_and_load.sh "bluesky-${template}-${size}" "index_template_${template}" "$DATA_DIRECTORY" "$size" "$SUCCESS_LOG" "$ERROR_LOG"
+    ./total_size.sh "bluesky-${template}-${size}" | tee "${OUTPUT_PREFIX}_bluesky-${template}-${size}.data_size"
+    ./benchmark.sh "bluesky-${template}-${size}" "${OUTPUT_PREFIX}_bluesky-${template}-${size}.results_runtime"
+}
 
-# # bluesky-no-source-1m-best-compression
-./create_and_load.sh bluesky-no-source-1m-best-compression index_template_no_source_best_compression "$DATA_DIRECTORY" 1 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-no-source-1m-best-compression | tee "${OUTPUT_PREFIX}_bluesky-no-source-1m-best-compression.data_size"
-./benchmark.sh bluesky-no-source-1m-best-compression "${OUTPUT_PREFIX}_bluesky-no-source-1m-best-compression.results_runtime"
-
-# # bluesky-no-source-10m-best-compression
-./create_and_load.sh bluesky-no-source-10m-best-compression index_template_no_source_best_compression "$DATA_DIRECTORY" 10 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-no-source-10m-best-compression | tee "${OUTPUT_PREFIX}_bluesky-no-source-10m-best-compression.data_size"
-./benchmark.sh bluesky-no-source-10m-best-compression "${OUTPUT_PREFIX}_bluesky-no-source-10m-best-compression.results_runtime"
-
-# # bluesky-no-source-100m-best-compression
-./create_and_load.sh bluesky-no-source-100m-best-compression index_template_no_source_best_compression "$DATA_DIRECTORY" 100 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-no-source-100m-best-compression | tee "${OUTPUT_PREFIX}_bluesky-no-source-100m-best-compression.data_size"
-./benchmark.sh bluesky-no-source-100m-best-compression "${OUTPUT_PREFIX}_bluesky-no-source-100m-best-compression.results_runtime"
-
-# # bluesky-no-source-1000m-best-compression
-./create_and_load.sh bluesky-no-source-1000m-best-compression index_template_no_source_best_compression "$DATA_DIRECTORY" 1000 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-no-source-1000m-best-compression | tee "${OUTPUT_PREFIX}_bluesky-no-source-1000m-best-compression.data_size"
-./benchmark.sh bluesky-no-source-1000m-best-compression "${OUTPUT_PREFIX}_bluesky-no-source-1000m-best-compression.results_runtime"
-
-# bluesky-source-1m-best-compression
-./create_and_load.sh bluesky-source-1m-best-compression index_template_source_best_compression "$DATA_DIRECTORY" 1 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-source-1m-best-compression | tee "${OUTPUT_PREFIX}_bluesky-source-1m-best-compression.data_size"
-./benchmark.sh bluesky-source-1m-best-compression "${OUTPUT_PREFIX}_bluesky-source-1m-best-compression.results_runtime"
-
-# bluesky-source-10m-best-compression
-./create_and_load.sh bluesky-source-10m-best-compression index_template_source_best_compression "$DATA_DIRECTORY" 10 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-source-10m-best-compression | tee "${OUTPUT_PREFIX}_bluesky-source-10m-best-compression.data_size"
-./benchmark.sh bluesky-source-10m-best-compression "${OUTPUT_PREFIX}_bluesky-source-10m-best-compression.results_runtime"
-
-# bluesky-source-100m-best-compression
-./create_and_load.sh bluesky-source-100m-best-compression index_template_source_best_compression "$DATA_DIRECTORY" 100 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-source-100m-best-compression | tee "${OUTPUT_PREFIX}_bluesky-source-100m-best-compression.data_size"
-./benchmark.sh bluesky-source-100m-best-compression "${OUTPUT_PREFIX}_bluesky-source-100m-best-compression.results_runtime"
-
-# # bluesky-source-1000m-best-compression
-./create_and_load.sh bluesky-source-1000m-best-compression index_template_source_best_compression "$DATA_DIRECTORY" 1000 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-source-1000m-best-compression | tee "${OUTPUT_PREFIX}_bluesky-source-1000m-best-compression.data_size"
-./benchmark.sh bluesky-source-1000m-best-compression "${OUTPUT_PREFIX}_bluesky-source-1000m-best-compression.results_runtime"
-
-# # bluesky-source-1m-default-compression
-./create_and_load.sh bluesky-source-1m-default-compression index_template_source_default_compression "$DATA_DIRECTORY" 1 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-source-1m-default-compression | tee "${OUTPUT_PREFIX}_bluesky-source-1m-default-compression.data_size"
-./benchmark.sh bluesky-source-1m-default-compression "${OUTPUT_PREFIX}_bluesky-source-1m-default-compression.results_runtime"
-
-# # bluesky-source-10m-default-compression
-./create_and_load.sh bluesky-source-10m-default-compression index_template_source_default_compression "$DATA_DIRECTORY" 10 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-source-10m-default-compression | tee "${OUTPUT_PREFIX}_bluesky-source-10m-default-compression.data_size"
-./benchmark.sh bluesky-source-10m-default-compression "${OUTPUT_PREFIX}_bluesky-source-10m-default-compression.results_runtime"
-
-# # bluesky-source-100m-default-compression
-./create_and_load.sh bluesky-source-100m-default-compression index_template_source_default_compression "$DATA_DIRECTORY" 100 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-source-100m-default-compression | tee "${OUTPUT_PREFIX}_bluesky-source-100m-default-compression.data_size"
-./benchmark.sh bluesky-source-100m-default-compression "${OUTPUT_PREFIX}_bluesky-source-100m-default-compression.results_runtime"
-
-# # bluesky-source-1000m-default-compression
-./create_and_load.sh bluesky-source-1000m-default-compression index_template_source_default_compression "$DATA_DIRECTORY" 1000 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-source-1000m-default-compression | tee "${OUTPUT_PREFIX}_bluesky-source-1000m-default-compression.data_size"
-./benchmark.sh bluesky-source-1000m-default-compression "${OUTPUT_PREFIX}_bluesky-source-1000m-default-compression.results_runtime"
-
-# # bluesky-no-source-1m-default-compression
-./create_and_load.sh bluesky-no-source-1m-default-compression index_template_no_source_default_compression "$DATA_DIRECTORY" 1 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-no-source-1m-default-compression | tee "${OUTPUT_PREFIX}_bluesky-no-source-1m-default-compression.data_size"
-./benchmark.sh bluesky-no-source-1m-default-compression "${OUTPUT_PREFIX}_bluesky-no-source-1m-default-compression.results_runtime"
-
-# # bluesky-no-source-10m-default-compression
-./create_and_load.sh bluesky-no-source-10m-default-compression index_template_no_source_default_compression "$DATA_DIRECTORY" 10 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-no-source-10m-default-compression | tee "${OUTPUT_PREFIX}_bluesky-no-source-10m-default-compression.data_size"
-./benchmark.sh bluesky-no-source-10m-default-compression "${OUTPUT_PREFIX}_bluesky-no-source-10m-default-compression.results_runtime"
-
-# # bluesky-no-source-100m-default-compression
-./create_and_load.sh bluesky-no-source-100m-default-compression index_template_no_source_default_compression "$DATA_DIRECTORY" 100 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-no-source-100m-default-compression | tee "${OUTPUT_PREFIX}_bluesky-no-source-100m-default-compression.data_size"
-./benchmark.sh bluesky-no-source-100m-default-compression "${OUTPUT_PREFIX}_bluesky-no-source-100m-default-compression.results_runtime"
-
-# # bluesky-no-source-1000m-default-compression
-./create_and_load.sh bluesky-no-source-1000m-default-compression index_template_no_source_default_compression "$DATA_DIRECTORY" 1000 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky-no-source-1000m-default-compression | tee "${OUTPUT_PREFIX}_bluesky-no-source-1000m-default-compression.data_size"
-./benchmark.sh bluesky-no-source-1000m-default-compression "${OUTPUT_PREFIX}_bluesky-no-source-1000m-default-compression.results_runtime"
+case $choice in
+    2)
+        benchmark 10m no-source-best-compression
+        benchmark 10m source-best-compression
+        benchmark 10m source-default-compression
+        benchmark 10m no-source-default-compression
+        ;;
+    3)
+        benchmark 100m no-source-best-compression
+        benchmark 100m source-best-compression
+        benchmark 100m source-default-compression
+        benchmark 100m no-source-default-compression
+        ;;
+    4)
+        benchmark 1000m no-source-best-compression
+        benchmark 1000m source-best-compression
+        benchmark 1000m source-default-compression
+        benchmark 1000m no-source-default-compression
+        ;;
+    5)
+        benchmark 1m no-source-best-compression
+        benchmark 1m source-best-compression
+        benchmark 1m source-default-compression
+        benchmark 1m no-source-default-compression
+        benchmark 10m no-source-best-compression
+        benchmark 10m source-best-compression
+        benchmark 10m source-default-compression
+        benchmark 10m no-source-default-compression
+        benchmark 100m no-source-best-compression
+        benchmark 100m source-best-compression
+        benchmark 100m source-default-compression
+        benchmark 100m no-source-default-compression
+        benchmark 1000m no-source-best-compression
+        benchmark 1000m source-best-compression
+        benchmark 1000m source-default-compression
+        benchmark 1000m no-source-default-compression
+        ;;
+    *)
+        benchmark 1m no-source-best-compression
+        benchmark 1m source-best-compression
+        benchmark 1m source-default-compression
+        benchmark 1m no-source-default-compression
+        ;;
+esac

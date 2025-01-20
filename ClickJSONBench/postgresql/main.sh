@@ -19,69 +19,53 @@ if [[ ! -d "$DATA_DIRECTORY" ]]; then
     exit 1
 fi
 
+echo "Select the dataset size to benchmark:"
+echo "1) 1m (default)"
+echo "2) 10m"
+echo "3) 100m"
+echo "4) 1000m"
+echo "5) all"
+read -p "Enter the number corresponding to your choice: " choice
+
 ./install.sh
 
-# bluesky_1m_lz4
-./create_and_load.sh bluesky_1m_lz4 bluesky ddl_lz4.sql "$DATA_DIRECTORY" 1 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_1m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.total_size"
-./data_size.sh bluesky_1m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.data_size"
-./index_size.sh bluesky_1m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.index_size"
-./index_usage.sh bluesky_1m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.index_usage"
-./query_results.sh bluesky_1m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.query_results"
-./benchmark.sh bluesky_1m_lz4 "${OUTPUT_PREFIX}_bluesky_1m_lz4.results_runtime"
+benchmark() {
+    local size=$1
+    local compression=$2
+    ./create_and_load.sh "bluesky_${size}_${compression}" bluesky "ddl_${compression}.sql" "$DATA_DIRECTORY" "$size" "$SUCCESS_LOG" "$ERROR_LOG"
+    ./total_size.sh "bluesky_${size}_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.total_size"
+    ./data_size.sh "bluesky_${size}_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.data_size"
+    ./index_size.sh "bluesky_${size}_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.index_size"
+    ./index_usage.sh "bluesky_${size}_${compression}" | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.index_usage"
+    ./query_results.sh "bluesky_${size}_${compression}" | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.query_results"
+    ./benchmark.sh "bluesky_${size}_${compression}" "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.results_runtime"
+}
 
-# bluesky_1m_pglz
-./create_and_load.sh bluesky_1m_pglz bluesky ddl_pglz.sql "$DATA_DIRECTORY" 1 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_1m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_pglz.total_size"
-./data_size.sh bluesky_1m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_pglz.data_size"
-./index_size.sh bluesky_1m_pglz | tee "${OUTPUT_PREFIX}_bluesky_1m_pglz.index_size"
-./index_usage.sh bluesky_1m_pglz | tee "${OUTPUT_PREFIX}_bluesky_1m_pglz.index_usage"
-./benchmark.sh bluesky_1m_pglz "${OUTPUT_PREFIX}_bluesky_1m_pglz.results_runtime"
-
-# bluesky_10m_lz4
-./create_and_load.sh bluesky_10m_lz4 bluesky ddl_lz4.sql "$DATA_DIRECTORY" 10 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_10m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.total_size"
-./data_size.sh bluesky_10m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.data_size"
-./index_size.sh bluesky_10m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.index_size"
-./index_usage.sh bluesky_10m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.index_usage"
-./benchmark.sh bluesky_10m_lz4 "${OUTPUT_PREFIX}_bluesky_10m_lz4.results_runtime"
-
-# bluesky_10m_pglz
-./create_and_load.sh bluesky_10m_pglz bluesky ddl_pglz.sql "$DATA_DIRECTORY" 10 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_10m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_pglz.total_size"
-./data_size.sh bluesky_10m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_pglz.data_size"
-./index_size.sh bluesky_10m_pglz | tee "${OUTPUT_PREFIX}_bluesky_10m_pglz.index_size"
-./index_usage.sh bluesky_10m_pglz | tee "${OUTPUT_PREFIX}_bluesky_10m_pglz.index_usage"
-./benchmark.sh bluesky_10m_pglz "${OUTPUT_PREFIX}_bluesky_10m_pglz.results_runtime"
-
-# bluesky_100m_lz4
-./create_and_load.sh bluesky_100m_lz4 bluesky ddl_lz4.sql "$DATA_DIRECTORY" 100 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_100m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.total_size"
-./data_size.sh bluesky_100m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.data_size"
-./index_size.sh bluesky_100m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.index_size"
-./index_usage.sh bluesky_100m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.index_usage"
-./benchmark.sh bluesky_100m_lz4 "${OUTPUT_PREFIX}_bluesky_100m_lz4.results_runtime"
-
-# bluesky_100m_pglz
-./create_and_load.sh bluesky_100m_pglz bluesky ddl_pglz.sql "$DATA_DIRECTORY" 100 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_100m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_pglz.total_size"
-./data_size.sh bluesky_100m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_pglz.data_size"
-./index_size.sh bluesky_100m_pglz | tee "${OUTPUT_PREFIX}_bluesky_100m_pglz.index_size"
-./index_usage.sh bluesky_100m_pglz | tee "${OUTPUT_PREFIX}_bluesky_100m_pglz.index_usage"
-./benchmark.sh bluesky_100m_pglz "${OUTPUT_PREFIX}_bluesky_100m_pglz.results_runtime"
-
-# bluesky_1000m_lz4
-./create_and_load.sh bluesky_1000m_lz4 bluesky ddl_lz4.sql "$DATA_DIRECTORY" 1000 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_1000m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.total_size"
-./data_size.sh bluesky_1000m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.data_size"
-./index_size.sh bluesky_1000m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.index_size"
-./index_usage.sh bluesky_1000m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.index_usage"
-./benchmark.sh bluesky_1000m_lz4 "${OUTPUT_PREFIX}_bluesky_1000m_lz4.results_runtime"
-
-# bluesky_1000m_pglz
-./create_and_load.sh bluesky_1000m_pglz bluesky ddl_pglz.sql "$DATA_DIRECTORY" 1000 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_1000m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_pglz.total_size"
-./data_size.sh bluesky_1000m_pglz bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_pglz.data_size"
-./index_size.sh bluesky_1000m_pglz | tee "${OUTPUT_PREFIX}_bluesky_1000m_pglz.index_size"
-./index_usage.sh bluesky_1000m_pglz | tee "${OUTPUT_PREFIX}_bluesky_1000m_pglz.index_usage"
-./benchmark.sh bluesky_1000m_pglz "${OUTPUT_PREFIX}_bluesky_1000m_pglz.results_runtime"
+case $choice in
+    2)
+        benchmark 10m lz4
+        benchmark 10m pglz
+        ;;
+    3)
+        benchmark 100m lz4
+        benchmark 100m pglz
+        ;;
+    4)
+        benchmark 1000m lz4
+        benchmark 1000m pglz
+        ;;
+    5)
+        benchmark 1m lz4
+        benchmark 1m pglz
+        benchmark 10m lz4
+        benchmark 10m pglz
+        benchmark 100m lz4
+        benchmark 100m pglz
+        benchmark 1000m lz4
+        benchmark 1000m pglz
+        ;;
+    *)
+        benchmark 1m lz4
+        benchmark 1m pglz
+        ;;
+esac

@@ -19,69 +19,52 @@ if [[ ! -d "$DATA_DIRECTORY" ]]; then
     exit 1
 fi
 
+echo "Select the dataset size to benchmark:"
+echo "1) 1m (default)"
+echo "2) 10m"
+echo "3) 100m"
+echo "4) 1000m"
+echo "5) all"
+read -p "Enter the number corresponding to your choice: " choice
+
 ./install.sh
 
-# bluesky_1m_snappy
-./create_and_load.sh bluesky_1m_snappy bluesky ddl_snappy.js "$DATA_DIRECTORY" 1 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_1m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy.total_size"
-./data_size.sh bluesky_1m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy.data_size"
-./index_size.sh bluesky_1m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy.index_size"
-./index_usage.sh bluesky_1m_snappy | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy.index_usage"
-./query_results.sh bluesky_1m_snappy | tee "${OUTPUT_PREFIX}_bluesky_1m_snappy.query_results"
-./benchmark.sh bluesky_1m_snappy "${OUTPUT_PREFIX}_bluesky_1m_snappy.results_runtime"
+benchmark() {
+    local size=$1
+    local compression=$2
+    ./create_and_load.sh "bluesky_${size}_${compression}" bluesky "ddl_${compression}.js" "$DATA_DIRECTORY" "$size" "$SUCCESS_LOG" "$ERROR_LOG"
+    ./total_size.sh "bluesky_${size}_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.total_size"
+    ./data_size.sh "bluesky_${size}_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.data_size"
+    ./index_size.sh "bluesky_${size}_${compression}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.index_size"
+    ./index_usage.sh "bluesky_${size}_${compression}" | tee "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.index_usage"
+    ./benchmark.sh "bluesky_${size}_${compression}" "${OUTPUT_PREFIX}_bluesky_${size}_${compression}.results_runtime"
+}
 
-# bluesky_1m_zstd
-./create_and_load.sh bluesky_1m_zstd bluesky ddl_zstd.js "$DATA_DIRECTORY" 1 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_1m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.total_size"
-./data_size.sh bluesky_1m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.data_size"
-./index_size.sh bluesky_1m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.index_size"
-./index_usage.sh bluesky_1m_zstd | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.index_usage"
-./benchmark.sh bluesky_1m_zstd "${OUTPUT_PREFIX}_bluesky_1m_zstd.results_runtime"
-
-# bluesky_10m_snappy
-./create_and_load.sh bluesky_10m_snappy bluesky ddl_snappy.js "$DATA_DIRECTORY" 10 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_10m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_snappy.total_size"
-./data_size.sh bluesky_10m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_snappy.data_size"
-./index_size.sh bluesky_10m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_snappy.index_size"
-./index_usage.sh bluesky_10m_snappy | tee "${OUTPUT_PREFIX}_bluesky_10m_snappy.index_usage"
-./benchmark.sh bluesky_10m_snappy "${OUTPUT_PREFIX}_bluesky_10m_snappy.results_runtime"
-
-# bluesky_10m_zstd
-./create_and_load.sh bluesky_10m_zstd bluesky ddl_zstd.js "$DATA_DIRECTORY" 10 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_10m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.total_size"
-./data_size.sh bluesky_10m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.data_size"
-./index_size.sh bluesky_10m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.index_size"
-./index_usage.sh bluesky_10m_zstd | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.index_usage"
-./benchmark.sh bluesky_10m_zstd "${OUTPUT_PREFIX}_bluesky_10m_zstd.results_runtime"
-
-# bluesky_100m_snappy
-./create_and_load.sh bluesky_100m_snappy bluesky ddl_snappy.js "$DATA_DIRECTORY" 100 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_100m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_snappy.total_size"
-./data_size.sh bluesky_100m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_snappy.data_size"
-./index_size.sh bluesky_100m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_snappy.index_size"
-./index_usage.sh bluesky_100m_snappy | tee "${OUTPUT_PREFIX}_bluesky_100m_snappy.index_usage"
-./benchmark.sh bluesky_100m_snappy "${OUTPUT_PREFIX}_bluesky_100m_snappy.results_runtime"
-
-# bluesky_100m_zstd
-./create_and_load.sh bluesky_100m_zstd bluesky ddl_zstd.js "$DATA_DIRECTORY" 100 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_100m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.total_size"
-./data_size.sh bluesky_100m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.data_size"
-./index_size.sh bluesky_100m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.index_size"
-./index_usage.sh bluesky_100m_zstd | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.index_usage"
-./benchmark.sh bluesky_100m_zstd "${OUTPUT_PREFIX}_bluesky_100m_zstd.results_runtime"
-
-# bluesky_1000m_snappy
-./create_and_load.sh bluesky_1000m_snappy bluesky ddl_snappy.js "$DATA_DIRECTORY" 1000 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_1000m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_snappy.total_size"
-./data_size.sh bluesky_1000m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_snappy.data_size"
-./index_size.sh bluesky_1000m_snappy bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_snappy.index_size"
-./index_usage.sh bluesky_1000m_snappy | tee "${OUTPUT_PREFIX}_bluesky_1000m_snappy.index_usage"
-./benchmark.sh bluesky_1000m_snappy "${OUTPUT_PREFIX}_bluesky_1000m_snappy.results_runtime"
-
-# bluesky_1000m_zstd
-./create_and_load.sh bluesky_1000m_zstd bluesky ddl_zstd.js "$DATA_DIRECTORY" 1000 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_1000m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.total_size"
-./data_size.sh bluesky_1000m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.data_size"
-./index_size.sh bluesky_1000m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.index_size"
-./index_usage.sh bluesky_1000m_zstd | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.index_usage"
-./benchmark.sh bluesky_1000m_zstd "${OUTPUT_PREFIX}_bluesky_1000m_zstd.results_runtime"
+case $choice in
+    2)
+        benchmark 10m snappy
+        benchmark 10m zstd
+        ;;
+    3)
+        benchmark 100m snappy
+        benchmark 100m zstd
+        ;;
+    4)
+        benchmark 1000m snappy
+        benchmark 1000m zstd
+        ;;
+    5)
+        benchmark 1m snappy
+        benchmark 1m zstd
+        benchmark 10m snappy
+        benchmark 10m zstd
+        benchmark 100m snappy
+        benchmark 100m zstd
+        benchmark 1000m snappy
+        benchmark 1000m zstd
+        ;;
+    *)
+        benchmark 1m snappy
+        benchmark 1m zstd
+        ;;
+esac

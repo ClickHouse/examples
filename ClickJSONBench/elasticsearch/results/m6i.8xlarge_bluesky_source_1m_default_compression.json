@@ -1,6 +1,7 @@
 {
   "system": "Elasticsearch",
   "version": "8.17.0",
+  "os": "Ubuntu 24.04",
   "date": "2025-01-14",
   "machine": "m6i.8xlarge, 16000gib gp3",
   "cluster_size": 1,
@@ -12,12 +13,6 @@
   "data_compression": "lz4",
   "data_size": 466268498,
   "data_size_readable": "444.6 MB",
-  "timeout_query_ids": [],
-  "timeout_threshold": 7200,
-  "timeout_threshold_readable": "2 hours",
-  "oom_query_ids": [],
-  "oom_threshold": 68719476736,
-  "oom_threshold_readable": "64 GB",
   "result": [
     [0.080719,0.078711,0.078053],
     [0.887030,0.888009,0.889156],

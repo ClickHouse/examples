@@ -19,77 +19,53 @@ if [[ ! -d "$DATA_DIRECTORY" ]]; then
     exit 1
 fi
 
+echo "Select the dataset size to benchmark:"
+echo "1) 1m (default)"
+echo "2) 10m"
+echo "3) 100m"
+echo "4) 1000m"
+echo "5) all"
+read -p "Enter the number corresponding to your choice: " choice
+
 ./install.sh
 
-# bluesky_1m_lz4
-./create_and_load.sh bluesky_1m_lz4 bluesky ddl_lz4.sql "$DATA_DIRECTORY" 1 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_1m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.total_size"
-./data_size.sh bluesky_1m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.data_size"
-./index_size.sh bluesky_1m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.index_size"
-./index_usage.sh bluesky_1m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.index_usage"
-./physical_query_plans.sh bluesky_1m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.physical_query_plans"
-./query_results.sh bluesky_1m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1m_lz4.query_results"
-./benchmark.sh bluesky_1m_lz4 "${OUTPUT_PREFIX}_bluesky_1m_lz4.results_runtime" "${OUTPUT_PREFIX}_bluesky_1m_lz4.results_memory_usage"
+benchmark() {
+    local size=$1
+    local suffix=$2
+    ./create_and_load.sh "bluesky_${size}_${suffix}" bluesky "ddl_${suffix}.sql" "$DATA_DIRECTORY" "$size" "$SUCCESS_LOG" "$ERROR_LOG"
+    ./total_size.sh "bluesky_${size}_${suffix}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${suffix}.total_size"
+    ./data_size.sh "bluesky_${size}_${suffix}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${suffix}.data_size"
+    ./index_size.sh "bluesky_${size}_${suffix}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}_${suffix}.index_size"
+    ./index_usage.sh "bluesky_${size}_${suffix}" | tee "${OUTPUT_PREFIX}_bluesky_${size}_${suffix}.index_usage"
+    ./physical_query_plans.sh "bluesky_${size}_${suffix}" | tee "${OUTPUT_PREFIX}_bluesky_${size}_${suffix}.physical_query_plans"
+    ./benchmark.sh "bluesky_${size}_${suffix}" "${OUTPUT_PREFIX}_bluesky_${size}_${suffix}.results_runtime" "${OUTPUT_PREFIX}_bluesky_${size}_${suffix}.results_memory_usage"
+}
 
-# bluesky_1m_zstd
-./create_and_load.sh bluesky_1m_zstd bluesky ddl_zstd.sql "$DATA_DIRECTORY" 1 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_1m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.total_size"
-./data_size.sh bluesky_1m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.data_size"
-./index_size.sh bluesky_1m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.index_size"
-./index_usage.sh bluesky_1m_zstd | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.index_usage"
-./physical_query_plans.sh bluesky_1m_zstd | tee "${OUTPUT_PREFIX}_bluesky_1m_zstd.physical_query_plans"
-./benchmark.sh bluesky_1m_zstd "${OUTPUT_PREFIX}_bluesky_1m_zstd.results_runtime" "${OUTPUT_PREFIX}_bluesky_1m_zstd.results_memory_usage"
-
-# bluesky_10m_lz4
-./create_and_load.sh bluesky_10m_lz4 bluesky ddl_lz4.sql "$DATA_DIRECTORY" 10 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_10m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.total_size"
-./data_size.sh bluesky_10m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.data_size"
-./index_size.sh bluesky_10m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.index_size"
-./index_usage.sh bluesky_10m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.index_usage"
-./physical_query_plans.sh bluesky_10m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_10m_lz4.physical_query_plans"
-./benchmark.sh bluesky_10m_lz4 "${OUTPUT_PREFIX}_bluesky_10m_lz4.results_runtime" "${OUTPUT_PREFIX}_bluesky_10m_lz4.results_memory_usage"
-
-# bluesky_10m_zstd
-./create_and_load.sh bluesky_10m_zstd bluesky ddl_zstd.sql "$DATA_DIRECTORY" 10 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_10m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.total_size"
-./data_size.sh bluesky_10m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.data_size"
-./index_size.sh bluesky_10m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.index_size"
-./index_usage.sh bluesky_10m_zstd | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.index_usage"
-./physical_query_plans.sh bluesky_10m_zstd | tee "${OUTPUT_PREFIX}_bluesky_10m_zstd.physical_query_plans"
-./benchmark.sh bluesky_10m_zstd "${OUTPUT_PREFIX}_bluesky_10m_zstd.results_runtime" "${OUTPUT_PREFIX}_bluesky_10m_zstd.results_memory_usage"
-
-# bluesky_100m_lz4
-./create_and_load.sh bluesky_100m_lz4 bluesky ddl_lz4.sql "$DATA_DIRECTORY" 100 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_100m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.total_size"
-./data_size.sh bluesky_100m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.data_size"
-./index_size.sh bluesky_100m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.index_size"
-./index_usage.sh bluesky_100m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.index_usage"
-./physical_query_plans.sh bluesky_100m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_100m_lz4.physical_query_plans"
-./benchmark.sh bluesky_100m_lz4 "${OUTPUT_PREFIX}_bluesky_100m_lz4.results_runtime" "${OUTPUT_PREFIX}_bluesky_100m_lz4.results_memory_usage"
-
-# bluesky_100m_zstd
-./create_and_load.sh bluesky_100m_zstd bluesky ddl_zstd.sql "$DATA_DIRECTORY" 100 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_100m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.total_size"
-./data_size.sh bluesky_100m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.data_size"
-./index_size.sh bluesky_100m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.index_size"
-./index_usage.sh bluesky_100m_zstd | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.index_usage"
-./physical_query_plans.sh bluesky_100m_zstd | tee "${OUTPUT_PREFIX}_bluesky_100m_zstd.physical_query_plans"
-./benchmark.sh bluesky_100m_zstd "${OUTPUT_PREFIX}_bluesky_100m_zstd.results_runtime" "${OUTPUT_PREFIX}_bluesky_100m_zstd.results_memory_usage"
-
-# bluesky_1000m_lz4
-./create_and_load.sh bluesky_1000m_lz4 bluesky ddl_lz4.sql "$DATA_DIRECTORY" 1000 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_1000m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.total_size"
-./data_size.sh bluesky_1000m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.data_size"
-./index_size.sh bluesky_1000m_lz4 bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.index_size"
-./index_usage.sh bluesky_1000m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.index_usage"
-./physical_query_plans.sh bluesky_1000m_lz4 | tee "${OUTPUT_PREFIX}_bluesky_1000m_lz4.physical_query_plans"
-./benchmark.sh bluesky_1000m_lz4 "${OUTPUT_PREFIX}_bluesky_1000m_lz4.results_runtime" "${OUTPUT_PREFIX}_bluesky_1000m_lz4.results_memory_usage"
-
-# bluesky_1000m_zstd
-./create_and_load.sh bluesky_1000m_zstd bluesky ddl_zstd.sql "$DATA_DIRECTORY" 1000 "$SUCCESS_LOG" "$ERROR_LOG"
-./total_size.sh bluesky_1000m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.total_size"
-./data_size.sh bluesky_1000m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.data_size"
-./index_size.sh bluesky_1000m_zstd bluesky | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.index_size"
-./index_usage.sh bluesky_1000m_zstd | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.index_usage"
-./physical_query_plans.sh bluesky_1000m_zstd | tee "${OUTPUT_PREFIX}_bluesky_1000m_zstd.physical_query_plans"
-./benchmark.sh bluesky_1000m_zstd "${OUTPUT_PREFIX}_bluesky_1000m_zstd.results_runtime" "${OUTPUT_PREFIX}_bluesky_1000m_zstd.results_memory_usage"
+case $choice in
+    2)
+        benchmark 10m lz4
+        benchmark 10m zstd
+        ;;
+    3)
+        benchmark 100m lz4
+        benchmark 100m zstd
+        ;;
+    4)
+        benchmark 1000m lz4
+        benchmark 1000m zstd
+        ;;
+    5)
+        benchmark 1m lz4
+        benchmark 1m zstd
+        benchmark 10m lz4
+        benchmark 10m zstd
+        benchmark 100m lz4
+        benchmark 100m zstd
+        benchmark 1000m lz4
+        benchmark 1000m zstd
+        ;;
+    *)
+        benchmark 1m lz4
+        benchmark 1m zstd
+        ;;
+esac

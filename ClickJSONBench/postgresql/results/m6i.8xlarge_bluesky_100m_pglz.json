@@ -1,6 +1,7 @@
 {
   "system": "PostgreSQL",
   "version": "16.6",
+  "os": "Ubuntu 24.04",
   "date": "2025-01-13",
   "machine": "m6i.8xlarge, 10000gib gp3",
   "cluster_size": 1,
