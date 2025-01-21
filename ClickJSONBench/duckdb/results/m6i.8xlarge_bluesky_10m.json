@@ -13,11 +13,6 @@
   "data_compression": "Uncompressed",
   "data_size": 4893442048,
   "data_size_readable": "4.89 GB",
-  "timeout_query_ids": [],
-  "timeout_threshold": 7200,
-  "timeout_threshold_readable": "2 hours",
-  "oom_query_ids": [],
-  "oom_threshold": 68719476736,
   "oom_threshold_readable": "64 GB",
   "result": [
     [37.332,1.179,1.196],

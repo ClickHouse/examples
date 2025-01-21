@@ -17,6 +17,11 @@ document_count=$(mongosh --quiet --eval "
     print(count);
 ")
 
+# Debugging information
+echo "Database: $DATABASE_NAME"
+echo "Collection: $COLLECTION_NAME"
+echo "Document count: $document_count"
+
 # Print the result
 if [[ -z "$document_count" ]]; then
     echo "Error: Unable to fetch document count. Ensure the database and collection exist."
