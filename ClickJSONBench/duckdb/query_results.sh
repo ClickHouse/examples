@@ -19,10 +19,7 @@ cat queries.sql | while read -r query; do
     echo "------------------------------------------------------------------------------------------------------------------------"
     echo "Result for query Q$QUERY_NUM:"
     echo
-    $DUCKDB_CMD <<EOF
-$query
-EOF
-)
+    $DUCKDB_CMD -c "$query"
 
     # Increment the query number
     QUERY_NUM=$((QUERY_NUM + 1))
