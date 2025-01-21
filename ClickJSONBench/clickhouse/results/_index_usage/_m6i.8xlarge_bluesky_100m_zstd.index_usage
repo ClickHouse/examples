@@ -10,8 +10,8 @@ Expression (Project names)
           Indexes:
             PrimaryKey
               Condition: true
-              Parts: 3/3
-              Granules: 24605/24605
+              Parts: 10/10
+              Granules: 23394/23394
 ------------------------------------------------------------------------------------------------------------------------
 Index usage for query Q2:
 
@@ -28,8 +28,8 @@ Expression (Project names)
                   data.kind
                   data.commit.operation
                 Condition: and((data.commit.operation in [\'create\', \'create\']), (data.kind in [\'commit\', \'commit\']))
-                Parts: 3/3
-                Granules: 23582/24605
+                Parts: 10/10
+                Granules: 22431/23394
 ------------------------------------------------------------------------------------------------------------------------
 Index usage for query Q3:
 
@@ -47,8 +47,8 @@ Expression (Project names)
                   data.commit.operation
                   data.commit.collection
                 Condition: and((data.commit.collection in 3-element set), and((data.commit.operation in [\'create\', \'create\']), (data.kind in [\'commit\', \'commit\'])))
-                Parts: 3/3
-                Granules: 14771/24605
+                Parts: 10/10
+                Granules: 14048/23394
 ------------------------------------------------------------------------------------------------------------------------
 Index usage for query Q4:
 
@@ -67,8 +67,8 @@ Expression (Project names)
                     data.commit.operation
                     data.commit.collection
                   Condition: and((data.commit.collection in [\'app.bsky.feed.post\', \'app.bsky.feed.post\']), and((data.commit.operation in [\'create\', \'create\']), (data.kind in [\'commit\', \'commit\'])))
-                  Parts: 3/3
-                  Granules: 2353/24605
+                  Parts: 10/10
+                  Granules: 2231/23394
 ------------------------------------------------------------------------------------------------------------------------
 Index usage for query Q5:
 
@@ -87,5 +87,5 @@ Expression (Project names)
                     data.commit.operation
                     data.commit.collection
                   Condition: and((data.commit.collection in [\'app.bsky.feed.post\', \'app.bsky.feed.post\']), and((data.commit.operation in [\'create\', \'create\']), (data.kind in [\'commit\', \'commit\'])))
-                  Parts: 3/3
-                  Granules: 2353/24605
+                  Parts: 10/10
+                  Granules: 2231/23394

@@ -11,24 +11,24 @@
   "dataset_size": 1000000000,
   "dataset_size_readable": "1000m",
   "data_compression": "snappy",
-  "total_size": 245411815424,
-  "total_size_readable": "245.41 GB",
+  "total_size": 248580009984,
+  "total_size_readable": "248.58 GB",
   "data_size": 221332566016,
   "data_size_readable": "221.33 GB",
-  "index_size": 24079249408,
-  "index_size_readable": "24.08 GB",
+  "index_size": 27247443968,
+  "index_size_readable": "27.25 GB",
   "result": [
-    [1974.18,1956.12,1957.9],
-    [0,0,0],
-    [6354.06,6348.55,6347.45],
-    [2031.61,2022.65,2020.14],
-    [2054.2,2041.93,2040.19]
+    [987.157,984.441,988.002],
+    [21177.1,21130,21520.6],
+    [1242.34,1229.8,1235.88],
+    [161.845,162.1,162.285],
+    [166.271,166.134,165.7]
   ],
   "result_readable": [
-    "32 min 54.18 sec, 32 min 36.12 sec, 32 min 37.90 sec",
-    "0.00 msec, 0.00 msec, 0.00 msec",
-    "1 hr 45 min 54.06 sec, 1 hr 45 min 48.55 sec, 1 hr 45 min 47.45 sec",
-    "33 min 51.61 sec, 33 min 42.65 sec, 33 min 40.14 sec",
-    "34 min 14.20 sec, 34 min 1.93 sec, 34 min 0.19 sec"
+    "16 min 27.16 sec, 16 min 24.44 sec, 16 min 28.00 sec",
+    "5 hr 52 min 57.10 sec, 5 hr 52 min 10.00 sec, 5 hr 58 min 40.60 sec",
+    "20 min 42.34 sec, 20 min 29.80 sec, 20 min 35.88 sec",
+    "2 min 41.84 sec, 2 min 42.10 sec, 2 min 42.28 sec",
+    "2 min 46.27 sec, 2 min 46.13 sec, 2 min 45.70 sec"
   ]
 }

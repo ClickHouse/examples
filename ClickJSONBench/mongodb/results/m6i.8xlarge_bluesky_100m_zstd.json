@@ -11,24 +11,24 @@
   "dataset_size": 100000000,
   "dataset_size_readable": "100m",
   "data_compression": "zstd",
-  "total_size": 16198197248,
-  "total_size_readable": "16.20 GB",
+  "total_size": 16577900544,
+  "total_size_readable": "16.57 GB",
   "data_size": 13758480384,
   "data_size_readable": "13.76 GB",
-  "index_size": 2439716864,
-  "index_size_readable": "2.44 GB",
+  "index_size": 2819420160,
+  "index_size_readable": "2.82 GB",
   "result": [
-    [171.13,56.34,50.349],
-    [2673.28,2573.21,2576.39],
-    [208.486,183.036,160.959],
-    [45.227,41.365,43.751],
-    [47.175,44.368,41.472]
+    [105.051,102.811,101.4],
+    [1440.91,1472.03,1440.5],
+    [123.522,123.082,123.149],
+    [17.125,17.251,17.238],
+    [17.962,17.913,17.852]
   ],
   "result_readable": [
-    "2 min 51.13 sec, 56.34 sec, 50.35 sec",
-    "44 min 33.28 sec, 42 min 53.21 sec, 42 min 56.39 sec",
-    "3 min 28.49 sec, 3 min 3.04 sec, 2 min 40.96 sec",
-    "45.23 sec, 41.37 sec, 43.75 sec",
-    "47.17 sec, 44.37 sec, 41.47 sec"
+    "1 min 45.05 sec, 1 min 42.81 sec, 1 min 41.40 sec",
+    "24 min 0.91 sec, 24 min 32.03 sec, 24 min 0.50 sec",
+    "2 min 3.52 sec, 2 min 3.08 sec, 2 min 3.15 sec",
+    "17.12 sec, 17.25 sec, 17.24 sec",
+    "17.96 sec, 17.91 sec, 17.85 sec"
   ]
 }
