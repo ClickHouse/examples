@@ -11,9 +11,15 @@
   "dataset_size": 100000000,
   "dataset_size_readable": "100m",
   "num_documents": 99999947,
+<<<<<<< HEAD
   "data_compression": "deflate",
   "total_size": 21268479403,
   "total_size_readable": "19.8 GB",
+=======
+  "data_compression": "zstd",
+  "data_size": 21268479403,
+  "data_size_readable": "19.8 GB",
+>>>>>>> fd6aeee (fix compression setting)
   "result": [
     [2.532,2.536,2.486],
     [23.194,22.932,23.188],
