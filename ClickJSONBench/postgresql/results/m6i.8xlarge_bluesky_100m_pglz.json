@@ -11,24 +11,24 @@
   "dataset_size": 100000000,
   "dataset_size_readable": "100m",
   "data_compression": "pglz",
-  "total_size": 66182094848,
-  "total_size_readable": "66.18 GB",
-  "data_size": 54593822720,
-  "data_size_readable": "54.59 GB",
-  "index_size": 11588108288,
-  "index_size_readable": "11.59 GB",
+  "total_size": 69085896704,
+  "total_size_readable": "69.09 GB",
+  "data_size": 54617038848,
+  "data_size_readable": "54.62 GB",
+  "index_size": 14468587520,
+  "index_size_readable": "14.47 GB",
   "result": [
-    [415.852,10.5048,10.5237],
-    [1865.46,1456.15,1456.46],
-    [439.467,31.6848,31.7817],
-    [473.337,19.1237,19.9746],
-    [473.934,20.1123,20.1352]
+    [416.449,10.4025,10.3982],
+    [1865.43,1457.18,1455.51],
+    [439.424,31.7577,31.7307],
+    [477.52,17.5615,17.6512],
+    [479.118,18.9199,19.5657]
   ],
   "result_readable": [
-    "6 min 55.85 sec, 10.50 sec, 10.52 sec",
-    "31 min 5.46 sec, 24 min 16.15 sec, 24 min 16.46 sec",
-    "7 min 19.47 sec, 31.68 sec, 31.78 sec",
-    "7 min 53.34 sec, 19.12 sec, 19.97 sec",
-    "7 min 53.93 sec, 20.11 sec, 20.14 sec"
+    "6 min 56.45 sec, 10.40 sec, 10.40 sec",
+    "31 min 5.43 sec, 24 min 17.18 sec, 24 min 15.51 sec",
+    "7 min 19.42 sec, 31.76 sec, 31.73 sec",
+    "7 min 57.52 sec, 17.56 sec, 17.65 sec",
+    "7 min 59.12 sec, 18.92 sec, 19.57 sec"
   ]
 }

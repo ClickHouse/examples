@@ -7,20 +7,58 @@ Index usage for query Q1:
     stage: 'GROUP',
     planNodeId: 3,
     inputStage: {
-      stage: 'COLLSCAN',
+      stage: 'IXSCAN',
       planNodeId: 1,
-      filter: {},
-      direction: 'forward'
+      keyPattern: {
+        kind: 1,
+        'commit.operation': 1,
+        'commit.collection': 1,
+        did: 1,
+        time_us: 1
+      },
+      indexName: 'kind_1_commit.operation_1_commit.collection_1_did_1_time_us_1',
+      isMultiKey: false,
+      multiKeyPaths: {
+        kind: [],
+        'commit.operation': [],
+        'commit.collection': [],
+        did: [],
+        time_us: []
+      },
+      isUnique: false,
+      isSparse: false,
+      isPartial: false,
+      indexVersion: 2,
+      direction: 'forward',
+      indexBounds: {
+        kind: [
+          '[MinKey, MaxKey]'
+        ],
+        'commit.operation': [
+          '[MinKey, MaxKey]'
+        ],
+        'commit.collection': [
+          '[MinKey, MaxKey]'
+        ],
+        did: [
+          '[MinKey, MaxKey]'
+        ],
+        time_us: [
+          '[MinKey, MaxKey]'
+        ]
+      }
     }
   },
   slotBasedPlan: {
-    slots: '$$RESULT=s9 env: {  }',
-    stages: '[3] project [s9 = newObj("_id", s6, "count", s8)] \n' +
-      '[3] project [s8 = (convert ( s7, int32) ?: s7)] \n' +
-      '[3] group [s6] [s7 = count()] spillSlots[s5] mergingExprs[sum(s5)] \n' +
-      '[3] project [s6 = (s4 ?: null)] \n' +
-      '[3] project [s4 = traverseP(s1, lambda(l2.0) { getField(move(l2.0), "collection") }, 1)] \n' +
-      '[1] scan s2 s3 none none none none none none lowPriority [s1 = commit] @"f2271270-5add-48df-a55d-a450bcc63fd6" true false '
+    slots: '$$RESULT=s14 env: {  }',
+    stages: '[3] project [s14 = newObj("_id", s11, "count", s13)] \n' +
+      '[3] project [s13 = (convert ( s12, int32) ?: s12)] \n' +
+      '[3] group [s11] [s12 = count()] spillSlots[s10] mergingExprs[sum(s10)] \n' +
+      '[3] project [s11 = (s9 ?: null)] \n' +
+      '[3] project [s9 = traverseP(s8, lambda(l2.0) { getField(move(l2.0), "collection") }, 1)] \n' +
+      '[1] project [s8 = getField(s7, "commit")] \n' +
+      '[1] project [s7 = newObj("kind", s1, "commit", newObj("operation", s2, "collection", s3), "did", s4, "time_us", s5)] \n' +
+      '[1] ixseek KS(0A0A0A0A0A0104) KS(F0F0F0F0F0FE04) none s6 none none lowPriority [s1 = 0, s2 = 1, s3 = 2, s4 = 3, s5 = 4] @"f2271270-5add-48df-a55d-a450bcc63fd6" @"kind_1_commit.operation_1_commit.collection_1_did_1_time_us_1" true '
   }
 }
 ------------------------------------------------------------------------------------------------------------------------
@@ -30,63 +68,61 @@ Index usage for query Q2:
   isCached: false,
   queryPlan: {
     stage: 'GROUP',
-    planNodeId: 4,
+    planNodeId: 3,
     inputStage: {
-      stage: 'FETCH',
-      planNodeId: 2,
-      inputStage: {
-        stage: 'IXSCAN',
-        planNodeId: 1,
-        keyPattern: {
-          kind: 1,
-          'commit.operation': 1,
-          'commit.collection': 1,
-          time_us: 1
-        },
-        indexName: 'kind_1_commit.operation_1_commit.collection_1_time_us_1',
-        isMultiKey: false,
-        multiKeyPaths: {
-          kind: [],
-          'commit.operation': [],
-          'commit.collection': [],
-          time_us: []
-        },
-        isUnique: false,
-        isSparse: false,
-        isPartial: false,
-        indexVersion: 2,
-        direction: 'forward',
-        indexBounds: {
-          kind: [
-            '["commit", "commit"]'
-          ],
-          'commit.operation': [
-            '["create", "create"]'
-          ],
-          'commit.collection': [
-            '[MinKey, MaxKey]'
-          ],
-          time_us: [
-            '[MinKey, MaxKey]'
-          ]
-        }
+      stage: 'IXSCAN',
+      planNodeId: 1,
+      keyPattern: {
+        kind: 1,
+        'commit.operation': 1,
+        'commit.collection': 1,
+        did: 1,
+        time_us: 1
+      },
+      indexName: 'kind_1_commit.operation_1_commit.collection_1_did_1_time_us_1',
+      isMultiKey: false,
+      multiKeyPaths: {
+        kind: [],
+        'commit.operation': [],
+        'commit.collection': [],
+        did: [],
+        time_us: []
+      },
+      isUnique: false,
+      isSparse: false,
+      isPartial: false,
+      indexVersion: 2,
+      direction: 'forward',
+      indexBounds: {
+        kind: [
+          '["commit", "commit"]'
+        ],
+        'commit.operation': [
+          '["create", "create"]'
+        ],
+        'commit.collection': [
+          '[MinKey, MaxKey]'
+        ],
+        did: [
+          '[MinKey, MaxKey]'
+        ],
+        time_us: [
+          '[MinKey, MaxKey]'
+        ]
       }
     }
   },
   slotBasedPlan: {
-    slots: '$$RESULT=s20 env: { s1 = KS(3C636F6D6D6974003C637265617465000A0A0104), s2 = KS(3C636F6D6D6974003C63726561746500F0F0FE04), s7 = {"kind" : 1, "commit.operation" : 1, "commit.collection" : 1, "time_us" : 1} }',
-    stages: '[4] project [s20 = newObj("_id", s15, "count", s18, "users", s19)] \n' +
-      '[4] project [s18 = (convert ( s16, int32) ?: s16), s19 = getElement(s17, 0)] \n' +
-      '[4] group [s15] [s16 = count(), s17 = addToSetCapped(s11, 104857600)] spillSlots[s13, s14] mergingExprs[sum(s13), aggSetUnionCapped(s14, 104857600)] \n' +
-      '[4] project [s15 = (s12 ?: null)] \n' +
-      '[4] project [s12 = traverseP(s10, lambda(l2.0) { getField(move(l2.0), "collection") }, 1)] \n' +
-      '[2] nlj inner [] [s3, s4, s5, s6, s7] \n' +
-      '    left \n' +
-      '        [1] cfilter {(exists(s1) && exists(s2))} \n' +
-      '        [1] ixseek s1 s2 s6 s3 s4 s5 [] @"f2271270-5add-48df-a55d-a450bcc63fd6" @"kind_1_commit.operation_1_commit.collection_1_time_us_1" true \n' +
-      '    right \n' +
-      '        [2] limit 1ll \n' +
-      '        [2] seek s3 s8 s9 s4 s5 s6 s7 none none [s10 = commit, s11 = did] @"f2271270-5add-48df-a55d-a450bcc63fd6" true false \n'
+    slots: '$$RESULT=s19 env: { s6 = KS(3C636F6D6D6974003C637265617465000A0A0A0104), s7 = KS(3C636F6D6D6974003C63726561746500F0F0F0FE04) }',
+    stages: '[3] project [s19 = newObj("_id", s14, "count", s17, "users", s18)] \n' +
+      '[3] project [s17 = (convert ( s15, int32) ?: s15), s18 = getElement(s16, 0)] \n' +
+      '[3] group [s14] [s15 = count(), s16 = addToSetCapped(s4, 1073741824)] spillSlots[s12, s13] mergingExprs[sum(s12), aggSetUnionCapped(s13, 1073741824)] \n' +
+      '[3] project [s14 = (s11 ?: null)] \n' +
+      '[3] project [s11 = traverseP(s10, lambda(l2.0) { getField(move(l2.0), "collection") }, 1)] \n' +
+      '[1] project [s10 = getField(s9, "commit")] \n' +
+      '[1] project [s9 = newObj("kind", s1, "commit", newObj("operation", s2, "collection", s3), "did", s4, "time_us", s5)] \n' +
+      '[1] cfilter {(exists(s6) && exists(s7))} \n' +
+      '[1] ixseek s6 s7 none s8 none none [s1 = 0, s2 = 1, s3 = 2, s4 = 3, s5 = 4] @"f2271270-5add-48df-a55d-a450bcc63fd6" @"kind_1_commit.operation_1_commit.collection_1_did_1_time_us_1" true '
   }
 }
 ------------------------------------------------------------------------------------------------------------------------
@@ -96,7 +132,6 @@ Index usage for query Q3:
   isCached: false,
   stage: 'PROJECTION_DEFAULT',
   transformBy: {
-    _id: true,
     event: '$commit.collection',
     hour_of_day: {
       '$hour': {
@@ -116,47 +151,50 @@ Index usage for query Q3:
           }
         }
       }
-    }
+    },
+    _id: false
   },
   inputStage: {
-    stage: 'FETCH',
-    inputStage: {
-      stage: 'IXSCAN',
-      keyPattern: {
-        kind: 1,
-        'commit.operation': 1,
-        'commit.collection': 1,
-        time_us: 1
-      },
-      indexName: 'kind_1_commit.operation_1_commit.collection_1_time_us_1',
-      isMultiKey: false,
-      multiKeyPaths: {
-        kind: [],
-        'commit.operation': [],
-        'commit.collection': [],
-        time_us: []
-      },
-      isUnique: false,
-      isSparse: false,
-      isPartial: false,
-      indexVersion: 2,
-      direction: 'forward',
-      indexBounds: {
-        kind: [
-          '["commit", "commit"]'
-        ],
-        'commit.operation': [
-          '["create", "create"]'
-        ],
-        'commit.collection': [
-          '["app.bsky.feed.like", "app.bsky.feed.like"]',
-          '["app.bsky.feed.post", "app.bsky.feed.post"]',
-          '["app.bsky.feed.repost", "app.bsky.feed.repost"]'
-        ],
-        time_us: [
-          '[MinKey, MaxKey]'
-        ]
-      }
+    stage: 'IXSCAN',
+    keyPattern: {
+      kind: 1,
+      'commit.operation': 1,
+      'commit.collection': 1,
+      did: 1,
+      time_us: 1
+    },
+    indexName: 'kind_1_commit.operation_1_commit.collection_1_did_1_time_us_1',
+    isMultiKey: false,
+    multiKeyPaths: {
+      kind: [],
+      'commit.operation': [],
+      'commit.collection': [],
+      did: [],
+      time_us: []
+    },
+    isUnique: false,
+    isSparse: false,
+    isPartial: false,
+    indexVersion: 2,
+    direction: 'forward',
+    indexBounds: {
+      kind: [
+        '["commit", "commit"]'
+      ],
+      'commit.operation': [
+        '["create", "create"]'
+      ],
+      'commit.collection': [
+        '["app.bsky.feed.like", "app.bsky.feed.like"]',
+        '["app.bsky.feed.post", "app.bsky.feed.post"]',
+        '["app.bsky.feed.repost", "app.bsky.feed.repost"]'
+      ],
+      did: [
+        '[MinKey, MaxKey]'
+      ],
+      time_us: [
+        '[MinKey, MaxKey]'
+      ]
     }
   }
 }
@@ -167,7 +205,6 @@ Index usage for query Q4:
   isCached: false,
   stage: 'PROJECTION_DEFAULT',
   transformBy: {
-    _id: true,
     user_id: '$did',
     timestamp: {
       '$convert': {
@@ -183,45 +220,48 @@ Index usage for query Q4:
           '$const': 'date'
         }
       }
-    }
+    },
+    _id: false
   },
   inputStage: {
-    stage: 'FETCH',
-    inputStage: {
-      stage: 'IXSCAN',
-      keyPattern: {
-        kind: 1,
-        'commit.operation': 1,
-        'commit.collection': 1,
-        time_us: 1
-      },
-      indexName: 'kind_1_commit.operation_1_commit.collection_1_time_us_1',
-      isMultiKey: false,
-      multiKeyPaths: {
-        kind: [],
-        'commit.operation': [],
-        'commit.collection': [],
-        time_us: []
-      },
-      isUnique: false,
-      isSparse: false,
-      isPartial: false,
-      indexVersion: 2,
-      direction: 'forward',
-      indexBounds: {
-        kind: [
-          '["commit", "commit"]'
-        ],
-        'commit.operation': [
-          '["create", "create"]'
-        ],
-        'commit.collection': [
-          '["app.bsky.feed.post", "app.bsky.feed.post"]'
-        ],
-        time_us: [
-          '[MinKey, MaxKey]'
-        ]
-      }
+    stage: 'IXSCAN',
+    keyPattern: {
+      kind: 1,
+      'commit.operation': 1,
+      'commit.collection': 1,
+      did: 1,
+      time_us: 1
+    },
+    indexName: 'kind_1_commit.operation_1_commit.collection_1_did_1_time_us_1',
+    isMultiKey: false,
+    multiKeyPaths: {
+      kind: [],
+      'commit.operation': [],
+      'commit.collection': [],
+      did: [],
+      time_us: []
+    },
+    isUnique: false,
+    isSparse: false,
+    isPartial: false,
+    indexVersion: 2,
+    direction: 'forward',
+    indexBounds: {
+      kind: [
+        '["commit", "commit"]'
+      ],
+      'commit.operation': [
+        '["create", "create"]'
+      ],
+      'commit.collection': [
+        '["app.bsky.feed.post", "app.bsky.feed.post"]'
+      ],
+      did: [
+        '[MinKey, MaxKey]'
+      ],
+      time_us: [
+        '[MinKey, MaxKey]'
+      ]
     }
   }
 }
@@ -232,7 +272,6 @@ Index usage for query Q5:
   isCached: false,
   stage: 'PROJECTION_DEFAULT',
   transformBy: {
-    _id: true,
     user_id: '$did',
     timestamp: {
       '$convert': {
@@ -248,45 +287,48 @@ Index usage for query Q5:
           '$const': 'date'
         }
       }
-    }
+    },
+    _id: false
   },
   inputStage: {
-    stage: 'FETCH',
-    inputStage: {
-      stage: 'IXSCAN',
-      keyPattern: {
-        kind: 1,
-        'commit.operation': 1,
-        'commit.collection': 1,
-        time_us: 1
-      },
-      indexName: 'kind_1_commit.operation_1_commit.collection_1_time_us_1',
-      isMultiKey: false,
-      multiKeyPaths: {
-        kind: [],
-        'commit.operation': [],
-        'commit.collection': [],
-        time_us: []
-      },
-      isUnique: false,
-      isSparse: false,
-      isPartial: false,
-      indexVersion: 2,
-      direction: 'forward',
-      indexBounds: {
-        kind: [
-          '["commit", "commit"]'
-        ],
-        'commit.operation': [
-          '["create", "create"]'
-        ],
-        'commit.collection': [
-          '["app.bsky.feed.post", "app.bsky.feed.post"]'
-        ],
-        time_us: [
-          '[MinKey, MaxKey]'
-        ]
-      }
+    stage: 'IXSCAN',
+    keyPattern: {
+      kind: 1,
+      'commit.operation': 1,
+      'commit.collection': 1,
+      did: 1,
+      time_us: 1
+    },
+    indexName: 'kind_1_commit.operation_1_commit.collection_1_did_1_time_us_1',
+    isMultiKey: false,
+    multiKeyPaths: {
+      kind: [],
+      'commit.operation': [],
+      'commit.collection': [],
+      did: [],
+      time_us: []
+    },
+    isUnique: false,
+    isSparse: false,
+    isPartial: false,
+    indexVersion: 2,
+    direction: 'forward',
+    indexBounds: {
+      kind: [
+        '["commit", "commit"]'
+      ],
+      'commit.operation': [
+        '["create", "create"]'
+      ],
+      'commit.collection': [
+        '["app.bsky.feed.post", "app.bsky.feed.post"]'
+      ],
+      did: [
+        '[MinKey, MaxKey]'
+      ],
+      time_us: [
+        '[MinKey, MaxKey]'
+      ]
     }
   }
 }

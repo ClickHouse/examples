@@ -6,12 +6,12 @@ Expression (Project names)
     Expression ((Before ORDER BY + Projection))
       Aggregating
         Expression ((Before GROUP BY + Change column names to column identifiers))
-          ReadFromMergeTree (bluesky_1000m_zstd.bluesky)
+          ReadFromMergeTree (bluesky_100m_zstd.bluesky)
           Indexes:
             PrimaryKey
               Condition: true
-              Parts: 7/7
-              Granules: 710561/710561
+              Parts: 10/10
+              Granules: 23394/23394
 ------------------------------------------------------------------------------------------------------------------------
 Index usage for query Q2:
 
@@ -21,15 +21,15 @@ Expression (Project names)
       Aggregating
         Expression (Before GROUP BY)
           Filter ((WHERE + Change column names to column identifiers))
-            ReadFromMergeTree (bluesky_1000m_zstd.bluesky)
+            ReadFromMergeTree (bluesky_100m_zstd.bluesky)
             Indexes:
               PrimaryKey
                 Keys:
                   data.kind
                   data.commit.operation
                 Condition: and((data.commit.operation in [\'create\', \'create\']), (data.kind in [\'commit\', \'commit\']))
-                Parts: 7/7
-                Granules: 673895/710561
+                Parts: 10/10
+                Granules: 22431/23394
 ------------------------------------------------------------------------------------------------------------------------
 Index usage for query Q3:
 
@@ -39,7 +39,7 @@ Expression (Project names)
       Aggregating
         Expression (Before GROUP BY)
           Filter ((WHERE + Change column names to column identifiers))
-            ReadFromMergeTree (bluesky_1000m_zstd.bluesky)
+            ReadFromMergeTree (bluesky_100m_zstd.bluesky)
             Indexes:
               PrimaryKey
                 Keys:
@@ -47,8 +47,8 @@ Expression (Project names)
                   data.commit.operation
                   data.commit.collection
                 Condition: and((data.commit.collection in 3-element set), and((data.commit.operation in [\'create\', \'create\']), (data.kind in [\'commit\', \'commit\'])))
-                Parts: 7/7
-                Granules: 445375/710561
+                Parts: 10/10
+                Granules: 14048/23394
 ------------------------------------------------------------------------------------------------------------------------
 Index usage for query Q4:
 
@@ -59,7 +59,7 @@ Expression (Project names)
         Aggregating
           Expression (Before GROUP BY)
             Filter ((WHERE + Change column names to column identifiers))
-              ReadFromMergeTree (bluesky_1000m_zstd.bluesky)
+              ReadFromMergeTree (bluesky_100m_zstd.bluesky)
               Indexes:
                 PrimaryKey
                   Keys:
@@ -67,8 +67,8 @@ Expression (Project names)
                     data.commit.operation
                     data.commit.collection
                   Condition: and((data.commit.collection in [\'app.bsky.feed.post\', \'app.bsky.feed.post\']), and((data.commit.operation in [\'create\', \'create\']), (data.kind in [\'commit\', \'commit\'])))
-                  Parts: 7/7
-                  Granules: 67824/710561
+                  Parts: 10/10
+                  Granules: 2231/23394
 ------------------------------------------------------------------------------------------------------------------------
 Index usage for query Q5:
 
@@ -79,7 +79,7 @@ Expression (Project names)
         Aggregating
           Expression (Before GROUP BY)
             Filter ((WHERE + Change column names to column identifiers))
-              ReadFromMergeTree (bluesky_1000m_zstd.bluesky)
+              ReadFromMergeTree (bluesky_100m_zstd.bluesky)
               Indexes:
                 PrimaryKey
                   Keys:
@@ -87,5 +87,5 @@ Expression (Project names)
                     data.commit.operation
                     data.commit.collection
                   Condition: and((data.commit.collection in [\'app.bsky.feed.post\', \'app.bsky.feed.post\']), and((data.commit.operation in [\'create\', \'create\']), (data.kind in [\'commit\', \'commit\'])))
-                  Parts: 7/7
-                  Granules: 67824/710561
+                  Parts: 10/10
+                  Granules: 2231/23394
