@@ -11,7 +11,7 @@
   "dataset_size": 1000000,
   "dataset_size_readable": "1m",
   "num_documents": 1000000,
-  "data_compression": "Uncompressed",
+  "data_compression": "auto",
   "total_size": 484704256,
   "total_size_readable": "484 MB",
   "result": [
@@ -20,5 +20,12 @@
     [2.809,0.327,0.330],
     [2.802,0.250,0.247],
     [2.822,0.259,0.256]
+  ],
+  "result_readable": [
+    "2.80 sec, 230.00 msec, 228.00 msec",
+    "2.81 sec, 319.00 msec, 315.00 msec",
+    "2.81 sec, 327.00 msec, 330.00 msec",
+    "2.80 sec, 250.00 msec, 247.00 msec",
+    "2.82 sec, 259.00 msec, 256.00 msec"
   ]
 }
