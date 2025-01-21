@@ -74,7 +74,7 @@ The script install the database system on the current machine, then prepare and 
 
 The results of the benchmark are stored within each folder in files prefixed with the $OUTPUT_PREFIX (Default is `_m6i.8xlarge`).
 
-Below is a description of the files that might be generated as a result of the benchmark. Depending on the database, some files might not be generated because not relevant. 
+Below is a description of the files that might be generated as a result of the benchmark. Depending on the database, some files might not be generated because they are not relevant. 
 
 - `.total_size`: Contains the total size of the dataset.
 - `.data_size`: Contains the data size of the dataset.
@@ -84,4 +84,10 @@ Below is a description of the files that might be generated as a result of the b
 - `.results_runtime`: Contains the runtime results of the benchmark.
 - `.results_memory_usage`: Contains the memory usage results of the benchmark.
 
+The last step of our benchmark is manual (PRs to automate this last step are welcome). We manually retrieve the information from the outputted files into the final result JSON documents which we add into the `results` subdirectory within the benchmark candidate's ClickJSONBench subdirectory. 
 
+For example, this is the [results](./clickhouse/results) directory for our ClickHouse benchmark results.
+
+## Add a new database
+
+Contribution of new database that natively supports JSON to this benchmark are welcome. 
