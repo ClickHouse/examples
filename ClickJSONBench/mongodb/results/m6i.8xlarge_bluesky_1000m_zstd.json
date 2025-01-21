@@ -17,9 +17,6 @@
   "data_size_readable": "131.00 GB",
   "index_size": 24396128256,
   "index_size_readable": "24.40 GB",
-  "oom_query_ids": [],
-  "oom_threshold": 68719476736,
-  "oom_threshold_readable": "64 GB",
   "result": [
     [1689.1,1667.27,1664.9],
     [0,0,0],
