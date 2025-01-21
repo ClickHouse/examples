@@ -8,8 +8,8 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": 10000000,
-  "num_documents_readable": "10m",
+  "dataset_size": 10000000,
+  "dataset_size_readable": "10m",
   "data_compression": "zstd",
   "total_size": 1058178020,
   "total_size_readable": "1.06 GB",

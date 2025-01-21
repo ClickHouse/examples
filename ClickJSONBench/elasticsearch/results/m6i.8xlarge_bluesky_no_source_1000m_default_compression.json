@@ -11,8 +11,8 @@
   "num_documents": 1000000000,
   "num_documents_readable": "1000m",
   "data_compression": "deflate",
-  "data_size": 221270210163,
-  "data_size_readable": "206 GB",
+  "total_size": 221270210163,
+  "total_size_readable": "206 GB",
   "result": [
   ]
 }

@@ -11,8 +11,8 @@
   "num_documents": 100000000,
   "num_documents_readable": "100m",
   "data_compression": "lz4",
-  "data_size": 20817518638,
-  "data_size_readable": "19.3 GB",
+  "total_size": 20817518638,
+  "total_size_readable": "19.3 GB",
   "result": [
     [5.797431,6.123935,5.874590],
     [113.029070,113.028458,113.188966],

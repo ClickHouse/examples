@@ -12,8 +12,8 @@
   "dataset_size_readable": "100m",
   "num_documents": 99999947,
   "data_compression": "deflate",
-  "data_size": 21268479403,
-  "data_size_readable": "19.8 GB",
+  "total_size": 21268479403,
+  "total_size_readable": "19.8 GB",
   "result": [
     [2.532,2.536,2.486],
     [23.194,22.932,23.188],
