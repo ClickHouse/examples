@@ -30,8 +30,11 @@ cat 'queries.txt' | while read -r QUERY; do
     eval "QUERY=\"${QUERY}\""
     # Print the query
     echo "------------------------------------------------------------------------------------------------------------------------"
-    echo "Result for query Q$QUERY_NUM:"
+    echo "Result for query Q$QUERY_NUM: "
     echo
     CURL_DATA="{\"query\": \"$QUERY\"}"
-    curl -s -k -X POST "https://localhost:9200/_query" -u "elastic:${ELASTIC_PASSWORD}" -H 'Content-Type: application/json' -d "$CURL_DATA"
+    curl -s -k -X POST "https://localhost:9200/_query?format=txt" -u "elastic:${ELASTIC_PASSWORD}" -H 'Content-Type: application/json' -d "$CURL_DATA"
+    echo
+     # Increment the query number
+    QUERY_NUM=$((QUERY_NUM + 1))
 done

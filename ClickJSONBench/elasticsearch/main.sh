@@ -35,7 +35,7 @@ benchmark() {
     ./create_and_load.sh "bluesky-${template}-${size}m" "index_template_${template}" "$DATA_DIRECTORY" "$size" "$SUCCESS_LOG" "$ERROR_LOG"
     ./total_size.sh "bluesky-${template}-${size}m" | tee "${OUTPUT_PREFIX}_bluesky-${template}-${size}m.data_size"
     ./count.sh "bluesky-${template}-${size}m" | tee "${OUTPUT_PREFIX}_bluesky-${template}-${size}m.count"
-    ./query_results.sh "bluesky-${template}-${size}m" "${OUTPUT_PREFIX}_bluesky-${template}-${size}m.query_results"
+    ./query_results.sh "bluesky-${template}-${size}m" | tee "${OUTPUT_PREFIX}_bluesky-${template}-${size}m.query_results"
     ./benchmark.sh "bluesky-${template}-${size}m" "${OUTPUT_PREFIX}_bluesky-${template}-${size}m.results_runtime"
 }
 
