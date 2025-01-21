@@ -8,8 +8,9 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": 100000000,
-  "num_documents_readable": "100m",
+  "dataset_size": 100000000,
+  "dataset_size_readable": "100m",
+  "num_documents": 99999947,
   "data_compression": "deflate",
   "data_size": 21268479403,
   "data_size_readable": "19.8 GB",

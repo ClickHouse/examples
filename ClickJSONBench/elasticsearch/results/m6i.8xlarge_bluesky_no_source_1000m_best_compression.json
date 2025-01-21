@@ -8,8 +8,9 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": 1000000000,
-  "num_documents_readable": "1000m",
+  "dataset_size": 1000000000,
+  "dataset_size_readable": "1000m",
+  "num_documents": 999998998,
   "data_compression": "lz4",
   "data_size": 235840659266,
   "data_size_readable": "219.6 GB",
