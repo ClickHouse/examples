@@ -45,7 +45,6 @@ cat 'queries.txt' | while read -r QUERY; do
         # Convert 'took' to seconds (from ms to s)
         TOOK_S=$(bc <<< "scale=3; $TOOK_MS / 1000")
         TOOK_FORMATTED=$(printf "%.3f" "$TOOK_S")
-        # TOOK_S=$(bc <<< "scale=3; ")
         echo "$RESPONSE" >> "$LOG_FILE"
         echo "Response time: ${TOOK_FORMATTED} s"
     done

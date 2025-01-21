@@ -23,17 +23,13 @@ cat queries.sql | while read -r query; do
 
     echo "Running query: $query"
     for i in $(seq 1 $TRIES); do
-        start=`date +%s`
         # Run query with timer enabled and extract the real time.
         OUTPUT=$($DUCKDB_CMD <<EOF >> "$LOG_FILE"
 .timer on
 $query
 EOF
 )
-        end=`date +%s.%N`
-        runtime=$( echo "$end - $start" | bc -l )
-        runtime_formatted=$(printf "%.3f" "$runtime")
         REAL_TIME=$(tac "$LOG_FILE" | grep -m 1 -oP 'real\s+\K[\d.]+')
-        echo "Real time: $runtime_formatted seconds"
+        echo "Real time: $REAL_TIME seconds"
     done
 done
