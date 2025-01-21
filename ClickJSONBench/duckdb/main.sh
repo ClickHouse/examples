@@ -41,6 +41,7 @@ benchmark() {
     ./total_size.sh "db.duckdb_${size}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}m.data_size"
     ./count.sh "db.duckdb_${size}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}m.count"
     #./query_results.sh "db.duckdb_${size}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}m.query_results"
+    ./physical_query_plans.sh "db.duckdb_${size}" bluesky | tee "${OUTPUT_PREFIX}_bluesky_${size}m.physical_query_plans"
     ./benchmark.sh "db.duckdb_${size}" "${OUTPUT_PREFIX}_bluesky_${size}m.results_runtime"
 }
 
