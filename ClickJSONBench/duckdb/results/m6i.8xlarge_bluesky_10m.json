@@ -11,7 +11,7 @@
   "dataset_size": 10000000,
   "dataset_size_readable": "10m",
   "num_documents": 10000000,
-  "data_compression": "Uncompressed",
+  "data_compression": "auto",
   "total_size": 4893442048,
   "total_size_readable": "4.89 GB",
   "oom_threshold_readable": "64 GB",
@@ -21,5 +21,12 @@
     [37.343,1.598,1.613],
     [37.363,1.060,1.065],
     [37.439,1.183,1.213]
+  ],
+  "result_readable": [
+    "37.33 sec, 1.18 sec, 1.20 sec",
+    "37.36 sec, 1.64 sec, 1.65 sec",
+    "37.34 sec, 1.60 sec, 1.61 sec",
+    "37.36 sec, 1.06 sec, 1.06 sec",
+    "37.44 sec, 1.18 sec, 1.21 sec"
   ]
 }
