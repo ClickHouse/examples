@@ -12,8 +12,8 @@
   "dataset_size_readable": "1000m",
   "num_documents": 974400000,
   "data_compression": "Uncompressed",
-  "data_size": 472594513920,
-  "data_size_readable": "472 GB",
+  "total_size": 472594513920,
+  "total_size_readable": "472 GB",
   "result": [
     [3741.938,3732.441,3731.713],
     [3748.548,3737.248,3741.860],

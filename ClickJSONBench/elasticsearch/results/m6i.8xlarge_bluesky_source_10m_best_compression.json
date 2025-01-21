@@ -11,8 +11,8 @@
   "num_documents": 10000000,
   "num_documents_readable": "10m",
   "data_compression": "zstd",
-  "data_size": 3629368283,
-  "data_size_readable": "3.3 GB",
+  "total_size": 3629368283,
+  "total_size_readable": "3.3 GB",
   "result": [
     [0.610664,0.608294,0.603844],
     [10.325170,10.274449,10.371897],

@@ -12,8 +12,8 @@
   "dataset_size_readable": "10m",
   "num_documents": 9999998,
   "data_compression": "zstd",
-  "data_size": 2834172690,
-  "data_size_readable": "2.6 GB",
+  "total_size": 2834172690,
+  "total_size_readable": "2.6 GB",
   "result": [
     [0.270,0.263,0.275],
     [2.942,2.683,2.655],

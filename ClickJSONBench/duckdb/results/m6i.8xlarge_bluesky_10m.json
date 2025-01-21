@@ -12,8 +12,8 @@
   "dataset_size_readable": "10m",
   "num_documents": 10000000,
   "data_compression": "Uncompressed",
-  "data_size": 4893442048,
-  "data_size_readable": "4.89 GB",
+  "total_size": 4893442048,
+  "total_size_readable": "4.89 GB",
   "oom_threshold_readable": "64 GB",
   "result": [
     [37.332,1.179,1.196],
