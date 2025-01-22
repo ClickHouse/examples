@@ -1,0 +1,36 @@
+{
+  "system": "MongoDB",
+  "version": "8.0.3",
+  "date": "2025-01-13",
+  "machine": "m6i.8xlarge, 10000gib gp3",
+  "cluster_size": 1,
+  "comment": "",
+  "tags": [
+  ],
+  "num_documents": 1000000000,
+  "num_documents_readable": "1000m",
+  "data_compression": "snappy",
+  "total_size": 245411815424,
+  "total_size_readable": "245.41 GB",
+  "data_size": 221332566016,
+  "data_size_readable": "221.33 GB",
+  "index_size": 24079249408,
+  "index_size_readable": "24.08 GB",
+  "oom_query_ids": [1],
+  "oom_threshold": 68719476736,
+  "oom_threshold_readable": "64 GB",
+  "result": [
+    [1974.18,1956.12,1957.9],
+    [0,0,0],
+    [6354.06,6348.55,6347.45],
+    [2031.61,2022.65,2020.14],
+    [2054.2,2041.93,2040.19]
+  ],
+  "result_readable": [
+    "32 min 54.18 sec, 32 min 36.12 sec, 32 min 37.90 sec",
+    "0.00 msec, 0.00 msec, 0.00 msec",
+    "1 hr 45 min 54.06 sec, 1 hr 45 min 48.55 sec, 1 hr 45 min 47.45 sec",
+    "33 min 51.61 sec, 33 min 42.65 sec, 33 min 40.14 sec",
+    "34 min 14.20 sec, 34 min 1.93 sec, 34 min 0.19 sec"
+  ]
+}

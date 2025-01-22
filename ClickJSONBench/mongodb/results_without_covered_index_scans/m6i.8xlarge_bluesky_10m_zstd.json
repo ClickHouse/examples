@@ -1,0 +1,33 @@
+{
+  "system": "MongoDB",
+  "version": "8.0.3",
+  "date": "2025-01-13",
+  "machine": "m6i.8xlarge, 10000gib gp3",
+  "cluster_size": 1,
+  "comment": "",
+  "tags": [
+  ],
+  "num_documents": 10000000,
+  "num_documents_readable": "10m",
+  "data_compression": "zstd",
+  "total_size": 1411428352,
+  "total_size_readable": "1.41 GB",
+  "data_size": 1212796928,
+  "data_size_readable": "1.21 GB",
+  "index_size": 198631424,
+  "index_size_readable": "198.63 MB",
+  "result": [
+    [15.462,3.001,2.833],
+    [33.838,33.59,33.529],
+    [11.42,11.431,11.508],
+    [1.854,1.9,1.908],
+    [2.043,2.013,2.014]
+  ],
+  "result_readable": [
+    "15.46 sec, 3.00 sec, 2.83 sec",
+    "33.84 sec, 33.59 sec, 33.53 sec",
+    "11.42 sec, 11.43 sec, 11.51 sec",
+    "1.85 sec, 1.90 sec, 1.91 sec",
+    "2.04 sec, 2.01 sec, 2.01 sec"
+  ]
+}
