@@ -59,7 +59,7 @@ case $choice in
         ;;
     4)
         benchmark 1000 snappy
-        benchmark 1000zstd
+        benchmark 1000 zstd
         ;;
     5)
         benchmark 1 snappy
