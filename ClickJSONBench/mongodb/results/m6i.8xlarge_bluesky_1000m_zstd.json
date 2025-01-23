@@ -1,5 +1,5 @@
 {
-  "system": "MongoDB",
+  "system": "MongoDB (covered-index-scans)",
   "version": "8.0.3",
   "os": "Ubuntu 24.04",
   "date": "2025-01-13",
