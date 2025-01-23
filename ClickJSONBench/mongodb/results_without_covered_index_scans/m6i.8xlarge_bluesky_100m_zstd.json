@@ -1,6 +1,7 @@
 {
   "system": "MongoDB",
   "version": "8.0.3",
+  "os": "Ubuntu 24.04",
   "date": "2025-01-13",
   "machine": "m6i.8xlarge, 10000gib gp3",
   "cluster_size": 1,
@@ -17,9 +18,6 @@
   "data_size_readable": "13.76 GB",
   "index_size": 2439716864,
   "index_size_readable": "2.44 GB",
-  "oom_query_ids": [1],
-  "oom_threshold": 68719476736,
-  "oom_threshold_readable": "64 GB",
   "result": [
     [171.13,56.34,50.349],
     [2673.28,2573.21,2576.39],

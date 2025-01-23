@@ -10,7 +10,7 @@
   ],
   "dataset_size": 100000000,
   "dataset_size_readable": "100m",
-  "num_loaded_documents": ,
+  "num_loaded_documents": 91000000,
   "data_compression": "pglz",
   "total_size": 69085896704,
   "total_size_readable": "69.09 GB",
