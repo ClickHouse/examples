@@ -7,7 +7,7 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": 10000000,
+  "num_loaded_documents": 10000000,
   "num_documents_readable": "10m",
   "data_compression": "snappy",
   "total_size": 2145968128,

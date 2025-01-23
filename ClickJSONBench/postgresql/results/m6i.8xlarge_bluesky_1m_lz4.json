@@ -10,6 +10,7 @@
   ],
   "dataset_size": 1000000,
   "dataset_size_readable": "1m",
+  "num_loaded_documents": ,
   "data_compression": "lz4",
   "total_size": 731111424,
   "total_size_readable": "731.11 MB",

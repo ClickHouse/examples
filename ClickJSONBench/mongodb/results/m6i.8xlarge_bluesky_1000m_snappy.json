@@ -10,6 +10,7 @@
   ],
   "dataset_size": 1000000000,
   "dataset_size_readable": "1000m",
+  "num_loaded_documents": 893632990,
   "data_compression": "snappy",
   "total_size": 248580009984,
   "total_size_readable": "248.58 GB",
