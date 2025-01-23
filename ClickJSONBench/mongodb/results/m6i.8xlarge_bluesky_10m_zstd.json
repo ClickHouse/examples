@@ -10,6 +10,7 @@
   ],
   "dataset_size": 10000000,
   "dataset_size_readable": "10m",
+  "num_loaded_documents": 7860000,
   "data_compression": "zstd",
   "total_size": 1465458688,
   "total_size_readable": "1.47 GB",

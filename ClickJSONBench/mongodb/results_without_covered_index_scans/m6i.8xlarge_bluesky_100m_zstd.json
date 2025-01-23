@@ -7,7 +7,7 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": 100000000,
+  "num_loaded_documents": 100000000,
   "num_documents_readable": "100m",
   "data_compression": "zstd",
   "total_size": 16198197248,
