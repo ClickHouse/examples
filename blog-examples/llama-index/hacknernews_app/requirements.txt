@@ -33,7 +33,7 @@ clickhouse-sqlalchemy==0.3.0
 codespell==2.2.6
 coloredlogs==15.0.1
 comm==0.2.1
-cryptography==42.0.4
+cryptography==44.0.1
 dataclasses-json==0.6.4
 debugpy==1.8.1
 decorator==5.1.1
