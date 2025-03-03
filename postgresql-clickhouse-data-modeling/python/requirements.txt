@@ -1,0 +1,6 @@
+pandas
+psycopg2
+requests
+tqdm
+pyarrow
+faker
