@@ -1,5 +1,16 @@
 #!/bin/sh 
 
+# # Create and activate a Python virtual environment
+VENV_DIR="venv"
+python3 -m venv $VENV_DIR
+. $VENV_DIR/bin/activate
+
+# Install dependencies
+pip install -r python/requirements.txt
+
+# Load the data into PostgreSQL
+python python/import_parquet.py clickhouse_pg_db admin password localhost 5432 100000
+
 echo "Creating the ClickHouse database"
 docker exec -it clickhouse sh -c "clickhouse-client --host localhost --query 'CREATE DATABASE IF NOT EXISTS stackoverflow'"
 
@@ -45,7 +56,6 @@ curl --request POST \
 echo "Creating the PeerDB mirror"
 curl --request POST \
   --url localhost:3000/api/v1/flows/cdc/create \
-  --header 'Authorization: Basic OnJsYWNrd3dhbmEyMw==' \
   --header 'Content-Type: application/json' \
   --data '
 {
@@ -83,3 +93,5 @@ curl --request POST \
   "synced_at_col_name": "_peerdb_synced_at"
 }
 }'
+echo "Done"
+

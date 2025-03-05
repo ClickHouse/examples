@@ -6,13 +6,19 @@ The example is using StackOverflow dataset. Be aware that is large and will a fe
 
 # How to run it
 
-Execute the script [run-cdc.sh](./run-cdc.sh) to run the example locally on your machine. 
+Execute the script [run.sh](./run.sh) to start the example locally on your machine. 
 
 The script will pull the Docker images required for the application to run and deploy the application using docker compose. 
 
-Then a script download the StackOverflow dataset and insert it to the PostgreSQL database. This takes a few minutes to run. 
+## Init the application 
 
-After that, a PostgreSQL peer and a ClickHouse peer are created in PeerDB and a mirror is configured to start synchronizing the data. After a few minutes the initial load should be completed and the data is synchronized between PostgreSQL and ClickHouse. Now all the CRUD operations on PostgreSQL are replicated in the ClickHouse database.
+Execute the script [init.sh](./init.sh) to initialize the application once it's running. You just need to run it one time. This will take a few minutes to run. 
+
+The script download the dataset and insert it into PostgreSQL. Then, a PostgreSQL peer and a ClickHouse peer are created in PeerDB and a mirror is configured to start synchronizing the data with ClickHouse. After a few minutes the initial load should be completed and the data is synchronized between PostgreSQL and ClickHouse. 
+
+Now all the CRUD operations on PostgreSQL are replicated in the ClickHouse database.
+
+## Access the application
 
 You can access the PeerDB UI at http://localhost:3000
 
