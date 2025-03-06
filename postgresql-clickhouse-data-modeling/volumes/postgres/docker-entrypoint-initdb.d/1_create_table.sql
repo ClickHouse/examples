@@ -6,7 +6,7 @@ CREATE TABLE posts (
     Score INTEGER,
     ViewCount INTEGER,
     Body TEXT,
-    OwnerUserId INTEGER,
+    OwnerUserId INTEGER NOT NULL,
     OwnerDisplayName TEXT,
     LastEditorUserId INTEGER,
     LastEditorDisplayName TEXT,
