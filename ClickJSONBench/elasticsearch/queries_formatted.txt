@@ -1,14 +1,13 @@
--- Q0 - Top event types
+-- Q1 - Top event types
 
 POST /_query?format=txt
 {
   "query": """FROM $INDEX_NAME
-| WHERE kind == "commit" AND commit.operation == "create"
 | STATS count = COUNT() BY commit.collection
 | SORT count DESC"""
 }
 
--- Q1 - Top event types together with unique users per event type
+-- Q2 - Top event types together with unique users per event type
 
 POST /_query?format=txt
 {
@@ -18,7 +17,7 @@ POST /_query?format=txt
 | SORT count DESC"""
 }
 
--- Q2 - When do people use BlueSky
+-- Q3 - When do people use BlueSky
 
 POST /_query?format=txt
 {
@@ -28,7 +27,7 @@ POST /_query?format=txt
 | SORT count, commit.collection"""
 }
 
--- Q3 - top 3 post veterans
+-- Q4 - top 3 post veterans
 
 POST /_query?format=txt
 {
@@ -39,7 +38,7 @@ POST /_query?format=txt
 | LIMIT 3"""
 }
 
--- Q4 - top 3 users with longest activity
+-- Q5 - top 3 users with longest activity
 
 POST /_query?format=txt
 {

@@ -1,5 +1,5 @@
 {
-  "system": "MongoDB",
+  "system": "MongoDB (covered-index-scans)",
   "version": "8.0.3",
   "os": "Ubuntu 24.04",
   "date": "2025-01-13",
@@ -8,30 +8,28 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": 100000000,
-  "num_documents_readable": "100m",
+  "dataset_size": 100000000,
+  "dataset_size_readable": "100m",
+  "num_loaded_documents": 94408000,
   "data_compression": "snappy",
-  "total_size": 25923018752,
-  "total_size_readable": "25.92 GB",
+  "total_size": 26336047104,
+  "total_size_readable": "26.34 GB",
   "data_size": 23520026624,
   "data_size_readable": "23.52 GB",
-  "index_size": 2402992128,
-  "index_size_readable": "2.40 GB",
-  "oom_query_ids": [1],
-  "oom_threshold": 68719476736,
-  "oom_threshold_readable": "64 GB",
+  "index_size": 2816020480,
+  "index_size_readable": "2.82 GB",
   "result": [
-    [99.24,64.444,48.249],
-    [0,0,0],
-    [188.384,164.718,154.082],
-    [36.798,35.852,37.303],
-    [36.978,38.413,41.326]
+    [8.824,8.558,8.519],
+    [32.831,34.321,34.477],
+    [10.825,10.725,10.763],
+    [1.723,1.762,1.736],
+    [1.841,1.869,1.857]
   ],
   "result_readable": [
-    "1 min 39.24 sec, 1 min 4.44 sec, 48.25 sec",
-    "0.00 msec, 0.00 msec, 0.00 msec",
-    "3 min 8.38 sec, 2 min 44.72 sec, 2 min 34.08 sec",
-    "36.80 sec, 35.85 sec, 37.30 sec",
-    "36.98 sec, 38.41 sec, 41.33 sec"
+    "8.82 sec, 8.56 sec, 8.52 sec",
+    "32.83 sec, 34.32 sec, 34.48 sec",
+    "10.82 sec, 10.72 sec, 10.76 sec",
+    "1.72 sec, 1.76 sec, 1.74 sec",
+    "1.84 sec, 1.87 sec, 1.86 sec"
   ]
 }

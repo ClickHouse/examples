@@ -8,27 +8,28 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": 10000000,
-  "num_documents_readable": "10m",
+  "dataset_size": 10000000,
+  "dataset_size_readable": "10m",
+  "num_loaded_documents": 7000000,
   "data_compression": "pglz",
-  "total_size": 5617565696,
-  "total_size_readable": "6.61 GB",
-  "data_size": 4652408832,
+  "total_size": 5778792448,
+  "total_size_readable": "5.78 GB",
+  "data_size": 4652179456,
   "data_size_readable": "4.65 GB",
-  "index_size": 965156864,
-  "index_size_readable": "965.15 MB",
+  "index_size": 1126612992,
+  "index_size_readable": "1.13 GB",
   "result": [
-    [35.115,0.958046,0.954668],
-    [51.9893,9.31404,9.3564],
-    [36.3036,2.5388,2.53043],
-    [38.6591,1.81197,1.82374],
-    [39.1093,1.95594,1.9592]
+    [35.1722,0.948157,0.947581],
+    [48.0881,9.34658,9.3514],
+    [35.668,2.53469,2.53258],
+    [174.552,2.07684,1.95298],
+    [175.98,2.18434,2.21651]
   ],
   "result_readable": [
-    "35.12 sec, 958.05 msec, 954.67 msec",
-    "51.99 sec, 9.31 sec, 9.36 sec",
-    "36.30 sec, 2.54 sec, 2.53 sec",
-    "38.66 sec, 1.81 sec, 1.82 sec",
-    "39.11 sec, 1.96 sec, 1.96 sec"
+    "35.17 sec, 948.16 msec, 947.58 msec",
+    "48.09 sec, 9.35 sec, 9.35 sec",
+    "35.67 sec, 2.53 sec, 2.53 sec",
+    "2 min 54.55 sec, 2.08 sec, 1.95 sec",
+    "2 min 55.98 sec, 2.18 sec, 2.22 sec"
   ]
 }

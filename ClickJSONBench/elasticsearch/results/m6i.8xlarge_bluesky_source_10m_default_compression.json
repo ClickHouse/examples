@@ -8,16 +8,24 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": 10000000,
-  "num_documents_readable": "10m",
+  "dataset_size": 10000000,
+  "dataset_size_readable": "10m",
+  "num_loaded_documents": 9999998,
   "data_compression": "lz4",
-  "data_size": 4446062903,
-  "data_size_readable": "4.1 GB",
+  "total_size": 4600428060,
+  "total_size_readable": "4.2 GB",
   "result": [
-    [0.603521,0.604527,0.606462],
-    [10.265376,10.263890,10.299856],
-    [1.810559,1.823619,1.834985],
-    [0.394398,0.394998,0.401989],
-    [0.475595,0.468145,0.475640]
+    [0.266,0.274,0.266],
+    [2.753,2.634,2.620],
+    [2.048,2.130,2.020],
+    [0.417,0.399,0.402],
+    [0.465,0.466,0.480]
+  ],
+  "result_readable": [
+    "266.00 msec, 274.00 msec, 266.00 msec",
+    "2.75 sec, 2.63 sec, 2.62 sec",
+    "2.05 sec, 2.13 sec, 2.02 sec",
+    "417.00 msec, 399.00 msec, 402.00 msec",
+    "465.00 msec, 466.00 msec, 480.00 msec"
   ]
 }

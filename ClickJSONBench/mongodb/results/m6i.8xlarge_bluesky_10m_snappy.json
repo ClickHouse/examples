@@ -1,5 +1,5 @@
 {
-  "system": "MongoDB",
+  "system": "MongoDB (covered-index-scans)",
   "version": "8.0.3",
   "os": "Ubuntu 24.04",
   "date": "2025-01-13",
@@ -8,27 +8,28 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": 10000000,
-  "num_documents_readable": "10m",
+  "dataset_size": 10000000,
+  "dataset_size_readable": "10m",
+  "num_loaded_documents": 7860000,
   "data_compression": "snappy",
-  "total_size": 2145968128,
-  "total_size_readable": "2.15 GB",
+  "total_size": 2200559616,
+  "total_size_readable": "2.20 GB",
   "data_size": 1947783168,
   "data_size_readable": "1.95 GB",
-  "index_size": 198184960,
-  "index_size_readable": "198.18",
+  "index_size": 252776448,
+  "index_size_readable": "252.78",
   "result": [
-    [16.363,2.861,2.807],
-    [33.32,33.482,33.416],
-    [11.605,11.562,11.561],
-    [1.88,1.932,1.899],
-    [2.029,2.025,2.028]
+    [8.824,8.558,8.519],
+    [32.831,34.321,34.477],
+    [10.825,10.725,10.763],
+    [1.723,1.762,1.736],
+    [1.841,1.869,1.857]
   ],
   "result_readable": [
-    "16.36 sec, 2.86 sec, 2.81 sec",
-    "33.32 sec, 33.48 sec, 33.42 sec",
-    "11.61 sec, 11.56 sec, 11.56 sec",
-    "1.88 sec, 1.93 sec, 1.90 sec",
-    "2.03 sec, 2.02 sec, 2.03 sec"
+    "8.82 sec, 8.56 sec, 8.52 sec",
+    "32.83 sec, 34.32 sec, 34.48 sec",
+    "10.82 sec, 10.72 sec, 10.76 sec",
+    "1.72 sec, 1.76 sec, 1.74 sec",
+    "1.84 sec, 1.87 sec, 1.86 sec"
   ]
 }

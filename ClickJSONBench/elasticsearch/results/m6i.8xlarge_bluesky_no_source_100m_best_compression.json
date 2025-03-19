@@ -8,16 +8,24 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": 100000000,
-  "num_documents_readable": "100m",
-  "data_compression": "deflate",
-  "data_size": 20552643171,
-  "data_size_readable": "19.1 GB",
+  "dataset_size": 100000000,
+  "dataset_size_readable": "100m",
+  "num_loaded_documents": 99999947,
+  "data_compression": "zstd",
+  "data_size": 21268479403,
+  "data_size_readable": "19.8 GB",
   "result": [
-    [6.007417,5.781424,5.788315],
-    [112.914096,113.012708,112.585476],
-    [17.461448,17.248686,17.458975],
-    [2.783576,2.823880,2.830336],
-    [3.476994,3.391395,3.424423]
+    [2.532,2.536,2.486],
+    [23.194,22.932,23.188],
+    [19.521,19.321,19.159],
+    [2.867,2.791,2.884],
+    [3.099,3.136,3.171]
+  ],
+    "result_readable": [
+    "2.53 sec, 2.54 sec, 2.49 sec",
+    "23.19 sec, 22.93 sec, 23.19 sec",
+    "19.52 sec, 19.32 sec, 19.16 sec",
+    "2.87 sec, 2.79 sec, 2.88 sec",
+    "3.10 sec, 3.14 sec, 3.17 sec"
   ]
 }

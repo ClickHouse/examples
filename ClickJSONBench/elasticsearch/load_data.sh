@@ -53,7 +53,7 @@ for file in $(ls "$DIRECTORY"/*.json.gz | sort); do
             continue
         fi
 
-        # Grant read permissions for the postgres user
+        # Grant read permissions
         chmod 644 "$uncompressed_file"
         # Stop processing if the max number of files is reached
         if [[ $counter -ge $MAX_FILES ]]; then

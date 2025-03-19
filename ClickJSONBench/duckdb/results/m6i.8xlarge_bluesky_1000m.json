@@ -8,16 +8,24 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": 1000000000,
-  "num_documents_readable": "1000m",
-  "data_compression": "Uncompressed",
-  "data_size": 472594513920,
-  "data_size_readable": "472 GB",
-  "timeout_query_ids": [],
-  "timeout_threshold": 7200,
-  "timeout_threshold_readable": "2 hours",
-  "oom_query_ids": [],
-  "oom_threshold": 68719476736,
-  "oom_threshold_readable": "64 GB",
-  "result": []
+  "dataset_size": 1000000000,
+  "dataset_size_readable": "1000m",
+  "num_loaded_documents": 974400000,
+  "data_compression": "auto",
+  "total_size": 472594513920,
+  "total_size_readable": "472 GB",
+  "result": [
+    [3741.938,3732.441,3731.713],
+    [3748.548,3737.248,3741.860],
+    [3746.684,3731.458,3729.542],
+    [3746.500,3735.854,3739.261],
+    [3748.528,3736.934,3740.101]
+  ],
+  "result_readable": [
+    "1 hr 2 min 21.94 sec, 1 hr 2 min 12.44 sec, 1 hr 2 min 11.71 sec",
+    "1 hr 2 min 28.55 sec, 1 hr 2 min 17.25 sec, 1 hr 2 min 21.86 sec",
+    "1 hr 2 min 26.68 sec, 1 hr 2 min 11.46 sec, 1 hr 2 min 9.54 sec",
+    "1 hr 2 min 26.50 sec, 1 hr 2 min 15.85 sec, 1 hr 2 min 19.26 sec",
+    "1 hr 2 min 28.53 sec, 1 hr 2 min 16.93 sec, 1 hr 2 min 20.10 sec"
+  ]
 }

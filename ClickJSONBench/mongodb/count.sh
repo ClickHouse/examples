@@ -13,9 +13,14 @@ COLLECTION_NAME="$2"
 # Fetch the document count using mongosh
 document_count=$(mongosh --quiet --eval "
     const db = db.getSiblingDB('$DATABASE_NAME');
-    const count = db.getCollection('$COLLECTION_NAME').countDocuments();
+    const count = db.getCollection('$COLLECTION_NAME').stats().count
     print(count);
 ")
+
+# Debugging information
+echo "Database: $DATABASE_NAME"
+echo "Collection: $COLLECTION_NAME"
+echo "Document count: $document_count"
 
 # Print the result
 if [[ -z "$document_count" ]]; then

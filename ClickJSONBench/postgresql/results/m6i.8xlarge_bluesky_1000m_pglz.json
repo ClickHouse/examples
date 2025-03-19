@@ -8,8 +8,9 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": 1000000000,
-  "num_documents_readable": "1000m",
+  "dataset_size": 1000000000,
+  "dataset_size_readable": "1000m",
+  "num_loaded_documents": 804000000,
   "data_compression": "pglz",
   "total_size": 626370043904,
   "total_size_readable": "626.37 GB",

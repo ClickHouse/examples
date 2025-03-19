@@ -6,8 +6,8 @@
   "comment": "",
   "tags": [
   ],
-  "num_documents": 100000000,
-  "num_documents_readable": "100m",
+  "dataset_size": 100000000,
+  "dataset_size_readable": "100m",
   "data_compression": "zstd(1)",
   "total_size": 12245368182,
   "total_size_readable": "12.25 GB"

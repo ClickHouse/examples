@@ -13,6 +13,9 @@ DUCKDB_CMD="duckdb $DB_NAME"
 
 TRIES=3
 
+LOG_FILE="query_results.log"
+> "$LOG_FILE"
+
 cat queries.sql | while read -r query; do
     # Clear filesystem cache between queries.
     sync
@@ -21,11 +24,12 @@ cat queries.sql | while read -r query; do
     echo "Running query: $query"
     for i in $(seq 1 $TRIES); do
         # Run query with timer enabled and extract the real time.
-        REAL_TIME=$($DUCKDB_CMD <<EOF | grep -oP 'real\s+\K[\d.]+'
+        OUTPUT=$($DUCKDB_CMD <<EOF >> "$LOG_FILE"
 .timer on
 $query
 EOF
 )
+        REAL_TIME=$(tac "$LOG_FILE" | grep -m 1 -oP 'real\s+\K[\d.]+')
         echo "Real time: $REAL_TIME seconds"
     done
 done

@@ -11,7 +11,7 @@ Expression (Project names)
             PrimaryKey
               Condition: true
               Parts: 1/1
-              Granules: 153/153
+              Granules: 156/156
 ------------------------------------------------------------------------------------------------------------------------
 Index usage for query Q2:
 
@@ -29,7 +29,7 @@ Expression (Project names)
                   data.commit.operation
                 Condition: and((data.commit.operation in [\'create\', \'create\']), (data.kind in [\'commit\', \'commit\']))
                 Parts: 1/1
-                Granules: 146/153
+                Granules: 148/156
 ------------------------------------------------------------------------------------------------------------------------
 Index usage for query Q3:
 
@@ -48,7 +48,7 @@ Expression (Project names)
                   data.commit.collection
                 Condition: and((data.commit.collection in 3-element set), and((data.commit.operation in [\'create\', \'create\']), (data.kind in [\'commit\', \'commit\'])))
                 Parts: 1/1
-                Granules: 91/153
+                Granules: 93/156
 ------------------------------------------------------------------------------------------------------------------------
 Index usage for query Q4:
 
@@ -68,7 +68,7 @@ Expression (Project names)
                     data.commit.collection
                   Condition: and((data.commit.collection in [\'app.bsky.feed.post\', \'app.bsky.feed.post\']), and((data.commit.operation in [\'create\', \'create\']), (data.kind in [\'commit\', \'commit\'])))
                   Parts: 1/1
-                  Granules: 14/153
+                  Granules: 15/156
 ------------------------------------------------------------------------------------------------------------------------
 Index usage for query Q5:
 
@@ -88,4 +88,4 @@ Expression (Project names)
                     data.commit.collection
                   Condition: and((data.commit.collection in [\'app.bsky.feed.post\', \'app.bsky.feed.post\']), and((data.commit.operation in [\'create\', \'create\']), (data.kind in [\'commit\', \'commit\'])))
                   Parts: 1/1
-                  Granules: 14/153
+                  Granules: 15/156
