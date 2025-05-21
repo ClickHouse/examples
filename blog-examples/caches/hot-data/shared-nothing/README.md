@@ -11,7 +11,7 @@ We’ll use the [Amazon customer reviews](https://clickhouse.com/docs/getting-st
 We’re running ClickHouse 25.5 on an AWS `m6i.8xlarge` EC2 instance with:
 - 32 vCPUs
 - 128 GiB RAM
-- 1 TiB gp3 SSD (3000 IOPS, 1000 MiB/s max throughput) 
+- 1 TiB gp3 SSD (16000 IOPS, 1000 MiB/s max throughput) 
 - Ubuntu Linux 24.04
 
 ## Table DDL and data loading
@@ -45,7 +45,7 @@ And then loaded the dataset from Parquet files hosted in our public example data
 
 ```sql
 INSERT INTO  amazon.amazon_reviews
-SELECT * FROM s3Cluster('default',
+SELECT * FROM s3(
 'https://datasets-documentation.s3.eu-west-3.amazonaws.com/amazon_reviews/amazon_reviews_*.snappy.parquet');
 
 ```
@@ -106,7 +106,7 @@ Query id: a9ca493f-15c1-4034-a423-b46c9381581b
 Peak memory usage: 1001.93 MiB.
 ```
 
-Note that the throughput numbers (e.g. `2.75 GB/s`) reported by `clickhouse-client` are logical numbers based on the ***uncompressed** data.
+Note that the throughput numbers (e.g. `2.75 GB/s`) reported by `clickhouse-client` are logical numbers based on the **uncompressed** data.
 
 ## Checking page cache usage for cold query run
 We fetch page cache usage infos for the query run above from the query log system table by using the printed query id for the run above:
