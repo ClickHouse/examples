@@ -83,12 +83,13 @@ SELECT ... FROM ... SETTINGS enable_filesystem_cache = 0;
 
 
 
-## Cold query run
+## Cold query run - single node
 We drop the filesystem cache - see above - and run the example query:
 ```sql
 SELECT count()
 FROM amazon_reviews
-WHERE NOT ignore(*);
+WHERE NOT ignore(*)
+SETTINGS enable_parallel_replicas = 0;
 ```
 
 We use the [ignore](https://clickhouse.com/docs/sql-reference/functions/other-functions#ignore) function do 'touch' each row from each column aka full table scan.
@@ -130,21 +131,24 @@ We can see that 11 of the compressed hot table data was cached. Although we drop
 
 
 
-## Hot query run
+## Hot query run - single node
 We run the same example query a second time:
 ```sql
 SELECT count()
 FROM amazon_reviews
-WHERE NOT ignore(*);
+WHERE NOT ignore(*)
+SETTINGS enable_parallel_replicas = 0;
 ```
 
 
 This is the `clickhouse-client` output for the hot query run:
 ```text
 Query id: b6f29ac0-1f3e-4b66-8e40-95dd1578e7b8
+
    ┌───count()─┐
 1. │ 150957260 │
    └───────────┘
+   
 1 row in set. Elapsed: 3.838 sec. Processed 150.96 million rows, 81.61 GB (39.33 million rows/s., 21.26 GB/s.)
 Peak memory usage: 1.26 GiB.
 ```
@@ -166,3 +170,48 @@ WHERE (query_id = 'b6f29ac0-1f3e-4b66-8e40-95dd1578e7b8') AND (type = 'QueryFini
 │                        0 │                      32 │
 └──────────────────────────┴─────────────────────────┘
 ```
+
+
+
+## Cold query run - parallel replicas (3 nodes in parallel)
+We drop the filesystem cache - see above - and run the example query:
+```sql
+SELECT count()
+FROM amazon_reviews
+WHERE NOT ignore(*)
+SETTINGS enable_parallel_replicas = 1;
+```
+
+We use the [ignore](https://clickhouse.com/docs/sql-reference/functions/other-functions#ignore) function do 'touch' each row from each column aka full table scan.
+
+This is the `clickhouse-client` output for the cold query run:
+```text
+   ┌───count()─┐
+1. │ 150957260 │
+   └───────────┘
+
+1 row in set. Elapsed: 7.598 sec. Processed 150.96 million rows, 81.61 GB (19.87 million rows/s., 10.74 GB/s.)
+Peak memory usage: 1.38 GiB.
+```
+
+## Hot query run - parallel replicas (3 nodes in parallel)
+We run the same example query a second time:
+```sql
+SELECT count()
+FROM amazon_reviews
+WHERE NOT ignore(*)
+SETTINGS enable_parallel_replicas = 1;
+```
+
+
+This is the `clickhouse-client` output for the hot query run:
+```text
+   ┌───count()─┐
+1. │ 150957260 │
+   └───────────┘
+   
+1 row in set. Elapsed: 1.712 sec. Processed 150.96 million rows, 81.61 GB (88.18 million rows/s., 47.67 GB/s.)
+Peak memory usage: 1.40 GiB.
+```
+
+
