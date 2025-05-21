@@ -1,4 +1,4 @@
-# Hot table data caching in traditional shared-nothing ClickHouse Clusters
+# Hot table data caching in traditional ClickHouse Cloud service
 
 
 ## Data set
