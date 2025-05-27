@@ -81,10 +81,9 @@ For example:
 SELECT ... FROM ... SETTINGS min_bytes_to_use_direct_io = 1;
 ```
 
+## Throughput benchmark: Full table scan
 
-
-
-## Cold query run
+### Cold query run
 We drop the page cache - see above - and run the example query:
 ```sql
 SELECT count()
@@ -108,7 +107,7 @@ Peak memory usage: 1001.93 MiB.
 
 Note that the throughput numbers (e.g. `2.75 GB/s`) reported by `clickhouse-client` are logical numbers based on the **uncompressed** data.
 
-## Checking page cache usage for cold query run
+### Checking page cache usage for cold query run
 We fetch page cache usage infos for the query run above from the query log system table by using the printed query id for the run above:
 
 ```sql
@@ -173,7 +172,7 @@ We can see that during all of the ~30 seconds of running the query with cold cac
 
 
 
-## Hot query run
+### Hot query run
 We run the same example query a second time:
 ```sql
 SELECT count()
@@ -193,7 +192,7 @@ Peak memory usage: 622.74 MiB.
 ```
 
 
-## Checking page cache usage for hot query run
+### Checking page cache usage for hot query run
 We fetch page cache usage infos for the query run above from the query log system table by using the printed query id for the run above:
 
 ```sql
@@ -228,3 +227,66 @@ dstat -dD total,nvme0n1  1
 ```
 
 We can see that during all of the ~5 seconds of running the query with hot caches, no data was read from the disk.
+
+
+## Latency benchmark: Scattered reads
+
+We use this example query
+
+```sql
+SELECT *
+FROM amazon.amazon_reviews
+WHERE review_date in ['1995-06-24', '2015-06-24']
+FORMAT Null;
+```
+
+With trace logging enabled:
+```sql
+SELECT *
+FROM amazon.amazon_reviews
+WHERE review_date in ['1995-06-24', '2015-06-24']
+SETTINGS send_logs_level = 'trace'
+```
+
+```text
+...
+20 marks to read from 3 ranges
+...
+```
+
+That is very little data and ranges - impossible to hide latency with parallel I/O...
+
+
+### Cold run
+We drop the page cache - see above - and run the example query:
+
+```sql
+SELECT *
+FROM amazon.amazon_reviews
+WHERE review_date in ['1995-06-24', '2015-06-24']
+FORMAT Null;
+```
+
+```text
+Query id: 8e1d577a-a35d-440b-a119-d07310f66e24
+Ok.
+0 rows in set. Elapsed: 0.179 sec. Processed 163.84 thousand rows, 61.76 MB (916.78 thousand rows/s., 345.61 
+Peak memory usage: 27.90 MiB.
+```
+
+### Hot run
+We run the query a second time:
+
+```sql
+SELECT *
+FROM amazon.amazon_reviews
+WHERE review_date in ['1995-06-24', '2015-06-24']
+FORMAT Null;
+```
+
+```text
+Query id: 1cc5f23d-087a-40e6-8a6d-25e19d5d0fdd
+Ok.
+0 rows in set. Elapsed: 0.065 sec. Processed 163.84 thousand rows, 61.76 MB (2.51 million rows/s., 947.84 MB/s.)
+Peak memory usage: 33.28 MiB.
+```

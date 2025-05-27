@@ -1,4 +1,4 @@
-# Hot table data caching in traditional ClickHouse Cloud service
+# Hot table data caching in ClickHouse Cloud service with filesystem cache
 
 
 ## Data set
@@ -81,9 +81,9 @@ SELECT ... FROM ... SETTINGS enable_filesystem_cache = 0;
 ```
 
 
+## Throughput benchmark: Full table scan
 
-
-## Cold query run - single node
+### Cold query run - single node
 We drop the filesystem cache - see above - and run the example query:
 ```sql
 SELECT count()
@@ -108,7 +108,7 @@ Peak memory usage: 1.36 GiB.
 
 Note that the throughput numbers (e.g. `4.35 GB/s`) reported by `clickhouse-client` are logical numbers based on the **uncompressed** data.
 
-## Checking filesystem cache usage for cold query run
+### Checking filesystem cache usage for cold query run
 We fetch filesystem cache usage infos for the query run above from the query log system table by using the printed query id for the run above:
 
 ```sql
@@ -131,7 +131,7 @@ We can see that 11 of the compressed hot table data was cached. Although we drop
 
 
 
-## Hot query run - single node
+### Hot query run - single node
 We run the same example query a second time:
 ```sql
 SELECT count()
@@ -154,7 +154,7 @@ Peak memory usage: 1.26 GiB.
 ```
 
 
-## Checking filesystem cache usage for hot query run
+### Checking filesystem cache usage for hot query run
 We fetch filesystem cache usage infos for the query run above from the query log system table by using the printed query id for the run above:
 
 ```sql
@@ -173,7 +173,7 @@ WHERE (query_id = 'b6f29ac0-1f3e-4b66-8e40-95dd1578e7b8') AND (type = 'QueryFini
 
 
 
-## Cold query run - parallel replicas (3 nodes in parallel)
+### Cold query run - parallel replicas (6 nodes in parallel)
 We drop the filesystem cache - see above - and run the example query:
 ```sql
 SELECT count()
@@ -194,7 +194,7 @@ This is the `clickhouse-client` output for the cold query run:
 Peak memory usage: 1.38 GiB.
 ```
 
-## Hot query run - parallel replicas (3 nodes in parallel)
+### Hot query run - parallel replicas (6 nodes in parallel)
 We run the same example query a second time:
 ```sql
 SELECT count()
@@ -212,6 +212,71 @@ This is the `clickhouse-client` output for the hot query run:
    
 1 row in set. Elapsed: 1.712 sec. Processed 150.96 million rows, 81.61 GB (88.18 million rows/s., 47.67 GB/s.)
 Peak memory usage: 1.40 GiB.
+```
+
+## Latency benchmark: Scattered reads
+
+We use this example query
+
+```sql
+SELECT *
+FROM amazon.amazon_reviews
+WHERE review_date in ['1995-06-24', '2015-06-24']
+FORMAT Null;
+```
+
+With trace logging enabled:
+```sql
+SELECT *
+FROM amazon.amazon_reviews
+WHERE review_date in ['1995-06-24', '2015-06-24']
+SETTINGS send_logs_level = 'trace'
+```
+
+```text
+...
+20 marks to read from 3 ranges
+...
+```
+
+That is very little data and ranges - impossible to hide latency with parallel I/O...
+
+
+### Cold run - one node
+We drop the filesystem cache - see above - and run the example query:
+```sql
+SELECT *
+FROM amazon.amazon_reviews
+WHERE review_date in ['1995-06-24', '2015-06-24']
+FORMAT Null
+SETTINGS
+    enable_parallel_replicas = 0;
+```
+
+```text
+Query id: e237c493-c9be-4158-b38b-0ec89b3f5ab6
+Ok.
+0 rows in set. Elapsed: 0.461 sec. Processed 172.03 thousand rows, 62.00 MB (373.27 thousand rows/s., 134.52 MB/s.)
+Peak memory usage: 76.49 MiB.
+```
+
+### Hot run - one node
+
+We run the query a second time
+```sql
+SELECT *
+FROM amazon.amazon_reviews
+WHERE review_date in ['1995-06-24', '2015-06-24']
+FORMAT Null
+SETTINGS
+    enable_parallel_replicas = 0;
+```
+
+```text
+Query id: bc5d355d-2fc3-4ba2-94cc-14ab0f63c0ad
+Ok.
+0 rows in set. Elapsed: 0.060 sec. Processed 163.84 thousand rows, 59.87 MB (2.73 million rows/s., 996.91 MB/s.)
+Peak memory usage: 47.81 MiB.
 ```
 
 
