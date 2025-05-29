@@ -1,40 +1,49 @@
 # Ethereum
 
-Contains queries for the Ethereum block chain dataset available in [sql.clickhouse.com](https://sql.clickhouse.com/play?user=play#U0hPVyBUQUJMRVMgSU4gZXRoZXJldW0=).
+Contains queries for the Ethereum block chain dataset available in [sql.clickhouse.com](https://crypto.clickhouse.com/?query=U0hPVyBUYWJsZXMgZnJvbSBldGhlcmV1bQ&).
 
-Read the accompanying blog post on [Migrating a multi-TB dataset from ClickHouse to Big Query data]().
+Read the accompanying blog post on [Migrating a multi-TB dataset from ClickHouse to Big Query data](https://clickhouse.com/blog/clickhouse-bigquery-migrating-data-for-realtime-queries).
 
-These queries were originally provided for BigQuery and have been migrated and optimized for ClickHouse syntax. For each, we provide the original BigQuery syntax and ClickHouse equivalent. We welcome contributions and improvements.
+These queries were originally provided for BigQuery and have been migrated and optimized for ClickHouse.
 
-## Dataset
+## Loading data
 
-The dataset consists of the following tables (schemas and loading instructions are linked):
+Data can be loaded in [batch](./batch/README.md) (once-off or scheduled) or continuously [streamed](./streaming/README.md).
+### Batch
 
-- [Blocks](./schemas/blocks.md) - Blocks are batches of transactions with a hash of the previous block in the chain.
-- [Transactions](./schemas/transactions.md) -Transactions are cryptographically signed instructions from accounts. An account will initiate a transaction to update the state of the Ethereum network e.g. transferring ETH from one account to another.
-- [Traces](./schemas/traces.md) - Internal transactions that llow querying all Ethereum addresses with their balances.
-- [Contracts](./schemas/contracts.md) - A "smart contract" is simply a program that runs on the Ethereum blockchain.
+#### Schemas
+- [Blocks](./batch/schemas/blocks.md) - Blocks are batches of transactions with a hash of the previous block in the chain.
+- [Transactions](./batch/schemas/transactions.md) -Transactions are cryptographically signed instructions from accounts. An account will initiate a transaction to update the state of the Ethereum network e.g. transferring ETH from one account to another.
+- [Traces](./batch/schemas/traces.md) - Internal transactions that allow querying all Ethereum addresses with their balances.
+- [Contracts](./batch/schemas/contracts.md) - A "smart contract" is simply a program that runs on the Ethereum blockchain.
+
+#### Loading with Beam
+
+[Python example of Apache Beam job for data loading](./batch/beam_dataflow/README.md)
+
+#### Loading CSVs from blob storage
+
+[Python example of loading CSVs from blob storage](./batch/inserts/README.md)
+
+### Streaming
+
+#### Schemas
+- [Blocks](./streaming/schemas/blocks.md) - Blocks are batches of transactions with a hash of the previous block in the chain.
+- [Transactions](./streaming/schemas/transactions.md) -Transactions are cryptographically signed instructions from accounts. An account will initiate a transaction to update the state of the Ethereum network e.g. transferring ETH from one account to another.
+- [Traces](./streaming/schemas/traces.md) - Internal transactions that allow querying all Ethereum addresses with their balances.
 
 ## Queries
 
-Note some of the following are pending ClickHouse implementations. Contributions welcome.
-
-- [Top Ethereum Balances](./queries/top_balances.md)
-- [Number of addresses with non-zero balance over time](./queries/non_zero_balance.md)
-- [Every Ethereum Balance on Every Day](./queries/every_balance_every_day.md)
-- [Ethereum Throughput](./queries/throughput.md)
-- [Average Ether Costs over Time](./queries/ether_costs_over_time.md)
-- [Ethereum Address Growth](./queries/address_growth.md)
-- [Ether supply by day](./queries/ether_supply_by_day.md)
-- [Unique Addresses by Day](./queries/unique_addresses_by_day.md)
-- [10 most popular Ethereum collectibles (ERC721)](./queries/popular_collectables.md)
-- [10 most popular Ethereum tokens (ERC20 contracts)](./queries/popular_contracts.md)
-- [Shortest Path via Traces]()
-- [Total Ether transferred and average transaction cost, aggregated by day]() - pending.
-
-## DataFlow/Apache Beam Example
-
-[Python example of Apache Beam job for data loading](./dataflow/README.md)
+- [Average costs over time](./queries/ether_costs_over_time.sql)
+- [Ether supply by day](./queries/ether_supply_by_day.sql)
+- [Gas used per week](./queries/gas_used_per_week.sql)
+- [10 most popular collectibles (ERC721)](./queries/popular_collectables.sql)
+- [10 most popular tokens (ERC20 contracts)](./queries/popular_contracts.sql)
+- [Smart contract creation](./queries/smart_contract_creation.sql)
+- [Ethereum throughput](./queries/throughput.sql)
+- [Ethereum throughput average per day](./queries/throughput_avg_per_day.sql)
+- [Top balances](./queries/top_balances.sql)
+- [Total market capitalization](./queries/total_market_capitalization.sql)
 
 ## References and further reading
 
