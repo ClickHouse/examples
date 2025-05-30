@@ -1,6 +1,6 @@
 # Query processing primer
 
-Based on the [Elasticsearch on-disk format](../On-disk_format_and_insert_processing/README.md#elasticsearch) and [ClickHouse on-disk format](../On-disk_format_and_insert_processing/README.md#clickhouse), we 
+Based on the [Elasticsearch on-disk format](../on-disk-format-and-insert-processing/README.md#elasticsearch) and [ClickHouse on-disk format](../on-disk-format-and-insert-processing/README.md#clickhouse), we 
 briefly describe their query processing techniques here.
 
 ## Elasticsearch
