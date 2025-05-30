@@ -24,7 +24,7 @@ Jupyter Notebooks demonstrating how to build AI agents using various frameworks 
 
 ### Running locally
 
-Run the following command to launch the notebooks:
+Run the following command to launch the notebooks on your machine:
 
 ```
 uv run --with jupyterlab jupyter lab --notebooks-dir mcp-clients
