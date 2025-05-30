@@ -1,0 +1,12 @@
+[project]
+name = "dataflow"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "apache-beam[gcp]==2.65.0",
+    "clickhouse-connect>=0.8.17",
+    "setuptools>=80.9.0",
+    "wheel>=0.45.1",
+]
