@@ -11,11 +11,6 @@
 ![Twitter Follow](https://img.shields.io/twitter/follow/ClickHouseDB)
 ![YouTube Channel](https://img.shields.io/youtube/channel/subscribers/UChtmrD-dsdpspr42P_PyRAw?label=YouTube)
 
-
-
-
-
-
 This repository contains a collection of examples and recipes for ClickHouse.
 
 Examples cover a range of topics, from ClickHouse internals to integrating with third parties, and will help anyone from novice to expert.
