@@ -6159,7 +6159,7 @@ Depending on the cardinality of the raw data set, variant 1 is a memory-intensiv
 3. Using an INSERT INTO SELECT query, copying all data from the raw data set into that temporary table
 4. Dropping the temporary table
 
-With that approach, rows from the raw data set are copied block-wise into the temporary table (which doesn’t store any of these rows), and for each block of rows, a [partial state](https://github.com/ClickHouse/examples/blob/main/ClickHouse_vs_ElasticSearch/DataAnalytics/internals/Continuous_data_transformation/README.md#clickhouse) is calculated and written to the target table, where these states are [incrementally merged](https://github.com/ClickHouse/examples/blob/main/ClickHouse_vs_ElasticSearch/DataAnalytics/internals/Continuous_data_transformation/README.md#clickhouse) in the background.
+With that approach, rows from the raw data set are copied block-wise into the temporary table (which doesn’t store any of these rows), and for each block of rows, a [partial state](../continuous-data-transformation/README.md#clickhouse) is calculated and written to the target table, where these states are [incrementally merged](../continuous-data-transformation/README.md#clickhouse) in the background.
 
 
 ```
