@@ -1,49 +1,22 @@
 # Ethereum
 
-Contains queries for the Ethereum block chain dataset available in [sql.clickhouse.com](https://crypto.clickhouse.com/?query=U0hPVyBUYWJsZXMgZnJvbSBldGhlcmV1bQ&).
+This directory contains examples that demonstrate how store and query Ethereum data in ClickHouse.
 
-Read the accompanying blog post on [Migrating a multi-TB dataset from ClickHouse to Big Query data](https://clickhouse.com/blog/clickhouse-bigquery-migrating-data-for-realtime-queries).
+Read the accompanying blog post: [Migrating a multi-TB dataset from ClickHouse to Big Query data](https://clickhouse.com/blog/clickhouse-bigquery-migrating-data-for-realtime-queries).
 
-These queries were originally provided for BigQuery and have been migrated and optimized for ClickHouse.
+If you just want to play with the data, you can try it live at [crypto.clickhouse.com](https://crypto.clickhouse.com/?query=U0hPVyBUYWJsZXMgZnJvbSBldGhlcmV1bQ&).
 
-## Loading data
+## Storing data
 
-Data can be loaded in [batch](./batch/README.md) (once-off or scheduled) or continuously [streamed](./streaming/README.md).
-### Batch
+ClickHouse supports both batch and streaming workflows.
 
-#### Schemas
-- [Blocks](./batch/schemas/blocks.md) - Blocks are batches of transactions with a hash of the previous block in the chain.
-- [Transactions](./batch/schemas/transactions.md) -Transactions are cryptographically signed instructions from accounts. An account will initiate a transaction to update the state of the Ethereum network e.g. transferring ETH from one account to another.
-- [Traces](./batch/schemas/traces.md) - Internal transactions that allow querying all Ethereum addresses with their balances.
-- [Contracts](./batch/schemas/contracts.md) - A "smart contract" is simply a program that runs on the Ethereum blockchain.
+The [batch](./batch/README.md) directory contains table schemas and examples of loading the Ethereum data set in batches.
 
-#### Loading with Beam
+The [streaming](./streaming/README.md) directory contains table schemas and examples of loading the Ethereum data set as streams.
 
-[Python example of Apache Beam job for data loading](./batch/beam_dataflow/README.md)
+## Querying data
 
-#### Loading CSVs from blob storage
-
-[Python example of loading CSVs from blob storage](./batch/inserts/README.md)
-
-### Streaming
-
-#### Schemas
-- [Blocks](./streaming/schemas/blocks.md) - Blocks are batches of transactions with a hash of the previous block in the chain.
-- [Transactions](./streaming/schemas/transactions.md) -Transactions are cryptographically signed instructions from accounts. An account will initiate a transaction to update the state of the Ethereum network e.g. transferring ETH from one account to another.
-- [Traces](./streaming/schemas/traces.md) - Internal transactions that allow querying all Ethereum addresses with their balances.
-
-## Queries
-
-- [Average costs over time](./queries/ether_costs_over_time.sql)
-- [Ether supply by day](./queries/ether_supply_by_day.sql)
-- [Gas used per week](./queries/gas_used_per_week.sql)
-- [10 most popular collectibles (ERC721)](./queries/popular_collectables.sql)
-- [10 most popular tokens (ERC20 contracts)](./queries/popular_contracts.sql)
-- [Smart contract creation](./queries/smart_contract_creation.sql)
-- [Ethereum throughput](./queries/throughput.sql)
-- [Ethereum throughput average per day](./queries/throughput_avg_per_day.sql)
-- [Top balances](./queries/top_balances.sql)
-- [Total market capitalization](./queries/total_market_capitalization.sql)
+The [queries](./queries/README.md) directory contains examples of queries that can be run on the Ethereum dataset.
 
 ## References and further reading
 
