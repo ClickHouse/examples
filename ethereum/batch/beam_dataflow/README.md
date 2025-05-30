@@ -2,10 +2,13 @@
 
 Example batch Apache Beam (GCP Dataflow) job to move Ethereum data from BigQuery to ClickHouse.
 
-If you want to test queries without using Beam, you can [directly insert CSVs from GCS](../inserts/README.md).
+If you want to test the [Ethereum queries](../../queries/README.md) without using Beam, you can [directly insert CSVs from GCS](../inserts/README.md).
 
-## Example execution
+## How to use this example
 
+The example assumes you have a GCP project and a ClickHouse instance that Beam can reach via HTTP(S).
+
+### GCP setup
 Create a Google Cloud Service Account with the following permissions:
  - BigQuery Data Viewer
  - Storage Object Admin
@@ -19,18 +22,20 @@ Export the service account key as an environment variable:
 export GOOGLE_APPLICATION_CREDENTIALS="path/to/service-account-key.json"
 ```
 
+### Run the job
+
 Run the job using `uv`:
 
 ```bash
-uv runs sync_clickhouse.py \
---table my_project.crypto_ethereum.blocks \
+uv run sync_clickhouse.py \
+--table my_gcp_project.crypto_ethereum.blocks \
 --target_table ethereum.blocks \
---clickhouse_host 3.16.135.104 \
+--clickhouse_host 123.45.67.89 \
 --clickhouse_password clickhouse \
 --region us-central1 \
 --runner DataflowRunner \
---project pmm-project-377716 \
---temp_location gs://pme-internal/temp/beamtesttmp \
+--project my_gcp_project \
+--temp_location gs://my_gcp_bucket/tmp/beam \
 --requirements_file requirements.txt
 ```
 
