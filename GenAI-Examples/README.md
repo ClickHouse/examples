@@ -1,6 +1,6 @@
 # GenAI Examples
 
-Jupyter Notebooks demonstrating how to build AI agents using various frameworks with the ClickHouse MCP server.
+Jupyter Notebooks demonstrating how to build AI agents using various frameworks with the [ClickHouse MCP server](https://github.com/ClickHouse/mcp-clickhouse).
 
 ```
 uv run --with jupyterlab jupyter lab --notebooks-dir mcp-clients
