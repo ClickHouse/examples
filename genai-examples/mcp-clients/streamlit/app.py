@@ -66,24 +66,24 @@ async def stream_clickhouse_agent(message):
 
 
 def run_agent_query_sync(message):
-    q = Queue()
+    queue = Queue()
 
     def run():
-        asyncio.run(_agent_stream_to_queue(message, q))
-        q.put(None)  # Sentinel to end stream
+        asyncio.run(_agent_stream_to_queue(message, queue))
+        queue.put(None)  # Sentinel to end stream
 
     threading.Thread(target=run, daemon=True).start()
 
     while True:
-        chunk = q.get()
+        chunk = queue.get()
         if chunk is None:
             break
         yield chunk
 
 
-async def _agent_stream_to_queue(message, q):
+async def _agent_stream_to_queue(message, queue):
     async for chunk in stream_clickhouse_agent(message):
-        q.put(chunk)
+        queue.put(chunk)
 
 
 st.title("A ClickHouse-backed AI agent")
