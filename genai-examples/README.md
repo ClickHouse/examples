@@ -12,7 +12,7 @@ cd clickhouse-examples/genai-examples
 
 ## Jupyter notebooks
 
-Jupyter Notebooks demonstrating how to build AI agents using various frameworks with the [ClickHouse MCP server](https://github.com/ClickHouse/mcp-clickhouse).
+We have Jupyter Notebooks demonstrating how to build AI agents using various frameworks with the [ClickHouse MCP server](https://github.com/ClickHouse/mcp-clickhouse).
 
 | Title | Stack | Notebook |
 |-------|-------|----------|
@@ -22,9 +22,7 @@ Jupyter Notebooks demonstrating how to build AI agents using various frameworks 
 | AI Agent with PydanticAI and Claude Sonnet | PydanticAI, Anthropic | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/GenAI-Examples/mcp-clients/agents/pydantic.ipynb) |
 | AI Agent with DSPy and Claude Sonnet | DSPy, Anthropic | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/GenAI-Examples/mcp-clients/agents/dspy.ipynb) |
 
-### Running locally
-
-Run the following command to launch the notebooks on your machine:
+You can run the following command to launch the notebooks on your machine:
 
 ```
 uv run --with jupyterlab jupyter lab --notebooks-dir mcp-clients
@@ -34,6 +32,7 @@ You can then navigate to http://localhost:8888 to try out the notebooks.
 
 ## Streamlit app
 
+We also have a Streamlit chat app that uses an Agno agent in the background.
 This app uses Claude Sonnet, so you'll need to set `ANTHROPIC_API_KEY` before launching anything.
 
 To run the Streamlit app:
