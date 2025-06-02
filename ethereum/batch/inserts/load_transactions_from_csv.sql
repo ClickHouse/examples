@@ -1,0 +1,23 @@
+INSERT INTO t SELECT
+    hash,
+    nonce,
+    block_hash,
+    block_number,
+    transaction_index,
+    from_address,
+    to_address,
+    value,
+    gas,
+    gas_price,
+    input,
+    toInt64(block_timestamp) AS block_timestamp,
+    max_fee_per_gas,
+    max_priority_fee_per_gas,
+    transaction_type,
+    receipt_cumulative_gas_used,
+    receipt_gas_used,
+    receipt_contract_address,
+    receipt_root,
+    receipt_status,
+    receipt_effective_gas_price
+FROM s3('https://storage.googleapis.com/clickhouse_public_datasets/ethereum/transactions/*.csv.gz', 'CSVWithNames', 'hash String, nonce Int64, transaction_index Int64,from_address String, to_address Nullable(String), value Decimal(38, 0), gas Int64, gas_price Int64, input String, receipt_cumulative_gas_used Int64,receipt_gas_used Int64,receipt_contract_address Nullable(String),receipt_root String,receipt_status Nullable(Int64),block_timestamp DateTime, block_number Int64, block_hash String, max_fee_per_gas Nullable(Int64), max_priority_fee_per_gas Nullable(Int64), transaction_type Int64, receipt_effective_gas_price Int64')

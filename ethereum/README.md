@@ -1,40 +1,22 @@
 # Ethereum
 
-Contains queries for the Ethereum block chain dataset available in [sql.clickhouse.com](https://sql.clickhouse.com/play?user=play#U0hPVyBUQUJMRVMgSU4gZXRoZXJldW0=).
+This directory contains examples that demonstrate how store and query Ethereum data in ClickHouse.
 
-Read the accompanying blog post on [Migrating a multi-TB dataset from ClickHouse to Big Query data]().
+Read the accompanying blog post: [Migrating a multi-TB dataset from ClickHouse to Big Query data](https://clickhouse.com/blog/clickhouse-bigquery-migrating-data-for-realtime-queries).
 
-These queries were originally provided for BigQuery and have been migrated and optimized for ClickHouse syntax. For each, we provide the original BigQuery syntax and ClickHouse equivalent. We welcome contributions and improvements.
+If you just want to play with the data, you can try it live at [crypto.clickhouse.com](https://crypto.clickhouse.com/?query=U0hPVyBUYWJsZXMgZnJvbSBldGhlcmV1bQ&).
 
-## Dataset
+## Storing data
 
-The dataset consists of the following tables (schemas and loading instructions are linked):
+ClickHouse supports both batch and streaming workflows.
 
-- [Blocks](./schemas/blocks.md) - Blocks are batches of transactions with a hash of the previous block in the chain.
-- [Transactions](./schemas/transactions.md) -Transactions are cryptographically signed instructions from accounts. An account will initiate a transaction to update the state of the Ethereum network e.g. transferring ETH from one account to another.
-- [Traces](./schemas/traces.md) - Internal transactions that llow querying all Ethereum addresses with their balances.
-- [Contracts](./schemas/contracts.md) - A "smart contract" is simply a program that runs on the Ethereum blockchain.
+The [batch](./batch/README.md) directory contains table schemas and examples of loading the Ethereum data set in batches.
 
-## Queries
+The [streaming](./streaming/README.md) directory contains table schemas and examples of loading the Ethereum data set as streams.
 
-Note some of the following are pending ClickHouse implementations. Contributions welcome.
+## Querying data
 
-- [Top Ethereum Balances](./queries/top_balances.md)
-- [Number of addresses with non-zero balance over time](./queries/non_zero_balance.md)
-- [Every Ethereum Balance on Every Day](./queries/every_balance_every_day.md)
-- [Ethereum Throughput](./queries/throughput.md)
-- [Average Ether Costs over Time](./queries/ether_costs_over_time.md)
-- [Ethereum Address Growth](./queries/address_growth.md)
-- [Ether supply by day](./queries/ether_supply_by_day.md)
-- [Unique Addresses by Day](./queries/unique_addresses_by_day.md)
-- [10 most popular Ethereum collectibles (ERC721)](./queries/popular_collectables.md)
-- [10 most popular Ethereum tokens (ERC20 contracts)](./queries/popular_contracts.md)
-- [Shortest Path via Traces]()
-- [Total Ether transferred and average transaction cost, aggregated by day]() - pending.
-
-## DataFlow/Apache Beam Example
-
-[Python example of Apache Beam job for data loading](./dataflow/README.md)
+The [queries](./queries/README.md) directory contains examples of queries that can be run on the Ethereum dataset.
 
 ## References and further reading
 
