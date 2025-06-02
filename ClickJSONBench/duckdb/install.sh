@@ -1,1 +1,0 @@
-sudo snap install duckdb
