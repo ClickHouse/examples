@@ -34,7 +34,7 @@
     "@google-cloud/functions-framework": "^3.2.0",
     "@google/events": "^5.4.0",
     "@maxmind/geoip2-node": "^4.1.0",
-    "axios": "^1.6.0",
+    "axios": "^1.8.2",
     "dotenv": "^16.3.1",
     "joi": "^17.8.3",
     "luxon": "^3.3.0"
