@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "concurrently \"npm run dev:next\" \"npm run dev:mcp\"",
     "dev:next": "next dev",
-    "dev:mcp": "cd external/mcp-clickhouse && source .venv/bin/activate && fastmcp run mcp_clickhouse/mcp_server.py:mcp --transport sse",
+    "dev:mcp": "cd external/mcp-clickhouse && fastmcp run mcp_clickhouse/mcp_server.py:mcp --transport sse",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

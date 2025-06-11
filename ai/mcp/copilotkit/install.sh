@@ -3,14 +3,10 @@
 # install mcp-clickhouse
 mkdir -p external
 git clone https://github.com/ClickHouse/mcp-clickhouse external/mcp-clickhouse
-
-# install mcp-clickhouse
-pushd external/mcp-clickhouse
-python -m venv .venv
-source .venv/bin/activate
+cd external/mcp-clickhouse
 uv sync     
 uv add fastmcp
-popd
+cd -
 
 # install application dependencies
-yarn install
+npm install

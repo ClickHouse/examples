@@ -82,6 +82,8 @@ function MainContent() {
         }
     });
 
+    
+
     return (
         <div>
             <p className="text-white font-bold font-inter text-2xl leading-6 pb-6">Custom analytics dashboard</p>
