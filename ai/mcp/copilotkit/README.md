@@ -58,4 +58,6 @@ By default, the example is configured to connect to the [ClickHouse demo cluster
 
 Run `npm run dev` to start the development server.
 
+You can test the Agent using prompt like: "Show me the price evolution in Manchester for the last 10 years."
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
