@@ -2,9 +2,7 @@
 
 A unified, high-throughput stock data demo platform that combines real-time data ingestion with advanced visualization capabilities. This integrated system handles WebSocket data from Polygon.io, stores it in ClickHouse, and provides both administrative controls and sophisticated stock data visualization.
 
-
-
-## 🚀 **Getting Started**
+## **Getting Started**
 
 ### **Prerequisites**
 
@@ -27,11 +25,11 @@ npm run dev
 
 ### **Access Points**
 
-- **🏠 Landing Page**: `http://localhost:34567/`
-- **📈 Stock Charts UI**: `http://localhost:34567/stocks` _(live candlestick charts)_
-- **🎛️ Admin Controls**: `http://localhost:34567/admin`
-- **📊 Health API**: `http://localhost:34567/health`
-- **🔌 Metrics API**: `http://localhost:34567/metrics`
+- **Landing Page**: `http://localhost:34567/`
+- **Stock Charts UI**: `http://localhost:34567/stocks` _(live candlestick charts)_
+- **Admin Controls**: `http://localhost:34567/admin`
+- **Health API**: `http://localhost:34567/health`
+- **Metrics API**: `http://localhost:34567/metrics`
 
 ## 🏗️ **Application Structure**
 
@@ -57,7 +55,34 @@ stock-data/
 └── README.md             # This documentation
 ```
 
-## 🔧 **Configuration**
+## **Configuration**
+
+### **Environment Variables (.env)**
+
+The application uses several environment variables to configure its behavior. Create a `.env` file in the root directory with the following variables:
+
+```env
+# ClickHouse Configuration (Writer)
+CLICKHOUSE_HOST=https://your-clickhouse-host:8443
+CLICKHOUSE_USERNAME=your_username
+CLICKHOUSE_PASSWORD=your_password
+
+# ClickHouse Configuration (Frontend - Reader)
+NEXT_PUBLIC_CLICKHOUSE_HOST=https://your-clickhouse-host:8443
+NEXT_PUBLIC_CLICKHOUSE_USERNAME=your_username
+NEXT_PUBLIC_CLICKHOUSE_PASSWORD=your_password
+
+# Confluent Cloud Kafka Configuration
+KAFKA_BROKER=your-kafka-broker:9092
+KAFKA_USERNAME=your_kafka_username
+KAFKA_PASSWORD=your_kafka_password
+KAFKA_ENABLED=false  # Set to 'true' to enable Kafka integration
+
+# Polygon.io API
+POLYGON_API_KEY=your_polygon_api_key
+```
+
+### **Application Settings**
 
 Key configurable parameters in the `StockDataIngester` class:
 
@@ -69,7 +94,7 @@ this.maxConcurrentInserts = 10; // Max parallel ClickHouse inserts
 this.maxReconnectAttempts = 10; // WebSocket reconnection attempts
 ```
 
-## 📊 **Platform Capabilities**
+## **Platform Capabilities**
 
 ### **Data Ingestion Service**
 
@@ -95,13 +120,13 @@ this.maxReconnectAttempts = 10; // WebSocket reconnection attempts
 - **Performance Tracking**: Memory usage, queue lengths, processing rates
 - **Connection History**: Detailed logs of connection events and failures
 
-## 🔗 **Integration Architecture**
+## **Integration Architecture**
 
 ### **Data Flow**
 
 1. **WebSocket Ingestion** → Polygon.io real-time feeds
 2. **Data Processing** → Filtering, transformation, and batching
-3. **Database Storage** → ClickHouse with optimized async inserts
+3. **Database Storage** → ClickHouse with batch inserts
 4. **UI Data Access** → Direct ClickHouse queries from frontend
 5. **Administrative Monitoring** → Express API endpoints
 
@@ -109,13 +134,13 @@ this.maxReconnectAttempts = 10; // WebSocket reconnection attempts
 
 - **Backend**: Node.js + Express (JavaScript)
 - **Frontend**: Next.js + React (TypeScript)
-- **Database**: ClickHouse with optimized settings
+- **Database**: ClickHouse 
 - **UI Components**: ClickHouse UI + Custom Components
 - **Charts**: Chart.js with financial data extensions and real-time streaming
 - **Time Windows**: Multiple aggregation periods (1s, 1m, 2m, 1h buckets) with adaptive refresh rates
 - **Real-time**: WebSocket connections + polling
 
-## 🎮 **Control API**
+## **Control API**
 
 ```bash
 # Pause data ingestion
@@ -131,7 +156,7 @@ curl -X POST http://localhost:34567/control/stop
 curl -X POST http://localhost:34567/control/restart
 ```
 
-## 📈 **Monitoring & Metrics**
+## **Monitoring & Metrics**
 
 ### **Health Check Response**
 
@@ -155,30 +180,7 @@ curl -X POST http://localhost:34567/control/restart
 }
 ```
 
-## 🚨 **Production Considerations**
-
-### **Performance Optimization**
-
-- ClickHouse async inserts with 5MB batches
-- Concurrent insert limiting (max 10 parallel)
-- Memory pressure detection and handling
-- Queue overflow protection
-
-### **Reliability Features**
-
-- Exponential backoff reconnection (up to 10 attempts)
-- Stale connection detection (60+ seconds timeout)
-- Graceful shutdown with data preservation
-- Comprehensive error logging and recovery
-
-### **Scalability Notes**
-
-- Horizontal scaling: Run multiple ingestion instances
-- Database scaling: ClickHouse cluster configuration
-- Frontend scaling: CDN deployment for static assets
-- Load balancing: Multiple Express instances behind proxy
-
-## 🔧 **Development**
+## **Development**
 
 ### **Frontend Development**
 
