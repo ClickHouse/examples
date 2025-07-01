@@ -156,30 +156,6 @@ curl -X POST http://localhost:34567/control/stop
 curl -X POST http://localhost:34567/control/restart
 ```
 
-## **Monitoring & Metrics**
-
-### **Health Check Response**
-
-```json
-{
-  "status": "connected",
-  "connected": true,
-  "paused": false,
-  "uptime": 1234.5,
-  "totalUptime": 5678.9,
-  "tradesInserted": 125847,
-  "quotesInserted": 98234,
-  "totalRecordsInserted": 224081,
-  "processedMessages": 15678,
-  "droppedMessages": 23,
-  "memoryUsageMB": 45,
-  "runningInserts": 3,
-  "queueLength": 0,
-  "connectionHistory": [...],
-  "statusMessage": "Active - Receiving data"
-}
-```
-
 ## **Development**
 
 ### **Frontend Development**
