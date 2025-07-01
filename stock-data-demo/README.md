@@ -8,7 +8,7 @@ A unified, high-throughput stock data demo platform that combines real-time data
 
 - Node.js 18+
 - Access to ClickHouse cluster
-- Polygon.io API credentials
+- Polygon.io API credentials with real-time data (trades and quotes)
 
 ### **Installation & Startup**
 
