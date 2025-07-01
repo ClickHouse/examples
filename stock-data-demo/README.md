@@ -31,7 +31,7 @@ npm run dev
 - **Health API**: `http://localhost:34567/health`
 - **Metrics API**: `http://localhost:34567/metrics`
 
-## 🏗️ **Application Structure**
+## **Application Structure**
 
 ```
 stock-data/
