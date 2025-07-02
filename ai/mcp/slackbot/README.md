@@ -28,12 +28,6 @@ This bot allows you to ask questions about your ClickHouse data directly from Sl
 
 2. **Install the app to your workspace**
 3. **Configure Slack App Settings**
-
-    - Go to **Basic Information**
-        - Under "App Credentials", note down your **Signing Secret**. Add this to your `.env` as:
-          ```env
-          SLACK_SIGNING_SECRET=your-signing-secret
-          ```
     - Go to **App Home**
         - Under "Show Tabs" → "Messages Tab": Enable **Allow users to send Slash commands and messages from the messages tab**
     - Go to **Socket Mode**
