@@ -10,6 +10,10 @@ A unified, high-throughput stock data demo platform that combines real-time data
 - Access to ClickHouse cluster
 - Polygon.io API credentials with real-time data (trades and quotes)
 
+## Create ClickHouse tables
+
+Connect to your ClickHouse instance and create the tables `quotes` and `trades` using this [ddl file](./scripts/ddl.sql).
+
 ### **Installation & Startup**
 
 ```bash
