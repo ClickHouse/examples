@@ -1,0 +1,24 @@
+# Use the existing image as base
+FROM ghcr.io/danny-avila/librechat-dev:latest
+
+# Optional: switch to root if needed to install globally
+USER root
+
+RUN apk add --no-cache git build-base python3-dev
+
+# Install OpenTelemetry CLI
+RUN npm install @hyperdx/node-opentelemetry
+
+# Switch back to the node user if needed
+USER node
+EXPOSE 3080
+
+# Replace CMD with OpenTelemetry-instrumented version
+# Redirect stdout and stderr to a file
+CMD sh -c "NODE_ENV=production \
+  DEFAULT_HDX_NODE_ADVANCED_NETWORK_CAPTURE=true \
+  OTEL_EXPORTER_OTLP_ENDPOINT=$OTEL_EXPORTER_OTLP_ENDPOINT \
+  HYPERDX_API_KEY=$HYPERDX_API_KEY \
+  OTEL_SERVICE_NAME=librechat-api \
+  npx opentelemetry-instrument api/server/index.js \
+  >> /app/api/logs/console.log 2>&1"
