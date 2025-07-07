@@ -47,3 +47,20 @@ uv run \
 ```
 
 You can then navigate to http://localhost:8501
+
+
+## Chainlit app
+
+And we have a Chainlit app too.
+This app uses Claude Sonnet, so you'll need to set `ANTHROPIC_API_KEY` before launching anything.
+
+To run the Chainlit app:
+
+```
+uv run \
+  --with anthropic \
+  --with chainlit \
+  chainlit run chainlit/chat_mcp.py -w -h
+```
+
+You can then navigate to http://localhost:8000
