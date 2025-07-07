@@ -6,6 +6,7 @@ RUN python3 -m pip install --no-cache-dir --break-system-packages \
    opentelemetry-exporter-otlp
 
 RUN opentelemetry-bootstrap -a install
+
 RUN python3 -m pip uninstall -y pip_system_certs
 
 RUN mkdir -p /app/logs

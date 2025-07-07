@@ -24,7 +24,7 @@ services:
       - RAG_API_URL=http://rag_api:${RAG_PORT:-8000}
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://host.docker.internal:4318
       - OTEL_SERVICE_NAME=librechat-api
-      - HYPERDX_API_KEY=${HYPERDX_API_KEY}
+      - CLICKSTACK_API_KEY=${CLICKSTACK_API_KEY}
       - CONSOLE_JSON=true
       - DEBUG_CONSOLE=true
     volumes:
@@ -120,7 +120,7 @@ services:
     volumes:
       - ./logs/mcp-clickhouse:/app/logs
     environment:
-      - HYPERDX_API_KEY=${HYPERDX_API_KEY}
+      - CLICKSTACK_API_KEY=${CLICKSTACK_API_KEY}
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://host.docker.internal:4317
       - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://host.docker.internal:4317
       - OTEL_SERVICE_NAME=mcp-clickhouse

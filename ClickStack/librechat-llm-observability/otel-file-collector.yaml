@@ -26,6 +26,12 @@ receivers:
         from: attributes.message
         to: body
         if: 'attributes.message != nil'
+      - type: regex_parser
+        id: extract_conversation_id
+        # look in the body line for conversationId
+        parse_from: body
+        regex: "conversationId: (?P<conversationId>[0-9a-fA-F-]+)"
+        on_error: send_quiet
 
   prometheus:
     config:
@@ -51,7 +57,7 @@ exporters:
   otlp:
     endpoint: http://host.docker.internal:4317
     headers:
-      authorization: ${HYPERDX_API_KEY}
+      authorization: ${CLICKSTACK_API_KEY}
     tls:
       insecure: true
 
