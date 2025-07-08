@@ -57,4 +57,4 @@ docker compose up
 Navigate to http://localhost:3080/.
 You should now see the LibreChat interface connected to the ClickHouse MCP server
 
-images::images/librechat-ui.png[]
+![LibreChat UI](images/librechat-ui.png)
