@@ -51,7 +51,7 @@ You can then navigate to http://localhost:8501
 
 ## Chainlit app
 
-And we have a Chainlit app too.
+We have a Chainlit app too.
 This app uses Claude Sonnet, so you'll need to set `ANTHROPIC_API_KEY` before launching anything.
 
 To run the Chainlit app:
@@ -64,3 +64,9 @@ uv run \
 ```
 
 You can then navigate to http://localhost:8000
+
+
+## LibreChat app
+
+We also have a LibreChat app.
+This one requires a bit more setup, which you can find in the [LibreChat README](librechat/README.md)
