@@ -20,7 +20,7 @@ We have Jupyter Notebooks demonstrating how to build AI agents using various fra
 | AI Agent with Agno and Claude Sonnet | Agno, Anthropic | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/agno/agno.ipynb) |
 | AI Agent with PydanticAI and Claude Sonnet | PydanticAI, Anthropic | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/pydanticai/pydantic.ipynb) |
 | AI Agent with DSPy and Claude Sonnet | DSPy, Anthropic | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/dspy/dspy.ipynb) |
-| AI Agent with OpenAI Agents | OpenAI | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/openai-agents/dspy.ipynb) |
+| AI Agent with OpenAI Agents | OpenAI | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/openai-agents/openai-agents.ipynb) |
 
 You can run the following command to launch the notebooks on your machine:
 
@@ -47,3 +47,20 @@ uv run \
 ```
 
 You can then navigate to http://localhost:8501
+
+
+## Chainlit app
+
+And we have a Chainlit app too.
+This app uses Claude Sonnet, so you'll need to set `ANTHROPIC_API_KEY` before launching anything.
+
+To run the Chainlit app:
+
+```
+uv run \
+  --with anthropic \
+  --with chainlit \
+  chainlit run chainlit/chat_mcp.py -w -h
+```
+
+You can then navigate to http://localhost:8000
