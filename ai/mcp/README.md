@@ -33,38 +33,13 @@ You can then navigate to http://localhost:8888 to try out the notebooks.
 ## Streamlit app
 
 We also have a Streamlit chat app that uses an Agno agent in the background.
-This app uses Claude Sonnet, so you'll need to set `ANTHROPIC_API_KEY` before launching anything.
-
-To run the Streamlit app:
-
-```
-uv run \
-  --with streamlit \
-  --with agno \
-  --with anthropic \
-  --with mcp \
-  streamlit run streamlit/app.py --server.headless true
-```
-
-You can then navigate to http://localhost:8501
+You can find out more about this in the [Streamlit README](streamlit/README.md)
 
 
 ## Chainlit app
 
 We have a Chainlit app too.
-This app uses Claude Sonnet, so you'll need to set `ANTHROPIC_API_KEY` before launching anything.
-
-To run the Chainlit app:
-
-```
-uv run \
-  --with anthropic \
-  --with chainlit \
-  chainlit run chainlit/chat_mcp.py -w -h
-```
-
-You can then navigate to http://localhost:8000
-
+You can find out more about this in the [Chainlit README](chainlit/README.md)
 
 ## LibreChat app
 
