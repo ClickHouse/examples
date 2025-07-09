@@ -1,16 +1,13 @@
 import os
-from dotenv import load_dotenv
-from slack_bolt import App
-from slack_bolt.adapter.socket_mode import SocketModeHandler
-from dotenv import load_dotenv
-import os
 import logging
-from slack_bolt import App
+import asyncio
+
+from dotenv import load_dotenv
+from slack_bolt.async_app import AsyncApp
 from slack_bolt.adapter.socket_mode.aiohttp import AsyncSocketModeHandler
+from slack_sdk.web.async_client import AsyncWebClient
 from pydantic_ai import Agent
 from pydantic_ai.mcp import MCPServerStdio
-import asyncio
-from slack_bolt.async_app import AsyncApp
 
 # Load environment variables from .env file
 load_dotenv()
@@ -50,10 +47,7 @@ agent = Agent(
     system_prompt="You are a data assistant. You have access to a ClickHouse database from which you can answer the user's questions. You have tools available to you that let you explore the database, e.g. to list available databases, tables, etc., and to execute SQL queries against them. Use these tools to answer the user's questions. You must always answer the user's questions by using the available tools. If the database cannot help you, say so. You must include a summary of how you came to your answer: e.g. which data you used and how you queried it."
 )
 
-
 app = AsyncApp(token=SLACK_BOT_TOKEN)
-
-from slack_sdk.web.async_client import AsyncWebClient
 
 async def handle_slack_query(event, say):
     user = event["user"]
