@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stock Data Ingestion Monitor</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>📈 Stock Data Ingestion Monitor</h1>
+        <div class="last-updated">
+          Last updated: <span id="lastUpdated">--</span>
+        </div>
+      </header>
+
+      <div class="status-banner" id="statusBanner">
+        <div class="status-indicator" id="statusIndicator"></div>
+        <div class="status-text">
+          <div class="status-main" id="statusMain">Initializing...</div>
+          <div class="status-detail" id="statusDetail">
+            Connecting to service...
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="startBtn" class="btn btn-success">Start</button>
+        <button id="pauseBtn" class="btn btn-warning">Pause</button>
+        <button id="stopBtn" class="btn btn-danger">Stop</button>
+        <button id="restartBtn" class="btn btn-info">Restart</button>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Connection Uptime</div>
+          <div class="metric-value" id="uptime">--</div>
+          <div class="metric-detail" id="totalUptime">Total: --</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">Trades Inserted</div>
+          <div class="metric-value" id="tradesInserted">--</div>
+          <div class="metric-detail">Market transactions</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">Quotes Inserted</div>
+          <div class="metric-value" id="quotesInserted">--</div>
+          <div class="metric-detail">Price quotes</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">Total Records</div>
+          <div class="metric-value" id="totalRecords">--</div>
+          <div class="metric-detail" id="processedMessages">Processed: --</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">Memory Usage</div>
+          <div class="metric-value" id="memoryUsage">-- MB</div>
+          <div class="metric-detail" id="droppedMessages">Dropped: --</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-label">Database Queue</div>
+          <div class="metric-value" id="queueLength">--</div>
+          <div class="metric-detail" id="runningInserts">
+            Active inserts: --
+          </div>
+        </div>
+      </div>
+
+      <div class="details-section">
+        <div class="details-card">
+          <h3>📊 Performance Metrics</h3>
+          <div class="details-grid">
+            <div class="detail-item">
+              <span class="detail-label">Batch Sizes:</span>
+              <span class="detail-value">
+                Trades: <span id="tradesBatchSize">--</span>, Quotes:
+                <span id="quotesBatchSize">--</span>
+              </span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Last Message:</span>
+              <span class="detail-value" id="timeSinceLastMessage">--</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Reconnect Attempts:</span>
+              <span class="detail-value" id="reconnectAttempts">-- / --</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="details-card">
+          <h3>📝 Connection History</h3>
+          <div class="connection-history" id="connectionHistory">
+            <div class="history-item">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert" id="alertContainer" style="display: none">
+        <div class="alert-content" id="alertContent"></div>
+        <button class="alert-close" onclick="hideAlert()">×</button>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

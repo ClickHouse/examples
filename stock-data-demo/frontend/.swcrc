@@ -1,0 +1,14 @@
+{
+  "jsc": {
+    "experimental": {
+      "plugins": [
+        [
+          "@swc/plugin-styled-components",
+          {
+            "ssr": true
+          }
+        ]
+      ]
+    }
+  }
+}

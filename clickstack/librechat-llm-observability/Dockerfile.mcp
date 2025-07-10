@@ -1,0 +1,15 @@
+FROM mcp/clickhouse
+
+RUN python3 -m pip install --no-cache-dir --break-system-packages \
+   opentelemetry-distro
+RUN python3 -m pip install --no-cache-dir --break-system-packages \
+   opentelemetry-exporter-otlp
+
+RUN opentelemetry-bootstrap -a install
+
+RUN python3 -m pip uninstall -y pip_system_certs
+
+RUN mkdir -p /app/logs
+
+# Redirect stdout and stderr to a file
+CMD sh -c "OTEL_EXPORTER_OTLP_HEADERS='authorization=$HYPERDX_API_KEY' opentelemetry-instrument python3 -m mcp_clickhouse.main >> /app/logs/mcp.log 2>&1"

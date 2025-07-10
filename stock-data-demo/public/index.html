@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stock Data Platform</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        color: white;
+      }
+      .container {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        max-width: 600px;
+      }
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+      p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        opacity: 0.9;
+        line-height: 1.6;
+      }
+      .features {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+      .feature-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .feature-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .feature-desc {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+      .links {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .link {
+        display: inline-block;
+        padding: 15px 30px;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        min-width: 160px;
+      }
+      .link:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+      }
+      .link.primary {
+        background: rgba(59, 130, 246, 0.8);
+        border-color: rgba(59, 130, 246, 1);
+      }
+      .link.primary:hover {
+        background: rgba(59, 130, 246, 1);
+      }
+      .status {
+        margin-top: 30px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        font-size: 0.9rem;
+      }
+      @media (max-width: 768px) {
+        .features {
+          grid-template-columns: 1fr;
+        }
+        .links {
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📈 Stock Data Platform</h1>
+      <p>
+        Unified platform for high-throughput stock data ingestion and real-time
+        visualization.<br />
+        Ingesting up to 100,000 rows per second with automated recovery and
+        monitoring.
+      </p>
+
+      <div class="features">
+        <div class="feature-card">
+          <div class="feature-title">🔧 Data Ingestion</div>
+          <div class="feature-desc">
+            Real-time WebSocket ingestion from Polygon.io with resilient error
+            handling
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-title">📊 Advanced Charts</div>
+          <div class="feature-desc">
+            Real-time candlestick charts with volume indicators and streaming
+            updates
+          </div>
+        </div>
+      </div>
+
+      <div class="links">
+        <a href="/admin" class="link">🎛️ Ingestion Control</a>
+        <a href="/stocks" class="link primary">📈 Live Stock Charts</a>
+      </div>
+
+      <div class="links" style="margin-top: 20px">
+        <a href="/health" class="link">📊 Health Check</a>
+        <a href="/metrics" class="link">📈 Metrics API</a>
+      </div>
+
+      <div class="status">
+        <strong>🚀 Integrated Application Features:</strong><br />
+        ✅ High-throughput WebSocket data ingestion<br />
+        ✅ Real-time candlestick & volume charts<br />
+        ✅ Live streaming stock data visualization<br />
+        ✅ Automated connection recovery<br />
+        ✅ Memory pressure management<br />
+        ✅ Administrative controls & monitoring
+      </div>
+    </div>
+  </body>
+</html>
