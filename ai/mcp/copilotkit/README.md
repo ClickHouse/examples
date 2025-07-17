@@ -42,7 +42,7 @@ Copy the `env.example` file to `.env` and edit it to provide your ANTHROPIC_API_
 
 ## Bring your own LLM
 
-If you'd rather use another LLM provider than Anthropic, you can modify the [Copilotkit runtime](./app/api/copilotkit/route.ts) to use a different LLM adapter. [Here](https://docs.copilotkit.ai/guides/bring-your-own-llm) is a list of supported providers.
+If you'd rather use another LLM provider than Anthropic, you can modify the [Copilotkit runtime](./app/api/copilotkit/route.ts) to use a different LLM adapter. [Here](https://docs.copilotkit.ai/direct-to-llm/guides/bring-your-own-llm) is a list of supported providers.
 
 ## Use your own ClickHouse cluster
 
