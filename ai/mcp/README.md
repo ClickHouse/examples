@@ -45,3 +45,9 @@ You can find out more about this in the [Chainlit README](chainlit/README.md)
 
 We also have a LibreChat app.
 This one requires a bit more setup, which you can find in the [LibreChat README](librechat/README.md)
+
+
+## AnythingLLM app
+
+We also have an AnythingLLM app.
+This one also requires a bit more setup, which you can find in the [AnythingLLM README](anythingllm/README.md)
