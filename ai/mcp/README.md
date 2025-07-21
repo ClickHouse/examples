@@ -51,3 +51,8 @@ This one requires a bit more setup, which you can find in the [LibreChat README]
 
 We also have an AnythingLLM app.
 This one also requires a bit more setup, which you can find in the [AnythingLLM README](anythingllm/README.md)
+
+## Open WebUI app
+
+We also have an Open WebUI app.
+This one also requires a bit more setup, which you can find in the [Open WebUI README](open-webui/README.md)
