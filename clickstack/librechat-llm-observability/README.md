@@ -1,6 +1,6 @@
 # Instrument Librechat and ClickHouse MCP Server using ClickStack
 
-## Deploy ClickStart
+## Deploy ClickStack
 
 The easiest way to get ClickStack up and running is to run it locally using Docker. For more details, refer to the [documentation](https://clickhouse.com/docs/use-cases/observability/clickstack/getting-started#deploy-stack-with-docker).
 
