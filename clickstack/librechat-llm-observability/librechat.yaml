@@ -8,3 +8,7 @@ mcpServers:
   clickhouse-playground:
     type: sse
     url: http://host.docker.internal:8001/sse
+
+endpoints:
+  agents:
+    recursionLimit: 50
