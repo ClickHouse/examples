@@ -2,6 +2,13 @@
 
 Chainlit lets you build LLM-based chat apps.
 
+If you want to run these examples locally, you'll need to first clone the repository:
+
+```
+git clone https://github.com/ClickHouse/examples.git
+cd examples/ai/mcp/chainlit
+```
+
 We're going to explore it using Anthropic, so you'll need to have you Anthropic API key configured:
 
 ```
