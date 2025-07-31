@@ -2,6 +2,12 @@
 
 In this example, we're going to learn how to instrument the OpenAI client with OTel and export the data to [ClickStack](https://clickhouse.com/docs/use-cases/observability/clickstack/overview).
 
+If you want to follow along, you'll need to clone the repository:
+
+```
+git clone https://github.com/ClickHouse/examples.git
+cd examples/clickstack/openai
+```
 
 Configure your OpenAI API key:
 
