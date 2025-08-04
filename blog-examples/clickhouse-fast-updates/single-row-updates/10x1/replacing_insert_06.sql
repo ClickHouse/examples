@@ -1,0 +1,4 @@
+INSERT INTO lineitem VALUES
+(343206944, 9361234, 611244, 1, 34, 44022.18, 0.1, 0.02,
+ 'P', 'F', '1996-01-11', '1995-12-02', '1996-01-31',
+ 'COLLECT COD', 'REG AIR', 'Priority order');

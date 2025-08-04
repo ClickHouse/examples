@@ -1,0 +1,4 @@
+INSERT INTO lineitem VALUES
+(93311302, 9783520, 283539, 2, 26, 41679.04, 0.01, 0.09,
+ 'A', 'F', '1994-04-21', '1994-05-09', '1994-05-13',
+ 'COLLECT COD', 'MAIL', 'Backfill historical');

@@ -1,0 +1,4 @@
+INSERT INTO lineitem VALUES
+(503437255, 7568956, 318978, 3, 5, 888.88, 0.045, 0.11,
+ 'X', 'Z', '1994-03-25', '1994-04-05', '1994-04-20',
+ 'DELIVER IN PERSON', 'SHIP', 'Corrected entry');

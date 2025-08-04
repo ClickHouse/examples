@@ -1,0 +1,4 @@
+INSERT INTO lineitem VALUES
+(431195557, 2438965, 188972, 3, 30, 777.77, 0.07, 0.02,
+ 'S', 'N', '1992-06-14', '1992-07-22', '1992-06-24',
+ 'TAKE BACK RETURN', 'AIR', 'ickly regular r');
