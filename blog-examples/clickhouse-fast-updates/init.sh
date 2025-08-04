@@ -66,7 +66,7 @@ create_table() {
 
 # Create the tables with 1, 2, and 20 parts
 create_table "lineitem_base_tbl_1part"  600100000  1
-create_table "lineitem_base_tbl_2part"  300100000  2
-create_table "lineitem_base_tbl_20part"  30100000 20
+# create_table "lineitem_base_tbl_2part"  300100000  2
+# create_table "lineitem_base_tbl_20part"  30100000 20
 
 echo "✅ All tables created and verified."
