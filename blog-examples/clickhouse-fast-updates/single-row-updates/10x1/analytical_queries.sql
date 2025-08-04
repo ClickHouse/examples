@@ -1,0 +1,10 @@
+SELECT l_returnflag, l_linestatus, COUNT(*) AS cnt, SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS net_revenue FROM lineitem WHERE l_shipmode = 'SHIP' GROUP BY l_returnflag, l_linestatus;
+SELECT AVG(l_discount), AVG(l_tax) FROM lineitem WHERE l_comment LIKE '%manually%';
+SELECT SUM(l_extendedprice), AVG(l_tax) FROM lineitem WHERE l_linestatus = 'N' AND l_returnflag = 'S';
+SELECT COUNT(*) FROM lineitem WHERE l_shipmode = 'FOB' AND l_linestatus = 'W';
+SELECT l_discount, l_tax FROM lineitem WHERE l_comment LIKE '%Backfill%' LIMIT 10;
+SELECT COUNT(*) FROM lineitem WHERE l_shipinstruct = 'COLLECT COD' AND l_comment LIKE '%Priority%';
+SELECT l_linestatus, AVG(l_extendedprice), MAX(l_tax) FROM lineitem WHERE l_comment LIKE '%Repricing%' GROUP BY l_linestatus;
+SELECT l_returnflag, l_shipinstruct, count(*) FROM lineitem WHERE l_orderkey < 1000000 AND l_commitdate < '1996-01-01' GROUP BY l_returnflag, l_shipinstruct;
+SELECT l_returnflag, l_linestatus, count(*) AS row_count, sum(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS revenue, avg(l_discount), min(l_comment), max(l_comment) FROM lineitem WHERE l_discount = 0.02 GROUP BY l_returnflag, l_linestatus ORDER BY revenue DESC;
+SELECT l_returnflag, l_linestatus, avg(l_discount) AS avg_discount, sum(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS total_value, countIf(l_comment LIKE '%Return%') AS return_comments, dense_rank() OVER (ORDER BY sum(l_extendedprice) DESC) AS rank_by_value FROM lineitem WHERE l_receiptdate >= '1997-01-01' AND l_quantity <= 5 AND l_shipinstruct = 'NONE' GROUP BY l_returnflag, l_linestatus ORDER BY total_value DESC LIMIT 10;

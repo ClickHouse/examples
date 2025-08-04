@@ -1,0 +1,10 @@
+SELECT l_returnflag, l_linestatus, COUNT(*) AS cnt, SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS net_revenue FROM lineitem WHERE l_shipmode = 'SHIP' GROUP BY l_returnflag, l_linestatus;
+SELECT l_returnflag, l_linestatus, COUNT(*) AS cnt, SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS net_revenue FROM lineitem WHERE l_shipmode = 'SHIP' GROUP BY l_returnflag, l_linestatus;
+SELECT l_returnflag, l_linestatus, COUNT(*) AS cnt, SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS net_revenue FROM lineitem WHERE l_shipmode = 'SHIP' GROUP BY l_returnflag, l_linestatus;
+SELECT l_returnflag, l_linestatus, COUNT(*) AS cnt, SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS net_revenue FROM lineitem WHERE l_shipmode = 'SHIP' GROUP BY l_returnflag, l_linestatus;
+SELECT l_returnflag, l_linestatus, COUNT(*) AS cnt, SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS net_revenue FROM lineitem WHERE l_shipmode = 'SHIP' GROUP BY l_returnflag, l_linestatus;
+SELECT l_returnflag, l_linestatus, COUNT(*) AS cnt, SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS net_revenue FROM lineitem WHERE l_shipmode = 'SHIP' GROUP BY l_returnflag, l_linestatus;
+SELECT l_returnflag, l_linestatus, COUNT(*) AS cnt, SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS net_revenue FROM lineitem WHERE l_shipmode = 'SHIP' GROUP BY l_returnflag, l_linestatus;
+SELECT l_returnflag, l_linestatus, COUNT(*) AS cnt, SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS net_revenue FROM lineitem WHERE l_shipmode = 'SHIP' GROUP BY l_returnflag, l_linestatus;
+SELECT l_returnflag, l_linestatus, COUNT(*) AS cnt, SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS net_revenue FROM lineitem WHERE l_shipmode = 'SHIP' GROUP BY l_returnflag, l_linestatus;
+SELECT l_returnflag, l_linestatus, COUNT(*) AS cnt, SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS net_revenue FROM lineitem WHERE l_shipmode = 'SHIP' GROUP BY l_returnflag, l_linestatus;
