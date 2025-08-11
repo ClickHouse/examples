@@ -182,7 +182,7 @@ toml==0.10.2
 tomli==2.0.1
 tomlkit==0.12.3
 toolz==0.12.1
-tornado==6.4.2
+tornado==6.5.1
 tqdm==4.66.3
 traitlets==5.14.1
 tree-sitter==0.20.4
