@@ -1,0 +1,10 @@
+UPDATE lineitem SET l_discount = 0.045, l_tax = 0.11, l_extendedprice = 888.88, l_returnflag = 'X', l_linestatus = 'Z', l_shipmode = 'SHIP', l_comment = 'Corrected entry' WHERE l_orderkey = 503437255 AND l_linenumber = 3;
+UPDATE lineitem SET l_discount = 0.015, l_tax = 0.03, l_extendedprice = 432.10, l_returnflag = 'B', l_linestatus = 'X', l_comment = 'Adjusted manually' WHERE l_orderkey = 522639521 AND l_linenumber = 3;
+UPDATE lineitem SET l_extendedprice = 777.77, l_returnflag = 'S', l_linestatus = 'N', l_tax = 0.02 WHERE l_orderkey = 431195557 AND l_linenumber = 3;
+UPDATE lineitem SET l_extendedprice = 654.32, l_linestatus = 'W', l_shipmode = 'FOB', l_comment = 'Warranty extension' WHERE l_orderkey = 198133573 AND l_linenumber = 5;
+UPDATE lineitem SET l_comment = 'Backfill historical', l_discount = 0.01, l_tax = 0.09 WHERE l_orderkey = 93311302 AND l_linenumber = 2;
+UPDATE lineitem SET l_shipinstruct = 'COLLECT COD', l_returnflag = 'P', l_comment = 'Priority order' WHERE l_orderkey = 343206944 AND l_linenumber = 1;
+UPDATE lineitem SET l_extendedprice = 1111.11, l_tax = 0.06, l_linestatus = 'E', l_comment = 'Repricing event' WHERE l_orderkey = 140916002 AND l_linenumber = 5;
+UPDATE lineitem SET l_returnflag = 'A', l_shipinstruct = 'NONE', l_comment = 'Legacy return policy' WHERE l_orderkey = 349980483 AND l_linenumber = 1;
+UPDATE lineitem SET l_comment = 'Preferred supplier', l_discount = 0.02 WHERE l_orderkey = 596681795 AND l_linenumber = 6;
+UPDATE lineitem SET l_discount = 0.02, l_tax = 0.07, l_extendedprice = 321.99, l_returnflag = 'R', l_linestatus = 'Y', l_shipinstruct = 'NONE', l_comment = 'Return-flagged batch' WHERE l_orderkey = 400574597 AND l_linenumber = 7;
