@@ -1,0 +1,48 @@
+{
+  "mode": "single-row",
+  "method": "postgresql updates",
+  "cache_clearing": true,
+  "only_post_vacuum": true,
+  "timings_updates": [
+    0.060575,
+    0.052458,
+    0.058437,
+    0.054457,
+    0.054006,
+    0.058844,
+    0.058737,
+    0.060939,
+    0.059220,
+    0.062001
+  ],
+  "timings_queries_pre_vacuum": [],
+  "timings_queries_post_vacuum": [
+    97.826703,
+    87.127323,
+    87.112386,
+    87.052369,
+    86.454243,
+    87.075325,
+    87.175425,
+    87.124296,
+    95.476820,
+    89.794630
+  ],
+  "timings_vacuum": [
+    0.412035,
+    0.349466,
+    0.027036,
+    0.022011,
+    0.024686,
+    0.029300,
+    0.026836,
+    0.026010,
+    0.028297,
+    0.020411
+  ],
+  "timings_updates_total": 0.579674,
+  "timings_queries_pre_vacuum_total": 0,
+  "timings_queries_post_vacuum_total": 904.219520,
+  "timings_vacuum_total": 0.966088,
+  "duration_total": 905.765282
+}

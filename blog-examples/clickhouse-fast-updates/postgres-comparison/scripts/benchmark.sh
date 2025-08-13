@@ -50,7 +50,7 @@ EOF
 
 sudo systemctl restart postgresql@$PGVERSION-main
 
-sudo apt-get install -y pigz
+sudo apt-get install -y pigz jq
 wget --continue --progress=dot:giga 'https://clickhouse-datasets.s3.amazonaws.com/h/100/lineitem.tbl.gz'
 mv lineitem.tbl.gz /tmp
 pigz -d -f /tmp/lineitem.tbl.gz
