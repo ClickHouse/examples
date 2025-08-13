@@ -63,6 +63,38 @@ else
 fi
 
 
+run_with_time() {
+  local sql_file="$1"
+  local out rc elapsed
+
+  # Capture BOTH streams (some builds print timing on stdout, others on stderr)
+  out=$($CLICKHOUSE_CLIENT $CLIENT_FLAGS --time --progress 0 < "$sql_file" 2>&1)
+  rc=$?
+
+  # 1) Prefer the labeled format: "Elapsed: 0.123 sec."
+  elapsed=$(printf '%s\n' "$out" \
+    | sed -n 's/.*Elapsed: \([0-9][0-9]*\(\.[0-9]\+\)\?\) sec.*/\1/p' \
+    | tail -n 1)
+
+  # 2) Fallback: last bare floating-point number on its own line (e.g. "0.036")
+  if [[ -z "$elapsed" ]]; then
+    elapsed=$(printf '%s\n' "$out" \
+      | grep -E '^[[:space:]]*[0-9]+(\.[0-9]+)?[[:space:]]*$' \
+      | awk '{print $1}' \
+      | tail -n 1)
+  fi
+
+  if [[ $rc -ne 0 || -z "$elapsed" ]]; then
+    echo "❌ clickhouse-client failed or no timing found for $sql_file" >&2
+    echo "---- client output (tail) ----" >&2
+    printf '%s\n' "$out" | tail -n 20 >&2
+    echo "------------------------------" >&2
+    return 1
+  fi
+
+  echo "$elapsed"
+}
+
 mapfile -t ANALYTICAL_QUERIES < "${QUERY_DIR}/analytical_queries.sql"
 
 
@@ -103,10 +135,7 @@ for i in $(seq -w 1 10); do
         echo "    ▶️  Update run #$run"
         echo "Running update $i from file $SQL_FILE"
 
-        start=$(date +%s.%N)
-        $CLICKHOUSE_CLIENT $CLIENT_FLAGS < "$SQL_FILE"
-        end=$(date +%s.%N)
-        elapsed_update=$(echo "$end - $start" | bc)
+        elapsed_update=$(run_with_time "$SQL_FILE")
         echo "       ⏱️  Run took: ${elapsed_update}s"
         total_time=$(echo "$total_time + $elapsed_update" | bc)
     done
