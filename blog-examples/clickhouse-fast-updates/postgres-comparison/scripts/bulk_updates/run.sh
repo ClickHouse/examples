@@ -9,19 +9,56 @@ cd "$SCRIPT_DIR"
 
 # Parse command line arguments
 SPECIFIC_QUERY=""
-if [[ $# -gt 0 ]]; then
-    SPECIFIC_QUERY="$1"
-    if ! [[ "$SPECIFIC_QUERY" =~ ^[0-9]+$ ]]; then
-        echo "Error: Argument must be a positive integer (query index)"
-        echo "Usage: $0 [query_index]"
-        echo "Example: $0 3  # Run only update query #3"
-        exit 1
-    fi
-fi
+CLEAR_CACHE=true
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --no-cache-clear)
+            CLEAR_CACHE=false
+            shift
+            ;;
+        --help|-h)
+            echo "Usage: $0 [options] [query_index]"
+            echo "Options:"
+            echo "  --no-cache-clear    Skip clearing page cache between queries"
+            echo "  --help, -h          Show this help message"
+            echo "Example: $0 3                    # Run only update query #3"
+            echo "Example: $0 --no-cache-clear 3   # Run query #3 without clearing cache"
+            exit 0
+            ;;
+        *)
+            if [[ -z "$SPECIFIC_QUERY" ]]; then
+                SPECIFIC_QUERY="$1"
+                if ! [[ "$SPECIFIC_QUERY" =~ ^[0-9]+$ ]]; then
+                    echo "Error: Argument must be a positive integer (query index)"
+                    echo "Usage: $0 [options] [query_index]"
+                    echo "Use --help for more information"
+                    exit 1
+                fi
+            else
+                echo "Error: Unknown argument: $1"
+                echo "Use --help for usage information"
+                exit 1
+            fi
+            shift
+            ;;
+    esac
+done
 
 # Function to log with timestamp
 log_with_timestamp() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+}
+
+# Function to clear page cache if enabled
+clear_cache_if_enabled() {
+    if [[ "$CLEAR_CACHE" == "true" ]]; then
+        log_with_timestamp "Clearing page cache..."
+        sync
+        echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
+    else
+        log_with_timestamp "Skipping page cache clear (--no-cache-clear flag set)"
+    fi
 }
 
 # Function to run a single query and capture timing
@@ -31,6 +68,9 @@ run_timed_query() {
     
     log_with_timestamp "Starting: $description"
     
+    # Capture start time
+    local start=$(date +%s.%N)
+    
     # Run query with timing and capture the time output
     local timing_output=$(
         (
@@ -39,7 +79,12 @@ run_timed_query() {
         ) | sudo -u postgres psql bench -t 2>&1 | grep 'Time:'
     )
     
+    # Capture end time and calculate elapsed
+    local end=$(date +%s.%N)
+    local elapsed=$(echo "$end - $start" | bc)
+    
     log_with_timestamp "Completed: $description - $timing_output"
+    echo "       :stopwatch:  Wall clock time: ${elapsed}s"
     echo "$timing_output"
 }
 
@@ -113,17 +158,15 @@ for ((i=start_index; i<end_index; i++)); do
     log_with_timestamp "### Processing Query Pair #$query_num ###"
     log_with_timestamp "Update Query: $update_query"
     
-    # Clear caches before each test
-    sync
-    echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
+    # Clear caches before each test (if enabled)
+    clear_cache_if_enabled
     
     # Step 1: Run the update query
     log_with_timestamp "=== Running update query ==="
     run_timed_query "$update_query" "Update Query #$query_num"
     
-    # Clear caches before analytical query
-    sync
-    echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
+    # Clear caches before analytical query (if enabled)
+    clear_cache_if_enabled
     
     # Step 2: Run corresponding analytical query (pre-vacuum)
     run_analytical_query_by_index "$query_num" "pre-vacuum"
@@ -131,9 +174,8 @@ for ((i=start_index; i<end_index; i++)); do
     # Step 3: Run vacuum
     run_vacuum
     
-    # Clear caches before post-vacuum analytical query
-    sync
-    echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
+    # Clear caches before post-vacuum analytical query (if enabled)
+    clear_cache_if_enabled
     
     # Step 4: Run corresponding analytical query (post-vacuum)
     run_analytical_query_by_index "$query_num" "post-vacuum"
