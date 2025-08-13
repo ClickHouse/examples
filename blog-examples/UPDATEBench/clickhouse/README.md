@@ -9,7 +9,7 @@ This directory contains scripts to run the update benchmarks for ClickHouse.
 The first step is to create and populate the `lineitem_base_tbl_1part` table, which uses the TPC‑H `lineitem` dataset at **scale factor 100** (~600M rows, ~60 GiB uncompressed).
 
 ```bash
-cd clickhouse-fast-updates
+cd scripts
 ./init.sh
 ```
 
@@ -36,7 +36,7 @@ Benchmarks are divided into **single-row updates** and **multi-row updates**.
 ### 2.1 Single-Row Updates
 
 ```bash
-cd clickhouse-fast-updates/single-row-updates
+cd scripts
 ./run_updates_sequential.sh
 ```
 
@@ -51,7 +51,7 @@ This will:
 ### 2.2 Multi-Row Updates
 
 ```bash
-cd clickhouse-fast-updates/multi-row-updates
+cd scripts
 ./run_updates_sequential.sh
 ```
 
