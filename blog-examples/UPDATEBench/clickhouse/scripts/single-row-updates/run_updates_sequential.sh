@@ -132,6 +132,10 @@ for i in $(seq -w 1 10); do
         fi
 
 
+        # Clear caches before each test
+        sync
+        echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
+
         echo "    ▶️  Update run #$run"
         echo "Running update $i from file $SQL_FILE"
 
@@ -180,6 +184,12 @@ for i in $(seq -w 1 10); do
     total_query_memory=0
 
     for run in $(seq 1 $N); do
+
+
+        # Clear caches before each test
+        sync
+        echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
+
         echo "    ▶️  Query run #$run"
         ts_start=$(date +%s.%N)
 
