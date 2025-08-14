@@ -339,6 +339,10 @@ for ((i=start_index; i<end_index; i++)); do
     
     # Skip empty lines and comments
     [[ -z "$update_query" || "$update_query" =~ ^[[:space:]]*-- ]] && continue
+
+    # Reset data
+    log_with_timestamp "=== Resetting data ==="
+    ./reset_data.sh
     
     log_with_timestamp ""
     log_with_timestamp "### Processing Query Pair #$query_num (N=$NUM_RUNS runs) ###"
@@ -357,9 +361,11 @@ for ((i=start_index; i<end_index; i++)); do
         log_with_timestamp "=== Running $UPDATE_TYPE update query ==="
         run_timed_query "$update_query" "$MODE_Description Query #$query_num (Run $run_num)" "UPDATE_TIMINGS" "$query_num" "$run"
         
-        # Step 2: Reset data after update (before vacuum)
-        log_with_timestamp "=== Resetting data after update ==="
-        ./reset_data.sh
+        # Step 2: Reset data after update (prepare for next run)
+        if [[ $run -lt $((NUM_RUNS-1)) ]]; then
+            log_with_timestamp "=== Resetting data after update (preparing for next run) ==="
+            ./reset_data.sh
+        fi
         
         # Clear caches before next update run (if enabled and not last run)
         if [[ $run -lt $((NUM_RUNS-1)) ]]; then
@@ -385,9 +391,7 @@ for ((i=start_index; i<end_index; i++)); do
         run_analytical_query_by_index "$query_num" "$run"
     done
     
-    # Final reset after all runs for this query
-    log_with_timestamp "=== Final reset after Query Pair #$query_num ==="
-    ./reset_data.sh
+    # Data will be reset at the start of the next query pair
     
     log_with_timestamp "Completed Query Pair #$query_num (all $NUM_RUNS runs)"
     log_with_timestamp "----------------------------------------"
