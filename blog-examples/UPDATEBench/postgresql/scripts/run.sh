@@ -248,6 +248,7 @@ for ((i=start_index; i<end_index; i++)); do
     # Skip empty lines and comments
     [[ -z "$update_query" || "$update_query" =~ ^[[:space:]]*-- ]] && continue
 
+    # Clear cache pre-update (if cold)
     clear_cache_if_enabled
     
     log_with_timestamp ""
@@ -260,6 +261,9 @@ for ((i=start_index; i<end_index; i++)); do
     
     # Step 2: Run vacuum
     run_vacuum
+
+    # Clear cache pre-query (if cold)
+    clear_cache_if_enabled
     
     # Step 3: Run corresponding analytical query
     run_analytical_query_by_index "$query_num"
@@ -283,58 +287,50 @@ RESULTS_DIR="../results"
 mkdir -p "$RESULTS_DIR"
 OUTPUT_FILE="$RESULTS_DIR/${CACHE_MODE}_${UPDATE_TYPE}.json"
 log_with_timestamp "Generating JSON output to: $OUTPUT_FILE"
-    # Calculate totals with 3 decimal place rounding
-    update_total=0
-    query_total=0
-    
-    for timing in "${UPDATE_TIMINGS[@]}"; do
-        update_total=$(echo "$update_total + $timing" | bc -l)
-    done
-    
-    for timing in "${QUERY_TIMINGS[@]}"; do
-        query_total=$(echo "$query_total + $timing" | bc -l)
-    done
-    
-    # Round totals to 3 decimal places
-    update_total=$(printf "%.3f" "$update_total")
-    query_total=$(printf "%.3f" "$query_total")
-    total_duration=$(echo "$update_total + $query_total" | bc -l)
-    total_duration=$(printf "%.3f" "$total_duration")
-    
-    # Create JSON output
-    json_output="{"
-    json_output+='"mode": "sequential",'
-    json_output+='"method": "postgresql updates",'
-    json_output+='"temperature": "'$(echo "$CACHE_MODE" | tr '[:lower:]' '[:upper:]')'",'
-    json_output+='"update_granularity": "'$(echo "$UPDATE_TYPE" | tr '[:lower:]' '[:upper:]')'",'
-    
-    # Add timing arrays with 3 decimal place rounding
-    json_output+='"timings_updates": ['
-    for i in "${!UPDATE_TIMINGS[@]}"; do
-        rounded_timing=$(printf "%.3f" "${UPDATE_TIMINGS[i]}")
-        json_output+="$rounded_timing"
-        if [[ $i -lt $((${#UPDATE_TIMINGS[@]} - 1)) ]]; then
-            json_output+=','
-        fi
-    done
-    json_output+='],'
-    
-    json_output+='"timings_queries": ['
-    for i in "${!QUERY_TIMINGS[@]}"; do
-        rounded_timing=$(printf "%.3f" "${QUERY_TIMINGS[i]}")
-        json_output+="$rounded_timing"
-        if [[ $i -lt $((${#QUERY_TIMINGS[@]} - 1)) ]]; then
-            json_output+=','
-        fi
-    done
-    json_output+='],'
-    
-    # Add totals
-    json_output+='"timings_updates_total": '$update_total','
-    json_output+='"timings_queries_total": '$query_total','
-    json_output+='"duration_total": '$total_duration
-    json_output+='}'
-    
-    # Format JSON with jq and output to file
-    echo "$json_output" | jq '.' > "$OUTPUT_FILE"
-    log_with_timestamp "JSON results written to: $OUTPUT_FILE"
+
+# Calculate totals with 3 decimal place rounding
+update_total=0
+query_total=0
+
+for timing in "${UPDATE_TIMINGS[@]}"; do
+    update_total=$(echo "$update_total + $timing" | bc -l)
+done
+
+for timing in "${QUERY_TIMINGS[@]}"; do
+    query_total=$(echo "$query_total + $timing" | bc -l)
+done
+
+# Round totals to 3 decimal places
+update_total=$(printf "%.3f" "$update_total")
+query_total=$(printf "%.3f" "$query_total")
+total_duration=$(echo "$update_total + $query_total" | bc -l)
+total_duration=$(printf "%.3f" "$total_duration")
+
+# Convert arrays to JSON arrays with 3 decimal place rounding
+update_timings_json=$(printf '%s\n' "${UPDATE_TIMINGS[@]}" | jq -R 'tonumber | . * 1000 | round / 1000' | jq -s .)
+query_timings_json=$(printf '%s\n' "${QUERY_TIMINGS[@]}" | jq -R 'tonumber | . * 1000 | round / 1000' | jq -s .)
+
+# Create JSON output using jq
+jq -n \
+    --arg mode "sequential" \
+    --arg method "postgresql updates" \
+    --arg temperature "$(echo "$CACHE_MODE" | tr '[:lower:]' '[:upper:]')" \
+    --arg update_granularity "$(echo "$UPDATE_TYPE" | tr '[:lower:]' '[:upper:]')" \
+    --argjson timings_updates "$update_timings_json" \
+    --argjson timings_queries "$query_timings_json" \
+    --argjson timings_updates_total "$update_total" \
+    --argjson timings_queries_total "$query_total" \
+    --argjson duration_total "$total_duration" \
+    '{
+        mode: $mode,
+        method: $method,
+        temperature: $temperature,
+        update_granularity: $update_granularity,
+        timings_updates: $timings_updates,
+        timings_queries: $timings_queries,
+        timings_updates_total: $timings_updates_total,
+        timings_queries_total: $timings_queries_total,
+        duration_total: $duration_total
+    }' > "$OUTPUT_FILE"
+
+log_with_timestamp "JSON results written to: $OUTPUT_FILE"
