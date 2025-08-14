@@ -411,7 +411,9 @@ fi
 
 # Generate JSON output (always enabled)
 # Auto-generate filename based on cache mode and update type
-OUTPUT_FILE="${CACHE_MODE}_${UPDATE_TYPE}.json"
+RESULTS_DIR="../results"
+mkdir -p "$RESULTS_DIR"
+OUTPUT_FILE="$RESULTS_DIR/${CACHE_MODE}_${UPDATE_TYPE}.json"
 log_with_timestamp "Generating JSON output to: $OUTPUT_FILE"
     # Calculate totals
     update_total=0
