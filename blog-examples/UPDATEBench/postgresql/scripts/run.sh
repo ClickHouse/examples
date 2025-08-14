@@ -102,6 +102,11 @@ clear_cache_if_enabled() {
     fi
 }
 
+prime_cache() {
+    log_with_timestamp "Priming cache..."
+    sudo -u postgres psql bench -c "SELECT COUNT(*) FROM lineitem;" 2>&1 
+}
+
 # Function to run a timed query
 run_timed_query() {
     local query="$1"
@@ -228,8 +233,7 @@ echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
 # If hot mode, prime cache by running query 1
 if [[ "$CLEAR_CACHE" == "false" ]]; then
     log_with_timestamp "Priming cache..."
-    run_analytical_query_by_index "0"
-    run_analytical_query_by_index "4"
+    prime_cache
 fi
 
 # Main benchmark loop
