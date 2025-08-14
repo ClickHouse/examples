@@ -27,7 +27,8 @@ esac
 shopt -u nocasematch
 
 # Defaults
-N=${N:-3}                        # repetitions per step
+# N=${N:-3}                        # repetitions per step
+N=${N:-1}                        # repetitions per step
 MODE="sequential"
 METHOD_NAME="lightweight updates"
 TABLE_NAME="lineitem"
@@ -96,6 +97,14 @@ fi
 
 echo "Running ${METHOD_NAME} (${GRAN_CANON}, ${TEMP_CANON}) on PART_NUM=${PART_NUM}..."
 
+
+echo "Preparing table: ${TABLE_NAME}"
+$CLICKHOUSE_CLIENT --query="DROP TABLE IF EXISTS ${TABLE_NAME};"
+$CLICKHOUSE_CLIENT --query="CREATE TABLE ${TABLE_NAME} CLONE AS ${BASE_TABLE};"
+$CLICKHOUSE_CLIENT --query="ALTER TABLE ${TABLE_NAME} MODIFY SETTING enable_block_number_column = 1, enable_block_offset_column = 1;"
+$CLICKHOUSE_CLIENT --query="ALTER TABLE ${TABLE_NAME} MODIFY SETTING max_bytes_to_merge_at_max_space_in_pool = 1;"
+
+
 timings_updates=()
 timings_queries=()
 
@@ -107,11 +116,6 @@ for ((i = 0; i < ${#updates[@]}; i++)); do
   # Avg update time over N runs (reset table before each)
   total_update_time=0
   for run in $(seq 1 $N); do
-    echo "Preparing table: ${TABLE_NAME}"
-    $CLICKHOUSE_CLIENT --query="DROP TABLE IF EXISTS ${TABLE_NAME};"
-    $CLICKHOUSE_CLIENT --query="CREATE TABLE ${TABLE_NAME} CLONE AS ${BASE_TABLE};"
-    $CLICKHOUSE_CLIENT --query="ALTER TABLE ${TABLE_NAME} MODIFY SETTING enable_block_number_column = 1, enable_block_offset_column = 1;"
-    $CLICKHOUSE_CLIENT --query="ALTER TABLE ${TABLE_NAME} MODIFY SETTING max_bytes_to_merge_at_max_space_in_pool = 1;"
 
     clear_caches_if_cold
 
