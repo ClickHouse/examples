@@ -174,12 +174,26 @@ run_analytical_query_by_index() {
 # Function to run vacuum
 run_vacuum() {
     log_with_timestamp "=== Running VACUUM ==="
-    # Run vacuum without timing tracking
+    # Run vacuum without timing tracking but with error visibility
     local start=$(date +%s.%N)
-    sudo -u postgres psql bench -c "VACUUM;" > /dev/null 2>&1
-    local end=$(date +%s.%N)
-    local elapsed=$(echo "$end - $start" | bc)
-    log_with_timestamp "VACUUM completed in ${elapsed}s (not tracked in results)"
+    
+    # Run vacuum with timeout and error handling
+    if timeout 15 sudo -u postgres psql bench -c "VACUUM;" 2>&1; then
+        local end=$(date +%s.%N)
+        local elapsed=$(echo "$end - $start" | bc)
+        log_with_timestamp "VACUUM completed successfully in ${elapsed}s (not tracked in results)"
+    else
+        local exit_code=$?
+        local end=$(date +%s.%N)
+        local elapsed=$(echo "$end - $start" | bc)
+        if [[ $exit_code -eq 124 ]]; then
+            log_with_timestamp "ERROR: VACUUM timed out after 15 seconds"
+        else
+            log_with_timestamp "ERROR: VACUUM failed with exit code $exit_code after ${elapsed}s"
+        fi
+        log_with_timestamp "VACUUM failure indicates a serious database issue. Stopping benchmark."
+        exit 1
+    fi
 }
 
 # Determine update file based on type
