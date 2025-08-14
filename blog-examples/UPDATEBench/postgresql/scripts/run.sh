@@ -240,9 +240,9 @@ if [[ "$NO_RESET" == "false" ]]; then
     sync
     echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
     # If hot mode, prime cache by running query 1
-    if [[ "$CLEAR_CACHE" == "false" ]]; then
-        prime_cache
-    fi
+    #if [[ "$CLEAR_CACHE" == "false" ]]; then
+    #    prime_cache
+    #fi
 else
     log_with_timestamp "=== Skipping data reset and cache clearing (--no-reset flag) ==="
 fi
