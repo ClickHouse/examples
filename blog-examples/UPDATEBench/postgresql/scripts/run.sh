@@ -217,9 +217,19 @@ if [[ ! -f "analytical_queries.sql" ]]; then
     exit 1
 fi
 
-# Reset data once at the beginning of the benchmark
-log_with_timestamp "=== Resetting data before benchmark ==="
+# 
+log_with_timestamp "=== Resetting data & cache before benchmark ==="
+# Always clear the cache when a new benchmark run is started
+log_with_timestamp "Clearing page cache..."
+sync
+echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
+# Always reset data once at the beginning of the benchmark
 ./reset_data.sh
+# If hot mode, prime cache by running query 1
+if [[ "$CLEAR_CACHE" == "false" ]]; then
+    log_with_timestamp "Priming cache..."
+    run_analytical_query_by_index "0"
+fi
 
 # Main benchmark loop
 if [[ -n "$SPECIFIC_QUERY" ]]; then
