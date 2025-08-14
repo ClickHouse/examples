@@ -11,6 +11,7 @@ cd "$SCRIPT_DIR"
 UPDATE_TYPE=""
 CACHE_MODE=""
 SPECIFIC_QUERY=""
+NO_RESET=false
 
 # Function to show usage
 show_usage() {
@@ -21,11 +22,13 @@ show_usage() {
     echo "  cache_mode     hot|cold     hot=no cache clearing, cold=clear cache"
     echo ""
     echo "Options:"
+    echo "  --no-reset               Skip data reset and cache clearing at start"
     echo "  --help, -h               Show this help message"
     echo ""
     echo "Examples:"
     echo "  $0 bulk hot                          # Run bulk updates without clearing cache (outputs hot_bulk.json)"
     echo "  $0 point cold                        # Run point updates with cache clearing (outputs cold_point.json)"
+    echo "  $0 point cold --no-reset             # Run without resetting data or clearing cache"
     echo "  $0 point cold 3                      # Run only query #3 with cache clearing"
 }
 
@@ -63,6 +66,10 @@ fi
 # Parse remaining options
 while [[ $# -gt 0 ]]; do
     case $1 in
+        --no-reset)
+            NO_RESET=true
+            shift
+            ;;
         --help|-h)
             show_usage
             exit 0
@@ -222,18 +229,22 @@ if [[ ! -f "analytical_queries.sql" ]]; then
     exit 1
 fi
 
-# 
-log_with_timestamp "=== Resetting data & cache before benchmark ==="
-# Always reset data once at the beginning of the benchmark
-./reset_data.sh
-# Always clear the cache when a new benchmark run is started
-log_with_timestamp "Clearing page cache..."
-sync
-echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
-# If hot mode, prime cache by running query 1
-if [[ "$CLEAR_CACHE" == "false" ]]; then
-    log_with_timestamp "Priming cache..."
-    prime_cache
+
+# Reset data and cache unless --no-reset flag is used
+if [[ "$NO_RESET" == "false" ]]; then
+    log_with_timestamp "=== Resetting data & cache before benchmark ==="
+    # Reset data once at the beginning of the benchmark
+    ./reset_data.sh
+    # Clear the cache when a new benchmark run is started
+    log_with_timestamp "Clearing page cache..."
+    sync
+    echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
+    # If hot mode, prime cache by running query 1
+    if [[ "$CLEAR_CACHE" == "false" ]]; then
+        prime_cache
+    fi
+else
+    log_with_timestamp "=== Skipping data reset and cache clearing (--no-reset flag) ==="
 fi
 
 # Main benchmark loop
