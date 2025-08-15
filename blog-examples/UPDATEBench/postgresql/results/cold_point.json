@@ -1,0 +1,33 @@
+{
+  "mode": "sequential",
+  "method": "postgresql updates",
+  "temperature": "COLD",
+  "update_granularity": "POINT",
+  "timings_updates": [
+    0.012,
+    0.032,
+    0.033,
+    0.033,
+    0.032,
+    0.032,
+    0.031,
+    0.028,
+    0.029,
+    0.029
+  ],
+  "timings_queries": [
+    80.924,
+    87.074,
+    87.053,
+    87.022,
+    86.412,
+    87.030,
+    87.053,
+    86.997,
+    96.144,
+    89.670
+  ],
+  "timings_updates_total": 0.292,
+  "timings_queries_total": 875.379,
+  "duration_total": 875.671
+}
