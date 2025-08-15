@@ -3,7 +3,6 @@
   "method": "postgresql updates",
   "temperature": "HOT",
   "update_granularity": "BULK",
-  "N": 1,
   "timings_updates": [
     42.903,
     42.662,

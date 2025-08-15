@@ -11,7 +11,7 @@ cd "$SCRIPT_DIR"
 UPDATE_TYPE=""
 CACHE_MODE=""
 SPECIFIC_QUERY=""
-NUM_RUNS=1
+NO_RESET=false
 
 # Function to show usage
 show_usage() {
@@ -22,13 +22,13 @@ show_usage() {
     echo "  cache_mode     hot|cold     hot=no cache clearing, cold=clear cache"
     echo ""
     echo "Options:"
-    echo "  --runs N, -n N           Number of runs to perform and average (default: 1)"
+    echo "  --no-reset               Skip data reset and cache clearing at start"
     echo "  --help, -h               Show this help message"
     echo ""
     echo "Examples:"
     echo "  $0 bulk hot                          # Run bulk updates without clearing cache (outputs hot_bulk.json)"
     echo "  $0 point cold                        # Run point updates with cache clearing (outputs cold_point.json)"
-    echo "  $0 point cold --runs 3               # Run with 3 iterations and average results"
+    echo "  $0 point cold --no-reset             # Run without resetting data or clearing cache"
     echo "  $0 point cold 3                      # Run only query #3 with cache clearing"
 }
 
@@ -66,14 +66,9 @@ fi
 # Parse remaining options
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --runs|-n)
-            if [[ -z "$2" ]] || ! [[ "$2" =~ ^[0-9]+$ ]] || [[ "$2" -lt 1 ]]; then
-                echo "Error: --runs requires a positive integer"
-                show_usage
-                exit 1
-            fi
-            NUM_RUNS="$2"
-            shift 2
+        --no-reset)
+            NO_RESET=true
+            shift
             ;;
         --help|-h)
             show_usage
@@ -82,11 +77,6 @@ while [[ $# -gt 0 ]]; do
         *)
             if [[ -z "$SPECIFIC_QUERY" ]]; then
                 SPECIFIC_QUERY="$1"
-                if ! [[ "$SPECIFIC_QUERY" =~ ^[0-9]+$ ]]; then
-                    echo "Error: Query index must be a positive integer"
-                    show_usage
-                    exit 1
-                fi
             else
                 echo "Error: Unknown argument: $1"
                 show_usage
@@ -103,82 +93,10 @@ log_with_timestamp() {
 }
 
 # Arrays to collect timing data for JSON output
-# For N>1, these will be 2D arrays: [query_index][run_index]
-declare -A UPDATE_TIMINGS_ALL
-declare -A QUERY_TIMINGS_ALL
-
-# Final averaged arrays for JSON output
 UPDATE_TIMINGS=()
 QUERY_TIMINGS=()
 
-# Function to calculate averages from multiple runs
-calculate_averages() {
-    if [[ "$NUM_RUNS" -eq 1 ]]; then
-        # For single runs, just copy from the 2D arrays to final arrays (if they were used)
-        for ((q=start_index; q<end_index; q++)); do
-            query_num=$((q+1))
-            
-            # Skip empty queries
-            update_query="${update_queries[q]}"
-            [[ -z "$update_query" || "$update_query" =~ ^[[:space:]]*-- ]] && continue
-            
-            # Copy single run results if they exist in 2D arrays
-            local key="${query_num}_0"
-            if [[ -n "${UPDATE_TIMINGS_ALL[$key]}" ]]; then
-                UPDATE_TIMINGS+=("${UPDATE_TIMINGS_ALL[$key]}")
-            fi
-            if [[ -n "${QUERY_TIMINGS_ALL[$key]}" ]]; then
-                QUERY_TIMINGS+=("${QUERY_TIMINGS_ALL[$key]}")
-            fi
-        done
-        return
-    fi
-    
-    log_with_timestamp "Calculating averages from $NUM_RUNS runs..."
-    
-    # Calculate averages for each query index
-    for ((q=start_index; q<end_index; q++)); do
-        query_num=$((q+1))
-        
-        # Skip empty queries
-        update_query="${update_queries[q]}"
-        [[ -z "$update_query" || "$update_query" =~ ^[[:space:]]*-- ]] && continue
-        
-        # Average UPDATE_TIMINGS for this query
-        local update_sum=0
-        local update_count=0
-        for ((run=0; run<NUM_RUNS; run++)); do
-            local key="${query_num}_${run}"
-            if [[ -n "${UPDATE_TIMINGS_ALL[$key]}" ]]; then
-                update_sum=$(echo "$update_sum + ${UPDATE_TIMINGS_ALL[$key]}" | bc -l)
-                update_count=$((update_count + 1))
-            fi
-        done
-        if [[ $update_count -gt 0 ]]; then
-            local update_avg=$(echo "scale=3; $update_sum / $update_count" | bc -l)
-            UPDATE_TIMINGS+=("$update_avg")
-        fi
-        
-        # Average QUERY_TIMINGS for this query
-        local query_sum=0
-        local query_count=0
-        for ((run=0; run<NUM_RUNS; run++)); do
-            local key="${query_num}_${run}"
-            if [[ -n "${QUERY_TIMINGS_ALL[$key]}" ]]; then
-                query_sum=$(echo "$query_sum + ${QUERY_TIMINGS_ALL[$key]}" | bc -l)
-                query_count=$((query_count + 1))
-            fi
-        done
-        if [[ $query_count -gt 0 ]]; then
-            local query_avg=$(echo "scale=3; $query_sum / $query_count" | bc -l)
-            QUERY_TIMINGS+=("$query_avg")
-        fi
-        
 
-    done
-    
-    log_with_timestamp "Averaging completed. Final arrays contain ${#UPDATE_TIMINGS[@]} update timings, ${#QUERY_TIMINGS[@]} query timings."
-}
 
 # Function to clear page cache if enabled
 clear_cache_if_enabled() {
@@ -189,6 +107,11 @@ clear_cache_if_enabled() {
     else
         log_with_timestamp "Skipping page cache clear (hot mode)"
     fi
+}
+
+prime_cache() {
+    log_with_timestamp "Priming cache..."
+    sudo -u postgres psql bench -c "SELECT COUNT(*) FROM lineitem;" 2>&1 
 }
 
 # Function to run a timed query
@@ -227,30 +150,14 @@ run_timed_query() {
     
     # Store timing in array if specified (use PostgreSQL timing for JSON, wall-clock for display)
     if [[ -n "$timing_array_name" && -n "$psql_timing" ]]; then
-        if [[ "$NUM_RUNS" -gt 1 ]]; then
-            # Store in 2D array for multiple runs
-            local key="${query_index}_${run_index}"
-            case "$timing_array_name" in
-                "UPDATE_TIMINGS")
-                    UPDATE_TIMINGS_ALL["$key"]="$psql_timing"
-                    ;;
-                "QUERY_TIMINGS")
-                    QUERY_TIMINGS_ALL["$key"]="$psql_timing"
-                    ;;
-
-            esac
-        else
-            # Single run - store directly in final arrays
-            case "$timing_array_name" in
-                "UPDATE_TIMINGS")
-                    UPDATE_TIMINGS+=("$psql_timing")
-                    ;;
-                "QUERY_TIMINGS")
-                    QUERY_TIMINGS+=("$psql_timing")
-                    ;;
-
-            esac
-        fi
+        case "$timing_array_name" in
+            "UPDATE_TIMINGS")
+                UPDATE_TIMINGS+=("$psql_timing")
+                ;;
+            "QUERY_TIMINGS")
+                QUERY_TIMINGS+=("$psql_timing")
+                ;;
+        esac
     fi
     
     log_with_timestamp "Completed: $description - $timing_output"
@@ -261,7 +168,6 @@ run_timed_query() {
 # Function to run a specific analytical query by line number
 run_analytical_query_by_index() {
     local index="$1"
-    local run_index="$2"
     
     log_with_timestamp "=== Running analytical query #$index ==="
     
@@ -274,18 +180,32 @@ run_analytical_query_by_index() {
         return
     fi
     
-    run_timed_query "$analytical_query" "Analytical Query #$index" "QUERY_TIMINGS" "$index" "$run_index"
+    run_timed_query "$analytical_query" "Analytical Query #$index" "QUERY_TIMINGS"
 }
 
 # Function to run vacuum
 run_vacuum() {
     log_with_timestamp "=== Running VACUUM ==="
-    # Run vacuum without timing tracking
+    # Run vacuum without timing tracking but with error visibility
     local start=$(date +%s.%N)
-    sudo -u postgres psql bench -c "VACUUM;" > /dev/null 2>&1
-    local end=$(date +%s.%N)
-    local elapsed=$(echo "$end - $start" | bc)
-    log_with_timestamp "VACUUM completed in ${elapsed}s (not tracked in results)"
+    
+    # Run vacuum with timeout and error handling
+    if timeout 15 sudo -u postgres psql bench -c "VACUUM;" 2>&1; then
+        local end=$(date +%s.%N)
+        local elapsed=$(echo "$end - $start" | bc)
+        log_with_timestamp "VACUUM completed successfully in ${elapsed}s (not tracked in results)"
+    else
+        local exit_code=$?
+        local end=$(date +%s.%N)
+        local elapsed=$(echo "$end - $start" | bc)
+        if [[ $exit_code -eq 124 ]]; then
+            log_with_timestamp "ERROR: VACUUM timed out after 15 seconds"
+        else
+            log_with_timestamp "ERROR: VACUUM failed with exit code $exit_code after ${elapsed}s"
+        fi
+        log_with_timestamp "VACUUM failure indicates a serious database issue. Stopping benchmark."
+        exit 1
+    fi
 }
 
 # Determine update file based on type
@@ -309,9 +229,23 @@ if [[ ! -f "analytical_queries.sql" ]]; then
     exit 1
 fi
 
-# Reset data once at the beginning of the benchmark
-log_with_timestamp "=== Resetting data before benchmark ==="
-./reset_data.sh
+
+# Reset data and cache unless --no-reset flag is used
+if [[ "$NO_RESET" == "false" ]]; then
+    log_with_timestamp "=== Resetting data & cache before benchmark ==="
+    # Reset data once at the beginning of the benchmark
+    ./reset_data.sh
+    # Clear the cache when a new benchmark run is started
+    log_with_timestamp "Clearing page cache..."
+    sync
+    echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
+    # If hot mode, prime cache by running query 1
+    #if [[ "$CLEAR_CACHE" == "false" ]]; then
+    #    prime_cache
+    #fi
+else
+    log_with_timestamp "=== Skipping data reset and cache clearing (--no-reset flag) ==="
+fi
 
 # Main benchmark loop
 if [[ -n "$SPECIFIC_QUERY" ]]; then
@@ -346,58 +280,45 @@ else
     log_with_timestamp "Running all query pairs (1-$max_queries)"
 fi
 
-# Process each update query with N-runs support
-for ((run=0; run<NUM_RUNS; run++)); do
-    run_num=$((run+1))
-    if [[ "$NUM_RUNS" -gt 1 ]]; then
-        log_with_timestamp ""
-        log_with_timestamp "=== Starting Run $run_num/$NUM_RUNS ==="
-    fi
+# Process each update query
+for ((i=start_index; i<end_index; i++)); do
+    query_num=$((i+1))
+    update_query="${update_queries[i]}"
     
-    for ((i=start_index; i<end_index; i++)); do
-        query_num=$((i+1))
-        update_query="${update_queries[i]}"
-        
-        # Skip empty lines and comments
-        [[ -z "$update_query" || "$update_query" =~ ^[[:space:]]*-- ]] && continue
-        
-        log_with_timestamp ""
-        log_with_timestamp "### Processing Query Pair #$query_num ###"
-        log_with_timestamp "Update Query: $update_query"
-        
-        # Step 1: Run the update query
-        log_with_timestamp "=== Running $UPDATE_TYPE update query ==="
-        run_timed_query "$update_query" "$MODE_Description Query #$query_num" "UPDATE_TIMINGS" "$query_num" "$run"
-        
-        # Step 2: Run vacuum
-        run_vacuum
-        
-        # Step 3: Run corresponding analytical query
-        log_with_timestamp "=== Running analytical query #$query_num ==="
-        run_analytical_query_by_index "$query_num" "$run"
-        
-        # Clear caches after query (if COLD mode and not the last query of the last run)
-        if [[ "$CLEAR_CACHE" == "true" ]]; then
-            if [[ $run -lt $((NUM_RUNS-1)) ]] || [[ $i -lt $((end_index-1)) ]]; then
-                clear_cache_if_enabled
-            fi
-        fi
-        
-        log_with_timestamp "Completed Query Pair #$query_num"
-        log_with_timestamp "----------------------------------------"
-    done
-done
+    # Skip empty lines and comments
+    [[ -z "$update_query" || "$update_query" =~ ^[[:space:]]*-- ]] && continue
 
-# Calculate averages if multiple runs were performed
-calculate_averages
+    # Clear cache pre-update (if cold)
+    clear_cache_if_enabled
+    
+    log_with_timestamp ""
+    log_with_timestamp "### Processing Query Pair #$query_num ###"
+    log_with_timestamp "Update Query: $update_query"
+    
+    # Step 1: Run the update query
+    log_with_timestamp "=== Running $UPDATE_TYPE update query ==="
+    run_timed_query "$update_query" "$MODE_Description Query #$query_num" "UPDATE_TIMINGS"
+    
+    # Step 2: Run vacuum
+    run_vacuum
+
+    # Clear cache pre-query (if cold)
+    clear_cache_if_enabled
+    
+    # Step 3: Run corresponding analytical query
+    run_analytical_query_by_index "$query_num"
+    
+    log_with_timestamp "Completed Query Pair #$query_num"
+    log_with_timestamp "----------------------------------------"
+done
 
 log_with_timestamp ""
 if [[ -n "$SPECIFIC_QUERY" ]]; then
     log_with_timestamp "$MODE_DESCRIPTION benchmark completed successfully!"
-    log_with_timestamp "Processed query pair #$SPECIFIC_QUERY with $NUM_RUNS runs each"
+    log_with_timestamp "Processed query pair #$SPECIFIC_QUERY"
 else
     log_with_timestamp "$MODE_DESCRIPTION benchmark completed successfully!"
-    log_with_timestamp "Total query pairs processed: $max_queries with $NUM_RUNS runs each"
+    log_with_timestamp "Total query pairs processed: $max_queries"
 fi
 
 # Generate JSON output (always enabled)
@@ -406,59 +327,50 @@ RESULTS_DIR="../results"
 mkdir -p "$RESULTS_DIR"
 OUTPUT_FILE="$RESULTS_DIR/${CACHE_MODE}_${UPDATE_TYPE}.json"
 log_with_timestamp "Generating JSON output to: $OUTPUT_FILE"
-    # Calculate totals with 3 decimal place rounding
-    update_total=0
-    query_total=0
-    
-    for timing in "${UPDATE_TIMINGS[@]}"; do
-        update_total=$(echo "$update_total + $timing" | bc -l)
-    done
-    
-    for timing in "${QUERY_TIMINGS[@]}"; do
-        query_total=$(echo "$query_total + $timing" | bc -l)
-    done
-    
-    # Round totals to 3 decimal places
-    update_total=$(printf "%.3f" "$update_total")
-    query_total=$(printf "%.3f" "$query_total")
-    total_duration=$(echo "$update_total + $query_total" | bc -l)
-    total_duration=$(printf "%.3f" "$total_duration")
-    
-    # Create JSON output
-    json_output="{"
-    json_output+='"mode": "sequential",'
-    json_output+='"method": "postgresql updates",'
-    json_output+='"temperature": "'$(echo "$CACHE_MODE" | tr '[:lower:]' '[:upper:]')'",'
-    json_output+='"update_granularity": "'$(echo "$UPDATE_TYPE" | tr '[:lower:]' '[:upper:]')'",'
-    json_output+='"N": '$NUM_RUNS','
-    
-    # Add timing arrays with 3 decimal place rounding
-    json_output+='"timings_updates": ['
-    for i in "${!UPDATE_TIMINGS[@]}"; do
-        rounded_timing=$(printf "%.3f" "${UPDATE_TIMINGS[i]}")
-        json_output+="$rounded_timing"
-        if [[ $i -lt $((${#UPDATE_TIMINGS[@]} - 1)) ]]; then
-            json_output+=','
-        fi
-    done
-    json_output+='],'
-    
-    json_output+='"timings_queries": ['
-    for i in "${!QUERY_TIMINGS[@]}"; do
-        rounded_timing=$(printf "%.3f" "${QUERY_TIMINGS[i]}")
-        json_output+="$rounded_timing"
-        if [[ $i -lt $((${#QUERY_TIMINGS[@]} - 1)) ]]; then
-            json_output+=','
-        fi
-    done
-    json_output+='],'
-    
-    # Add totals
-    json_output+='"timings_updates_total": '$update_total','
-    json_output+='"timings_queries_total": '$query_total','
-    json_output+='"duration_total": '$total_duration
-    json_output+='}'
-    
-    # Format JSON with jq and output to file
-    echo "$json_output" | jq '.' > "$OUTPUT_FILE"
-    log_with_timestamp "JSON results written to: $OUTPUT_FILE"
+
+# Calculate totals with 3 decimal place rounding
+update_total=0
+query_total=0
+
+for timing in "${UPDATE_TIMINGS[@]}"; do
+    update_total=$(echo "$update_total + $timing" | bc -l)
+done
+
+for timing in "${QUERY_TIMINGS[@]}"; do
+    query_total=$(echo "$query_total + $timing" | bc -l)
+done
+
+# Round totals to 3 decimal places
+update_total=$(printf "%.3f" "$update_total")
+query_total=$(printf "%.3f" "$query_total")
+total_duration=$(echo "$update_total + $query_total" | bc -l)
+total_duration=$(printf "%.3f" "$total_duration")
+
+# Convert arrays to JSON arrays with 3 decimal place rounding
+update_timings_json=$(printf '%s\n' "${UPDATE_TIMINGS[@]}" | jq -R 'tonumber | . * 1000 | round / 1000' | jq -s .)
+query_timings_json=$(printf '%s\n' "${QUERY_TIMINGS[@]}" | jq -R 'tonumber | . * 1000 | round / 1000' | jq -s .)
+
+# Create JSON output using jq
+jq -n \
+    --arg mode "sequential" \
+    --arg method "postgresql updates" \
+    --arg temperature "$(echo "$CACHE_MODE" | tr '[:lower:]' '[:upper:]')" \
+    --arg update_granularity "$(echo "$UPDATE_TYPE" | tr '[:lower:]' '[:upper:]')" \
+    --argjson timings_updates "$update_timings_json" \
+    --argjson timings_queries "$query_timings_json" \
+    --argjson timings_updates_total "$update_total" \
+    --argjson timings_queries_total "$query_total" \
+    --argjson duration_total "$total_duration" \
+    '{
+        mode: $mode,
+        method: $method,
+        temperature: $temperature,
+        update_granularity: $update_granularity,
+        timings_updates: $timings_updates,
+        timings_queries: $timings_queries,
+        timings_updates_total: $timings_updates_total,
+        timings_queries_total: $timings_queries_total,
+        duration_total: $duration_total
+    }' > "$OUTPUT_FILE"
+
+log_with_timestamp "JSON results written to: $OUTPUT_FILE"
