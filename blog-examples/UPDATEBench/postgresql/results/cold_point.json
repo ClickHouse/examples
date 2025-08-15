@@ -4,7 +4,7 @@
   "temperature": "COLD",
   "update_granularity": "POINT",
   "timings_updates": [
-    0.012,
+    0.032,
     0.032,
     0.033,
     0.033,
@@ -27,7 +27,7 @@
     96.144,
     89.670
   ],
-  "timings_updates_total": 0.292,
+  "timings_updates_total": 0.312,
   "timings_queries_total": 875.379,
-  "duration_total": 875.671
+  "duration_total": 875.691
 }
