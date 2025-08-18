@@ -3,7 +3,6 @@
   "method": "postgresql updates",
   "temperature": "HOT",
   "update_granularity": "POINT",
-  "N": 1,
   "timings_updates": [
     0.013,
     0.003,
