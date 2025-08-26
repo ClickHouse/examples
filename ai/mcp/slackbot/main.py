@@ -90,6 +90,10 @@ async def render_and_upload_chart(client, channel, thread_ts, vega_lite_spec, ti
         else:
             spec = vega_lite_spec
             
+        # Ensure title is a valid non-empty string
+        if not isinstance(title, str) or not title.strip():
+            title = "Chart"
+            
         # Render to PNG using vl-convert
         png_data = vlc.vegalite_to_png(spec)
         
@@ -102,7 +106,7 @@ async def render_and_upload_chart(client, channel, thread_ts, vega_lite_spec, ti
             response = await client.files_upload_v2(
                 channel=channel,
                 file=tmp_file.name,
-                title=title,
+                title=title.strip(),
                 thread_ts=thread_ts
             )
             
@@ -173,9 +177,18 @@ async def handle_slack_query(event, say):
             vega_specs = extract_vega_lite_specs(response_text)
             
             if vega_specs:
+                logging.info(f"📊 Found {len(vega_specs)} Vega-Lite chart specification(s)")
+                
                 # Render and upload each chart found
                 for i, spec in enumerate(vega_specs):
-                    chart_title = spec.get("title", f"Chart {i+1}" if len(vega_specs) > 1 else "Chart")
+                    # Log the Vega-Lite spec to console
+                    logging.info(f"🎨 Vega-Lite Spec #{i+1}:")
+                    logging.info(json.dumps(spec, indent=2))
+                    
+                    # Ensure we have a valid string title
+                    chart_title = spec.get("title") or (f"Chart {i+1}" if len(vega_specs) > 1 else "Chart")
+                    if not isinstance(chart_title, str) or not chart_title.strip():
+                        chart_title = f"Chart {i+1}" if len(vega_specs) > 1 else "Chart"
                     await render_and_upload_chart(client, channel, thread_ts, spec, chart_title)
                 
                 # Remove JSON blocks from text response to avoid clutter
@@ -185,6 +198,11 @@ async def handle_slack_query(event, say):
                 await say(text=response_text, thread_ts=thread_ts)
 
     asyncio.create_task(do_agent())
+
+@app.event("assistant_thread_started")
+async def handle_assistant_thread_started_events(body, logger):
+    logger.info("🤖 Assistant thread started - ignoring event to avoid unnecessary LLM calls")
+    logger.info(body)
 
 @app.event("app_mention")
 async def handle_app_mention(event, say):
