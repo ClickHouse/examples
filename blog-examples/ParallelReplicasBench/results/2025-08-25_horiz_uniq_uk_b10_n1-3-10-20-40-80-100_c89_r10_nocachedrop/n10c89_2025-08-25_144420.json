@@ -1,0 +1,39 @@
+{
+  "date": "2025-08-25",
+  "version": "25.6.2.5971",
+  "csp": "aws",
+  "region": "us-east-2",
+  "query_db": "uk_b10",
+  "query_file": "aggregation_uniq.sql",
+  "nodes": 10,
+  "cpu_cores": 89,
+  "ram_gb_per_node": 356,
+  "runs": [2.710,2.088,2.712,2.293,2.238,2.365,2.395,2.220,2.406,2.188],
+  "timing": { "cold": 2.710, "hot": 2.088, "hot_avg": 2.322778 },
+  "files": {
+    "cold_pretty": "stats/2025-08-25_144420/n10c89/run_1_pretty.json",
+    "cold_raw": "stats/2025-08-25_144420/n10c89/run_1_raw.json",
+    "hot_pretty": "stats/2025-08-25_144420/n10c89/run_2_pretty.json",
+    "hot_raw": "stats/2025-08-25_144420/n10c89/run_2_raw.json"
+  },
+  "cold_stats": {
+    "avg_replica_pct": { "value": 10.00, "human": "10.00 %" },
+    "replica_temperature_distribution": {"cold":10},
+    "avg_replica_memory_excl_initiator": { "bytes": 613568791.78, "human": "585.14 MiB" },
+    "avg_replica_bytes_read": { "bytes": 70761185.90, "human": "67.48 MiB" },
+    "avg_replica_net_sent_excl_initiator": { "bytes": 7140129.11, "human": "6.81 MiB" },
+    "sum_replica_net_sent_excl_initiator": { "bytes": 64261162.00, "human": "61.28 MiB" },
+    "initiator_net_recv": { "bytes": 64261396.00, "human": "61.28 MiB" },
+    "initiator_rows_per_sec": "3.68 billion rows/s total"
+  },
+  "hot_stats": {
+    "avg_replica_pct": { "value": 10.00, "human": "10.00 %" },
+    "replica_temperature_distribution": {"hot":1,"warm":9},
+    "avg_replica_memory_excl_initiator": { "bytes": 1207958049.33, "human": "1.12 GiB" },
+    "avg_replica_bytes_read": { "bytes": 88928181.00, "human": "84.81 MiB" },
+    "avg_replica_net_sent_excl_initiator": { "bytes": 7409964.44, "human": "7.07 MiB" },
+    "sum_replica_net_sent_excl_initiator": { "bytes": 66689680.00, "human": "63.60 MiB" },
+    "initiator_net_recv": { "bytes": 66689914.00, "human": "63.60 MiB" },
+    "initiator_rows_per_sec": "4.78 billion rows/s total"
+  }
+}

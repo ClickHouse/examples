@@ -10,4 +10,7 @@ dependencies = [
     "pydantic-ai>=0.3.5",
     "python-dotenv>=1.1.1",
     "slack-bolt>=1.23.0",
+    "altair>=5.0.0",
+    "vl-convert-python>=1.6.0",
+    "pillow>=10.0.0",
 ]

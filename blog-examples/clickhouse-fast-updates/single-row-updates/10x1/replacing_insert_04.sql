@@ -1,0 +1,4 @@
+INSERT INTO lineitem VALUES
+(198133573, 11337494, 837517, 5, 42, 654.32, 0.02, 0.03,
+ 'N', 'W', '1997-04-01', '1997-03-16', '1997-04-22',
+ 'COLLECT COD', 'FOB', 'Warranty extension');

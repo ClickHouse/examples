@@ -1,0 +1,4 @@
+INSERT INTO lineitem VALUES
+(522639521, 8719913, 969922, 3, 2, 432.10, 0.015, 0.03,
+ 'B', 'X', '1993-01-14', '1992-12-13', '1993-02-01',
+ 'TAKE BACK RETURN', 'REG AIR', 'Adjusted manually');

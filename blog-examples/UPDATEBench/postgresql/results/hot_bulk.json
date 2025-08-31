@@ -1,0 +1,33 @@
+{
+  "mode": "sequential",
+  "method": "postgresql updates",
+  "temperature": "HOT",
+  "update_granularity": "BULK",
+  "timings_updates": [
+    42.903,
+    42.662,
+    30.394,
+    43.035,
+    0.085,
+    41.472,
+    43.162,
+    43.663,
+    32.865,
+    47.269
+  ],
+  "timings_queries": [
+    17.254,
+    8.221,
+    5.209,
+    7.031,
+    8.968,
+    8.162,
+    8.118,
+    4.714,
+    14.458,
+    8.305
+  ],
+  "timings_updates_total": 367.510,
+  "timings_queries_total": 90.439,
+  "duration_total": 457.949
+}
