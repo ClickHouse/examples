@@ -1,0 +1,45 @@
+{
+  "date": "2025-08-30",
+  "version": "25.6.2.5971",
+  "csp": "aws",
+  "region": "us-east-2",
+  "query_db": "uk_b10",
+  "query_file": "aggregation_simple.sql",
+  "nodes": 1,
+  "cpu_cores": 1,
+  "ram_gb_per_node": 356,
+  "runs": [92.154,80.596,79.284,79.768,81.262,80.629,78.666,86.495,80.878,123.952],
+  "timing": { "cold": 92.154, "hot": 78.666, "hot_avg": 85.725556 },
+  "files": {
+    "cold_pretty": "stats/2025-08-30_130631/n1c1/run_1_pretty.json",
+    "cold_raw": "stats/2025-08-30_130631/n1c1/run_1_raw.json",
+    "hot_pretty": "stats/2025-08-30_130631/n1c1/run_7_pretty.json",
+    "hot_raw": "stats/2025-08-30_130631/n1c1/run_7_raw.json"
+  },
+  "cold_stats": {
+    "avg_replica_pct": { "value": 100.00, "human": "100.00 %" },
+    "replica_temperature_distribution": {"cold":1},
+    "avg_replica_memory_excl_initiator": { "bytes": 0.00, "human": "0.00 B" },
+    "avg_replica_bytes_read": { "bytes": 60047902274.00, "human": "55.92 GiB" },
+    "avg_replica_net_sent_excl_initiator": { "bytes": 0.00, "human": "0.00 B" },
+    "sum_replica_net_sent_excl_initiator": { "bytes": 0.00, "human": "0.00 B" },
+    "initiator_net_recv": { "bytes": 0.00, "human": "0.00 B" },
+    "avg_replica_bytes_per_sec": { "value": 651610932.62, "human": "621.42 MiB/s" },
+    "avg_replica_rows_per_sec": { "value": 108515186.7, "human": "108.52 million rows/s" },
+    "initiator_bytes_per_sec": "621.42 MiB/s total",
+    "initiator_rows_per_sec": "108.52 million rows/s total"
+  },
+  "hot_stats": {
+    "avg_replica_pct": { "value": 100.00, "human": "100.00 %" },
+    "replica_temperature_distribution": {"hot":1},
+    "avg_replica_memory_excl_initiator": { "bytes": 0.00, "human": "0.00 B" },
+    "avg_replica_bytes_read": { "bytes": 60047902274.00, "human": "55.92 GiB" },
+    "avg_replica_net_sent_excl_initiator": { "bytes": 0.00, "human": "0.00 B" },
+    "sum_replica_net_sent_excl_initiator": { "bytes": 0.00, "human": "0.00 B" },
+    "initiator_net_recv": { "bytes": 0.00, "human": "0.00 B" },
+    "avg_replica_bytes_per_sec": { "value": 763327260.49, "human": "727.97 MiB/s" },
+    "avg_replica_rows_per_sec": { "value": 127119721.35, "human": "127.12 million rows/s" },
+    "initiator_bytes_per_sec": "727.97 MiB/s total",
+    "initiator_rows_per_sec": "127.12 million rows/s total"
+  }
+}
