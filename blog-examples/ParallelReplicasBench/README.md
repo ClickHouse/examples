@@ -124,44 +124,6 @@ The script has two layers of cache handling:
 If `DROP_CACHES=false`, caches are not flushed between matrix configurations.  
 This means hot runs may become progressively hotter over time, but the cold baseline remains unaffected.
 
-## Flow: cold vs hot selection (per combination)
-```mermaid
-flowchart TD
-    A[Start combo (N nodes, C cores)] --> B{DROP_CACHES?}
-    B -- true --> C[Drop FS/Mark/QueryCond caches on cluster]
-    B -- false --> D[Skip global cache drop]
-    C --> E
-    D --> E
-
-    subgraph "Runs 1..R (runs_per_combination)"
-      E[Run #1: enable_filesystem_cache=0] --> F[Record time t1, store raw/pretty stats]
-      F --> G[Run #2..R: enable_filesystem_cache=1]
-      G --> H[Record times t2..tR, store raw/pretty stats]
-    end
-
-    H --> I[Aggregate]
-    I --> J[cold  = t1]
-    I --> K[hot   = min(t2..tR) (if R>1 else t1)]
-    I --> L[hot_avg = avg(t2..tR) (if R>1 else null)]
-
-    I --> M[Compute aggregated stats for cold & hot:
-      - avg_replica_pct (incl. initiator)
-      - replica_temperature_distribution (incl. initiator)
-      - avg_replica_memory_excl_initiator
-      - avg_replica_bytes_read (incl. initiator)
-      - avg_replica_net_sent_excl_initiator
-      - sum_replica_net_sent_excl_initiator
-      - initiator_net_recv
-      - initiator_rows_per_sec (pretty)
-    ]
-
-    J --> N[Write per-combo JSON]
-    K --> N
-    L --> N
-    M --> N
-    N --> O[Append to consolidated summary]
- ```
-
 ## Example usage
 
 ### Parameters
