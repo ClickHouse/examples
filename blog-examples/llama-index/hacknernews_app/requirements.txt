@@ -91,7 +91,7 @@ jupyterlab_widgets==3.0.10
 lazy-object-proxy==1.10.0
 leb128==1.0.5
 llama-index-agent-openai==0.1.1
-llama-index-core==0.10.24
+llama-index-core==0.13.0
 llama-index-embeddings-fastembed==0.1.1
 llama-index-embeddings-openai==0.1.1
 llama-index-llms-openai==0.1.1
