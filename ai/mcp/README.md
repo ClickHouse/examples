@@ -59,7 +59,7 @@ We also have an Open WebUI app.
 This one also requires a bit more setup, which you can find in the [Open WebUI README](open-webui/README.md)
 
 
-## Google Agent Development Kit?
+## Google Agent Development Kit
 
 We also have a Google Agent Development Kit example.
 You can find the example in the [Google ADK README](google-agent-development-kit/README.md).
