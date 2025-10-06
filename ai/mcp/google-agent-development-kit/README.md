@@ -1,14 +1,15 @@
 # Google Agent Development Kit and the ClickHouse MCP Server
 
+Google Agent Development Kit (ADK) is a framework for developing and deploying AI agents.
 
-```
+```bash
 git clone https://github.com/ClickHouse/examples.git
 cd examples/ai/mcp/google-agent-development-kit
 ```
 
 Copy the `.env.example` file to `.env` in the `mcp_agent` directory:
 
-```
+```bash
 cp mcp_agent/.env.example mcp_agent/.env
 ```
 
@@ -16,7 +17,7 @@ Edit the `.env` file to include your [Google AI API key](https://aistudio.google
 
 Run the agent using the Agent Development Kit Web UI:
 
-```
+```bash
 uv run --with google-adk adk web
 ```
 
@@ -27,7 +28,7 @@ You should something like the following:
 
 Alternatively, you can run the agent via the experimental CLI tool:
 
-```
+```bash
 uv run --with google-adk adk run mcp_agent
 ```
 
@@ -49,23 +50,23 @@ uv run --with google-adk adk run mcp_agent
 
 Finally, we can run the agent via an API endpoint:
 
-```
+```bash
 uv run --with google-adk adk api_server
 ```
 
 We then need to create a session:
 
-```
+```bash
 curl -X POST http://localhost:8000/apps/mcp_agent/users/clickhouse_user/sessions/mcp_example
 ```
 
-```
+```json
 {"id":"mcp_example","appName":"mcp_agent","userId":"clickhouse_user","state":{},"events":[],"lastUpdateTime":1759746122.714196}
 ```
 
 And then we can send a request:
 
-```
+```bash
 curl -X POST http://localhost:8000/run \
 -H "Content-Type: application/json" \
 -d '{
