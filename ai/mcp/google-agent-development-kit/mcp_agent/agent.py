@@ -5,7 +5,7 @@ from mcp import StdioServerParameters
 
 
 root_agent = LlmAgent(
-  model='gemini-2.0-flash',
+  model='gemini-2.5-flash',
   name='database_agent',
   instruction='Help the user query a ClickHouse database.',
   tools=[
