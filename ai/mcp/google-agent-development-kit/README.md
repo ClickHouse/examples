@@ -22,7 +22,7 @@ uv run --with google-adk adk web
 ```
 
 Navigate to http://localhost:8000/ to access the Agent Development Kit Web UI.
-You should something like the following:
+You should see something like the following:
 
 ![Google ADK UI](images/adk-ui.png)
 
