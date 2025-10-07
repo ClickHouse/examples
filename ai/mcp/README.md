@@ -25,6 +25,7 @@ We have Jupyter Notebooks demonstrating how to build AI agents using various fra
 | AI Agent with Microsoft Agent Framework | OpenAI | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/microsoft-agent-framework/microsoft-agent-framework.ipynb) |
 | AI Agent with mcp-agent | OpenAI | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/mcp-agent/mcp-agent.ipynb) |
 | AI Agent with CrewAI | OpenAI, CrewAI | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/crewai/crewai.ipynb) |
+| AI Agent with Upsonic | OpenAI, Upsonic | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/upsonic/upsonic.ipynb) |
 
 You can run the following command to launch the notebooks on your machine:
 
