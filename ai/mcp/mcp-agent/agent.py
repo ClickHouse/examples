@@ -13,6 +13,17 @@ from mcp_agent.agents.agent import Agent
 from mcp_agent.workflows.llm.augmented_llm_openai import OpenAIAugmentedLLM
 from mcp_agent.config import Settings, MCPSettings, MCPServerSettings, OpenAISettings
 
+env = {
+    "CLICKHOUSE_HOST": "sql-clickhouse.clickhouse.com",
+    "CLICKHOUSE_PORT": "8443",
+    "CLICKHOUSE_USER": "demo",
+    "CLICKHOUSE_PASSWORD": "",
+    "CLICKHOUSE_SECURE": "true",
+    "CLICKHOUSE_VERIFY": "true",
+    "CLICKHOUSE_CONNECT_TIMEOUT": "30",
+    "CLICKHOUSE_SEND_RECEIVE_TIMEOUT": "30"
+}
+
 
 settings = Settings(
     execution_engine="asyncio",
@@ -29,16 +40,7 @@ settings = Settings(
                     "--python", "3.10",
                     "mcp-clickhouse"
                 ],
-                env={
-                    "CLICKHOUSE_HOST": "sql-clickhouse.clickhouse.com",
-                    "CLICKHOUSE_PORT": "8443",
-                    "CLICKHOUSE_USER": "demo",
-                    "CLICKHOUSE_PASSWORD": "",
-                    "CLICKHOUSE_SECURE": "true",
-                    "CLICKHOUSE_VERIFY": "true",
-                    "CLICKHOUSE_CONNECT_TIMEOUT": "30",
-                    "CLICKHOUSE_SEND_RECEIVE_TIMEOUT": "30"
-                    }
+                env=env
             ),
         }
     ),

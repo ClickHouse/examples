@@ -1,5 +1,5 @@
 from google.adk.agents import LlmAgent
-from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
+from google.adk.tools.mcp_tool.mcp_toolset import McpToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import StdioConnectionParams
 from mcp import StdioServerParameters
 
@@ -9,7 +9,7 @@ root_agent = LlmAgent(
   name='database_agent',
   instruction='Help the user query a ClickHouse database.',
   tools=[
-    MCPToolset(
+    McpToolset(
       connection_params=StdioConnectionParams(
         server_params = StdioServerParameters(
           command='uv',
