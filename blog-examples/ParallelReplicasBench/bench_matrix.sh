@@ -154,6 +154,7 @@ dump_run_stats_pair() {
   write_stats_json "$sql_raw"    "${OUTBASE}_raw.json"
 }
 
+
 run_with_time() {
   local query="$1" nodes="$2" cores="$3" enable_filesystem_cache="$4" log_comment="$5"
   local out rc elapsed
@@ -261,6 +262,37 @@ initiator_rps_pretty() {
     | (.[0].query_rows_per_sec // empty)
   ' "$pretty_file"
 }
+
+
+# Pretty-print bytes/sec with dynamic units
+pretty_bps() {
+  local v=$1
+  local units=("B/s" "KiB/s" "MiB/s" "GiB/s" "TiB/s")
+  local i=0
+  # use bc for floating division if needed
+  while (( $(echo "$v >= 1024" | bc -l) )) && (( i < ${#units[@]}-1 )); do
+    v=$(echo "$v/1024" | bc -l)
+    ((i++))
+  done
+  printf "%.2f %s" "$v" "${units[$i]}"
+}
+
+# Pretty print rows/sec with words (million/billion/trillion)
+pretty_rps() {
+  local v="$1"
+  awk -v n="$v" '
+    function fmt(x,u){ printf("%.2f %s rows/s", x, u) }
+    BEGIN{
+      if (n < 1e6)       printf("%.0f rows/s", n);
+      else if (n < 1e9)  fmt(n/1e6,  "million");
+      else if (n < 1e12) fmt(n/1e9,  "billion");
+      else               fmt(n/1e12, "trillion");
+    }'
+}
+
+
+
+
 
 # ---------------------------------------
 # Master summary preamble
@@ -416,6 +448,58 @@ for NODES in $NODE_LIST; do
     COLD_QUERY_RPS_PRETTY="$(initiator_rps_pretty "$RESULTS_DIR/$COLD_PRETTY_REL")"
     HOT_QUERY_RPS_PRETTY="$(initiator_rps_pretty "$RESULTS_DIR/$HOT_PRETTY_REL")"
 
+
+    # ---------- new: compute bytes/sec metrics for cold/hot ----------
+
+    # Resolve chosen run file paths
+    COLD_RAW_PATH="$RESULTS_DIR/$COLD_RAW_REL"
+    HOT_RAW_PATH="$RESULTS_DIR/$HOT_RAW_REL"
+    COLD_PRETTY_PATH="$RESULTS_DIR/$COLD_PRETTY_REL"
+    HOT_PRETTY_PATH="$RESULTS_DIR/$HOT_PRETTY_REL"
+
+    # --- avg_replica_bps_* from RAW (numeric), then pretty-print ---
+    avg_replica_bps_cold=$(
+      jq '[.[].replica_bytes_per_sec_total? | select(.!=null) | tonumber]
+          | if length>0 then (add/length) else 0 end' \
+         "$COLD_RAW_PATH"
+    )
+    avg_replica_bps_hot=$(
+      jq '[.[].replica_bytes_per_sec_total? | select(.!=null) | tonumber]
+          | if length>0 then (add/length) else 0 end' \
+         "$HOT_RAW_PATH"
+    )
+
+    avg_replica_bps_cold_human="$(pretty_bps "$avg_replica_bps_cold")"
+    avg_replica_bps_hot_human="$(pretty_bps "$avg_replica_bps_hot")"
+
+    # --- initiator_bps_* from PRETTY (already human formatted) ---
+    initiator_bps_cold_pretty=$(
+      jq -r 'map(select(.is_initiator_node==1 and .query_bytes_per_sec!=null))
+             | (.[0].query_bytes_per_sec // empty)' \
+         "$COLD_PRETTY_PATH"
+    )
+    initiator_bps_hot_pretty=$(
+      jq -r 'map(select(.is_initiator_node==1 and .query_bytes_per_sec!=null))
+             | (.[0].query_bytes_per_sec // empty)' \
+         "$HOT_PRETTY_PATH"
+    )
+
+    # --- avg_replica_rows_per_sec from RAW (numeric), then pretty-print ---
+    avg_replica_rps_cold=$(
+      jq '[.[].replica_rows_per_sec_total? | select(.!=null) | tonumber]
+          | if length>0 then (add/length) else 0 end' \
+         "$RESULTS_DIR/$COLD_RAW_REL"
+    )
+    avg_replica_rps_hot=$(
+      jq '[.[].replica_rows_per_sec_total? | select(.!=null) | tonumber]
+          | if length>0 then (add/length) else 0 end' \
+         "$RESULTS_DIR/$HOT_RAW_REL"
+    )
+
+    avg_replica_rps_cold_human="$(pretty_rps "$avg_replica_rps_cold")"
+    avg_replica_rps_hot_human="$(pretty_rps "$avg_replica_rps_hot")"
+
+
     # Per-combination mini-summary (optional artifact)
     COMBO_SUMMARY="$RESULTS_DIR/${COMBO_KEY}_${DATE}_${TIME}.json"
     {
@@ -445,6 +529,9 @@ for NODES in $NODE_LIST; do
       echo "    \"avg_replica_net_sent_excl_initiator\": { \"bytes\": $COLD_AVG_NET_SENT_EXCL_NUM, \"human\": \"$COLD_AVG_NET_SENT_EXCL_H\" },"
       echo "    \"sum_replica_net_sent_excl_initiator\": { \"bytes\": $COLD_SUM_NET_SENT_EXCL_NUM, \"human\": \"$COLD_SUM_NET_SENT_EXCL_H\" },"
       echo "    \"initiator_net_recv\": { \"bytes\": $COLD_INIT_NET_RECV_NUM, \"human\": \"$COLD_INIT_NET_RECV_H\" },"
+      echo "    \"avg_replica_bytes_per_sec\": { \"value\": $avg_replica_bps_cold, \"human\": \"$avg_replica_bps_cold_human\" },"
+      echo "    \"avg_replica_rows_per_sec\": { \"value\": $avg_replica_rps_cold, \"human\": \"$avg_replica_rps_cold_human\" },"
+      echo "    \"initiator_bytes_per_sec\": \"${initiator_bps_cold_pretty}\","
       echo "    \"initiator_rows_per_sec\": \"${COLD_QUERY_RPS_PRETTY}\""
       echo "  },"
       echo "  \"hot_stats\": {"
@@ -455,6 +542,9 @@ for NODES in $NODE_LIST; do
       echo "    \"avg_replica_net_sent_excl_initiator\": { \"bytes\": $HOT_AVG_NET_SENT_EXCL_NUM, \"human\": \"$HOT_AVG_NET_SENT_EXCL_H\" },"
       echo "    \"sum_replica_net_sent_excl_initiator\": { \"bytes\": $HOT_SUM_NET_SENT_EXCL_NUM, \"human\": \"$HOT_SUM_NET_SENT_EXCL_H\" },"
       echo "    \"initiator_net_recv\": { \"bytes\": $HOT_INIT_NET_RECV_NUM, \"human\": \"$HOT_INIT_NET_RECV_H\" },"
+      echo "    \"avg_replica_bytes_per_sec\": { \"value\": $avg_replica_bps_hot, \"human\": \"$avg_replica_bps_hot_human\" },"
+      echo "    \"avg_replica_rows_per_sec\": { \"value\": $avg_replica_rps_hot, \"human\": \"$avg_replica_rps_hot_human\" },"
+      echo "    \"initiator_bytes_per_sec\": \"${initiator_bps_hot_pretty}\","
       echo "    \"initiator_rows_per_sec\": \"${HOT_QUERY_RPS_PRETTY}\""
       echo "  }"
       echo "}"
@@ -486,6 +576,9 @@ for NODES in $NODE_LIST; do
       echo "        \"avg_replica_net_sent_excl_initiator\": { \"bytes\": $COLD_AVG_NET_SENT_EXCL_NUM, \"human\": \"$COLD_AVG_NET_SENT_EXCL_H\" },"
       echo "        \"sum_replica_net_sent_excl_initiator\": { \"bytes\": $COLD_SUM_NET_SENT_EXCL_NUM, \"human\": \"$COLD_SUM_NET_SENT_EXCL_H\" },"
       echo "        \"initiator_net_recv\": { \"bytes\": $COLD_INIT_NET_RECV_NUM, \"human\": \"$COLD_INIT_NET_RECV_H\" },"
+      echo "        \"avg_replica_bytes_per_sec\": { \"value\": $avg_replica_bps_cold, \"human\": \"$avg_replica_bps_cold_human\" },"
+      echo "        \"avg_replica_rows_per_sec\": { \"value\": $avg_replica_rps_cold, \"human\": \"$avg_replica_rps_cold_human\" },"
+      echo "        \"initiator_bytes_per_sec\": \"${initiator_bps_cold_pretty}\","
       echo "        \"initiator_rows_per_sec\": \"${COLD_QUERY_RPS_PRETTY}\""
       echo "      },"
       echo "      \"hot_stats\": {"
@@ -496,6 +589,9 @@ for NODES in $NODE_LIST; do
       echo "        \"avg_replica_net_sent_excl_initiator\": { \"bytes\": $HOT_AVG_NET_SENT_EXCL_NUM, \"human\": \"$HOT_AVG_NET_SENT_EXCL_H\" },"
       echo "        \"sum_replica_net_sent_excl_initiator\": { \"bytes\": $HOT_SUM_NET_SENT_EXCL_NUM, \"human\": \"$HOT_SUM_NET_SENT_EXCL_H\" },"
       echo "        \"initiator_net_recv\": { \"bytes\": $HOT_INIT_NET_RECV_NUM, \"human\": \"$HOT_INIT_NET_RECV_H\" },"
+      echo "        \"avg_replica_bytes_per_sec\": { \"value\": $avg_replica_bps_hot, \"human\": \"$avg_replica_bps_hot_human\" },"
+      echo "        \"avg_replica_rows_per_sec\": { \"value\": $avg_replica_rps_hot, \"human\": \"$avg_replica_rps_hot_human\" },"
+      echo "        \"initiator_bytes_per_sec\": \"${initiator_bps_hot_pretty}\","
       echo "        \"initiator_rows_per_sec\": \"${HOT_QUERY_RPS_PRETTY}\""
       echo "      }"
       echo "    }"

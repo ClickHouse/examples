@@ -44,8 +44,8 @@ SELECT
     if(T0.is_initial_query,
         multiIf(
             _pretty = 1,
-            concat(formatReadableSize(sum(T0.ProfileEvents['ThreadpoolReaderReadBytes']) OVER ()), ' read'),
-            toString(sum(T0.ProfileEvents['ThreadpoolReaderReadBytes']) OVER ())
+            concat(formatReadableSize(sum(T0.ProfileEvents['CompressedReadBufferBytes']) OVER ()), ' read'),
+            toString(sum(T0.ProfileEvents['CompressedReadBufferBytes']) OVER ())
         ),
         NULL
     ) AS query_bytes_read,
@@ -76,8 +76,8 @@ SELECT
     if(T0.is_initial_query,
         multiIf(
             _pretty = 1,
-            concat(formatReadableSize((sum(T0.ProfileEvents['ThreadpoolReaderReadBytes']) OVER ()) / nullIf(T1.query_duration_s, 0)), '/s total'),
-            toString(round((sum(T0.ProfileEvents['ThreadpoolReaderReadBytes']) OVER ()) / nullIf(T1.query_duration_s, 0), 2))
+            concat(formatReadableSize((sum(T0.ProfileEvents['CompressedReadBufferBytes']) OVER ()) / nullIf(T1.query_duration_s, 0)), '/s total'),
+            toString(round((sum(T0.ProfileEvents['CompressedReadBufferBytes']) OVER ()) / nullIf(T1.query_duration_s, 0), 2))
         ),
         NULL
     ) AS query_bytes_per_sec,
@@ -114,8 +114,8 @@ SELECT
     ) AS replica_rows_per_sec_total,
     multiIf(
         T0.query_duration_ms > 0,
-        multiIf(_pretty = 1, concat(formatReadableSize(T0.ProfileEvents['ThreadpoolReaderReadBytes'] / (T0.query_duration_ms/1000.0)), '/s'),
-                toString(round(T0.ProfileEvents['ThreadpoolReaderReadBytes'] / (T0.query_duration_ms/1000.0), 2))),
+        multiIf(_pretty = 1, concat(formatReadableSize(T0.ProfileEvents['CompressedReadBufferBytes'] / (T0.query_duration_ms/1000.0)), '/s'),
+                toString(round(T0.ProfileEvents['CompressedReadBufferBytes'] / (T0.query_duration_ms/1000.0), 2))),
         NULL
     ) AS replica_bytes_per_sec_total,
 
@@ -159,14 +159,14 @@ SELECT
         multiIf(_pretty = 1,
             concat(
                 formatReadableSize(
-                    T0.ProfileEvents['ThreadpoolReaderReadBytes'] /
+                    T0.ProfileEvents['CompressedReadBufferBytes'] /
                     nullIf( (T0.ProfileEvents['DiskConnectionsElapsedMicroseconds'] + T0.ProfileEvents['ParallelReplicasReadRequestMicroseconds'])/1000000.0 , 0)
                 ),
                 '/s (cold read)'
             ),
             toString(
                 round(
-                    T0.ProfileEvents['ThreadpoolReaderReadBytes'] /
+                    T0.ProfileEvents['CompressedReadBufferBytes'] /
                     nullIf( (T0.ProfileEvents['DiskConnectionsElapsedMicroseconds'] + T0.ProfileEvents['ParallelReplicasReadRequestMicroseconds'])/1000000.0 , 0)
                 , 2)
             )
@@ -232,14 +232,14 @@ SELECT
         multiIf(_pretty = 1,
             concat(
                 formatReadableSize(
-                    T0.ProfileEvents['ThreadpoolReaderReadBytes'] /
+                    T0.ProfileEvents['CompressedReadBufferBytes'] /
                     nullIf(T0.ProfileEvents['DiskReadElapsedMicroseconds']/1000000.0, 0)
                 ),
                 '/s (hot read)'
             ),
             toString(
                 round(
-                    T0.ProfileEvents['ThreadpoolReaderReadBytes'] /
+                    T0.ProfileEvents['CompressedReadBufferBytes'] /
                     nullIf(T0.ProfileEvents['DiskReadElapsedMicroseconds']/1000000.0, 0)
                 , 2)
             )
@@ -276,15 +276,16 @@ SELECT
 
     /* ===== Section: bytes & cache ===== */
     multiIf(_sections = 1, '----------- replica: bytes & cache -----------', NULL) AS section_replica_bytes,
-    multiIf(_pretty = 1, concat(formatReadableSize(T0.ProfileEvents['ThreadpoolReaderReadBytes']), ' read'), toString(T0.ProfileEvents['ThreadpoolReaderReadBytes'])) AS replica_bytes_read,
-    multiIf(_pretty = 1, concat(formatReadableSize(T0.ProfileEvents['CachedReadBufferReadFromCacheBytes']), ' read from local cache'), toString(T0.ProfileEvents['CachedReadBufferReadFromCacheBytes'])) AS replica_bytes_from_cache,
+    multiIf(_pretty = 1, concat(formatReadableSize(T0.ProfileEvents['CompressedReadBufferBytes']), ' read uncompressed'), toString(T0.ProfileEvents['CompressedReadBufferBytes'])) AS replica_bytes_read,
+    multiIf(_pretty = 1, concat(formatReadableSize(T0.ProfileEvents['ThreadpoolReaderReadBytes']), ' read'), toString(T0.ProfileEvents['ThreadpoolReaderReadBytes'])) AS replica_bytes_read_compressed,
+    multiIf(_pretty = 1, concat(formatReadableSize(T0.ProfileEvents['CachedReadBufferReadFromCacheBytes']), ' read from local cache'), toString(T0.ProfileEvents['CachedReadBufferReadFromCacheBytes'])) AS replica_bytes_from_cache_compressed,
 
     /* ===== Section: network ===== */
     multiIf(_sections = 1, '------------- replica: network ---------------', NULL) AS section_replica_network,
     multiIf(_pretty = 1, concat(formatReadableSize(T0.ProfileEvents['NetworkReceiveBytes']), ' received'), toString(T0.ProfileEvents['NetworkReceiveBytes'])) AS replica_net_recv_bytes,
     multiIf(_pretty = 1, concat(formatReadableSize(T0.ProfileEvents['NetworkSendBytes']), ' sent'), toString(T0.ProfileEvents['NetworkSendBytes'])) AS replica_net_sent_bytes
 
-    -- , T0.ProfileEvents -- handy for debugging
+--     , T0.ProfileEvents -- handy for debugging
 FROM T0
 CROSS JOIN T1
 ORDER BY event_time_microseconds DESC

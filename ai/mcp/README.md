@@ -21,11 +21,16 @@ We have Jupyter Notebooks demonstrating how to build AI agents using various fra
 | AI Agent with PydanticAI and Claude Sonnet | PydanticAI, Anthropic | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/pydanticai/pydantic.ipynb) |
 | AI Agent with DSPy and Claude Sonnet | DSPy, Anthropic | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/dspy/dspy.ipynb) |
 | AI Agent with OpenAI Agents | OpenAI | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/openai-agents/openai-agents.ipynb) |
+| AI Agent with Claude Agent SDK | Anthropic | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/claude-agent/claude-agent.ipynb) |
+| AI Agent with Microsoft Agent Framework | OpenAI | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/microsoft-agent-framework/microsoft-agent-framework.ipynb) |
+| AI Agent with mcp-agent | OpenAI | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/mcp-agent/mcp-agent.ipynb) |
+| AI Agent with CrewAI | OpenAI, CrewAI | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/crewai/crewai.ipynb) |
+| AI Agent with Upsonic | OpenAI, Upsonic | [![View Notebook](https://img.shields.io/badge/view-notebook-orange?logo=jupyter)](https://github.com/clickhouse/examples/blob/main/ai/mcp/upsonic/upsonic.ipynb) |
 
 You can run the following command to launch the notebooks on your machine:
 
 ```
-uv run --with jupyterlab jupyter lab --notebooks-dir mcp
+uv run --with jupyterlab jupyter lab --notebook-dir mcp
 ```
 
 You can then navigate to http://localhost:8888 to try out the notebooks.
@@ -56,3 +61,9 @@ This one also requires a bit more setup, which you can find in the [AnythingLLM 
 
 We also have an Open WebUI app.
 This one also requires a bit more setup, which you can find in the [Open WebUI README](open-webui/README.md)
+
+
+## Google Agent Development Kit
+
+We also have a Google Agent Development Kit example.
+You can find the example in the [Google ADK README](google-agent-development-kit/README.md).

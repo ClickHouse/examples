@@ -1,0 +1,275 @@
+{
+  "date": "2025-09-02",
+  "version": "25.6.2.5971",
+  "csp": "aws",
+  "region": "us-east-2",
+  "query_db": "uk_b10",
+  "query_file": "aggregation_uniq.sql",
+  "ram_gb_per_node": 356,
+  "runs_per_combination": 10,
+  "stats_group": "2025-09-02_050856",
+  "node_list": [1, 3, 10, 20, 40, 80, 100],
+  "cores_list": [16],
+  "result_matrix": {
+
+    "n1c16": {
+      "timing": { "cold": 36.263, "hot": 35.712, "hot_avg": 36.151222 },
+      "runs": [36.263,35.772,35.764,36.295,35.778,36.618,36.890,36.169,36.363,35.712],
+      "files": {
+        "cold_pretty": "stats/2025-09-02_050856/n1c16/run_1_pretty.json",
+        "cold_raw": "stats/2025-09-02_050856/n1c16/run_1_raw.json",
+        "hot_pretty": "stats/2025-09-02_050856/n1c16/run_10_pretty.json",
+        "hot_raw": "stats/2025-09-02_050856/n1c16/run_10_raw.json"
+      },
+      "cold_stats": {
+        "avg_replica_pct": { "value": 100.00, "human": "100.00 %" },
+        "replica_temperature_distribution": {"cold":1},
+        "avg_replica_memory_excl_initiator": { "bytes": 0.00, "human": "0.00 B" },
+        "avg_replica_bytes_read": { "bytes": 50086678577.00, "human": "46.65 GiB" },
+        "avg_replica_net_sent_excl_initiator": { "bytes": 0.00, "human": "0.00 B" },
+        "sum_replica_net_sent_excl_initiator": { "bytes": 0.00, "human": "0.00 B" },
+        "initiator_net_recv": { "bytes": 0.00, "human": "0.00 B" },
+        "avg_replica_bytes_per_sec": { "value": 1381129975.93, "human": "1.29 GiB/s" },
+        "avg_replica_rows_per_sec": { "value": 275747966.36, "human": "275.75 million rows/s" },
+        "initiator_bytes_per_sec": "1.29 GiB/s total",
+        "initiator_rows_per_sec": "275.75 million rows/s total"
+      },
+      "hot_stats": {
+        "avg_replica_pct": { "value": 100.00, "human": "100.00 %" },
+        "replica_temperature_distribution": {"warm":1},
+        "avg_replica_memory_excl_initiator": { "bytes": 0.00, "human": "0.00 B" },
+        "avg_replica_bytes_read": { "bytes": 50088885456.00, "human": "46.65 GiB" },
+        "avg_replica_net_sent_excl_initiator": { "bytes": 0.00, "human": "0.00 B" },
+        "sum_replica_net_sent_excl_initiator": { "bytes": 0.00, "human": "0.00 B" },
+        "initiator_net_recv": { "bytes": 0.00, "human": "0.00 B" },
+        "avg_replica_bytes_per_sec": { "value": 1402539284.18, "human": "1.31 GiB/s" },
+        "avg_replica_rows_per_sec": { "value": 280010080.36, "human": "280.01 million rows/s" },
+        "initiator_bytes_per_sec": "1.31 GiB/s total",
+        "initiator_rows_per_sec": "280.01 million rows/s total"
+      }
+    }
+,
+    "n3c16": {
+      "timing": { "cold": 12.950, "hot": 12.628, "hot_avg": 12.936222 },
+      "runs": [12.950,12.862,12.877,12.942,12.628,12.957,13.201,12.784,12.823,13.352],
+      "files": {
+        "cold_pretty": "stats/2025-09-02_050856/n3c16/run_1_pretty.json",
+        "cold_raw": "stats/2025-09-02_050856/n3c16/run_1_raw.json",
+        "hot_pretty": "stats/2025-09-02_050856/n3c16/run_5_pretty.json",
+        "hot_raw": "stats/2025-09-02_050856/n3c16/run_5_raw.json"
+      },
+      "cold_stats": {
+        "avg_replica_pct": { "value": 33.33, "human": "33.33 %" },
+        "replica_temperature_distribution": {"cold":3},
+        "avg_replica_memory_excl_initiator": { "bytes": 974223779.00, "human": "929.09 MiB" },
+        "avg_replica_bytes_read": { "bytes": 17365076430.67, "human": "16.17 GiB" },
+        "avg_replica_net_sent_excl_initiator": { "bytes": 59618441.50, "human": "56.86 MiB" },
+        "sum_replica_net_sent_excl_initiator": { "bytes": 119236883.00, "human": "113.71 MiB" },
+        "initiator_net_recv": { "bytes": 119236935.00, "human": "113.71 MiB" },
+        "avg_replica_bytes_per_sec": { "value": 1344964786.0733335, "human": "1.25 GiB/s" },
+        "avg_replica_rows_per_sec": { "value": 258176022.61, "human": "258.18 million rows/s" },
+        "initiator_bytes_per_sec": "3.75 GiB/s total",
+        "initiator_rows_per_sec": "772.08 million rows/s total"
+      },
+      "hot_stats": {
+        "avg_replica_pct": { "value": 33.33, "human": "33.33 %" },
+        "replica_temperature_distribution": {"warm":3},
+        "avg_replica_memory_excl_initiator": { "bytes": 1510977664.00, "human": "1.41 GiB" },
+        "avg_replica_bytes_read": { "bytes": 17364687353.33, "human": "16.17 GiB" },
+        "avg_replica_net_sent_excl_initiator": { "bytes": 60448453.50, "human": "57.65 MiB" },
+        "sum_replica_net_sent_excl_initiator": { "bytes": 120896907.00, "human": "115.30 MiB" },
+        "initiator_net_recv": { "bytes": 120896959.00, "human": "115.30 MiB" },
+        "avg_replica_bytes_per_sec": { "value": 1379076865.4166667, "human": "1.28 GiB/s" },
+        "avg_replica_rows_per_sec": { "value": 264730049.14333335, "human": "264.73 million rows/s" },
+        "initiator_bytes_per_sec": "3.84 GiB/s total",
+        "initiator_rows_per_sec": "791.77 million rows/s total"
+      }
+    }
+,
+    "n10c16": {
+      "timing": { "cold": 4.915, "hot": 4.808, "hot_avg": 5.126111 },
+      "runs": [4.915,5.175,5.132,5.173,5.389,5.036,5.280,4.808,5.102,5.040],
+      "files": {
+        "cold_pretty": "stats/2025-09-02_050856/n10c16/run_1_pretty.json",
+        "cold_raw": "stats/2025-09-02_050856/n10c16/run_1_raw.json",
+        "hot_pretty": "stats/2025-09-02_050856/n10c16/run_8_pretty.json",
+        "hot_raw": "stats/2025-09-02_050856/n10c16/run_8_raw.json"
+      },
+      "cold_stats": {
+        "avg_replica_pct": { "value": 10.00, "human": "10.00 %" },
+        "replica_temperature_distribution": {"cold":10},
+        "avg_replica_memory_excl_initiator": { "bytes": 673768303.44, "human": "642.56 MiB" },
+        "avg_replica_bytes_read": { "bytes": 5321605650.70, "human": "4.96 GiB" },
+        "avg_replica_net_sent_excl_initiator": { "bytes": 34944484.78, "human": "33.33 MiB" },
+        "sum_replica_net_sent_excl_initiator": { "bytes": 314500363.00, "human": "299.93 MiB" },
+        "initiator_net_recv": { "bytes": 314500597.00, "human": "299.93 MiB" },
+        "avg_replica_bytes_per_sec": { "value": 1125558898.6620002, "human": "1.05 GiB/s" },
+        "avg_replica_rows_per_sec": { "value": 211486593.95200002, "human": "211.49 million rows/s" },
+        "initiator_bytes_per_sec": "10.08 GiB/s total",
+        "initiator_rows_per_sec": "2.03 billion rows/s total"
+      },
+      "hot_stats": {
+        "avg_replica_pct": { "value": 10.00, "human": "10.00 %" },
+        "replica_temperature_distribution": {"warm":10},
+        "avg_replica_memory_excl_initiator": { "bytes": 1265959247.11, "human": "1.18 GiB" },
+        "avg_replica_bytes_read": { "bytes": 5295315135.40, "human": "4.93 GiB" },
+        "avg_replica_net_sent_excl_initiator": { "bytes": 35088442.00, "human": "33.46 MiB" },
+        "sum_replica_net_sent_excl_initiator": { "bytes": 315795978.00, "human": "301.17 MiB" },
+        "initiator_net_recv": { "bytes": 315796212.00, "human": "301.17 MiB" },
+        "avg_replica_bytes_per_sec": { "value": 1119133045.516, "human": "1.04 GiB/s" },
+        "avg_replica_rows_per_sec": { "value": 211359259.877, "human": "211.36 million rows/s" },
+        "initiator_bytes_per_sec": "10.25 GiB/s total",
+        "initiator_rows_per_sec": "2.08 billion rows/s total"
+      }
+    }
+,
+    "n20c16": {
+      "timing": { "cold": 3.510, "hot": 3.016, "hot_avg": 3.327333 },
+      "runs": [3.510,3.371,3.070,3.630,3.613,3.045,3.359,3.016,3.715,3.127],
+      "files": {
+        "cold_pretty": "stats/2025-09-02_050856/n20c16/run_1_pretty.json",
+        "cold_raw": "stats/2025-09-02_050856/n20c16/run_1_raw.json",
+        "hot_pretty": "stats/2025-09-02_050856/n20c16/run_8_pretty.json",
+        "hot_raw": "stats/2025-09-02_050856/n20c16/run_8_raw.json"
+      },
+      "cold_stats": {
+        "avg_replica_pct": { "value": 5.00, "human": "5.00 %" },
+        "replica_temperature_distribution": {"cold":20},
+        "avg_replica_memory_excl_initiator": { "bytes": 573355714.63, "human": "546.79 MiB" },
+        "avg_replica_bytes_read": { "bytes": 2718909074.70, "human": "2.53 GiB" },
+        "avg_replica_net_sent_excl_initiator": { "bytes": 20058009.21, "human": "19.13 MiB" },
+        "sum_replica_net_sent_excl_initiator": { "bytes": 381102175.00, "human": "363.45 MiB" },
+        "initiator_net_recv": { "bytes": 381105324.00, "human": "363.45 MiB" },
+        "avg_replica_bytes_per_sec": { "value": 1014232166.2725, "human": "967.25 MiB/s" },
+        "avg_replica_rows_per_sec": { "value": 186377631.12300003, "human": "186.38 million rows/s" },
+        "initiator_bytes_per_sec": "14.42 GiB/s total",
+        "initiator_rows_per_sec": "2.85 billion rows/s total"
+      },
+      "hot_stats": {
+        "avg_replica_pct": { "value": 5.00, "human": "5.00 %" },
+        "replica_temperature_distribution": {"hot":1,"warm":19},
+        "avg_replica_memory_excl_initiator": { "bytes": 1137286079.00, "human": "1.06 GiB" },
+        "avg_replica_bytes_read": { "bytes": 2630864657.70, "human": "2.45 GiB" },
+        "avg_replica_net_sent_excl_initiator": { "bytes": 20081690.89, "human": "19.15 MiB" },
+        "sum_replica_net_sent_excl_initiator": { "bytes": 381552127.00, "human": "363.88 MiB" },
+        "initiator_net_recv": { "bytes": 381558226.00, "human": "363.88 MiB" },
+        "avg_replica_bytes_per_sec": { "value": 945082709.069, "human": "901.30 MiB/s" },
+        "avg_replica_rows_per_sec": { "value": 179787610.48850006, "human": "179.79 million rows/s" },
+        "initiator_bytes_per_sec": "16.23 GiB/s total",
+        "initiator_rows_per_sec": "3.31 billion rows/s total"
+      }
+    }
+,
+    "n40c16": {
+      "timing": { "cold": 1.684, "hot": 1.574, "hot_avg": 2.041778 },
+      "runs": [1.684,2.288,2.361,2.172,2.223,2.218,1.764,1.574,2.019,1.757],
+      "files": {
+        "cold_pretty": "stats/2025-09-02_050856/n40c16/run_1_pretty.json",
+        "cold_raw": "stats/2025-09-02_050856/n40c16/run_1_raw.json",
+        "hot_pretty": "stats/2025-09-02_050856/n40c16/run_8_pretty.json",
+        "hot_raw": "stats/2025-09-02_050856/n40c16/run_8_raw.json"
+      },
+      "cold_stats": {
+        "avg_replica_pct": { "value": 2.50, "human": "2.50 %" },
+        "replica_temperature_distribution": {"cold":40},
+        "avg_replica_memory_excl_initiator": { "bytes": 479192816.10, "human": "456.99 MiB" },
+        "avg_replica_bytes_read": { "bytes": 1451818344.80, "human": "1.35 GiB" },
+        "avg_replica_net_sent_excl_initiator": { "bytes": 10020091.51, "human": "9.56 MiB" },
+        "sum_replica_net_sent_excl_initiator": { "bytes": 390783569.00, "human": "372.68 MiB" },
+        "initiator_net_recv": { "bytes": 390784583.00, "human": "372.68 MiB" },
+        "avg_replica_bytes_per_sec": { "value": 984675411.3840004, "human": "939.06 MiB/s" },
+        "avg_replica_rows_per_sec": { "value": 169655503.64575, "human": "169.66 million rows/s" },
+        "initiator_bytes_per_sec": "32.04 GiB/s total",
+        "initiator_rows_per_sec": "5.92 billion rows/s total"
+      },
+      "hot_stats": {
+        "avg_replica_pct": { "value": 2.50, "human": "2.50 %" },
+        "replica_temperature_distribution": {"hot":3,"warm":37},
+        "avg_replica_memory_excl_initiator": { "bytes": 951474902.23, "human": "907.40 MiB" },
+        "avg_replica_bytes_read": { "bytes": 1317841436.50, "human": "1.23 GiB" },
+        "avg_replica_net_sent_excl_initiator": { "bytes": 10211414.05, "human": "9.74 MiB" },
+        "sum_replica_net_sent_excl_initiator": { "bytes": 398245148.00, "human": "379.80 MiB" },
+        "initiator_net_recv": { "bytes": 398246162.00, "human": "379.80 MiB" },
+        "avg_replica_bytes_per_sec": { "value": 976914946.2025, "human": "931.66 MiB/s" },
+        "avg_replica_rows_per_sec": { "value": 185537580.02975005, "human": "185.54 million rows/s" },
+        "initiator_bytes_per_sec": "31.13 GiB/s total",
+        "initiator_rows_per_sec": "6.34 billion rows/s total"
+      }
+    }
+,
+    "n80c16": {
+      "timing": { "cold": 2.049, "hot": 1.203, "hot_avg": 1.607444 },
+      "runs": [2.049,1.934,1.663,1.308,1.203,1.813,1.938,1.849,1.269,1.490],
+      "files": {
+        "cold_pretty": "stats/2025-09-02_050856/n80c16/run_1_pretty.json",
+        "cold_raw": "stats/2025-09-02_050856/n80c16/run_1_raw.json",
+        "hot_pretty": "stats/2025-09-02_050856/n80c16/run_5_pretty.json",
+        "hot_raw": "stats/2025-09-02_050856/n80c16/run_5_raw.json"
+      },
+      "cold_stats": {
+        "avg_replica_pct": { "value": 1.25, "human": "1.25 %" },
+        "replica_temperature_distribution": {"cold":80},
+        "avg_replica_memory_excl_initiator": { "bytes": 377511610.32, "human": "360.02 MiB" },
+        "avg_replica_bytes_read": { "bytes": 818333424.42, "human": "780.42 MiB" },
+        "avg_replica_net_sent_excl_initiator": { "bytes": 5398456.00, "human": "5.15 MiB" },
+        "sum_replica_net_sent_excl_initiator": { "bytes": 426478024.00, "human": "406.72 MiB" },
+        "initiator_net_recv": { "bytes": 426480078.00, "human": "406.72 MiB" },
+        "avg_replica_bytes_per_sec": { "value": 501786942.44962513, "human": "478.54 MiB/s" },
+        "avg_replica_rows_per_sec": { "value": 76736935.50712499, "human": "76.74 million rows/s" },
+        "initiator_bytes_per_sec": "29.68 GiB/s total",
+        "initiator_rows_per_sec": "4.87 billion rows/s total"
+      },
+      "hot_stats": {
+        "avg_replica_pct": { "value": 1.25, "human": "1.25 %" },
+        "replica_temperature_distribution": {"hot":4,"warm":76},
+        "avg_replica_memory_excl_initiator": { "bytes": 882219943.27, "human": "841.35 MiB" },
+        "avg_replica_bytes_read": { "bytes": 683238716.69, "human": "651.59 MiB" },
+        "avg_replica_net_sent_excl_initiator": { "bytes": 5356306.99, "human": "5.11 MiB" },
+        "sum_replica_net_sent_excl_initiator": { "bytes": 423148252.00, "human": "403.55 MiB" },
+        "initiator_net_recv": { "bytes": 423150306.00, "human": "403.55 MiB" },
+        "avg_replica_bytes_per_sec": { "value": 787201107.4748752, "human": "750.73 MiB/s" },
+        "avg_replica_rows_per_sec": { "value": 144368839.51650003, "human": "144.37 million rows/s" },
+        "initiator_bytes_per_sec": "42.14 GiB/s total",
+        "initiator_rows_per_sec": "8.28 billion rows/s total"
+      }
+    }
+,
+    "n100c16": {
+      "timing": { "cold": 3.197, "hot": 1.180, "hot_avg": 1.448556 },
+      "runs": [3.197,1.595,1.688,1.223,1.239,1.281,1.180,1.637,1.728,1.466],
+      "files": {
+        "cold_pretty": "stats/2025-09-02_050856/n100c16/run_1_pretty.json",
+        "cold_raw": "stats/2025-09-02_050856/n100c16/run_1_raw.json",
+        "hot_pretty": "stats/2025-09-02_050856/n100c16/run_7_pretty.json",
+        "hot_raw": "stats/2025-09-02_050856/n100c16/run_7_raw.json"
+      },
+      "cold_stats": {
+        "avg_replica_pct": { "value": 1.00, "human": "1.00 %" },
+        "replica_temperature_distribution": {"cold":100},
+        "avg_replica_memory_excl_initiator": { "bytes": 373788176.58, "human": "356.47 MiB" },
+        "avg_replica_bytes_read": { "bytes": 676371924.20, "human": "645.04 MiB" },
+        "avg_replica_net_sent_excl_initiator": { "bytes": 4523369.54, "human": "4.31 MiB" },
+        "sum_replica_net_sent_excl_initiator": { "bytes": 447813584.00, "human": "427.07 MiB" },
+        "initiator_net_recv": { "bytes": 447816158.00, "human": "427.07 MiB" },
+        "avg_replica_bytes_per_sec": { "value": 233018205.76759994, "human": "222.22 MiB/s" },
+        "avg_replica_rows_per_sec": { "value": 34474282.84210001, "human": "34.47 million rows/s" },
+        "initiator_bytes_per_sec": "19.67 GiB/s total",
+        "initiator_rows_per_sec": "3.12 billion rows/s total"
+      },
+      "hot_stats": {
+        "avg_replica_pct": { "value": 1.00, "human": "1.00 %" },
+        "replica_temperature_distribution": {"hot":80,"warm":20},
+        "avg_replica_memory_excl_initiator": { "bytes": 923033880.24, "human": "880.27 MiB" },
+        "avg_replica_bytes_read": { "bytes": 541342844.76, "human": "516.26 MiB" },
+        "avg_replica_net_sent_excl_initiator": { "bytes": 4401595.98, "human": "4.20 MiB" },
+        "sum_replica_net_sent_excl_initiator": { "bytes": 435758002.00, "human": "415.57 MiB" },
+        "initiator_net_recv": { "bytes": 435760576.00, "human": "415.57 MiB" },
+        "avg_replica_bytes_per_sec": { "value": 750742008.7382002, "human": "715.96 MiB/s" },
+        "avg_replica_rows_per_sec": { "value": 139130681.14250004, "human": "139.13 million rows/s" },
+        "initiator_bytes_per_sec": "42.51 GiB/s total",
+        "initiator_rows_per_sec": "8.43 billion rows/s total"
+      }
+    }
+
+  }
+}
