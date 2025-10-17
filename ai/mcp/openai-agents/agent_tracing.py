@@ -18,13 +18,19 @@ from agents.mcp import MCPServerStdio
 from agents import Agent, Runner, trace, RunConfig
 import asyncio
 from agents.tracing import add_trace_processor
-from clickhouse_processor import ClickHouseProcessor 
+from agents.tracing.processors import BatchTraceProcessor
+from clickhouse_processor import ClickHouseProcessor, ClickHouseExporter
 from utils import simple_render_chunk
 from agents.extensions.models.litellm_model import LitellmModel
 
 async def main():
 
-    add_trace_processor(ClickHouseProcessor(batch_size=200, flush_seconds=1.0))
+    # Use BatchTraceProcessor with ClickHouseExporter
+    exporter = ClickHouseExporter()
+    add_trace_processor(BatchTraceProcessor(exporter=exporter, max_batch_size=200))
+
+    # Or use the standalone ClickHouseProcessor (handles its own batching)
+    # add_trace_processor(ClickHouseProcessor(batch_size=200, flush_seconds=1.0))
 
     async with MCPServerStdio(
             name="ClickHouse SQL Playground",
@@ -50,12 +56,13 @@ async def main():
                 name="Assistant",
                 instructions="Use the tools to query ClickHouse and answer questions based on those files.",
                 mcp_servers=[server],
-                # model="gpt-5-mini-2025-08-07", 
-                model=model,
+                model="gpt-5-mini-2025-08-07", 
+                # model=model,
                 # model="gpt-4.1-mini"
             )
 
             message = "What's the most popular GitHub project for each month in 2025?"
+            # message = "Run a query that will definitely fail: SELECT 1/0 FROM system.one WHERE 1=0"
             print(f"\n\nRunning: {message}")
 
             # --- trace the whole run (gives you trace.name and optional group correlation) ---
