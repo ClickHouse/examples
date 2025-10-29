@@ -1,0 +1,19 @@
+<functions>
+  <function>
+    <type>executable_pool</type>
+    <name>drain3_miner</name>
+    <return_type>Array(String)</return_type>
+    <return_name>result</return_name>
+    <argument>
+      <type>Array(String)</type>
+      <name>values</name>
+    </argument>
+    <format>JSONEachRow</format>
+    <command>drain3_miner.py</command>
+    <execute_direct>1</execute_direct> 
+    <pool_size>1</pool_size>
+    <max_command_execution_time>100</max_command_execution_time>
+    <command_read_timeout>100000</command_read_timeout>
+    <send_chunk_header>false</send_chunk_header>
+  </function>
+</functions>
