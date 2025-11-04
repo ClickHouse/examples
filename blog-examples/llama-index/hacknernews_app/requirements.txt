@@ -136,7 +136,7 @@ pluggy==1.4.0
 pre-commit==3.2.0
 prometheus_client==0.20.0
 prompt-toolkit==3.0.43
-protobuf==4.25.3
+protobuf==4.25.8
 psutil==5.9.8
 ptyprocess==0.7.0
 pure-eval==0.2.2
