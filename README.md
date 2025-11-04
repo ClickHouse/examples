@@ -5,7 +5,7 @@
 <h1>ClickHouse Examples</h1>
 </div>
 
-![GitHub License](https://img.shields.io/github/license/ClickHouse/examples)
+[![GitHub License](https://img.shields.io/github/license/ClickHouse/examples)](https://github.com/ClickHouse/examples/blob/main/LICENSE)
 
 ![Community Slack](https://img.shields.io/badge/Community_Slack-blue?style=social&logo=slack&logoColor=yellow&link=https%3A%2F%2Fclickhouse.com%2Fslack)
 ![Twitter Follow](https://img.shields.io/twitter/follow/ClickHouseDB)
