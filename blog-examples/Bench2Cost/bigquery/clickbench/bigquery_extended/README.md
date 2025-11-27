@@ -99,3 +99,9 @@ This shows the dataset compresses roughly **10× smaller** on disk compared to t
 |-----------------|------------------------------|--------------------------------|
 | Active storage  | 94.4 GiB                     | 8.8 GiB                        |
 | Long-term (>90d)| 0 GiB                        | 0 GiB                          |
+
+## Inserting large number of data
+
+BigQuery’s on-demand model charges based on the amount of data scanned. If you try to scale a 1-billion-row table to 100 billion rows by running `insert into hits_100b select * from hits_1b` a hundred times, the same data is scanned repeatedly, which can become expensive.
+
+You can avoid this by duplicating the rows during a single scan. One option is to use `CROSS JOIN UNNEST(GENERATE_ARRAY(1, 20))`, which multiplies each row without rereading the source table. The load_data.sql script shows how to apply this approach.
