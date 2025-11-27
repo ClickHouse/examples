@@ -1,0 +1,32 @@
+{
+  "provider": "databricks",
+  "service": "sql_serverless_compute",
+  "currency": "USD",
+
+  "pricing": [
+    {
+      "cloud": "aws",
+      "region": "us-east-1",
+      "plan": "premium",
+
+      "dbu_price_per_hour": 0.70,
+
+      "instances": [
+        { "name": "2X-Small", "vcpus": null, "memory_gb": null, "dbu_per_hour": 4.0 },
+        { "name": "X-Small",  "vcpus": null, "memory_gb": null, "dbu_per_hour": 6.0 },
+        { "name": "Small",    "vcpus": null, "memory_gb": null, "dbu_per_hour": 12.0 },
+        { "name": "Medium",   "vcpus": null, "memory_gb": null, "dbu_per_hour": 24.0 },
+        { "name": "Large",    "vcpus": null, "memory_gb": null, "dbu_per_hour": 40.0 },
+        { "name": "X-Large",  "vcpus": null, "memory_gb": null, "dbu_per_hour": 80.0 },
+        { "name": "2X-Large", "vcpus": null, "memory_gb": null, "dbu_per_hour": 144.0 },
+        { "name": "3X-Large", "vcpus": null, "memory_gb": null, "dbu_per_hour": 272.0 },
+        { "name": "4X-Large", "vcpus": null, "memory_gb": null, "dbu_per_hour": 528.0 }
+      ],
+
+      "storage": {
+          "storage": 23.0,
+          "storage_price_unit": 1000000000000
+      }
+    }
+  ]
+}

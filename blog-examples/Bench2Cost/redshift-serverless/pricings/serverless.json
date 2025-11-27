@@ -1,0 +1,44 @@
+{
+  "date": "2025-08-25",
+  "sources": [
+    "https://aws.amazon.com/redshift/pricing/"
+  ],
+  "region": "us-east-1",
+  "provider": "aws",
+  "memory_size": "serverless",
+  "cluster_size": "serverless",
+  "service": "redshift",
+  "regions": {
+    "us-east1": {
+      "pricing_compute": {
+        "capacity": {
+          "default": {
+            "hourly": {
+              "tiers": [
+                {
+                  "name": "Standard",
+                  "price_usd": 0.375,
+                  "price_unit": "RPU",
+                  "price_unit_seconds": 3600,
+                  "notes": "Pay-as-you-go capacity; billed per RPU (1-minute minimum)."
+                }
+              ]
+            }
+          }
+        }
+      },
+      "pricing_storage": {
+        "logical": {
+          "monthly": {
+            "active": {
+              "price_usd": 0.024,
+              "price_unit": "gigabyte_month",
+              "price_unit_bytes": 1000000000,
+              "notes": "Active logical (uncompressed) storage."
+            }
+          }
+        }
+      }
+    }
+  }
+}

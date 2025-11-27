@@ -1,0 +1,82 @@
+./enrich.sh clickbench/results/clickbench_2X-Small.json \
+            pricings/sql_serverless_compute.json \
+            results/clickbench_2X-Small_enriched.json \
+            --cloud aws --region us-east-1 --plan premium
+
+./enrich.sh clickbench/results/clickbench_Large.json \
+            pricings/sql_serverless_compute.json \
+            results/clickbench_Large_enriched.json \
+            --cloud aws --region us-east-1 --plan premium
+
+
+./enrich.sh clickbench/results/clickbench_4X-Large.json \
+            pricings/sql_serverless_compute.json \
+            results/clickbench_4X-Large_enriched.json \
+            --cloud aws --region us-east-1 --plan premium
+
+
+
+
+
+
+
+
+
+./enrich.sh clickbench/large/results_1B/clickbench_2X-Small.json \
+            pricings/sql_serverless_compute.json \
+            results_1B/clickbench_2X-Small_enriched.json \
+            --cloud aws --region us-east-1 --plan premium
+
+
+./enrich.sh clickbench/large/results_1B/clickbench_Large.json \
+            pricings/sql_serverless_compute.json \
+            results_1B/clickbench_Large_enriched.json \
+            --cloud aws --region us-east-1 --plan premium
+
+./enrich.sh clickbench/large/results_1B/clickbench_4X-Large.json \
+            pricings/sql_serverless_compute.json \
+            results_1B/clickbench_4X-Large_enriched.json \
+            --cloud aws --region us-east-1 --plan premium
+
+
+
+
+
+
+./enrich.sh clickbench/large/results_10B/clickbench_2X-Small.json \
+            pricings/sql_serverless_compute.json \
+            results_10B/clickbench_2X-Small_enriched.json \
+            --cloud aws --region us-east-1 --plan premium
+
+
+./enrich.sh clickbench/large/results_10B/clickbench_Large.json \
+            pricings/sql_serverless_compute.json \
+            results_10B/clickbench_Large_enriched.json \
+            --cloud aws --region us-east-1 --plan premium
+
+
+./enrich.sh clickbench/large/results_10B/clickbench_4X-Large.json \
+            pricings/sql_serverless_compute.json \
+            results_10B/clickbench_4X-Large_enriched.json \
+            --cloud aws --region us-east-1 --plan premium
+
+
+
+
+
+
+
+./enrich.sh clickbench/large/results_100B/clickbench_Large.json \
+            pricings/sql_serverless_compute.json \
+            results_100B/clickbench_Large_enriched.json \
+            --cloud aws --region us-east-1 --plan premium
+
+
+./enrich.sh clickbench/large/results_100B/clickbench_4X-Large.json \
+            pricings/sql_serverless_compute.json \
+            results_100B/clickbench_4X-Large_enriched.json \
+            --cloud aws --region us-east-1 --plan premium
+
+
+
+

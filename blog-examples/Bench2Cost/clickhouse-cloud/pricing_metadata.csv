@@ -1,0 +1,10 @@
+provider,region,tier,compute_price,compute_price_unit,storage_price,storage_price_unit
+aws,us-east-1,Basic,0.2181100,8,25.30,1000000000000
+aws,us-east-1,Scale,0.29846,8,25.30,1000000000000
+aws,us-east-1,Enterprise,0.3903,8,25.30,1000000000000
+gcp,us-east1,Basic,0.18289,8,22,1000000000000
+gcp,us-east1,Scale,0.25027,8,22,1000000000000
+gcp,us-east1,Enterprise,0.32727,8,22,1000000000000
+azure,eastus2,Basic,0.24107,8,25.30,1000000000000
+azure,eastus2,Scale,0.32988,8,25.30,1000000000000
+azure,eastus2,Enterprise,0.43138,8,25.30,1000000000000

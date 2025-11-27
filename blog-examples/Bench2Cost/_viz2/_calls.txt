@@ -1,0 +1,100 @@
+
+brew update
+brew install pyenv
+brew install pyenv-virtualenv
+
+brew tap homebrew/cask-fonts
+brew install font-inter
+
+# Install Python 3.11.9 (or any recent version)
+pyenv install 3.11.9
+
+# Create and activate a clean virtual environment
+pyenv virtualenv 3.11.9 bench-viz
+pyenv activate bench-viz
+
+# Install required libraries
+pip install matplotlib numpy pandas
+pip install adjustText
+
+
+python render.py \
+    --no-title \
+    --marker-size 200 \
+    --xticks "20, 30, 50, 80, 120, 200, 500, 800, 1200" \
+    --yticks "0.5, 0.6, 0.7, 0.85, 1.0, 2.0, 4.0, 6.0, 8.0" \
+    --out ./_out/results_1B_enterprise.png < ./_test/results_1B_enterprise.jsonl
+
+python cost_per_dollar.py --no-title \
+  --out ./_out/results_1B_enterprise_index.png \
+  < ./_test/results_1B_enterprise_bq_on_demand.jsonl
+
+
+
+
+
+
+
+
+python render.py \
+    --no-title \
+    --marker-size 200 \
+    --xticks "40, 60, 100, 150, 250, 400, 700, 1200, 2500, 6000, 15000" \
+    --yticks "4, 5, 8, 10, 15, 20" \
+    --out ./_out/results_10B_enterprise.png < ./_test/results_10B_enterprise.jsonl
+
+python cost_per_dollar.py --no-title \
+  --out ./_out/results_10B_enterprise_index.png \
+  < ./_test/results_10B_enterprise_bq_on_demand.jsonl
+
+
+
+
+python render.py --no-title --marker-size 200 --out ./_out/results_100B_enterprise.png < ./_test/results_100B_enterprise.jsonl
+
+python cost_per_dollar.py --no-title \
+  --out ./_out/results_100B_enterprise_index.png \
+  < ./_test/results_100B_enterprise_bq_on_demand.jsonl
+
+
+
+python render_scaling.py \
+  ./_test/results_1B_enterprise.jsonl \
+  ./_test/results_10B_enterprise.jsonl \
+  ./_test/results_100B_enterprise.jsonl \
+  --no-title \
+  --metric runtime \
+  --out ./_out/scaling_runtime.png
+
+python render_scaling.py \
+  ./_test/results_1B_enterprise.jsonl \
+  ./_test/results_10B_enterprise.jsonl \
+  ./_test/results_100B_enterprise.jsonl \
+  --no-title \
+  --metric cost \
+  --out ./_out/scaling_cost.png
+
+
+
+
+  python storage_cost.py \
+  --out ./_out/storage_cost_1B.png \
+  --rows-label "1 B" \
+  --no-title \
+  < ./_test/results_1B_enterprise.jsonl
+
+
+  python storage_cost.py \
+  --out ./_out/storage_cost_10B.png \
+  --rows-label "10 B" \
+  --no-title \
+  < ./_test/results_10B_enterprise.jsonl
+
+  python storage_cost.py \
+  --out ./_out/storage_cost_100B.png \
+  --rows-label "100 B" \
+  --no-title \
+  < ./_test/results_100B_enterprise.jsonl
+
+
+
