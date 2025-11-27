@@ -1,0 +1,72 @@
+./enrich.sh clickbench/results/xs.json \
+            pricings/standard_warehouse.json \
+            results/xs_enriched.json \
+            --cloud aws --region us-east-1
+
+./enrich.sh clickbench/results/large.json \
+            pricings/standard_warehouse.json \
+            results/large_enriched.json \
+            --cloud aws --region us-east-1
+
+./enrich.sh clickbench/results/4xl.json \
+            pricings/standard_warehouse.json \
+            results/4xl_enriched.json \
+            --cloud aws --region us-east-1
+            
+            
+       
+       
+       
+./enrich.sh clickbench/results_1b/xs.json \
+            pricings/standard_warehouse.json \
+            results_1B/xs_enriched.json \
+            --cloud aws --region us-east-1
+
+./enrich.sh clickbench/results_1b/large.json \
+            pricings/standard_warehouse.json \
+            results_1B/large_enriched.json \
+            --cloud aws --region us-east-1
+
+./enrich.sh clickbench/results_1b/4xl.json \
+            pricings/standard_warehouse.json \
+            results_1B/4xl_enriched.json \
+            --cloud aws --region us-east-1
+            
+            
+        
+./enrich.sh clickbench/results_10b/xs.json \
+            pricings/standard_warehouse.json \
+            results_10B/xs_enriched.json \
+            --cloud aws --region us-east-1
+
+./enrich.sh clickbench/results_10b/large.json \
+            pricings/standard_warehouse.json \
+            results_10B/large_enriched.json \
+            --cloud aws --region us-east-1
+
+./enrich.sh clickbench/results_10b/4xl.json \
+            pricings/standard_warehouse.json \
+            results_10B/4xl_enriched.json \
+            --cloud aws --region us-east-1
+
+
+
+./enrich.sh clickbench/results_100b/xs.json \
+            pricings/standard_warehouse.json \
+            results_100B/xs_enriched.json \
+            --cloud aws --region us-east-1
+
+./enrich.sh clickbench/results_100b/large.json \
+            pricings/standard_warehouse.json \
+            results_100B/large_enriched.json \
+            --cloud aws --region us-east-1
+
+./enrich.sh clickbench/results_100b/4xl.json \
+            pricings/standard_warehouse.json \
+            results_100B/4xl_enriched.json \
+            --cloud aws --region us-east-1
+
+
+
+
+

@@ -1,0 +1,76 @@
+{
+  "provider": "snowflake",
+  "service": "warehouse_compute",
+  "currency": "USD",
+
+  "pricing": [
+    {
+      "cloud": "aws",
+      "region": "us-east-1",
+      "plan": "standard",
+
+      "credit_price_per_hour": 2.00,
+
+      "warehouses": [
+        { "name": "X-Small",  "credits_per_hour": 1 },
+        { "name": "Small",    "credits_per_hour": 2 },
+        { "name": "Medium",   "credits_per_hour": 4 },
+        { "name": "Large",    "credits_per_hour": 8 },
+        { "name": "X-Large",  "credits_per_hour": 16 },
+        { "name": "2X-Large", "credits_per_hour": 32 },
+        { "name": "3X-Large", "credits_per_hour": 64 },
+        { "name": "4X-Large", "credits_per_hour": 128 }
+      ],
+      "storage": {
+          "storage": 23.0,
+          "storage_price_unit": 1000000000000
+      }
+    },
+
+    {
+      "cloud": "aws",
+      "region": "us-east-1",
+      "plan": "enterprise",
+
+      "credit_price_per_hour": 3.00,
+
+      "warehouses": [
+        { "name": "X-Small",  "credits_per_hour": 1 },
+        { "name": "Small",    "credits_per_hour": 2 },
+        { "name": "Medium",   "credits_per_hour": 4 },
+        { "name": "Large",    "credits_per_hour": 8 },
+        { "name": "X-Large",  "credits_per_hour": 16 },
+        { "name": "2X-Large", "credits_per_hour": 32 },
+        { "name": "3X-Large", "credits_per_hour": 64 },
+        { "name": "4X-Large", "credits_per_hour": 128 }
+      ],
+      "storage": {
+          "storage": 23.0,
+          "storage_price_unit": 1000000000000
+      }
+    },
+
+    {
+      "cloud": "aws",
+      "region": "us-east-1",
+      "plan": "business_critical",
+
+      "credit_price_per_hour": 4.00,
+
+      "warehouses": [
+        { "name": "X-Small",  "credits_per_hour": 1 },
+        { "name": "Small",    "credits_per_hour": 2 },
+        { "name": "Medium",   "credits_per_hour": 4 },
+        { "name": "Large",    "credits_per_hour": 8 },
+        { "name": "X-Large",  "credits_per_hour": 16 },
+        { "name": "2X-Large", "credits_per_hour": 32 },
+        { "name": "3X-Large", "credits_per_hour": 64 },
+        { "name": "4X-Large", "credits_per_hour": 128 }
+      ],
+      "storage": {
+          "storage": 23.0,
+          "storage_price_unit": 1000000000000
+      }
+    }
+  ]
+}
