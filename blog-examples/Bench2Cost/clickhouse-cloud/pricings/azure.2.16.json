@@ -1,0 +1,30 @@
+{
+  "date": "2025-08-20",
+  "region": "eastus2",
+  "provider": "azure",
+  "memory_size": 16,
+  "cluster_size": 2,
+  "tier": [
+    {
+      "name": "Basic",
+      "compute": 0.24107,
+      "compute_price_unit": 8,
+      "storage": 25.30,
+      "storage_price_unit": 1000000000000
+    },
+    {
+      "name": "Scale",
+      "compute": 0.32988,
+      "compute_price_unit": 8,
+      "storage": 25.30,
+      "storage_price_unit": 1000000000000
+    },
+    {
+      "name": "Enterprise",
+      "compute": 0.43138,
+      "compute_price_unit": 8,
+      "storage": 25.30,
+      "storage_price_unit": 1000000000000
+    }
+  ]
+}

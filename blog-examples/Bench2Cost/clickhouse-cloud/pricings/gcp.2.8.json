@@ -1,0 +1,30 @@
+{
+  "date": "2025-08-20",
+  "region": "us-east1",
+  "provider": "gcp",
+  "memory_size": 8,
+  "cluster_size": 2,
+  "tier": [
+    {
+      "name": "Basic",
+      "compute": 0.18289,
+      "compute_price_unit": 8,
+      "storage": 22,
+      "storage_price_unit": 1000000000000
+    },
+    {
+      "name": "Scale",
+      "compute": 0.25027,
+      "compute_price_unit": 8,
+      "storage": 22,
+      "storage_price_unit": 1000000000000
+    },
+    {
+      "name": "Enterprise",
+      "compute": 0.32727,
+      "compute_price_unit": 8,
+      "storage": 22,
+      "storage_price_unit": 1000000000000
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+-- 100M rows
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
+python run_bench.py --machine 2X-Small --db-name clickbench --table-name delta_hits_partitioned
+→ writes runs_2X-Small.json
+
+python collect_metrics_v2.py --machine 2X-Small
+→ reads runs_2X-Small.json
+→ writes metrics_2X-Small.json
+
+python summarize_results.py --machine 2X-Small
+→ reads metrics_2X-Small.json
+→ writes result_2X-Small.json
+
+
+
+
+
+python run_bench.py --machine Large --db-name clickbench --table-name delta_hits_partitioned
+→ writes runs_Large.json
+
+python collect_metrics_v2.py --machine Large
+→ reads runs_Large.json
+→ writes metrics_Large.json
+
+python summarize_results.py --machine Large
+→ reads metrics_Large.json
+→ writes result_Large.json
+
+
+
+
+
+python run_bench.py --machine 4X-Large --db-name clickbench --table-name delta_hits_partitioned
+→ writes runs_4X-Large.json
+
+python collect_metrics_v2.py --machine 4X-Large
+→ reads runs_4X-Large.json
+→ writes metrics_4X-Large.json
+
+python summarize_results.py --machine 4X-Large
+→ reads metrics_4X-Large.json
+→ writes result_4X-Large.json
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+-- 1B rows
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
+python run_bench.py --machine 2X-Small --db-name clickbench --table-name delta_hits_partitioned_1b
+→ writes runs_2X-Small.json
+
+python collect_metrics_v2.py --machine 2X-Small
+→ reads runs_2X-Small.json
+→ writes metrics_2X-Small.json
+
+python summarize_results.py --machine 2X-Small
+→ reads metrics_2X-Small.json
+→ writes result_2X-Small.json
+
+
+
+
+
+python run_bench.py --machine Large --db-name clickbench --table-name delta_hits_partitioned_1b
+→ writes runs_Large.json
+
+python collect_metrics_v2.py --machine Large
+→ reads runs_Large.json
+→ writes metrics_Large.json
+
+python summarize_results.py --machine Large
+→ reads metrics_Large.json
+→ writes result_Large.json
+
+
+
+
+python run_bench.py --machine 4X-Large --db-name clickbench --table-name delta_hits_partitioned_1b
+→ writes runs_4X-Large.json
+
+python collect_metrics_v2.py --machine 4X-Large
+→ reads runs_4X-Large.json
+→ writes metrics_4X-Large.json
+
+python summarize_results.py --machine 4X-Large
+→ reads metrics_4X-Large.json
+→ writes result_4X-Large.json
+
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+-- 10B rows
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
+python run_bench.py --machine 2X-Small --db-name clickbench --table-name delta_hits_partitioned_10b
+→ writes runs_2X-Small.json
+
+python collect_metrics_v2.py --machine 2X-Small
+→ reads runs_2X-Small.json
+→ writes metrics_2X-Small.json
+
+python summarize_results.py --machine 2X-Small
+→ reads metrics_2X-Small.json
+→ writes result_2X-Small.json
+
+
+
+
+python run_bench.py --machine Large --db-name clickbench --table-name delta_hits_partitioned_10b
+→ writes runs_Large.json
+
+python collect_metrics_v2.py --machine Large
+→ reads runs_Large.json
+→ writes metrics_Large.json
+
+python summarize_results.py --machine Large
+→ reads metrics_Large.json
+→ writes result_Large.json
+
+
+
+
+python run_bench.py --machine 4X-Large --db-name clickbench --table-name delta_hits_partitioned_10b
+→ writes runs_4X-Large.json
+
+python collect_metrics_v2.py --machine 4X-Large
+→ reads runs_4X-Large.json
+→ writes metrics_4X-Large.json
+
+python summarize_results.py --machine 4X-Large
+→ reads metrics_4X-Large.json
+→ writes result_4X-Large.json
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+-- 100B rows
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
+
+python run_bench.py --machine 2X-Small --db-name clickbench --table-name delta_hits_partitioned_100b
+→ writes runs_2X-Small.json
+
+python collect_metrics_v2.py --machine 2X-Small
+→ reads runs_2X-Small.json
+→ writes metrics_2X-Small.json
+
+python summarize_results.py --machine 2X-Small
+→ reads metrics_2X-Small.json
+→ writes result_2X-Small.json
+
+
+
+
+python run_bench.py --machine Large --db-name clickbench --table-name delta_hits_partitioned_100b
+→ writes runs_Large.json
+
+python collect_metrics_v2.py --machine Large
+→ reads runs_Large.json
+→ writes metrics_Large.json
+
+python summarize_results.py --machine Large
+→ reads metrics_Large.json
+→ writes result_Large.json
+
+
+
+
+python run_bench.py --machine 4X-Large --db-name clickbench --table-name delta_hits_partitioned_100b
+→ writes runs_4X-Large.json
+
+python collect_metrics_v2.py --machine 4X-Large
+→ reads runs_4X-Large.json
+→ writes metrics_4X-Large.json
+
+python summarize_results.py --machine 4X-Large
+→ reads metrics_4X-Large.json
+→ writes result_4X-Large.json
+
+
+
+
+
+
+python run_bench.py --machine Large --catalog bench2cost --db-name hits --table-name 100m_clustered
+→ writes runs_Large.json
+
+python collect_metrics_v2.py --machine Large
+→ reads runs_Large.json
+→ writes metrics_Large.json
+
+python summarize_results.py --machine Large
+→ reads metrics_Large.json
+→ writes result_Large.json
+
+
