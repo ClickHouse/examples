@@ -100,7 +100,7 @@ sortedcontainers==2.4.0
 sqlparse==0.5.3
 typing-extensions==4.13.2
 typing-inspection==0.4.1
-urllib3==2.4.0
+urllib3==2.6.0
 websockets==15.0.1
 wheel==0.45.1
 wrapt==1.17.2
