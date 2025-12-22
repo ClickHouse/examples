@@ -100,7 +100,7 @@ llama-index-vector-stores-clickhouse==0.1.1
 lz4==4.3.3
 markdown-it-py==3.0.0
 MarkupSafe==2.1.5
-marshmallow==3.20.2
+marshmallow==3.26.2
 matplotlib-inline==0.1.6
 mccabe==0.7.0
 mdurl==0.1.2
