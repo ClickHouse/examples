@@ -18,9 +18,8 @@ Examples cover a range of topics, from ClickHouse internals to integrating with 
 ## Repo contents
 
 - [blog-examples](./blog-examples/): Resources that support the [ClickHouse Blog](clickhouse.com/blog).
-- [docker-compose-recipes](./docker-compose-recipes/README.md): Various docker compose recipes for spinning up ClickHouse and common integrations, like Kafka, Grafana, Dagster and more.
-- [ethereum](./ethereum/README.md): Examples for working with Ethereum blockchain data, including table schemas, batch and streaming load examples, and various queries.
-- [learn-clickhouse-with-mark](./learn-clickhouse-with-mark/README.md): A collection of resources for learning ClickHouse from Mark Needham.
+- [ai](./ai/): Examples using AI with ClickHouse via clickhousectl and mcp
+- [LearnClickHouseWithMark](./LearnClickHouseWithMark/README.md): A collection of resources for learning ClickHouse from Mark Needham.
 
 ## Contributing
 
@@ -34,7 +33,3 @@ If there's an example you'd love to see, feel free to open an issue to request i
 
 - All examples should be self-contained, including documentation to use the example without relying on external resources (i.e., include a full README.md in the repo and do not just link to an external article).
 - Directories and files should use kebab-case.
-
-### ClickHouse employees
-
-The [blog-examples](./blog-examples/) directory contains resources that support the [ClickHouse Blog](clickhouse.com/blog). If you are writing a blog post and want to store resources in this repo, add a new directory here and follow the same standards and conventions as other examples in this repo.
