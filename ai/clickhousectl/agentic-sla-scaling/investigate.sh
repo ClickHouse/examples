@@ -6,11 +6,6 @@
 # would otherwise swallow a positional prompt). We scope the agent to
 # clickhousectl only.
 #
-# The prompt deliberately does NOT tell the agent which scenario it's in or what
-# to query. It states the breach, points at the available data sources and the
-# two scaling levers, and gives the general principle behind each lever. The
-# agent has to investigate the live system and reason its way to horizontal vs
-# vertical on its own — that's the demo.
 set -euo pipefail
 : "${SERVICE_ID:?source config.env first}"
 SLA_MS="${SLA_MS:-200}"

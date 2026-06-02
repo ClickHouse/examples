@@ -1,58 +1,53 @@
 # Agentic SLA-breach detection and scaling
 
-A self-contained demo of an **agent that keeps a latency SLA**: a defended
-query-latency target on a ClickHouse Cloud service, a way to manufacture
-realistic pressure against it, and an AI agent that investigates a breach and
-applies the *right* scaling action — horizontal or vertical — on its own.
+A demo of an agent that keeps a latency SLA: a defended query-latency target on a ClickHouse Cloud service, a way to manufacture realistic pressure against it, and an AI agent that investigates a breach and applies the right scaling action — horizontal or vertical — on its own.
 
-There's no cron and no hard-coded answer. You generate load, watch the SLA
-breach, then hand the breach to the agent. The agent inspects the live system
-(`system.query_log`, Prometheus metrics) via [`clickhousectl`](https://github.com/ClickHouse/clickhousectl)
-and reasons its way to the correct lever.
+You generate load, watch the SLA breach, then hand the breach to the agent. The agent inspects the live system (`system.query_log`, Prometheus metrics) via [`clickhousectl`](https://github.com/ClickHouse/clickhousectl) and reasons its way to the correct lever.
 
 ## How it works
 
 | File | Role |
 |------|------|
-| `schema.sql` | A ~200M-row `events` table. `ORDER BY (event_type, event_time)` is the lever: the dashboard query filters on `event_type` (hits the index → fast), while the heavy analytics query groups across all `user_id` (full scan → heavy). |
-| `frontend.sh` | Steady "frontend" traffic — ~4 light dashboard queries in flight, tagged `log_comment='frontend-dashboard'`. This is the SLA we defend. Runs over the native protocol via `clickhouse client`. |
-| `load.sh` | Pressure generator via native `clickhouse benchmark`. `horizontal` fires lots more of the *same* light query (concurrency pressure → scale out). `vertical` runs a *different*, heavy analytics query that pins CPU/memory (resource contention → scale up). |
+| `schema.sql` | A ~200M-row `events` table (CREATE & INSERT statements)|
+| `frontend.sh` | Simulates "frontend" traffic, sends ~4 light dashboard queries in flight, tagged `log_comment='frontend-dashboard'`. |
+| `load.sh` | Pressure generator using `clickhouse benchmark`. `horizontal` fires lots more of the same light query. `vertical` runs a different, heavy analytics query that pins CPU/memory. |
 | `watch.sh` | Read-only watcher: prints the SLA p99 alongside the key resource-pressure metrics every 10s so you can see the breach and eyeball the cause. |
-| `investigate.sh` | Hands the breach to the agent (`claude -p`, scoped to `clickhousectl` only). The prompt states the breach and the available data sources and scaling levers, but **not** which scenario it's in — the agent has to work it out. |
+| `investigate.sh` | Hands the breach to the agent (`claude -p`, scoped to `clickhousectl` only). The prompt states the breach and the available data sources. |
 
 ## Prereqs
 
-- [`clickhousectl`](https://github.com/ClickHouse/clickhousectl), authenticated against ClickHouse Cloud:
+- [`clickhousectl`](https://github.com/ClickHouse/clickhousectl) installed:
+  ```
+  curl https://clickhouse.com/cli | sh
+  ```
+- `clickhousectl` authenticated against ClickHouse Cloud:
   ```
   clickhousectl cloud auth login --api-key ... --api-secret ...
   ```
-- The `clickhouse` binary on your PATH. Install the latest and put it on the
-  path with:
+- The `clickhouse` binary on your PATH. Install the latest and put it on the path with:
   ```
   clickhousectl local use latest
   ```
-  This provides `clickhouse client` (used by `frontend.sh`) and
-  `clickhouse benchmark` (used by `load.sh`). Both run over the native protocol
-  rather than HTTP, which gets rate-limited under sustained fan-out.
-- The [`claude` CLI](https://docs.claude.com/en/docs/claude-code/overview), plus the ClickHouse agent skills:
+  This provides `clickhouse client` (used by `frontend.sh`) and `clickhouse benchmark` (used by `load.sh`).
+- [Claude Code](https://docs.claude.com/en/docs/claude-code/overview), plus the ClickHouse agent skills:
   ```
   clickhousectl skills --agent claude
   ```
 
 ## Run it
 
+Run through these steps (or, just ask Claude to do it for you):
+
 ```bash
-# 1. Create the service (this costs money until you stop/delete it)
+# 1. Create the service
 clickhousectl cloud service create --name sla-demo \
-  --provider aws --region us-east-1 \
+  --provider aws --region eu-west-1 \
   --min-replica-memory-gb 8 --max-replica-memory-gb 8 \
   --num-replicas 1 --idle-scaling false
 
-# 2. Fill in connection details
-clickhousectl cloud service list                          # grab the SERVICE_ID
-clickhousectl cloud service get "$SERVICE_ID"             # native host/port
-clickhousectl cloud service reset-password "$SERVICE_ID"  # default-user password
-cp config.env.example config.env && $EDITOR config.env
+# 2. Fill in connection details using the output of the first command (service id, host, port, default-user pass)
+cp config.env.example config.env
+vim config.env # enter the details here
 source config.env
 
 # 3. Load data (~200M rows)
@@ -70,16 +65,6 @@ bash investigate.sh
 
 # 6. Confirm + tear down
 clickhousectl cloud activity list   # the agent's scale action is in the audit log
-clickhousectl cloud service scale "$SERVICE_ID" \
-  --num-replicas 1 --min-replica-memory-gb 8 --max-replica-memory-gb 8
-clickhousectl cloud service stop "$SERVICE_ID"   # or delete
+clickhousectl cloud service get "$SERVICE_ID" # view the service details to see the scale
+clickhousectl cloud service stop "$SERVICE_ID"   # tear it down
 ```
-
-## Tuning notes
-
-- 8GB ≈ 2 vCPU, so the `vertical` scenario breaches fast. Ramp its concurrency
-  up until `CGroupMemoryUsed` pins near the limit but queries don't OOM — an
-  OOM'd query errors instead of slowing the frontend, which muddies the SLA.
-- The `horizontal` scenario keeps memory low; raise concurrency until queries
-  queue and the frontend p99 climbs from *waiting*, not from *work*.
-- Re-run a scenario after the agent scales to confirm the SLA recovers.

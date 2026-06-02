@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Read-only watcher (replaces the cron). Prints the SLA p99 and the key
+# Read-only watcher. Prints the SLA p99 and the key
 # resource-pressure metrics side by side so you can see the breach and
 # eyeball the root cause before handing off to the agent.
 set -euo pipefail

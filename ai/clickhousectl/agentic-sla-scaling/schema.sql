@@ -1,4 +1,4 @@
--- ~200M row events table. ORDER BY (event_type, event_time) is the lever:
+-- ~200M row events table.
 -- the frontend query filters on event_type (uses the index -> fast),
 -- the load query groups across all user_id (full scan -> heavy).
 

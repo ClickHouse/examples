@@ -10,9 +10,6 @@ Q="SELECT event_type,count(),avg(value) FROM events
    WHERE event_type='purchase' AND event_time>now()-INTERVAL 1 HOUR
    GROUP BY event_type SETTINGS log_comment='frontend-dashboard'"
 
-# Native protocol via `clickhouse client` (same connection details as
-# load.sh) — the HTTP endpoint that `clickhousectl cloud service query` uses
-# gets rate-limited under this steady fan-out.
 echo "frontend traffic -> ${CH_HOST} (ctrl-c to stop)"
 while true; do
   seq 4 | xargs -P4 -I{} clickhouse client \
