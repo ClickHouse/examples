@@ -15,8 +15,12 @@ while true; do
   p99=$(clickhousectl cloud service query --id "$SERVICE_ID" --format TSV --query "$SLA" 2>/dev/null || echo "?")
   flag=""; [[ "$p99" =~ ^[0-9]+$ ]] && (( p99 > SLA_MS )) && flag="  <-- BREACH"
   echo "[$(date +%T)] p99=${p99}ms (SLA ${SLA_MS}ms)${flag}"
+  # Prometheus exposition format is `Name{labels} value` (labels optional), so
+  # match the metric name followed by either '{' or a space. Guard with
+  # `|| true` so a no-match grep (exit 1) doesn't trip `set -o pipefail` and
+  # kill the loop.
   clickhousectl cloud service prometheus "$SERVICE_ID" --filtered-metrics true 2>/dev/null \
-    | grep -E '^(ClickHouseMetrics_Query|ClickHouseAsyncMetrics_CGroupMemoryUsed|ClickHouseMetrics_BackgroundMergesAndMutationsPoolTask) ' \
-    | sed 's/^/    /'
+    | grep -E '^(ClickHouseMetrics_Query|ClickHouseAsyncMetrics_CGroupMemoryUsed|ClickHouseMetrics_BackgroundMergesAndMutationsPoolTask)[ {]' \
+    | sed 's/^/    /' || true
   sleep 10
 done

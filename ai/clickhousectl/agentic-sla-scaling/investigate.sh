@@ -49,4 +49,4 @@ General advice on which scaling pattern to use:
 Apply one action, then explain the evidence you relied on and why that lever fits.
 EOF
 
-printf '%s' "$PROMPT" | claude -p --model haiku --allowedTools "Bash(clickhousectl:*)"
+printf '%s' "$PROMPT" | claude -p --model sonnet --allowedTools "Bash(clickhousectl:*)"
