@@ -1,0 +1,54 @@
+$ ./generate.sh
+Generating data/events.parquet (20 rows)...
+Generating data/events_large.parquet (3000000 rows)...
+
+Generated files:
+-rw-r--r--  events_large.parquet   (~39 MB)
+-rw-r--r--  events.parquet         (3557 bytes)
+
+$ ./run.sh
+== 1. Convert Parquet -> NDJSON in one line ==
+first 3 lines:
+{"event_id":1,"ts":"2026-05-31 23:00:00.000","action":"login","country":"GB","amount":1,"is_member":1,"attrs":{"os":"mac","plan":"free"}}
+{"event_id":2,"ts":"2026-06-01 00:00:00.000","action":"purchase","country":"US","amount":2.01,"is_member":0,"attrs":{"os":"win","plan":"pro"}}
+{"event_id":3,"ts":"2026-06-01 01:00:00.000","action":"logout","country":"DE","amount":3.02,"is_member":1,"attrs":{"os":"linux","plan":"free"}}
+
+== 2. The schema is read from the Parquet footer (no -S needed) ==
+event_id	UInt64
+ts	DateTime64(3, 'UTC')
+action	String
+country	String
+amount	Float64
+is_member	UInt8
+attrs	Map(String, String)
+
+== 3. Booleans: UInt8 0/1 by default, cast to Bool for true/false ==
+{"event_id":1,"is_member":true}
+{"event_id":2,"is_member":false}
+
+== 4. Project / rename / filter while converting ==
+{"event_id":18,"country":"DE","amount":18.17}
+{"event_id":14,"country":"FR","amount":14.13}
+{"event_id":10,"country":"IN","amount":10.09}
+
+== 5. Write compressed NDJSON straight away (.ndjson.gz) ==
+-rw-r--r--  events.ndjson.gz   533 bytes
+read it straight back (gzip auto-detected):
+20
+
+== 6. Throughput: convert the 3,000,000-row events_large.parquet (best-of-3, warm) ==
+run 1: real 0.29
+run 2: real 0.31
+run 3: real 0.29
+rows written:
+3000000
+
+$ python3 run.py
+first 3 lines of events_py.ndjson:
+{"event_id":1,"ts":"2026-05-31 23:00:00.000","action":"login","country":"GB","amount":1,"is_member":1,"attrs":{"os":"mac","plan":"free"}}
+{"event_id":2,"ts":"2026-06-01 00:00:00.000","action":"purchase","country":"US","amount":2.01,"is_member":0,"attrs":{"os":"win","plan":"pro"}}
+{"event_id":3,"ts":"2026-06-01 01:00:00.000","action":"logout","country":"DE","amount":3.02,"is_member":1,"attrs":{"os":"linux","plan":"free"}}
+
+top purchases as an NDJSON string:
+{"event_id":18,"country":"DE","amount":18.17}
+{"event_id":14,"country":"FR","amount":14.13}

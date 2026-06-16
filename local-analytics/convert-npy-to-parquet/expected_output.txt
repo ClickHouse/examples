@@ -1,0 +1,70 @@
+############################################################
+# $ ./generate.sh
+############################################################
+Generating data/readings.npy (10 1D float values)...
+Generating data/embeddings.npy (2000000 x 16 float32 matrix)...
+
+Generated files:
+total 438568
+drwxr-xr-x@ 9 al  staff        288  6 Jun 20:35 .
+drwxr-xr-x@ 9 al  staff        288  6 Jun 20:35 ..
+-rw-r--r--@ 1 al  staff   44096581  6 Jun 20:35 embeddings_chdb.parquet
+-rw-r--r--@ 1 al  staff    8333220  6 Jun 20:34 embeddings_flat.parquet
+-rw-r--r--@ 1 al  staff  128000128  6 Jun 20:35 embeddings.npy
+-rw-r--r--@ 1 al  staff   44096581  6 Jun 20:34 embeddings.parquet
+-rw-r--r--@ 1 al  staff        618  6 Jun 20:35 readings_chdb.parquet
+-rw-r--r--@ 1 al  staff        208  6 Jun 20:35 readings.npy
+-rw-r--r--@ 1 al  staff        618  6 Jun 20:34 readings.parquet
+
+############################################################
+# $ ./run.sh   (CLI / clickhouse local)
+############################################################
+== 1. Convert NPY -> Parquet in one line ==
+wrote readings.parquet
+
+== 2. The NPY column is always named 'array' ==
+array	Float64					
+
+== 3. Rename it to something meaningful during the conversion ==
+reading	Float64					
+20
+22.3971
+24.2074
+24.9875
+24.5465
+22.9924
+20.7056
+18.2461
+16.216
+15.1123
+
+== 4. A 2D NPY (a matrix) becomes one Array column per row ==
+array	Array(Float32)					
+
+== 5. Convert the matrix, keeping the row vectors as an Array column ==
+embedding	Array(Float32)					
+2000000	16
+
+== 6. Or expand each vector into named scalar columns ==
+f0	Float32					
+f1	Float32					
+f2	Float32					
+0.88	-0.449	0.351
+-0.659	-0.236	0.152
+-0.009	0.651	-0.92
+
+== 7. File size: NPY (uncompressed) vs Parquet (compressed) ==
+128000128 embeddings.npy
+44096581 embeddings.parquet
+
+== 8. Perf: convert the 2,000,000 x 16 embeddings.npy -> Parquet (best-of-3, warm) ==
+run 1: real 0.70
+run 2: real 0.69
+run 3: real 0.70
+
+############################################################
+# $ python3 run.py   (Surface B / chDB)
+############################################################
+wrote readings_chdb.parquet
+"reading","Float64","","","","",""
+2000000,16

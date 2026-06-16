@@ -1,0 +1,55 @@
+### ./generate.sh ###
+Generating data/events.avro (20 rows, with a nested Tuple + Array)...
+Generating data/events_large.avro (3000000 rows, ~81 MB)...
+
+Generated files:
+total 157704
+drwxr-xr-x@ 4 al  staff       128  6 Jun 20:31 .
+drwxr-xr-x@ 9 al  staff       288  6 Jun 20:31 ..
+-rw-r--r--@ 1 al  staff  80740321  6 Jun 20:31 events_large.avro
+-rw-r--r--@ 1 al  staff       937  6 Jun 20:31 events.avro
+
+### ./run.sh ###
+== 1. Convert Avro -> CSV in one line ==
+"event_id","ts","event_type","country","amount","user_info","tags"
+1,1767225600,"login","GB",0,"user0",1,"['a']"
+2,1767229200,"purchase","US",1.01,"user1",2,"['a','b']"
+3,1767232800,"logout","DE",2.02,"user2",3,"['a','b','c']"
+4,1767236400,"signup","FR",3.03,"user3",4,"['a']"
+5,1767240000,"login","GB",4.04,"user4",5,"['a','b']"
+6,1767243600,"purchase","US",5.05,"user0",1,"['a','b','c']"
+
+== 2. Inspect the schema Avro carried (note ts is a raw int, the Tuple is named) ==
+event_id	Int64					
+ts	Int32					
+event_type	String					
+country	String					
+amount	Float64					
+user_info	Tuple(\n    `1` String,\n    `2` Int32)					
+tags	Array(String)					
+
+== 3. Flatten cleanly: Tuple -> columns, Array -> joined string, int -> DateTime ==
+"event_id","ts","event_type","country","amount","user_id","sessions","tags"
+1,"2026-01-01 00:00:00","login","GB",0,"user0",1,"a"
+2,"2026-01-01 01:00:00","purchase","US",1.01,"user1",2,"a|b"
+3,"2026-01-01 02:00:00","logout","DE",2.02,"user2",3,"a|b|c"
+4,"2026-01-01 03:00:00","signup","FR",3.03,"user3",4,"a"
+5,"2026-01-01 04:00:00","login","GB",4.04,"user4",5,"a|b"
+6,"2026-01-01 05:00:00","purchase","US",5.05,"user0",1,"a|b|c"
+
+== 4. Perf: convert the 3M-row, ~81 MB events_large.avro (best-of-3, warm) ==
+run 1: real 1.07
+run 2: real 1.08
+run 3: real 1.07
+rows written: 3000000
+77M events_large.avro
+203M events_large.csv
+
+### python3 run.py (chDB) ###
+"event_id","ts","event_type","country","amount","user_id","sessions","tags"
+1,"2026-01-01 00:00:00","login","GB",0,"user0",1,"a"
+2,"2026-01-01 01:00:00","purchase","US",1.01,"user1",2,"a|b"
+3,"2026-01-01 02:00:00","logout","DE",2.02,"user2",3,"a|b|c"
+4,"2026-01-01 03:00:00","signup","FR",3.03,"user3",4,"a"
+5,"2026-01-01 04:00:00","login","GB",4.04,"user4",5,"a|b"
+6,"2026-01-01 05:00:00","purchase","US",5.05,"user0",1,"a|b|c"

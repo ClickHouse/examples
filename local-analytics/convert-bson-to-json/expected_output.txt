@@ -1,0 +1,100 @@
+### ./run.sh (clickhouse local) ###
+
+== 1. Convert BSON -> NDJSON (one JSON object per line) ==
+{"_id":1,"name":"Ada","city":"NYC","address":{"street":"1 Market St","zip":"00000"},"tags":["mongo"],"active":false}
+{"_id":2,"name":"Lin","city":"SF","address":{"street":"8 Market St","zip":"00137"},"tags":["mongo","etl"],"active":true}
+{"_id":3,"name":"Tor","city":"LDN","address":{"street":"15 Market St","zip":"00274"},"tags":["mongo","etl","beta"],"active":false}
+{"_id":4,"name":"Mae","city":"BLR","address":{"street":"22 Market St","zip":"00411"},"tags":["mongo"],"active":true}
+{"_id":5,"name":"Ravi","city":"TYO","address":{"street":"29 Market St","zip":"00548"},"tags":["mongo","etl"],"active":false}
+{"_id":6,"name":"Yuki","city":"BER","address":{"street":"36 Market St","zip":"00685"},"tags":["mongo","etl","beta"],"active":true}
+
+== 2. The schema clickhouse-local inferred from the BSON ==
+_id	Nullable(Int64)					
+name	Nullable(String)					
+city	Nullable(String)					
+address	Map(String, Nullable(String))					
+tags	Array(Nullable(String))					
+active	Nullable(Bool)					
+
+== 3. Convert to a single pretty JSON array (FORMAT JSON) ==
+{
+	"meta":
+	[
+		{
+			"name": "_id",
+			"type": "Nullable(Int64)"
+		},
+		{
+			"name": "name",
+			"type": "Nullable(String)"
+		},
+		{
+			"name": "city",
+			"type": "Nullable(String)"
+		},
+		{
+			"name": "address",
+			"type": "Map(String, Nullable(String))"
+		},
+		{
+			"name": "tags",
+			"type": "Array(Nullable(String))"
+		},
+		{
+			"name": "active",
+			"type": "Nullable(Bool)"
+		}
+	],
+
+	"data":
+	[
+		{
+			"_id": 1,
+			"name": "Ada",
+			"city": "NYC",
+			"address": {
+				"street": "1 Market St",
+				"zip": "00000"
+			},
+			"tags": ["mongo"],
+			"active": false
+		},
+		{
+			"_id": 2,
+			"name": "Lin
+
+== 4. Filter / reshape while converting (only active users, flatten one nested field) ==
+{"_id":2,"name":"Lin","zip":"00137","tags":["mongo","etl"]}
+{"_id":4,"name":"Mae","zip":"00411","tags":["mongo"]}
+{"_id":6,"name":"Yuki","zip":"00685","tags":["mongo","etl","beta"]}
+
+== 5. Perf: convert the ~162 MB, 2,000,000-doc events.bson to NDJSON (best-of-3, warm) ==
+run 1: real 0.29
+run 2: real 0.32
+run 3: real 0.32
+rows written:
+2000000
+-rw-r--r--@ 1 al  staff  157364884  6 Jun 20:34 events.jsonl
+
+### python3 run.py (chDB equivalent) ###
+
+== BSON -> NDJSON (users_chdb.jsonl) ==
+{"_id":1,"name":"Ada","city":"NYC","address":{"street":"1 Market St","zip":"00000"},"tags":["mongo"],"active":false}
+{"_id":2,"name":"Lin","city":"SF","address":{"street":"8 Market St","zip":"00137"},"tags":["mongo","etl"],"active":true}
+{"_id":3,"name":"Tor","city":"LDN","address":{"street":"15 Market St","zip":"00274"},"tags":["mongo","etl","beta"],"active":false}
+{"_id":4,"name":"Mae","city":"BLR","address":{"street":"22 Market St","zip":"00411"},"tags":["mongo"],"active":true}
+{"_id":5,"name":"Ravi","city":"TYO","address":{"street":"29 Market St","zip":"00548"},"tags":["mongo","etl"],"active":false}
+{"_id":6,"name":"Yuki","city":"BER","address":{"street":"36 Market St","zip":"00685"},"tags":["mongo","etl","beta"],"active":true}
+
+== Inferred schema ==
+"_id","Nullable(Int64)","","","","",""
+"name","Nullable(String)","","","","",""
+"city","Nullable(String)","","","","",""
+"address","Map(String, Nullable(String))","","","","",""
+"tags","Array(Nullable(String))","","","","",""
+"active","Nullable(Bool)","","","","",""
+
+== Active users only, zip flattened (active_chdb.jsonl) ==
+{"_id":2,"name":"Lin","zip":"00137","tags":["mongo","etl"]}
+{"_id":4,"name":"Mae","zip":"00411","tags":["mongo"]}
+{"_id":6,"name":"Yuki","zip":"00685","tags":["mongo","etl","beta"]}

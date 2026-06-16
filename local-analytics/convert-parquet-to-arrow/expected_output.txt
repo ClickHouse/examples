@@ -1,0 +1,79 @@
+$ ./generate.sh
+Generating data/events.parquet (20 rows)...
+Generating data/events_large.parquet (3000000 rows)...
+
+Generated files:
+-rw-r--r--@ 1 al  staff  22939479  events_large.parquet
+-rw-r--r--@ 1 al  staff      2587  events.parquet
+
+$ ./run.sh
+== 1. Convert Parquet -> Arrow in one line ==
+-rw-r--r--@ 1 al  staff  2010  events.arrow
+
+== 2. Schemas match: Parquet types carry into Arrow unchanged ==
+-- Parquet:
+event_date	Date32
+event_id	UInt64
+country	String
+action	String
+amount	Float64
+sessions	UInt8
+-- Arrow:
+event_date	Date32
+event_id	UInt64
+country	String
+action	String
+amount	Float64
+sessions	UInt8
+
+== 3. Read the Arrow file back ==
+2026-01-01	1	GB	click	5	1
+2026-01-02	2	US	view	6.01	2
+2026-01-03	3	DE	signup	7.02	3
+2026-01-04	4	FR	purchase	8.03	4
+2026-01-05	5	IN	click	9.04	5
+
+== 4. .feather is the same Arrow IPC format ==
+20
+
+== 5. Compress the Arrow output (zstd) to shrink the file ==
+-- sizes (Parquet input vs uncompressed Arrow vs zstd Arrow):
+-rw-r--r--@ 1 al  staff  39285146  events_large_zstd.arrow
+-rw-r--r--@ 1 al  staff  67721370  events_large.arrow
+-rw-r--r--@ 1 al  staff  22939479  events_large.parquet
+
+== 6. Row + value parity after the round trip ==
+3000000	3000000
+
+== 7. Perf: convert 3,000,000 rows Parquet -> Arrow (best-of-3, warm) ==
+# ~0.30s on an Apple M4 Pro (14 cores, 24 GB RAM), warm OS page cache:
+run 1: real 0.30
+run 2: real 0.30
+run 3: real 0.31
+
+$ python3 run.py
+wrote events_chdb.arrow (2010 bytes)
+
+schema of the Arrow file:
+"event_date","Date32","","","","",""
+"event_id","UInt64","","","","",""
+"country","String","","","","",""
+"action","String","","","","",""
+"amount","Float64","","","","",""
+"sessions","UInt8","","","","",""
+
+first 5 rows:
+"2026-01-01",1,"GB","click",5,1
+"2026-01-02",2,"US","view",6.01,2
+"2026-01-03",3,"DE","signup",7.02,3
+"2026-01-04",4,"FR","purchase",8.03,4
+"2026-01-05",5,"IN","click",9.04,5
+
+loaded into a pandas DataFrame: 20 rows x 6 cols
+event_date    datetime64[s]
+event_id             uint64
+country                 str
+action                  str
+amount              float64
+sessions              uint8
+dtype: object

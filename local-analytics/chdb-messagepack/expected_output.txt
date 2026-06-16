@@ -1,0 +1,30 @@
+=== 1. Read MsgPack into a DataFrame (structure is REQUIRED) ===
+   event_id country event_type  amount
+0         0      GB   purchase   91.64
+1         1      AU       view   90.14
+2         2      IN   purchase   40.73
+3         3      US       view   41.03
+4         4      DE   purchase   61.25
+event_id       uint64
+country           str
+event_type        str
+amount        float64
+dtype: object
+
+=== 2. Filter + aggregate the way you already do (pandas, not SQL) ===
+country
+DE    61.25
+GB    91.64
+IN    40.73
+Name: amount, dtype: float64
+
+=== 3. What happens if you forget the structure ===
+Data source not accessible: Query execution failed: Code: 636. DB::Exception: The table structure cannot be extracted from a MsgPack format file. Error:
+
+=== 4. Hand off to real pandas when you need it ===
+<class 'pandas.DataFrame'>
+
+=== 5. Performance: chDB DataStore vs the msgpack library, on a 3M-row file ===
+msgpack library (manual):           0.274s
+chdb.datastore (pandas, no SQL):    0.262s
+speedup:                            1.0x

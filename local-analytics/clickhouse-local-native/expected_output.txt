@@ -1,0 +1,69 @@
+== 1. Read the first rows (no schema needed; Native is self-describing) ==
+   ┌──────────event_time─┬─user_id─┬─country─┬─event_type─┬─revenue─┬─quantity─┐
+1. │ 2026-01-01 00:00:00 │       1 │ GB      │ click      │       5 │        1 │
+2. │ 2026-01-01 01:00:07 │       2 │ US      │ purchase   │    6.01 │        2 │
+3. │ 2026-01-01 02:00:14 │       3 │ DE      │ refund     │    7.02 │        3 │
+4. │ 2026-01-01 03:00:21 │       4 │ FR      │ signup     │    8.02 │        4 │
+5. │ 2026-01-01 04:00:28 │       5 │ IN      │ click      │    9.03 │        5 │
+   └─────────────────────┴─────────┴─────────┴────────────┴─────────┴──────────┘
+
+== 2. DESCRIBE: the EXACT types are read from the file, not inferred ==
+   ┌─name───────┬─type───────────┬─default_type─┬─default_expression─┬─comment─┬─codec_expression─┬─ttl_expression─┐
+1. │ event_time │ DateTime       │              │                    │         │                  │                │
+2. │ user_id    │ UInt32         │              │                    │         │                  │                │
+3. │ country    │ String         │              │                    │         │                  │                │
+4. │ event_type │ String         │              │                    │         │                  │                │
+5. │ revenue    │ Decimal(10, 2) │              │                    │         │                  │                │
+6. │ quantity   │ UInt8          │              │                    │         │                  │                │
+   └────────────┴────────────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+== 3. For contrast: the same rows as CSV, types are guessed (Nullable, lossy) ==
+   ┌─name───────┬─type───────────────┬─default_type─┬─default_expression─┬─comment─┬─codec_expression─┬─ttl_expression─┐
+1. │ event_time │ Nullable(DateTime) │              │                    │         │                  │                │
+2. │ user_id    │ Nullable(Int64)    │              │                    │         │                  │                │
+3. │ country    │ Nullable(String)   │              │                    │         │                  │                │
+4. │ event_type │ Nullable(String)   │              │                    │         │                  │                │
+5. │ revenue    │ Nullable(Float64)  │              │                    │         │                  │                │
+6. │ quantity   │ Nullable(Int64)    │              │                    │         │                  │                │
+   └────────────┴────────────────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+== 4. Aggregate directly on the Native file ==
+   ┌─country─┬─events─┬─revenue─┬─avg_qty─┐
+1. │ US      │      4 │    60.4 │     3.5 │
+2. │ GB      │      4 │   56.36 │     2.5 │
+3. │ AU      │      3 │   48.33 │       2 │
+4. │ IN      │      3 │   45.29 │    2.67 │
+5. │ FR      │      3 │   42.25 │    3.33 │
+6. │ DE      │      3 │   39.24 │       4 │
+   └─────────┴────────┴─────────┴─────────┘
+
+== 5. Native is the wire format: pipe it between two processes, schema travels with it ==
+   ┌─id─┬─sq─┐
+1. │  0 │  0 │
+2. │  1 │  1 │
+3. │  2 │  4 │
+   └────┴────┘
+
+== 6. Read a gzipped Native file transparently (.native.gz) ==
+   ┌─count()─┬─sum(revenue)─┐
+1. │      20 │       291.87 │
+   └─────────┴──────────────┘
+
+== 7. Perf: aggregate the 3,000,000-row events_large.native (best-of-3, warm) ==
+run 1: real 0.17
+run 2: real 0.18
+run 3: real 0.18
+   ┌─country─┬─events─┬─────revenue─┬─avg_qty─┐
+1. │ US      │ 301134 │ 75260506.04 │   3.002 │
+2. │ DE      │ 301109 │ 75248854.16 │   2.997 │
+3. │ CA      │ 300203 │ 75118589.38 │   3.005 │
+4. │ IN      │ 300308 │ 74985294.76 │   2.999 │
+5. │ BR      │ 299934 │ 74921886.42 │   2.999 │
+   └─────────┴────────┴─────────────┴─────────┘
+
+# File sizes (same 20 rows): events.native = 653 bytes, events.csv = 994 bytes.
+# events_large.native (3,000,000 rows) = 78 MB.
+# Perf: ~0.17s, best of 3, warm OS page cache, Apple M4 Pro (14 cores, 24 GB RAM),
+# clickhouse local 26.6.1.117. events_large.native uses an unseeded row id so the
+# exact per-country totals shift slightly each regenerate; the shape is stable
+# (~300k events/country, ~75M revenue/country, avg_qty ~3.0).

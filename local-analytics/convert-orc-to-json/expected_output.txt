@@ -1,0 +1,66 @@
+== 1. Convert ORC -> NDJSON (one object per line) in one line ==
+{"event_id":1,"event_date":"2026-01-01","action":"login","country":"GB","amount":5,"source":{"user_id":1,"platform":"web"}}
+{"event_id":2,"event_date":"2026-01-02","action":"purchase","country":"US","amount":6.01,"source":{"user_id":2,"platform":"ios"}}
+{"event_id":3,"event_date":"2026-01-03","action":"refund","country":"DE","amount":7.02,"source":{"user_id":3,"platform":"android"}}
+
+== 2. Inspect the schema ORC carried into the conversion ==
+event_id	Nullable(Int64)					
+event_date	Nullable(Date32)					
+action	Nullable(String)					
+country	Nullable(String)					
+amount	Nullable(Decimal(18, 2))					
+source	Tuple(\n    user_id Nullable(Int16),\n    platform Nullable(String))					
+
+== 3. Convert ORC -> a single JSON array (with metadata) ==
+{
+	"meta":
+	[
+		{
+			"name": "event_id",
+			"type": "Nullable(Int64)"
+		},
+		{
+			"name": "event_date",
+			"type": "Nullable(Date32)"
+		},
+		{
+			"name": "action",
+			"type": "Nullable(String)"
+		},
+		{
+			"name": "country",
+			"type": "Nullable(String)"
+		},
+		{
+			"name": "amount",
+			"type": "Nullable(Decimal(18, 2))"
+		},
+		{
+			"name": "source",
+			"type": "Tuple(user_id Nullable(Int16), platform Nullable(String))"
+		}
+	],
+
+== 4. Filter/shape during conversion (only purchases, flattened struct) ==
+{"event_id":2,"event_date":"2026-01-02","country":"US","amount":6.01,"platform":"ios"}
+{"event_id":6,"event_date":"2026-01-06","country":"GB","amount":10.05,"platform":"android"}
+{"event_id":10,"event_date":"2026-01-10","country":"IN","amount":14.09,"platform":"web"}
+{"event_id":14,"event_date":"2026-01-14","country":"FR","amount":18.13,"platform":"ios"}
+{"event_id":18,"event_date":"2026-01-18","country":"DE","amount":22.17,"platform":"android"}
+
+== 5. Keep Decimal/Int64 exact as JSON strings (lossless for big numbers) ==
+{"event_id":"1","amount":"5"}
+{"event_id":"2","amount":"6.01"}
+{"event_id":"3","amount":"7.02"}
+
+== 6. Perf: convert the 3,000,000-row events_large.orc -> NDJSON (best-of-3, warm) ==
+run 1: real 0.38
+run 2: real 0.39
+run 3: real 0.38
+rows written:  3000000
+output size: 390M
+
+== 7. chDB Python equivalent (run.py) — identical NDJSON output ==
+{"event_id":1,"event_date":"2026-01-01","action":"login","country":"GB","amount":5,"source":{"user_id":1,"platform":"web"}}
+{"event_id":2,"event_date":"2026-01-02","action":"purchase","country":"US","amount":6.01,"source":{"user_id":2,"platform":"ios"}}
+{"event_id":3,"event_date":"2026-01-03","action":"refund","country":"DE","amount":7.02,"source":{"user_id":3,"platform":"android"}}

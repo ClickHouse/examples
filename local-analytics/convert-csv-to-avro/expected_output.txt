@@ -1,0 +1,82 @@
+######################################################################
+# $ ./generate.sh   (SMALL_ROWS=20, LARGE_ROWS=3000000)
+######################################################################
+Generating data/events.csv (20 rows)...
+Generating data/events_large.csv (3000000 rows, ~120 MB)...
+
+Generated files:
+total 259216
+drwxr-xr-x@  9 al  staff        288  6 Jun 20:28 .
+drwxr-xr-x@ 10 al  staff        320  6 Jun 20:27 ..
+-rw-r--r--@  1 al  staff        833  6 Jun 20:28 events_chdb.avro
+-rw-r--r--@  1 al  staff        743  6 Jun 20:28 events_deflate.avro
+-rw-r--r--@  1 al  staff    3427675  6 Jun 20:28 events_large.avro
+-rw-r--r--@  1 al  staff  129267987  6 Jun 20:28 events_large.csv
+-rw-r--r--@  1 al  staff        703  6 Jun 20:28 events_typed.avro
+-rw-r--r--@  1 al  staff        833  6 Jun 20:28 events.avro
+-rw-r--r--@  1 al  staff        797  6 Jun 20:28 events.csv
+
+######################################################################
+# $ ./run.sh   (CLI: clickhouse local)
+######################################################################
+== 1. Convert CSV -> Avro in one line ==
+wrote events.avro
+
+== 2. The inferred CSV schema (column names from the header, types from the data) ==
+event_date	Nullable(Date)					
+event_id	Nullable(Int64)					
+country	Nullable(String)					
+action	Nullable(String)					
+amount	Nullable(Float64)					
+items	Nullable(Int64)					
+
+== 3. The schema carried into Avro (read it straight back) ==
+event_date	Nullable(Date32)					
+event_id	Nullable(Int64)					
+country	Nullable(String)					
+action	Nullable(String)					
+amount	Nullable(Float64)					
+items	Nullable(Int64)					
+
+== 4. The schema is embedded in the Avro header as JSON ==
+{"type":"record","name":"row","fields":[{"name":"event_date","type":["null",{"type":"int","logicalType":"date"}]},{"name":"event_id","type":["null","long"]},{"name":"country","type":["null","string"]},{"name":"action","type":["null","string"]},{"name":"amount","type":["null","double"]},{"name":"items","type":["null","long"]}]}
+
+== 5. Read rows back from the Avro file ==
+2026-01-20	20	US	signup	24.19	5
+2026-01-19	19	GB	purchase	23.18	4
+2026-01-18	18	AU	view	22.17	3
+2026-01-17	17	IN	click	21.16	2
+2026-01-16	16	FR	signup	20.15	1
+
+== 6. Pin the column types so the Avro schema has no null unions ==
+{"type":"record","name":"row","fields":[{"name":"event_date","type":{"type":"int","logicalType":"date"}},{"name":"event_id","type":"int"},{"name":"country","type":"string"},{"name":"action","type":"string"},{"name":"amount","type":"double"},{"name":"items","type":"int"}]}
+
+== 7. Choose the block compression codec (default is snappy) ==
+deflate
+
+== 8. Conversion throughput: 3,000,000-row, ~120 MB events_large.csv -> Avro (best-of-3, warm) ==
+run 1: real 0.79
+run 2: real 0.73
+run 3: real 0.76
+row count round-trips:
+3000000
+-rw-r--r--@ 1 al  staff   51592111  6 Jun 20:29 events_large.avro
+-rw-r--r--@ 1 al  staff  129267987  6 Jun 20:28 events_large.csv
+
+######################################################################
+# $ python3 run.py   (Python: chDB)
+######################################################################
+wrote events_chdb.avro (833 bytes)
+"2026-01-20",20,"US","signup",24.19,5
+"2026-01-19",19,"GB","purchase",23.18,4
+"2026-01-18",18,"AU","view",22.17,3
+"2026-01-17",17,"IN","click",21.16,2
+"2026-01-16",16,"FR","signup",20.15,1
+
+"event_date","Nullable(Date32)","","","","",""
+"event_id","Nullable(Int64)","","","","",""
+"country","Nullable(String)","","","","",""
+"action","Nullable(String)","","","","",""
+"amount","Nullable(Float64)","","","","",""
+"items","Nullable(Int64)","","","","",""
+

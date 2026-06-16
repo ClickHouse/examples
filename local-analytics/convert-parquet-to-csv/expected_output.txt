@@ -1,0 +1,59 @@
+### ./run.sh (clickhouse-local) ###
+
+== 1. Convert Parquet -> CSV in one line (header included) ==
+"event_date","event_id","country","action","amount","attrs"
+"2026-01-01",1,"GB","click",5,"{'os':'mac','plan':'free'}"
+"2026-01-02",2,"US","view",6.01,"{'os':'win','plan':'pro'}"
+"2026-01-03",3,"DE","signup",7.02,"{'os':'linux','plan':'free'}"
+
+== 2. Schema is read from the Parquet footer (no schema to declare) ==
+event_date	Date32
+event_id	UInt64
+country	String
+action	String
+amount	Float64
+attrs	Map(String, String)
+
+== 3. Verify the row count survives the round-trip ==
+20
+
+== 4. Nested column -> flat CSV (Map is serialized to one text cell) ==
+1	{'os':'mac','plan':'free'}
+2	{'os':'win','plan':'pro'}
+3	{'os':'linux','plan':'free'}
+
+== 5. Flatten the Map into real CSV columns instead ==
+"event_date","country","os","plan"
+"2026-01-01","GB","mac","free"
+"2026-01-02","US","win","pro"
+"2026-01-03","DE","linux","free"
+
+== 6. Change the delimiter (e.g. semicolon for European Excel) ==
+"event_date";"country";"amount"
+"2026-01-01";"GB";5
+"2026-01-02";"US";6.01
+"2026-01-03";"DE";7.02
+
+== 7. No header? use FORMAT CSV instead of CSVWithNames ==
+"2026-01-01",1,"GB","click",5,"{'os':'mac','plan':'free'}"
+"2026-01-02",2,"US","view",6.01,"{'os':'win','plan':'pro'}"
+"2026-01-03",3,"DE","signup",7.02,"{'os':'linux','plan':'free'}"
+
+== 8. Perf: convert the 3,000,000-row events_large.parquet (~211 MB CSV) (best-of-3, warm) ==
+# ~0.21s on an Apple M4 Pro (14 cores, 24 GB RAM), warm OS page cache:
+run 1: real 0.21
+run 2: real 0.21
+run 3: real 0.21
+3000000
+
+
+### python3 run.py (chDB 4.1.8) ###
+
+First 4 lines of data/events_chdb.csv:
+"event_date","event_id","country","action","amount","attrs"
+"2026-01-01",1,"GB","click",5,"{'os':'mac','plan':'free'}"
+"2026-01-02",2,"US","view",6.01,"{'os':'win','plan':'pro'}"
+"2026-01-03",3,"DE","signup",7.02,"{'os':'linux','plan':'free'}"
+
+Row count in the CSV:
+20

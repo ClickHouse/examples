@@ -1,0 +1,70 @@
+### ./generate.sh ###
+Generating data/events.tsv (20 rows)...
+Generating data/events_large.tsv (3000000 rows, ~120 MB)...
+
+Generated files:
+  data/events.tsv         (667 B,  20 rows)
+  data/events_large.tsv   (~105 MB, 3,000,000 rows)
+
+### ./run.sh ###
+== 1. Convert TSV -> JSON (JSONEachRow: one JSON object per line / NDJSON) ==
+first 3 lines of events.jsonl:
+{"event_date":"2026-01-01","event_id":1,"country":"GB","action":"click","value":5,"quantity":1}
+{"event_date":"2026-01-02","event_id":2,"country":"US","action":"view","value":6.01,"quantity":2}
+{"event_date":"2026-01-03","event_id":3,"country":"DE","action":"purchase","value":7.02,"quantity":3}
+
+== 2. Inspect the inferred schema (names from the header, types from the data) ==
+event_date	Nullable(Date)					
+event_id	Nullable(Int64)					
+country	Nullable(String)					
+action	Nullable(String)					
+value	Nullable(Float64)					
+quantity	Nullable(Int64)					
+
+== 3. Convert TSV -> a single JSON array (output_format_json_array_of_rows=1) ==
+first 4 lines of events.json:
+[
+{"event_date":"2026-01-01","event_id":1,"country":"GB","action":"click","value":5,"quantity":1},
+{"event_date":"2026-01-02","event_id":2,"country":"US","action":"view","value":6.01,"quantity":2},
+{"event_date":"2026-01-03","event_id":3,"country":"DE","action":"purchase","value":7.02,"quantity":3},
+
+== 4. Transform on the way out (project, filter, rename) ==
+{"event_date":"2026-01-19","country":"GB","action_upper":"PURCHASE","value":23.18}
+{"event_date":"2026-01-15","country":"DE","action_upper":"PURCHASE","value":19.14}
+{"event_date":"2026-01-11","country":"IN","action_upper":"PURCHASE","value":15.1}
+
+== 5. Nest flat columns into a JSON object ==
+{"event_id":1,"attrs":{"country":"GB","action":"click"},"value":5}
+{"event_id":2,"attrs":{"country":"US","action":"view"},"value":6.01}
+{"event_id":3,"attrs":{"country":"DE","action":"purchase"},"value":7.02}
+
+== 6. Gzip the JSON on the way out (.jsonl.gz, inferred from the extension) ==
+events.jsonl.gz written; read it straight back:
+20
+
+== 7. Perf: convert the 3M-row, ~105 MB events_large.tsv to JSONEachRow (best-of-3, warm) ==
+run 1: real 0.34
+run 2: real 0.29
+run 3: real 0.27
+output size:
+312M events_large.jsonl
+row count of the JSON output:
+3000000
+
+### python3 run.py  (chDB, in-process) ###
+== 1. TSV -> JSONEachRow (NDJSON) ==
+{"event_date":"2026-01-01","event_id":1,"country":"GB","action":"click","value":5,"quantity":1}
+{"event_date":"2026-01-02","event_id":2,"country":"US","action":"view","value":6.01,"quantity":2}
+{"event_date":"2026-01-03","event_id":3,"country":"DE","action":"purchase","value":7.02,"quantity":3}
+
+== 2. TSV -> single JSON array ==
+[
+{"event_date":"2026-01-01","event_id":1,"country":"GB","action":"click","value":5,"quantity":1},
+{"event_date":"2026-01-02","event_id":2,"country":"US","action":"view","value":6.01,"quantity":2},
+{"event_date":"2026-01-03","event_id":3,"country":"DE","action":"purchase","value":7.02,"quantity":3}
+]
+
+== 3. Transform (filter + rename) -> JSON ==
+{"event_date":"2026-01-19","country":"GB","action_upper":"PURCHASE","value":23.18}
+{"event_date":"2026-01-15","country":"DE","action_upper":"PURCHASE","value":19.14}
+{"event_date":"2026-01-11","country":"IN","action_upper":"PURCHASE","value":15.1}

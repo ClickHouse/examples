@@ -1,0 +1,61 @@
+$ ./generate.sh
+-rw-r--r--@ 1 al  staff   3.1M  6 Jun 20:37 /Users/al/ch/marketing/examples/local-analytics/orc-file-format/data/events.orc
+
+$ ./run.sh
+=== 1. Schema, inferred straight from the ORC file ===
+   ┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
+   ┃ name       ┃ type                    ┃ default_type ┃ default_expression ┃ comment ┃ codec_expression ┃ ttl_expression ┃
+   ┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩
+1. │ id         │ Nullable(Int64)         │              │                    │         │                  │                │
+   ├────────────┼─────────────────────────┼──────────────┼────────────────────┼─────────┼──────────────────┼────────────────┤
+2. │ event_time │ Nullable(DateTime64(9)) │              │                    │         │                  │                │
+   ├────────────┼─────────────────────────┼──────────────┼────────────────────┼─────────┼──────────────────┼────────────────┤
+3. │ country    │ Nullable(String)        │              │                    │         │                  │                │
+   ├────────────┼─────────────────────────┼──────────────┼────────────────────┼─────────┼──────────────────┼────────────────┤
+4. │ device     │ Nullable(String)        │              │                    │         │                  │                │
+   ├────────────┼─────────────────────────┼──────────────┼────────────────────┼─────────┼──────────────────┼────────────────┤
+5. │ event_type │ Nullable(String)        │              │                    │         │                  │                │
+   ├────────────┼─────────────────────────┼──────────────┼────────────────────┼─────────┼──────────────────┼────────────────┤
+6. │ revenue    │ Nullable(Float64)       │              │                    │         │                  │                │
+   ├────────────┼─────────────────────────┼──────────────┼────────────────────┼─────────┼──────────────────┼────────────────┤
+7. │ quantity   │ Nullable(Int8)          │              │                    │         │                  │                │
+   └────────────┴─────────────────────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+=== 2. Read the ORC file (filter + aggregate) ===
+   ┏━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┓
+   ┃ country ┃ purchases ┃  revenue ┃
+   ┡━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━┩
+1. │ US      │     66667 │ 16722791 │ -- 16.72 million
+   ├─────────┼───────────┼──────────┤
+2. │ DE      │     66666 │ 16704759 │ -- 16.70 million
+   ├─────────┼───────────┼──────────┤
+3. │ IN      │     66667 │ 16692131 │ -- 16.69 million
+   ├─────────┼───────────┼──────────┤
+4. │ AU      │     66666 │ 16687078 │ -- 16.69 million
+   ├─────────┼───────────┼──────────┤
+5. │ GB      │     66667 │ 16651774 │ -- 16.65 million
+   └─────────┴───────────┴──────────┘
+
+=== 3. Crack the ORC footer with a standard ORC reader (pyarrow) ===
+    (ClickHouse reads ORC data natively but has no ORC-metadata FORMAT)
+rows:             1000000
+stripes:          1
+row_index_stride: 10000
+row_index_groups: 100
+compression:      ZSTD
+compression_block:262144 bytes
+writer:           ORC_CPP
+file_version:     0.12
+content_length:   3281780 bytes (stripe data)
+footer_length:    332 bytes
+postscript_length:25 bytes
+file_length:      3282343 bytes total
+
+schema:
+id: int64
+event_time: timestamp[ns]
+country: string
+device: string
+event_type: string
+revenue: double
+quantity: int8

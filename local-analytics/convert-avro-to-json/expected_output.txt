@@ -1,0 +1,92 @@
+### ./run.sh ###
+== 1. Convert Avro -> JSON Lines (one object per line) ==
+{"event_id":1,"event_type":"login","country":"GB","amount":0,"ts":1767225600}
+{"event_id":2,"event_type":"purchase","country":"US","amount":0.01,"ts":1767225601}
+{"event_id":3,"event_type":"logout","country":"DE","amount":0.02,"ts":1767225602}
+{"event_id":4,"event_type":"signup","country":"FR","amount":0.03,"ts":1767225603}
+{"event_id":5,"event_type":"login","country":"IN","amount":0.04,"ts":1767225604}
+
+== 2. Inspect the schema Avro embedded (read needs no structure argument) ==
+event_id	Int64					
+event_type	String					
+country	String					
+amount	Float64					
+ts	Int32					
+
+== 3. Gotcha: DateTime arrives as an epoch int; cast it back for readable JSON ==
+{"event_id":1,"event_type":"login","country":"GB","amount":0,"ts":"2026-01-01 00:00:00"}
+{"event_id":2,"event_type":"purchase","country":"US","amount":0.01,"ts":"2026-01-01 00:00:01"}
+{"event_id":3,"event_type":"logout","country":"DE","amount":0.02,"ts":"2026-01-01 00:00:02"}
+{"event_id":4,"event_type":"signup","country":"FR","amount":0.03,"ts":"2026-01-01 00:00:03"}
+{"event_id":5,"event_type":"login","country":"IN","amount":0.04,"ts":"2026-01-01 00:00:04"}
+
+== 4. Convert to a single JSON array (FORMAT JSON) ==
+{
+	"meta":
+	[
+		{
+			"name": "event_id",
+			"type": "Int64"
+		},
+		{
+			"name": "event_type",
+			"type": "String"
+		},
+		{
+			"name": "amount",
+			"type": "Float64"
+		}
+	],
+
+	"data":
+	[
+		{
+			"event_id": 1,
+			"event_type": "login",
+			"amount": 0
+		},
+		{
+			"event_id": 2,
+			"event_type": "purchase",
+			"amount": 0.01
+		},
+		{
+			"event_id": 3,
+			"event_type": "logout",
+			"amount": 0.02
+		}
+	],
+
+	"rows": 3,
+
+	"rows_before_limit_at_least": 3,
+
+	"statistics":
+	{
+		"elapsed": 0.001726708,
+		"rows_read": 3,
+		"bytes_read": 91
+	}
+}
+
+== 5. Filter / reshape during the conversion ==
+{"country":"AU","events":2,"total":0.22}
+{"country":"US","events":2,"total":0.14}
+{"country":"FR","events":1,"total":0.09}
+
+== 6. Write gzipped JSON Lines directly (.jsonl.gz, inferred from the name) ==
+-rw-r--r--@ 1 al  staff  237  6 Jun 20:31 events.jsonl.gz
+
+== 7. Perf: convert the 3,000,000-row events_large.avro to JSON Lines (best-of-3, warm) ==
+run 1: real 0.55
+run 2: real 0.56
+run 3: real 0.56
+rows written:  3000000
+
+### python3 run.py ###
+== chDB: first 5 lines of events_chdb.jsonl ==
+{"event_id":1,"event_type":"login","country":"GB","amount":0,"ts":"2026-01-01 00:00:00"}
+{"event_id":2,"event_type":"purchase","country":"US","amount":0.01,"ts":"2026-01-01 00:00:01"}
+{"event_id":3,"event_type":"logout","country":"DE","amount":0.02,"ts":"2026-01-01 00:00:02"}
+{"event_id":4,"event_type":"signup","country":"FR","amount":0.03,"ts":"2026-01-01 00:00:03"}
+{"event_id":5,"event_type":"login","country":"IN","amount":0.04,"ts":"2026-01-01 00:00:04"}

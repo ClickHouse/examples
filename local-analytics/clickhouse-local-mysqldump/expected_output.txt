@@ -1,0 +1,43 @@
+== 1. List the tables in the dump ==
+customers
+orders
+
+== 2. See the inferred schema for one table (from the CREATE TABLE in the dump) ==
+id	Int32					
+customer_id	Nullable(Int32)					
+product	Nullable(String)					
+revenue	Nullable(Decimal(10, 2))					
+quantity	Nullable(Int32)					
+
+== 3. Read the rows of the selected table ==
+1	1	widget	5	1
+2	2	gadget	6.01	2
+3	3	gizmo	7.02	3
+4	1	widget	8.03	4
+
+== 4. Pick a different table by name ==
+1	GB	2026-01-01
+2	US	2026-01-02
+3	DE	2026-01-03
+
+== 5. Aggregate directly on the dump, no import step ==
+widget	2	13.03
+gizmo	1	7.02
+gadget	1	6.01
+
+== 6. Default table (first INSERT in the file) when no name is given ==
+3
+
+== 7. Perf: GROUP BY over the 2,000,000-row events dump (best-of-3, warm) ==
+# ~0.35s on an Apple M4 Pro (14 cores, 24 GB RAM), warm OS page cache.
+# events_large.sql is a single extended INSERT of 2,000,000 rows (~64 MB of SQL text).
+# The rows use an unseeded RNG, so the exact per-country totals below shift each
+# time you regenerate; the shape is stable: ~200k events/country, ~50M revenue/country.
+run 1: real 0.36
+run 2: real 0.35
+run 3: real 0.36
+IN	200674	50256630.75	2.997
+CA	200217	50087310.66	2.996
+BR	200349	50075129.05	2.997
+NL	200017	50053869.17	2.999
+AU	200001	50030477.09	2.999

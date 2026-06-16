@@ -1,0 +1,57 @@
+Serving ./data at http://127.0.0.1:8731 (pid 13956) -- stands in for a live REST API
+
+== 1. Fetch a JSON endpoint and read the first rows, no download step ==
+   ┌─id─┬──────────────────ts─┬─country─┬─event────┬─amount─┐
+1. │  1 │ 2026-06-01 00:00:00 │ GB      │ click    │      5 │
+2. │  2 │ 2026-06-01 00:02:17 │ US      │ view     │   6.01 │
+3. │  3 │ 2026-06-01 00:04:34 │ DE      │ purchase │   7.02 │
+4. │  4 │ 2026-06-01 00:06:51 │ FR      │ refund   │   8.03 │
+5. │  5 │ 2026-06-01 00:09:08 │ IN      │ click    │   9.04 │
+   └────┴─────────────────────┴─────────┴──────────┴────────┘
+
+== 2. Inspect the response schema (inferred from the JSON) ==
+   ┌─name────┬─type───────────────┬─default_type─┬─default_expression─┬─comment─┬─codec_expression─┬─ttl_expression─┐
+1. │ id      │ Nullable(Int64)    │              │                    │         │                  │                │
+2. │ ts      │ Nullable(DateTime) │              │                    │         │                  │                │
+3. │ country │ Nullable(String)   │              │                    │         │                  │                │
+4. │ event   │ Nullable(String)   │              │                    │         │                  │                │
+5. │ amount  │ Nullable(Float64)  │              │                    │         │                  │                │
+   └─────────┴────────────────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+== 3. Aggregate the response in the same statement ==
+   ┌─country─┬─events─┬───total─┐
+1. │ NL      │     25 │ 2712.75 │
+2. │ JP      │     25 │  2687.5 │
+3. │ BR      │     25 │ 2662.25 │
+4. │ IN      │     25 │    2637 │
+5. │ FR      │     25 │ 2612.75 │
+6. │ DE      │     25 │  2587.5 │
+7. │ US      │     25 │ 2562.25 │
+8. │ GB      │     25 │    2537 │
+   └─────────┴────────┴─────────┘
+
+== 4. Join the live response to a local lookup file ==
+   ┌─region─┬─events─┬──total─┐
+1. │ EMEA   │    100 │  10450 │
+2. │ APAC   │     50 │ 5324.5 │
+3. │ AMER   │     50 │ 5224.5 │
+   └────────┴────────┴────────┘
+
+== 5. Pass an Authorization header with the headers() clause ==
+   ┌─seen_auth─────────┐
+1. │ Bearer YOUR_TOKEN │
+   └───────────────────┘
+
+== 6. Perf: aggregate a 1.5M-row JSON response over HTTP (best-of-3, warm) ==
+run 1: real 0.35
+run 2: real 0.35
+run 3: real 0.35
+   ┌─country─┬─events─┬───────total─┐
+1. │ US      │ 150680 │ 37700689.56 │ -- 37.70 million
+2. │ IN      │ 150259 │ 37657500.66 │ -- 37.66 million
+3. │ CA      │ 150517 │ 37606605.62 │ -- 37.61 million
+4. │ GB      │ 150108 │ 37524697.88 │ -- 37.52 million
+5. │ JP      │ 149954 │ 37506639.63 │ -- 37.51 million
+   └─────────┴────────┴─────────────┘
+
+Stopping HTTP server.

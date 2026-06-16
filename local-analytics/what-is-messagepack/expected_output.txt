@@ -1,0 +1,44 @@
+=== 1. Look at the raw bytes (compact binary, no field names per row) ===
+00000000: 00c4 0247 42c4 066d 6f62 696c 65c4 0476  ...GB..mobile..v
+00000010: 6965 77cb 4069 38a3 d70a 3d71 0101 c402  iew.@i8...=q....
+00000020: 4155 c407 6465 736b 746f 70c4 0563 6c69  AU..desktop..cli
+00000030: 636b cb40 7d69 c28f 5c28 f602 02c4 0249  ck.@}i..\(.....I
+
+=== 2. Read it: MsgPack carries NO schema, so the structure is required ===
+   ┏━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━┓
+   ┃ id ┃ country ┃ device  ┃ event_type ┃ revenue ┃ quantity ┃
+   ┡━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━┩
+1. │  0 │ GB      │ mobile  │ view       │  201.77 │        1 │
+   ├────┼─────────┼─────────┼────────────┼─────────┼──────────┤
+2. │  1 │ AU      │ desktop │ click      │  470.61 │        2 │
+   ├────┼─────────┼─────────┼────────────┼─────────┼──────────┤
+3. │  2 │ IN      │ tablet  │ purchase   │  268.33 │        3 │
+   ├────┼─────────┼─────────┼────────────┼─────────┼──────────┤
+4. │  3 │ US      │ mobile  │ view       │   105.6 │        4 │
+   ├────┼─────────┼─────────┼────────────┼─────────┼──────────┤
+5. │  4 │ DE      │ desktop │ click      │     178 │        1 │
+   └────┴─────────┴─────────┴────────────┴─────────┴──────────┘
+
+=== 3. What happens without the structure ===
+Code: 636. DB::Exception: The table structure cannot be extracted from a MsgPack format file. Error:
+Code: 36. DB::Exception: You must specify setting input_format_msgpack_number_of_columns to extract table schema from MsgPack data. (BAD_ARGUMENTS) (version 26.6.1.117 (official build)).
+You can specify the structure manually: (in file/uri /Users/al/ch/marketing/examples/local-analytics/what-is-messagepack/data/events.msgpack). (CANNOT_EXTRACT_TABLE_STRUCTURE)
+
+=== 4. Size on disk vs the same 20 rows as JSON ===
+events.msgpack       618 bytes
+events.jsonl        1883 bytes
+
+=== 5. Aggregate over a 2,000,000-row MessagePack file ===
+   ┏━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━┓
+   ┃ country ┃ events ┃  revenue ┃
+   ┡━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━┩
+1. │ GB      │ 133333 │ 33489180 │ -- 33.49 million
+   ├─────────┼────────┼──────────┤
+2. │ US      │ 133333 │ 33460725 │ -- 33.46 million
+   ├─────────┼────────┼──────────┤
+3. │ IN      │ 133334 │ 33457041 │ -- 33.46 million
+   ├─────────┼────────┼──────────┤
+4. │ AU      │ 133333 │ 33386747 │ -- 33.39 million
+   ├─────────┼────────┼──────────┤
+5. │ DE      │ 133333 │ 33380579 │ -- 33.38 million
+   └─────────┴────────┴──────────┘

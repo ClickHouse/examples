@@ -1,0 +1,60 @@
+### ./run.sh ###
+
+== 1. Convert NDJSON -> Parquet in one line ==
+20
+
+== 2. Schema inferred from the NDJSON (nested object -> Tuple, array -> Array) ==
+event_id	Nullable(Int64)					
+ts	Nullable(DateTime)					
+event_type	Nullable(String)					
+user	Tuple(\n    country Nullable(String),\n    plan Nullable(String))					
+items	Array(Nullable(Int64))					
+amount	Nullable(Float64)					
+
+== 3. Same schema carried into the Parquet file (nesting preserved) ==
+event_id	Nullable(Int64)					
+ts	Nullable(DateTime64(3, \'UTC\'))					
+event_type	Nullable(String)					
+user	Tuple(\n    country Nullable(String),\n    plan Nullable(String))					
+items	Array(Nullable(Int64))					
+amount	Nullable(Float64)					
+
+== 4. Read the nested columns back out of the Parquet ==
+1	GB	free	[0]
+2	US	pro	[1,2]
+3	DE	team	[2,3,4]
+4	FR	free	[3]
+5	GB	pro	[4,5]
+
+== 5. Inspect the Parquet footer: nested types flatten to leaf columns, default ZSTD ==
+Row 1:
+──────
+num_columns:         7
+num_rows:            20
+num_row_groups:      1
+format_version:      2
+columns.name:        ['event_id','ts','event_type','country','plan','element','amount']
+columns.compression: ['ZSTD','ZSTD','ZSTD','ZSTD','ZSTD','ZSTD','ZSTD']
+
+== 6. Choose the compression codec (default is zstd) ==
+3401	events_snappy.parquet
+3510	events.parquet
+
+== 7. Size: 1M-row, ~140 MB events_large.ndjson -> Parquet ==
+139799576	events_large.ndjson
+16240396	events_large.parquet
+
+== 8. Conversion throughput (best-of-3, warm OS page cache) ==
+run 1: real 0.48
+run 2: real 0.47
+run 3: real 0.47
+
+### python3 run.py ###
+
+rows in events_py.parquet: 20
+   event_id country  plan      items
+0         1      GB  free        [0]
+1         2      US   pro     [1, 2]
+2         3      DE  team  [2, 3, 4]
+3         4      FR  free        [3]
+4         5      GB   pro     [4, 5]

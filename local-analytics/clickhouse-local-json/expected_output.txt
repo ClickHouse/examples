@@ -1,0 +1,102 @@
+== 1. Read the first rows of a JSON file (JSONEachRow) ==
+Row 1:
+──────
+event_id:   1
+event_type: signup
+amount:     1
+geo:        {
+  "city": "London",
+  "country": "GB"
+}
+tags:       ['mobile']
+
+Row 2:
+──────
+event_id:   2
+event_type: click
+amount:     2.01
+geo:        {
+  "city": "NYC",
+  "country": "US"
+}
+tags:       ['web','beta']
+
+Row 3:
+──────
+event_id:   3
+event_type: purchase
+amount:     3.02
+geo:        {
+  "city": "Berlin",
+  "country": "DE"
+}
+tags:       ['beta','vip','mobile']
+
+(rows 4-5 trimmed)
+
+== 2. The same call reads a top-level JSON array ==
+20
+
+== 3. Inspect the inferred schema (nested object -> Tuple, array -> Array) ==
+Row 4:
+──────
+name:               geo
+type:               Tuple(
+    city Nullable(String),
+    country Nullable(String))
+
+Row 5:
+──────
+name:               tags
+type:               Array(Nullable(String))
+(event_id Nullable(Int64), event_type Nullable(String), amount Nullable(Float64) trimmed)
+
+== 4. Reach into a nested object with dot access ==
+   ┌─event_id─┬─country─┬─city───┐
+1. │        1 │ GB      │ London │
+2. │        2 │ US      │ NYC    │
+3. │        3 │ DE      │ Berlin │
+4. │        4 │ FR      │ Paris  │
+5. │        5 │ IN      │ Mumbai │
+   └──────────┴─────────┴────────┘
+
+== 5. Group by a nested field ==
+   ┌─country─┬─events─┬─total─┐
+1. │ IN      │      4 │ 50.46 │
+2. │ FR      │      4 │ 46.42 │
+3. │ DE      │      4 │ 42.38 │
+4. │ US      │      4 │ 38.34 │
+5. │ GB      │      4 │  34.3 │
+   └─────────┴────────┴───────┘
+
+== 6. Explode an array column with arrayJoin ==
+   ┌─tag────┬─events─┐
+1. │ beta   │     10 │
+2. │ vip    │     10 │
+3. │ mobile │     10 │
+4. │ web    │      9 │
+   └────────┴────────┘
+
+== 7. Read a gzipped JSONL transparently (.jsonl.gz) ==
+   ┌─event_type─┬─count()─┐
+1. │ click      │       5 │
+2. │ purchase   │       5 │
+3. │ refund     │       5 │
+4. │ signup     │       5 │
+   └────────────┴─────────┘
+
+== 8. Perf: aggregate the 3M-row events_large.jsonl (best-of-3, warm) ==
+# ~0.66s on an Apple M4 Pro (14 cores, 24 GB RAM), warm OS page cache:
+run 1: real 0.66
+run 2: real 0.88
+run 3: real 0.66
+# events_large.jsonl uses an unseeded row id, so the exact per-country totals
+# below differ slightly each time you regenerate; the shape is stable:
+# ~300k events/country, ~75M total/country.
+   ┌─country─┬─events─┬───────total─┐
+1. │ GB      │ 300705 │ 75092029.74 │
+2. │ US      │ 300103 │ 75061676.43 │
+3. │ FR      │ 300215 │ 75056481.47 │
+4. │ IN      │ 300074 │ 75005239.52 │
+5. │ JP      │ 300024 │ 74996145.82 │
+   └─────────┴────────┴─────────────┘

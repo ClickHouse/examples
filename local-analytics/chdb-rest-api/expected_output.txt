@@ -1,0 +1,41 @@
+$ ./generate.sh && python3 run.py
+
+=== 1. Read a JSON API response into a DataFrame ===
+   id country   status  amount          labels
+0   0      GB     open   10.99    [emea, gold]
+1   1      AU   closed   12.36  [apac, silver]
+2   2      IN  pending   13.73  [amer, bronze]
+3   3      US     open   15.10    [emea, gold]
+4   4      DE   closed   16.47  [apac, silver]
+id           int64
+country        str
+status         str
+amount     float64
+labels      object
+dtype: object
+
+=== 2. Filter + aggregate the way you already do (pandas, not SQL) ===
+country
+US    15.10
+IN    13.73
+GB    10.99
+Name: amount, dtype: float64
+
+=== 3. Hand off to real pandas when you need it ===
+<class 'pandas.DataFrame'>
+
+=== 4. Multiple pages: read each URL, then concat ===
+country
+IN    1.82
+US    1.06
+AU    0.91
+DE    0.53
+GB    0.00
+Name: amount, dtype: float64
+
+=== 5. Performance: DataStore.from_url vs urllib + json + manual aggregation ===
+# Apple M4 Pro (14 cores, 24 GB RAM, macOS); chDB 4.1.8, Python 3.14; best-of-3, warm.
+# Served over localhost -- network latency removed, isolates parse+aggregate cost.
+requests + json + manual agg:   2.067s
+DataStore.from_url (chDB):      0.162s
+speedup:                        12.8x

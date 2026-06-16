@@ -1,0 +1,52 @@
+$ ./generate.sh
+Generating data/events.orc (20 rows)...
+Generating data/events_large.orc (3000000 rows)...
+
+(files written to data/)
+
+$ ./run.sh
+== 1. Convert ORC -> CSV in one line (header included) ==
+"event_time","event_id","country","action","amount","tags"
+"2026-01-01 00:00:00.000000000",1,"GB","click",5,"{'utm_source':'ads','device':'mobile'}"
+"2026-01-01 00:02:17.000000000",2,"US","view",6.01,"{'utm_source':'organic','device':'desktop'}"
+"2026-01-01 00:04:34.000000000",3,"DE","purchase",7.02,"{'utm_source':'email','device':'mobile'}"
+
+== 2. Inspect the schema ClickHouse infers from the ORC footer ==
+event_time	Nullable(DateTime64(9))					
+event_id	Nullable(Int64)					
+country	Nullable(String)					
+action	Nullable(String)					
+amount	Nullable(Float64)					
+tags	Map(String, Nullable(String))					
+
+== 3. The gotcha: a typed Map column has no CSV shape. Flatten it into scalar columns ==
+"event_time","event_id","country","action","amount","utm_source","device"
+"2026-01-01 00:00:00.000000000",1,"GB","click",5,"ads","mobile"
+"2026-01-01 00:02:17.000000000",2,"US","view",6.01,"organic","desktop"
+"2026-01-01 00:04:34.000000000",3,"DE","purchase",7.02,"email","mobile"
+
+== 4. Option: tidy the timestamp and keep the map as a JSON string ==
+"event_time","event_id","country","action","amount","tags_json"
+"2026-01-01 00:00:00",1,"GB","click",5,"{""utm_source"":""ads"",""device"":""mobile""}"
+"2026-01-01 00:02:17",2,"US","view",6.01,"{""utm_source"":""organic"",""device"":""desktop""}"
+"2026-01-01 00:04:34",3,"DE","purchase",7.02,"{""utm_source"":""email"",""device"":""mobile""}"
+
+== 5. Verify the conversion round-trips (row counts match) ==
+orc rows: 20
+csv rows: 20
+
+== 6. Conversion throughput: 3,000,000-row events_large.orc -> CSV (best-of-3, warm) ==
+run 1: real 0.47
+run 2: real 0.47
+run 3: real 0.49
+output CSV size: 221M
+csv rows: 3000000
+
+$ python3 run.py
+first 6 lines of data/events_chdb.csv:
+"event_time","event_id","country","action","amount","utm_source","device"
+"2026-01-01 00:00:00.000000000",1,"GB","click",5,"ads","mobile"
+"2026-01-01 00:02:17.000000000",2,"US","view",6.01,"organic","desktop"
+"2026-01-01 00:04:34.000000000",3,"DE","purchase",7.02,"email","mobile"
+"2026-01-01 00:06:51.000000000",4,"FR","signup",8.03,"ads","desktop"
+"2026-01-01 00:09:08.000000000",5,"IN","click",9.04,"organic","mobile"

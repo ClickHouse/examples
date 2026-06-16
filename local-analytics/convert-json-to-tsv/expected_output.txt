@@ -1,0 +1,56 @@
+$ ./generate.sh
+Generating data/events.jsonl (8 rows, nested user object)...
+Generating data/events_large.jsonl (1000000 rows, ~137 MB)...
+
+Generated files:
+-rw-r--r--  1 al  staff  137350422  events_large.jsonl
+-rw-r--r--  1 al  staff        999  events.jsonl
+
+$ ./run.sh
+== 1. The one-liner: JSON (JSONL) -> TSV ==
+event_id	event_type	ts	user	source	amount
+1	login	2026-06-01 00:00:00	('1','free')	web	0.5
+2	purchase	2026-06-01 00:02:17	('2','pro')	ios	1.5
+3	logout	2026-06-01 00:04:34	('3','team')	android	2.5
+4	signup	2026-06-01 00:06:51	('4','free')	web	3.5
+5	login	2026-06-01 00:09:08	('5','pro')	ios	4.5
+6	purchase	2026-06-01 00:11:25	('6','team')	android	5.5
+7	logout	2026-06-01 00:13:42	('7','free')	web	6.5
+8	signup	2026-06-01 00:15:59	('8','pro')	ios	7.5
+
+== 2. Inspect the inferred schema: note user is a nested Tuple ==
+event_id	Nullable(Int64)					
+event_type	Nullable(String)					
+ts	Nullable(DateTime)					
+user	Tuple(\n    id Nullable(String),\n    plan Nullable(String))					
+source	Nullable(String)					
+amount	Nullable(Float64)					
+
+== 3. Flatten before TSV: promote nested fields to top-level columns ==
+event_id	event_type	ts	user_id	user_plan	source	amount
+1	login	2026-06-01 00:00:00	1	free	web	0.5
+2	purchase	2026-06-01 00:02:17	2	pro	ios	1.5
+3	logout	2026-06-01 00:04:34	3	team	android	2.5
+4	signup	2026-06-01 00:06:51	4	free	web	3.5
+5	login	2026-06-01 00:09:08	5	pro	ios	4.5
+6	purchase	2026-06-01 00:11:25	6	team	android	5.5
+7	logout	2026-06-01 00:13:42	7	free	web	6.5
+8	signup	2026-06-01 00:15:59	8	pro	ios	7.5
+
+== 4. Perf: flatten-convert 1M rows JSONL -> TSV (best-of-3, warm) ==
+run 1: real 0.38
+run 2: real 0.38
+run 3: real 0.39
+-rw-r--r--@ 1 al  staff  57354115  6 Jun 20:26 events_large.tsv
+
+$ python3 run.py
+event_id	event_type	ts	user_id	user_plan	source	amount
+1	login	2026-06-01 00:00:00	1	free	web	0.5
+2	purchase	2026-06-01 00:02:17	2	pro	ios	1.5
+3	logout	2026-06-01 00:04:34	3	team	android	2.5
+4	signup	2026-06-01 00:06:51	4	free	web	3.5
+5	login	2026-06-01 00:09:08	5	pro	ios	4.5
+6	purchase	2026-06-01 00:11:25	6	team	android	5.5
+7	logout	2026-06-01 00:13:42	7	free	web	6.5
+8	signup	2026-06-01 00:15:59	8	pro	ios	7.5
+

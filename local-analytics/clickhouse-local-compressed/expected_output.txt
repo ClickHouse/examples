@@ -1,0 +1,64 @@
+== 1. Read a gzipped CSV with no decompress step (.csv.gz) ==
+   ┌──────────event_time─┬─user_id─┬─country─┬─device──┬─event_type─┬─revenue─┬─quantity─┐
+1. │ 2026-06-18 11:41:38 │       1 │ IN      │ mobile  │ view       │  497.89 │        2 │
+2. │ 2026-12-24 10:43:26 │       2 │ CA      │ tablet  │ view       │  204.51 │        3 │
+3. │ 2026-07-22 13:00:39 │       3 │ DE      │ mobile  │ purchase   │   64.19 │        5 │
+4. │ 2026-08-13 01:02:57 │       4 │ FR      │ desktop │ view       │  103.71 │        2 │
+5. │ 2026-01-20 00:59:20 │       5 │ JP      │ desktop │ purchase   │  345.78 │        3 │
+   └─────────────────────┴─────────┴─────────┴─────────┴────────────┴─────────┴──────────┘
+
+== 2. The schema is inferred straight through the gzip ==
+   ┌─name───────┬─type───────────────┬─default_type─┬─default_expression─┬─comment─┬─codec_expression─┬─ttl_expression─┐
+1. │ event_time │ Nullable(DateTime) │              │                    │         │                  │                │
+2. │ user_id    │ Nullable(Int64)    │              │                    │         │                  │                │
+3. │ country    │ Nullable(String)   │              │                    │         │                  │                │
+4. │ device     │ Nullable(String)   │              │                    │         │                  │                │
+5. │ event_type │ Nullable(String)   │              │                    │         │                  │                │
+6. │ revenue    │ Nullable(Float64)  │              │                    │         │                  │                │
+7. │ quantity   │ Nullable(Int64)    │              │                    │         │                  │                │
+   └────────────┴────────────────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+== 3. A zstd-compressed CSV reads the same way (.csv.zst) ==
+   ┌─event_type─┬─count()─┐
+1. │ click      │       6 │
+2. │ purchase   │       5 │
+3. │ refund     │       3 │
+4. │ view       │       6 │
+   └────────────┴─────────┘
+
+== 4. Parquet with zstd column compression: nothing special to do ==
+   ┌─count()─┬─round(sum(revenue), 2)─┐
+1. │      20 │                4838.95 │
+   └─────────┴────────────────────────┘
+
+== 5. Force the codec when the extension does not reveal it ==
+-- auto-detection has nothing to go on, so this fails:
+Code: 636. DB::Exception: The table structure cannot be extracted from a CSVWithNames format file. Error:
+-- pass the compression method as the 4th argument to file():
+20
+
+== 6. Aggregate directly on the compressed file ==
+   ┌─country─┬─events─┬─revenue─┐
+1. │ AU      │      1 │  394.06 │
+2. │ FR      │      1 │  393.05 │
+3. │ JP      │      1 │  345.78 │
+4. │ DE      │      1 │   64.19 │
+5. │ IN      │      1 │   28.68 │
+   └─────────┴────────┴─────────┘
+
+== 7. Perf: aggregate the 3M-row gzipped CSV (~49 MiB on disk, ~173 MiB raw) ==
+   best-of-3, warm OS page cache; gzip is decoded on every run
+# ~0.55s on an Apple M4 Pro (14 cores, 24 GB RAM), clickhouse local 26.6.1.117:
+run 1: real 0.55
+run 2: real 0.56
+run 3: real 0.56
+# The data is generated deterministically from cityHash64(number), so the
+# per-country totals below are byte-for-byte stable across regenerations
+# (~75k purchases/country, avg_qty ~3.0):
+   ┌─country─┬─events─┬─────revenue─┬─avg_qty─┐
+1. │ JP      │  75515 │ 18887234.63 │   3.007 │
+2. │ GB      │  75302 │ 18827381.39 │   3.001 │
+3. │ DE      │  75147 │ 18806874.87 │   3.003 │
+4. │ CA      │  75085 │  18800000.2 │   2.993 │
+5. │ AU      │  75079 │  18787127.4 │       3 │
+   └─────────┴────────┴─────────────┴─────────┘

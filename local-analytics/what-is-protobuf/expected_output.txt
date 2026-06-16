@@ -1,0 +1,47 @@
+=== 1. Read without a schema (Protobuf has none embedded) ===
+Code: 36. DB::Exception: The format Protobuf requires a schema. The corresponding setting should be set. (BAD_ARGUMENTS)
+
+=== 2. Read WITH the .proto schema ===
+   ┏━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━┓
+   ┃ id ┃ country ┃ device  ┃ event_type ┃ revenue ┃ quantity ┃
+   ┡━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━┩
+1. │  0 │ GB      │ mobile  │ view       │    4.69 │        1 │
+   ├────┼─────────┼─────────┼────────────┼─────────┼──────────┤
+2. │  1 │ AU      │ desktop │ click      │   38.87 │        2 │
+   ├────┼─────────┼─────────┼────────────┼─────────┼──────────┤
+3. │  2 │ IN      │ tablet  │ purchase   │  136.51 │        3 │
+   ├────┼─────────┼─────────┼────────────┼─────────┼──────────┤
+4. │  3 │ US      │ mobile  │ view       │  462.63 │        4 │
+   ├────┼─────────┼─────────┼────────────┼─────────┼──────────┤
+5. │  4 │ DE      │ desktop │ click      │   250.3 │        1 │
+   └────┴─────────┴─────────┴────────────┴─────────┴──────────┘
+
+=== 3. DESCRIBE: columns + types are derived from the .proto ===
+   ┌─name───────┬─type────┬─default_type─┬─default_expression─┬─comment─┬─codec_expression─┬─ttl_expression─┐
+1. │ id         │ UInt64  │              │                    │         │                  │                │
+2. │ country    │ String  │              │                    │         │                  │                │
+3. │ device     │ String  │              │                    │         │                  │                │
+4. │ event_type │ String  │              │                    │         │                  │                │
+5. │ revenue    │ Float64 │              │                    │         │                  │                │
+6. │ quantity   │ UInt32  │              │                    │         │                  │                │
+   └────────────┴─────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+=== 4. Query it like a table (filter + aggregate) ===
+   ┏━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━┓
+   ┃ country ┃ purchases ┃ revenue ┃
+   ┡━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━┩
+1. │ AU      │         1 │     473 │
+   ├─────────┼───────────┼─────────┤
+2. │ DE      │         1 │     339 │
+   ├─────────┼───────────┼─────────┤
+3. │ US      │         1 │     262 │
+   ├─────────┼───────────┼─────────┤
+4. │ IN      │         2 │     203 │
+   ├─────────┼───────────┼─────────┤
+5. │ GB      │         1 │      55 │
+   └─────────┴───────────┴─────────┘
+
+=== 5. The wire format: length-prefixed binary, no field names on the wire ===
+Row 1:
+──────
+first_32_bytes: 1D120247421A066D6F62696C6522047669657729C3F5285C8FC2124030012108

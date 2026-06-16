@@ -1,0 +1,66 @@
+== 1. Read the first rows (schema auto-detected from BSON) ==
+Row 1:
+──────
+_id:    0
+user:   alice
+event:  view
+amount: 5
+geo:    {
+  "country": "GB",
+  "sessions": 1
+}
+
+Row 2:
+──────
+_id:    1
+user:   bob
+event:  click
+amount: 6.01
+geo:    {
+  "country": "US",
+  "sessions": 2
+}
+... (rows 3-5 omitted for brevity; see ./run.sh) ...
+
+== 2. Inspect the inferred schema (no CREATE TABLE) ==
+# DESCRIBE prints one row per column; trimmed to the name/type that matter:
+_id      Nullable(Int64)
+user     Nullable(String)
+event    Nullable(String)
+amount   Nullable(Float64)
+geo      Tuple(country Nullable(String), sessions Nullable(Int32))
+
+== 3. Reach into the nested geo sub-document by key ==
+   ┌─_id─┬─user──┬─event────┬─country─┬─sessions─┐
+1. │   0 │ alice │ view     │ GB      │        1 │
+2. │   1 │ bob   │ click    │ US      │        2 │
+3. │   2 │ carol │ purchase │ DE      │        3 │
+4. │   3 │ dave  │ refund   │ FR      │        1 │
+5. │   4 │ alice │ view     │ IN      │        2 │
+   └─────┴───────┴──────────┴─────────┴──────────┘
+
+== 4. Filter, group and aggregate directly on the BSON ==
+   ┌─country─┬─events─┬─amount─┐
+1. │ FR      │      1 │  23.18 │
+2. │ IN      │      1 │  19.14 │
+3. │ GB      │      1 │   15.1 │
+4. │ US      │      1 │  11.06 │
+5. │ DE      │      1 │   7.02 │
+   └─────────┴────────┴────────┘
+
+== 5. Convert BSON -> Parquet in one line ==
+20
+
+== 6. Perf: group-by over the 1.3M-row, ~140 MB events_large.bson (best-of-3, warm) ==
+# ~0.28s on an Apple M4 Pro (14 cores, 24 GB RAM), warm OS page cache:
+run 1: real 0.28
+run 2: real 0.29
+run 3: real 0.29
+# events_large.bson uses an unseeded row id, so the exact per-country totals
+# below differ slightly each time you regenerate; the shape is stable:
+# ~65k purchases/country, ~16.2M amount/country.
+GB	65152	16275183.57
+IN	64942	16255486.25
+US	64951	16219752.19
+DE	64685	16211818.33
+FR	64903	16191724.88
