@@ -1,0 +1,83 @@
+$ ./generate.sh
+Generating data/events.msgpack (20 rows)...
+Generating data/events_large.msgpack (3000000 rows, ~93 MB)...
+
+Generated files:
+-rw-r--r--  events_large.msgpack   (~93 MB)
+-rw-r--r--  events.msgpack         (540 bytes)
+
+$ ./run.sh
+== 1. Reading without a structure fails (MsgPack carries no schema) ==
+Code: 636. DB::Exception: The table structure cannot be extracted from a MsgPack format file. Error:
+Code: 36. DB::Exception: You must specify setting input_format_msgpack_number_of_columns to extract table schema from MsgPack data. (BAD_ARGUMENTS) (version 26.6.1.117 (official build)).
+You can specify the structure manually: (in file/uri .../data/events.msgpack). (CANNOT_EXTRACT_TABLE_STRUCTURE)
+
+== 2. Convert MsgPack -> JSON (one object per line, NDJSON) ==
+{"event_id":1,"ts":"2026-01-01 00:00:00","event_type":"login","country":"GB","amount":5}
+{"event_id":2,"ts":"2026-01-01 00:02:17","event_type":"click","country":"US","amount":6.01}
+{"event_id":3,"ts":"2026-01-01 00:04:34","event_type":"purchase","country":"DE","amount":7.02}
+{"event_id":4,"ts":"2026-01-01 00:06:51","event_type":"logout","country":"FR","amount":8.03}
+{"event_id":5,"ts":"2026-01-01 00:09:08","event_type":"login","country":"IN","amount":9.04}
+
+== 3. Convert MsgPack -> JSON (single array document) ==
+{
+	"meta":
+	[
+		{
+			"name": "event_id",
+			"type": "UInt64"
+		},
+		{
+			"name": "ts",
+			"type": "DateTime"
+		},
+		{
+			"name": "event_type",
+			"type": "String"
+		},
+		{
+			"name": "country",
+			"type": "String"
+		},
+		{
+			"name": "amount",
+			"type": "Float64"
+		}
+	],
+
+	"data":
+	[
+		{
+			"event_id": 1,
+			"ts": "2026-01-01 00:00:00",
+			"event_type": "login",
+			"country": "GB",
+			"amount": 5
+		},
+		{
+			"event_id": 2,
+			"ts": "2026-01-01 00:02:17",
+			"event_type": "click",
+			"country": "US",
+			"amount": 6.01
+		}
+	],
+	... (row count + statistics omitted)
+}
+
+== 4. Filter / reshape during the conversion ==
+{"event_id":19,"ts":"2026-01-01 00:41:06","country":"FR","amount":23.18}
+{"event_id":15,"ts":"2026-01-01 00:31:58","country":"IN","amount":19.14}
+{"event_id":11,"ts":"2026-01-01 00:22:50","country":"GB","amount":15.1}
+
+== 5. Perf: convert the 3M-row, ~93 MB events_large.msgpack (best-of-3, warm) ==
+run 1: real 0.54
+run 2: real 0.56
+run 3: real 0.52
+rows written:
+3000000
+
+$ python3 run.py
+{"event_id":1,"ts":"2026-01-01 00:00:00","event_type":"login","country":"GB","amount":5}
+{"event_id":2,"ts":"2026-01-01 00:02:17","event_type":"click","country":"US","amount":6.01}
+{"event_id":3,"ts":"2026-01-01 00:04:34","event_type":"purchase","country":"DE","amount":7.02}

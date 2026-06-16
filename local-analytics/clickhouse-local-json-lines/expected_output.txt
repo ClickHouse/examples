@@ -1,0 +1,53 @@
+== 1. Read the first 5 rows (format detected from .jsonl, schema inferred) ==
+2026-01-01 00:00:00	1	GB	click	5	1
+2026-01-01 01:00:00	2	US	view	6.01	2
+2026-01-01 02:00:00	3	DE	purchase	7.02	3
+2026-01-01 03:00:00	4	FR	refund	8.03	4
+2026-01-01 04:00:00	5	IN	click	9.04	5
+
+== 2. Inspect the inferred schema, no CREATE TABLE ==
+event_time	Nullable(DateTime)					
+user_id	Nullable(Int64)					
+country	Nullable(String)					
+event_type	Nullable(String)					
+revenue	Nullable(Float64)					
+quantity	Nullable(Int64)					
+
+== 3. Filter, group, aggregate directly on the file ==
+US	4	60.4	3.5
+GB	4	56.36	2.5
+AU	3	48.33	2
+IN	3	45.3	2.67
+FR	3	42.27	3.33
+DE	3	39.24	4
+
+== 4. JSONL, NDJSON, JSON Lines are the same format; .ndjson maps the same way ==
+20
+
+== 5. A file with an odd extension: name the format explicitly ==
+20
+
+== 6. JSONEachRow also reads a single top-level JSON array ==
+1	GB
+2	US
+
+== 7. Read a gzipped JSON Lines file transparently (.jsonl.gz) ==
+AU	3
+DE	3
+FR	3
+GB	4
+IN	3
+US	4
+
+== 8. Perf: aggregate the 3M-row, ~360 MB events_large.jsonl (best-of-3, warm) ==
+run 1: real 0.52
+run 2: real 0.55
+run 3: real 0.52
+# events_large.jsonl uses unseeded rand(), so the exact per-country totals below
+# differ slightly each time you regenerate; the shape is stable:
+# ~300k events/country, ~75M revenue/country, avg_qty ~3.0.
+BR	300459	75170301.89	2.999
+DE	300079	75065893.14	2.996
+JP	300288	75059784.81	3.001
+GB	300193	75033315.97	2.997
+CA	300015	75017785.33	3.003

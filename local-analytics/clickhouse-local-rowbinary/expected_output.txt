@@ -1,0 +1,44 @@
+== 1. Self-describing: RowBinaryWithNamesAndTypes carries its own schema ==
+   ┌──────────event_time─┬─user_id─┬─country─┬─event_type─┬─revenue─┬─quantity─┐
+1. │ 2026-01-01 00:00:00 │       1 │ GB      │ click      │       5 │        1 │
+2. │ 2026-01-01 00:02:17 │       2 │ US      │ view       │    6.01 │        2 │
+3. │ 2026-01-01 00:04:34 │       3 │ DE      │ purchase   │    7.02 │        3 │
+   └─────────────────────┴─────────┴─────────┴────────────┴─────────┴──────────┘
+
+== 2. DESCRIBE the self-describing file (no CREATE TABLE) ==
+   ┌─name───────┬─type─────┬─default_type─┬─default_expression─┬─comment─┬─codec_expression─┬─ttl_expression─┐
+1. │ event_time │ DateTime │              │                    │         │                  │                │
+2. │ user_id    │ UInt32   │              │                    │         │                  │                │
+3. │ country    │ String   │              │                    │         │                  │                │
+4. │ event_type │ String   │              │                    │         │                  │                │
+5. │ revenue    │ Float64  │              │                    │         │                  │                │
+6. │ quantity   │ UInt8    │              │                    │         │                  │                │
+   └────────────┴──────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+== 3. Aggregate directly on the RowBinary file ==
+   ┌─country─┬─events─┬─revenue─┬─avg_qty─┐
+1. │ US      │      4 │    60.4 │     3.5 │
+2. │ GB      │      4 │   56.36 │     2.5 │
+3. │ AU      │      3 │   48.33 │       2 │
+4. │ IN      │      3 │    45.3 │    2.67 │
+5. │ FR      │      3 │   42.27 │    3.33 │
+6. │ DE      │      3 │   39.24 │       4 │
+   └─────────┴────────┴─────────┴─────────┘
+
+== 4. Plain RowBinary has NO header: schema inference fails ==
+Code: 36. DB::Exception: RowBinary file format doesn't support schema inference. You must specify the structure manually. (BAD_ARGUMENTS)
+
+== 5. Plain RowBinary: supply the structure yourself (3rd argument) ==
+   ┌──────────event_time─┬─user_id─┬─country─┬─event_type─┬─revenue─┬─quantity─┐
+1. │ 2026-01-01 00:00:00 │       1 │ GB      │ click      │       5 │        1 │
+2. │ 2026-01-01 00:02:17 │       2 │ US      │ view       │    6.01 │        2 │
+3. │ 2026-01-01 00:04:34 │       3 │ DE      │ purchase   │    7.02 │        3 │
+   └─────────────────────┴─────────┴─────────┴────────────┴─────────┴──────────┘
+
+== 6. The safety net: WithNamesAndTypes validates the types you pass ==
+Code: 117. DB::Exception: Type of 'user_id' must be String, not UInt32: (while reading header): (in file/uri .../events.rowbinary): While executing BinaryRowInputFormat: While executing File. (INCORRECT_DATA)
+
+== 7. Perf: aggregate the 3M-row events_large.rowbinary (best-of-3, warm) ==
+run 1: real 0.25
+run 2: real 0.25
+run 3: real 0.25

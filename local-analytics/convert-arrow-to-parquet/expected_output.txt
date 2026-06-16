@@ -1,0 +1,77 @@
+# Captured by running ./generate.sh then ./run.sh, then python3 run.py.
+# Hardware: Apple M4 Pro (14 cores, 24 GB RAM), macOS. ClickHouse local 26.6.1.117, chdb 4.1.8.
+# events_large.arrow uses a deterministic row id, so per-run numbers are stable.
+
+############################################################
+# ./run.sh (CLI)
+############################################################
+== 1. Convert Arrow IPC -> Parquet in one line ==
+20
+
+== 2. Types carried straight from Arrow into Parquet (no Nullable, no re-parsing) ==
+event_date	Date32					
+event_id	UInt32					
+event_type	String					
+country	String					
+amount	Float64					
+is_member	UInt8					
+-- and the Parquet that came out --
+event_date	Date32					
+event_id	UInt32					
+event_type	String					
+country	String					
+amount	Float64					
+is_member	UInt8					
+
+== 3. Streaming Arrow IPC needs the ArrowStream format on read ==
+-- this FAILS: a stream file is not an Arrow 'file' --
+Code: 636. DB::Exception: The table structure cannot be extracted from a Arrow format file. Error:
+Code: 1002. DB::Exception: Error while opening a table: Invalid: Not an Arrow file. (UNKNOWN_EXCEPTION) (version 26.6.1.117 (official build)).
+-- this WORKS: name the framing explicitly --
+20
+
+== 4. Inspect the Parquet footer: compression and row count ==
+Row 1:
+──────
+num_rows:       20
+num_columns:    6
+num_row_groups: 1
+format_version: 2
+event_date	ZSTD
+event_id	ZSTD
+event_type	ZSTD
+country	ZSTD
+amount	ZSTD
+is_member	ZSTD
+
+== 5. Pick a different codec (default is zstd); here, snappy ==
+SNAPPY
+
+== 6. Query the Arrow file directly without converting first ==
+logout	4	0.46
+refund	4	0.42
+purchase	4	0.38
+login	4	0.34
+signup	4	0.3
+
+== 7. Perf: convert the ~46 MB, 3M-row events_large.arrow -> Parquet (best-of-3, warm) ==
+run 1: real 0.24
+run 2: real 0.24
+run 3: real 0.24
+-- input vs output size --
+48327930	events_large.arrow
+15939174	events_large.parquet
+3000000
+
+############################################################
+# python3 run.py (chDB)
+############################################################
+rows: 20
+schema:
+"event_date","Date32","","","","",""
+"event_id","UInt32","","","","",""
+"event_type","String","","","","",""
+"country","String","","","","",""
+"amount","Float64","","","","",""
+"is_member","UInt8","","","","",""
+stream rows: 20

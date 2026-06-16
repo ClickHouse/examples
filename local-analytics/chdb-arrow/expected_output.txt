@@ -1,0 +1,34 @@
+=== 1. Read an Arrow file into a DataFrame (types auto-inferred) ===
+   id country event_type  quantity  amount  event_time
+0   0      GB       cart         8  350.98  1768110393
+1   1      IN       view         6  830.73  1772107899
+2   2      DE       cart        10  981.54  1771606592
+3   3      DE       view         6  528.92  1772725868
+4   4      US       cart         5  804.15  1774390759
+5   5      GB       view         9  363.26  1772159477
+6   6      IN   purchase        10   23.42  1769334173
+7   7      US       view        10  747.28  1773645610
+id             uint64
+country        object
+event_type     object
+quantity       uint16
+amount        float64
+event_time     uint32
+dtype: object
+
+=== 2. Filter + aggregate the way you already do (pandas, not SQL) ===
+country
+GB    200304
+DE    200026
+AU    199997
+US    199997
+IN    199631
+Name: id, dtype: int64
+
+=== 3. Hand off to real pandas when you need it ===
+<class 'pandas.DataFrame'>
+
+=== 4. Performance: same code, one import swapped, on a 3M-row Arrow file ===
+pyarrow + pandas:               0.052s
+import chdb.datastore as pd:    0.036s
+speedup:                        1.5x

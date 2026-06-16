@@ -1,0 +1,69 @@
+### ./run.sh (CLI, clickhouse local) ###
+
+== 1. Convert CSV -> Parquet in one line ==
+817	orders.csv
+2908	orders.parquet
+
+== 2. Types carried from the CSV into the Parquet schema ==
+order_date	Nullable(Date32)
+order_id	Nullable(Int64)
+country	Nullable(String)
+product	Nullable(String)
+revenue	Nullable(Float64)
+quantity	Nullable(Int64)
+
+== 3. Pick the compression codec and row-group size ==
+Per-column codec recorded in the Parquet footer:
+order_date	INT32	ZSTD
+order_id	INT64	ZSTD
+country	BYTE_ARRAY	ZSTD
+product	BYTE_ARRAY	ZSTD
+revenue	DOUBLE	ZSTD
+quantity	INT64	ZSTD
+
+== 4. Override the inferred types before writing (tighter, non-nullable) ==
+order_date	Date32
+order_id	UInt32
+country	String
+product	String
+revenue	Float64
+quantity	UInt8
+
+== 5. Compression comparison on the large file (132 MB CSV) ==
+32618489	orders_large_lz4.parquet
+22943750	orders_large_zstd.parquet
+132270053	orders_large.csv
+
+== 6. Conversion throughput: 3,000,000-row, ~132 MB CSV -> zstd Parquet (best-of-3, warm) ==
+# ~0.38s on an Apple M4 Pro (14 cores, 24 GB RAM), warm OS page cache:
+run 1: real 0.40
+run 2: real 0.38
+run 3: real 0.38
+
+== 7. Read the Parquet back: same SQL, columnar and typed ==
+# orders_large.csv uses unseeded row ids, so exact per-country totals
+# differ slightly each time you regenerate; the shape is stable:
+CA	300981	75311440.77
+IN	300318	75204782.21
+GB	300281	75103870.24
+FR	299985	75103701.26
+DE	299985	75084346.54
+
+
+### python3 run.py (chDB, in-process) ###
+
+# DESCRIBE of the chDB-written Parquet (CSV output: name, type, ...):
+"order_date","Nullable(Date32)","","","","",""
+"order_id","Nullable(Int64)","","","","",""
+"country","Nullable(String)","","","","",""
+"product","Nullable(String)","","","","",""
+"revenue","Nullable(Float64)","","","","",""
+"quantity","Nullable(Int64)","","","","",""
+
+# Query the resulting Parquet directly:
+"US",4,60.4
+"GB",4,56.36
+"AU",3,48.33
+"IN",3,45.3
+"FR",3,42.27
+"DE",3,39.24

@@ -1,0 +1,35 @@
+=== 1. Read a TSV into a DataFrame (types auto-inferred) ===
+   event_id country event_type  revenue         product
+0         1      GB   purchase    49.99  Widget, Deluxe
+1         2      AU       view     0.00          Gadget
+2         3      GB   purchase    19.50          Widget
+3         4      IN   purchase     5.00            Bolt
+4         5      AU   purchase    99.00           Gizmo
+5         6      IN       view     0.00            Bolt
+event_id        int64
+country           str
+event_type        str
+revenue       float64
+product           str
+dtype: object
+
+=== 2. Filter + aggregate the way you already do (pandas, not SQL) ===
+country
+AU    99.00
+GB    69.49
+IN     5.00
+Name: revenue, dtype: float64
+
+=== 3. Headerless TSV: name the columns ===
+   event_id country event_type  revenue         product
+0         1      GB   purchase    49.99  Widget, Deluxe
+1         2      AU       view     0.00          Gadget
+2         3      GB   purchase    19.50          Widget
+
+=== 4. Hand off to real pandas when you need it ===
+<class 'pandas.DataFrame'>
+
+=== 5. Performance: same code, one import swapped, on a 3M-row TSV ===
+import pandas as pd:            0.484s
+import chdb.datastore as pd:    0.056s
+speedup:                        8.6x

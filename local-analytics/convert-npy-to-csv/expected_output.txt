@@ -1,0 +1,64 @@
+== 1. Convert a 1D .npy to .csv in one line ==
+"array"
+0
+47.9426
+84.1471
+99.7495
+90.9297
+59.8472
+14.112
+-35.0783
+-75.6802
+-97.753
+
+== 2. Inspect the inferred type (Npy carries dtype, no schema needed) ==
+array	Float64					
+
+== 3. A 2D .npy reads as one Array column ==
+array	Array(Int32)					
+[0,1,2]
+[3,4,5]
+[6,7,8]
+[9,10,11]
+[12,13,14]
+
+== 4. Naive convert of the 2D array: quoted list per row (probably NOT what you want) ==
+"[0,1,2]"
+"[3,4,5]"
+"[6,7,8]"
+"[9,10,11]"
+"[12,13,14]"
+
+== 5. Expand the array into real CSV columns ==
+"c0","c1","c2"
+0,1,2
+3,4,5
+6,7,8
+9,10,11
+12,13,14
+
+== 6. Perf: convert the 3,000,000-element signal_large.npy to CSV (best-of-3, warm) ==
+run 1: real 0.18
+run 2: real 0.18
+run 3: real 0.18
+rows written:
+3000000
+output size:
+23332094 signal_large.csv
+
+== chDB (run.py): same conversion, in-process ==
+"array"
+0
+47.9426
+84.1471
+99.7495
+90.9297
+59.8472
+14.112
+-35.0783
+-75.6802
+-97.753
+0
+47.9426
+84.1471
+

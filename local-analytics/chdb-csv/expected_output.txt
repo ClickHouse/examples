@@ -1,0 +1,35 @@
+=== 1. Read a CSV into a DataFrame (types auto-inferred) ===
+   order_id country product  amount order_date
+0         0      GB    book   50.98 2026-01-01
+1         1      AU     pen   30.73 2026-01-02
+2         2      IN     mug   81.54 2026-01-03
+3         3      US    lamp   28.92 2026-01-04
+4         4      GB    book    4.15 2026-01-05
+5         5      AU     pen   63.26 2026-01-06
+6         6      IN     mug   23.42 2026-01-07
+7         7      US    lamp   47.28 2026-01-08
+order_id              int64
+country                 str
+product                 str
+amount              float64
+order_date    datetime64[s]
+dtype: object
+
+=== 2. Filter + aggregate the way you already do (pandas, not SQL) ===
+country
+GB    55.13
+Name: amount, dtype: float64
+
+=== 3. Headerless CSV: name the columns ===
+   order_id country product  amount  order_date
+0         0      GB    book   50.98  2026-01-01
+1         1      AU     pen   30.73  2026-01-02
+2         2      IN     mug   81.54  2026-01-03
+
+=== 4. Hand off to real pandas when you need it ===
+<class 'pandas.DataFrame'>
+
+=== 5. Performance: same code, one import swapped, on a 3M-row CSV ===
+import pandas as pd:            0.561s
+import chdb.datastore as pd:    0.105s
+speedup:                        5.3x

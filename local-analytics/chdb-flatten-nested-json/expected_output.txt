@@ -1,0 +1,53 @@
+=== 1. Read a nested JSON file into a DataFrame ===
+   order_id  ...                                              items
+0         1  ...  [{'sku': 'A-1', 'qty': 2, 'price': 9.99}, {'sk...
+1         2  ...           [{'sku': 'C-3', 'qty': 5, 'price': 4.0}]
+2         3  ...  [{'sku': 'A-1', 'qty': 1, 'price': 9.99}, {'sk...
+3         4  ...                                                 []
+
+[4 rows x 3 columns]
+order_id     int64
+customer    object
+items       object
+dtype: object
+
+=== 2. Inspect the nested columns ===
+customer[0]: {'id': 101, 'country': 'GB', 'tier': 'gold'}
+items[0]:    [{'sku': 'A-1', 'qty': 2, 'price': 9.99}, {'sku': 'B-2', 'qty': 1, 'price': 19.5}]
+
+=== 3. Explode items: one row per line item ===
+   order_id                                    items
+0         1  {'sku': 'A-1', 'qty': 2, 'price': 9.99}
+0         1  {'sku': 'B-2', 'qty': 1, 'price': 19.5}
+1         2   {'sku': 'C-3', 'qty': 5, 'price': 4.0}
+2         3  {'sku': 'A-1', 'qty': 1, 'price': 9.99}
+2         3   {'sku': 'D-4', 'qty': 3, 'price': 2.5}
+2         3  {'sku': 'E-5', 'qty': 1, 'price': 99.0}
+3         4                                      NaN
+
+=== 4. Extract nested fields + compute line_total ===
+ order_id country   tier sku  qty  line_total
+        1      GB   gold A-1    2       19.98
+        1      GB   gold B-2    1       19.50
+        2      AU silver C-3    5       20.00
+        3      GB   gold A-1    1        9.99
+        3      GB   gold D-4    3        7.50
+        3      GB   gold E-5    1       99.00
+
+=== 5. Aggregate: revenue per country ===
+country
+GB    155.97
+AU     20.00
+Name: line_total, dtype: float64
+
+=== 6. Hand off to real pandas when you need it ===
+<class 'pandas.DataFrame'>
+
+=== 7. Performance: chDB read_json+explode+extract vs pandas json_normalize ===
+# Apple M4 Pro (14 cores, 24 GB RAM, macOS); chDB 4.1.8, Python 3.14; best-of-3, warm.
+# 800,000-order / ~163 MB JSON (orders with a nested customer object and an
+# array of line-item objects). Your exact times will vary; the back-to-back
+# ratio (~3.7x) is the robust claim, not the absolute seconds.
+import pandas as pd (json_normalize):      7.980s
+import chdb.datastore as pd (explode):     2.150s
+speedup:                                   3.7x

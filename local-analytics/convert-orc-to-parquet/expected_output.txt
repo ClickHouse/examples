@@ -1,0 +1,56 @@
+######## run.sh ########
+== 1. Convert ORC -> Parquet in one line ==
+20
+
+== 2. The schema is inferred from the ORC footer and carried into Parquet ==
+event_date	Nullable(Date32)					
+event_id	Nullable(Int64)					
+country	Nullable(String)					
+event_type	Nullable(String)					
+amount	Nullable(Float64)					
+attrs	Map(String, Nullable(String))					
+
+== 3. Same types on the Parquet side, nested Map preserved (no flattening) ==
+event_date	Nullable(Date32)					
+event_id	Nullable(Int64)					
+country	Nullable(String)					
+event_type	Nullable(String)					
+amount	Nullable(Float64)					
+attrs	Map(String, Nullable(String))					
+   ┌─event_date─┬─event_id─┬─country─┬─event_type─┬─amount─┬─attrs─────────────────────────────┐
+1. │ 2026-01-01 │        1 │ GB      │ click      │      5 │ {'device':'mobile','plan':'free'} │
+2. │ 2026-01-02 │        2 │ US      │ view       │   6.01 │ {'device':'desktop','plan':'pro'} │
+3. │ 2026-01-03 │        3 │ DE      │ signup     │   7.02 │ {'device':'mobile','plan':'free'} │
+4. │ 2026-01-04 │        4 │ FR      │ purchase   │   8.03 │ {'device':'desktop','plan':'pro'} │
+5. │ 2026-01-05 │        5 │ IN      │ click      │   9.04 │ {'device':'mobile','plan':'free'} │
+   └────────────┴──────────┴─────────┴────────────┴────────┴───────────────────────────────────┘
+
+== 4. Pick the Parquet compression codec (the column-store knob converters hide) ==
+bytes  file
+23566016  events_large.orc
+22729944  events_large_zstd.parquet
+33072661  events_large_snappy.parquet
+47724146  events_large_none.parquet
+
+== 5. Inspect the Parquet footer without opening the data ==
+Row 1:
+──────
+num_columns:    7
+num_rows:       3000000 -- 3.00 million
+num_row_groups: 3
+format_version: 2
+
+== 6. Conversion throughput: 3,000,000-row events_large.orc (best-of-3, warm) ==
+run 1: real 0.52
+run 2: real 0.52
+run 3: real 0.52
+
+######## run.py (chDB) ########
+written events_from_py.parquet
+20
+   ┌─event_id─┬─country─┬─event_type─┬─amount─┬─attrs─────────────────────────────┐
+1. │        1 │ GB      │ click      │      5 │ {'device':'mobile','plan':'free'} │
+2. │        2 │ US      │ view       │   6.01 │ {'device':'desktop','plan':'pro'} │
+3. │        3 │ DE      │ signup     │   7.02 │ {'device':'mobile','plan':'free'} │
+   └──────────┴─────────┴────────────┴────────┴───────────────────────────────────┘
+written events_from_py_zstd.parquet

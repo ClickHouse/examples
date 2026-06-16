@@ -1,0 +1,56 @@
+### ./run.sh ###
+== 1. Convert Parquet -> ORC in one line ==
+wrote events.orc
+
+== 2. Source Parquet schema (inferred, no DDL) ==
+event_date	Date32					
+event_id	UInt64					
+country	String					
+action	String					
+amount	Float64					
+tags	Map(String, String)					
+
+== 3. Resulting ORC schema (types carried over; ORC reads back Nullable) ==
+event_date	Nullable(Date32)					
+event_id	Nullable(Int64)					
+country	Nullable(String)					
+action	Nullable(String)					
+amount	Nullable(Float64)					
+tags	Map(String, Nullable(String))					
+
+== 4. Same answer from both files (correctness check) ==
+parquet	AU	3	48.33
+parquet	DE	3	39.24
+parquet	FR	3	42.27
+parquet	GB	4	56.36
+parquet	IN	3	45.3
+parquet	US	4	60.4
+orc	AU	3	48.33
+orc	DE	3	39.24
+orc	FR	3	42.27
+orc	GB	4	56.36
+orc	IN	3	45.3
+orc	US	4	60.4
+
+== 5. Choose the ORC compression codec ==
+-rw-r--r--@ 1 al  staff  1294  6 Jun 20:30 events_zstd.orc
+-rw-r--r--@ 1 al  staff  1294  6 Jun 20:30 events.orc
+
+== 6. Perf: convert the 3,000,000-row events_large.parquet -> ORC (best-of-3, warm) ==
+run 1: real 0.81
+run 2: real 0.74
+run 3: real 0.73
+rows in ORC output:
+3000000
+-rw-r--r--@ 1 al  staff  20176257  6 Jun 20:30 events_large.orc
+-rw-r--r--@ 1 al  staff  22644370  6 Jun 20:28 events_large.parquet
+
+### python3 run.py (chDB) ###
+wrote events_chdb.orc
+country  c  amount
+     AU  3   48.33
+     DE  3   39.24
+     FR  3   42.27
+     GB  4   56.36
+     IN  3   45.30
+     US  4   60.40

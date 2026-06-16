@@ -1,0 +1,39 @@
+=== 1. Read a Parquet file into a DataFrame (schema from metadata) ===
+                id country  ... amount                event_time
+0                0      GB  ... 350.98 2026-01-11 05:46:33+00:00
+1                1      IN  ... 830.73 2026-02-26 12:11:39+00:00
+2                2      DE  ... 981.54 2026-02-20 16:56:32+00:00
+3                3      DE  ... 528.92 2026-03-05 15:51:08+00:00
+4                4      US  ... 804.15 2026-03-24 22:19:19+00:00
+...            ...     ...  ...    ...                       ...
+19999995  19999995      IN  ... 314.79 2026-01-22 20:39:01+00:00
+19999996  19999996      IN  ... 561.91 2026-03-01 03:56:02+00:00
+19999997  19999997      US  ... 359.03 2026-02-15 22:39:47+00:00
+19999998  19999998      GB  ... 673.13 2026-01-09 10:04:00+00:00
+19999999  19999999      IN  ... 459.50 2026-03-28 03:29:07+00:00
+
+[20000000 rows x 6 columns]
+id                         uint64
+country                       str
+event_type                    str
+quantity                   uint16
+amount                    float64
+event_time    datetime64[ns, UTC]
+dtype: object
+
+=== 2. Filter + aggregate the way you already do (pandas, not SQL) ===
+country
+IN   667411452.65
+US   667068922.60
+AU   666980194.83
+GB   666350260.61
+DE   666284177.10
+Name: amount, dtype: float64
+
+=== 3. Hand off to real pandas when you need it ===
+<class 'pandas.DataFrame'>
+
+=== 4. Performance: same code, one import swapped, on a 20M-row Parquet file ===
+import pandas as pd:            0.357s
+import chdb.datastore as pd:    0.115s
+speedup:                        3.1x

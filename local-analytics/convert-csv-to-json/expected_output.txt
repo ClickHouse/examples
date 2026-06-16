@@ -1,0 +1,174 @@
+### ./generate.sh ###
+Generating data/orders.csv (20 rows)...
+Generating data/orders_large.csv (2000000 rows, ~84 MB)...
+
+Generated files:
+total 171528
+drwxr-xr-x@  4 al  staff       128  6 Jun 20:43 .
+drwxr-xr-x@ 10 al  staff       320  6 Jun 20:43 ..
+-rw-r--r--@  1 al  staff  87814440  6 Jun 20:43 orders_large.csv
+-rw-r--r--@  1 al  staff       817  6 Jun 20:43 orders.csv
+
+### ./run.sh ###
+== 1. Convert CSV -> JSON, one object per line (JSONEachRow / NDJSON) ==
+first 3 lines of orders.jsonl:
+{"order_date":"2026-01-01","order_id":1,"country":"GB","product":"widget","revenue":5,"quantity":1}
+{"order_date":"2026-01-02","order_id":2,"country":"US","product":"gadget","revenue":6.01,"quantity":2}
+{"order_date":"2026-01-03","order_id":3,"country":"DE","product":"gizmo","revenue":7.02,"quantity":3}
+
+== 2. Convert CSV -> a single JSON array of objects (FORMAT JSON) ==
+{
+	"meta":
+	[
+		{
+			"name": "order_date",
+			"type": "Nullable(Date)"
+		},
+		{
+			"name": "order_id",
+			"type": "Nullable(Int64)"
+		},
+		{
+			"name": "country",
+			"type": "Nullable(String)"
+		},
+		{
+			"name": "product",
+			"type": "Nullable(String)"
+		},
+		{
+			"name": "revenue",
+			"type": "Nullable(Float64)"
+		},
+		{
+			"name": "quantity",
+			"type": "Nullable(Int64)"
+		}
+	],
+
+	"data":
+	[
+		{
+			"order_date": "2026-01-01",
+			"order_id": 1,
+			"country": "GB",
+			"product": "widget",
+			"revenue": 5,
+			"quantity": 1
+		},
+		{
+			"order_date": "2026-01-02",
+			"order_id": 2,
+			"country": "US",
+			"product": "gadget",
+			"revenue": 6.01,
+			"quantity": 2
+		}
+	],
+
+	"rows": 2,
+
+	"rows_before_limit_at_least": 2,
+
+	"statistics":
+	{
+		"elapsed": 0.001754334,
+		"rows_read": 2,
+		"bytes_read": 134
+	}
+}
+
+== 3. Just the array, no meta/stats wrapper: JSONCompactEachRow per line ==
+["2026-01-01", 1, "GB", "widget", 5, 1]
+["2026-01-02", 2, "US", "gadget", 6.01, 2]
+
+== 4. Types are carried from inference: numbers stay numbers, not strings ==
+order_date	Nullable(Date)					
+order_id	Nullable(Int64)					
+country	Nullable(String)					
+product	Nullable(String)					
+revenue	Nullable(Float64)					
+quantity	Nullable(Int64)					
+-> in the JSON, order_id/quantity are bare ints, revenue is a float, no quotes:
+{"order_date":"2026-01-01","order_id":1,"country":"GB","product":"widget","revenue":5,"quantity":1}
+
+== 5. Keep a column as a string when inference guesses wrong (e.g. zero-padded ids) ==
+{"order_date":"2026-01-01","order_id":"1","country":"GB","product":"widget","revenue":5,"quantity":1}
+
+== 6. Conversion throughput: 2,000,000-row, ~84 MB CSV -> JSONEachRow (best-of-3, warm) ==
+run 1: real 0.29
+run 2: real 0.31
+run 3: real 0.29
+input vs output size:
+-rw-r--r--@ 1 al  staff   87814440  6 Jun 20:43 orders_large.csv
+-rw-r--r--@ 1 al  staff  221842022  6 Jun 20:43 orders_large.jsonl
+row count in the JSONL output:
+2000000
+
+### python3 run.py (chDB equivalent) ###
+== orders_chdb.jsonl (first 3 lines) ==
+{"order_date":"2026-01-01","order_id":1,"country":"GB","product":"widget","revenue":5,"quantity":1}
+{"order_date":"2026-01-02","order_id":2,"country":"US","product":"gadget","revenue":6.01,"quantity":2}
+{"order_date":"2026-01-03","order_id":3,"country":"DE","product":"gizmo","revenue":7.02,"quantity":3}
+
+== first 2 rows as a single JSON document (FORMAT JSON) ==
+{
+	"meta":
+	[
+		{
+			"name": "order_date",
+			"type": "Nullable(Date)"
+		},
+		{
+			"name": "order_id",
+			"type": "Nullable(Int64)"
+		},
+		{
+			"name": "country",
+			"type": "Nullable(String)"
+		},
+		{
+			"name": "product",
+			"type": "Nullable(String)"
+		},
+		{
+			"name": "revenue",
+			"type": "Nullable(Float64)"
+		},
+		{
+			"name": "quantity",
+			"type": "Nullable(Int64)"
+		}
+	],
+
+	"data":
+	[
+		{
+			"order_date": "2026-01-01",
+			"order_id": 1,
+			"country": "GB",
+			"product": "widget",
+			"revenue": 5,
+			"quantity": 1
+		},
+		{
+			"order_date": "2026-01-02",
+			"order_id": 2,
+			"country": "US",
+			"product": "gadget",
+			"revenue": 6.01,
+			"quantity": 2
+		}
+	],
+
+	"rows": 2,
+
+	"rows_before_limit_at_least": 2,
+
+	"statistics":
+	{
+		"elapsed": 0.000965208,
+		"rows_read": 0,
+		"bytes_read": 0
+	}
+}

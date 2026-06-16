@@ -1,0 +1,87 @@
+=== 1. Read the Avro file (schema inferred from the embedded header) ===
+id	Int64					
+event_time	Int32					
+country	String					
+revenue	Float64					
+
+=== 2. Read the embedded JSON schema straight out of the file header ===
+{
+    "type": "record",
+    "name": "row",
+    "fields": [
+        {
+            "name": "id",
+            "type": "long"
+        },
+        {
+            "name": "event_time",
+            "type": "int"
+        },
+        {
+            "name": "country",
+            "type": "string"
+        },
+        {
+            "name": "revenue",
+            "type": "double"
+        }
+    ]
+}
+
+=== 3. Query the file directly: revenue by country ===
+   ┏━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━┓
+   ┃ country ┃ events ┃ revenue ┃
+   ┡━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━┩
+1. │ DE      │    200 │   53729 │
+   ├─────────┼────────┼─────────┤
+2. │ GB      │    200 │   51090 │
+   ├─────────┼────────┼─────────┤
+3. │ AU      │    200 │   50394 │
+   ├─────────┼────────┼─────────┤
+4. │ IN      │    200 │   50181 │
+   ├─────────┼────────┼─────────┤
+5. │ US      │    200 │   49363 │
+   └─────────┴────────┴─────────┘
+
+=== 4. Schema evolution: v2 added a 'channel' column ===
+--- v2 embedded schema ---
+{
+    "type": "record",
+    "name": "row",
+    "fields": [
+        {
+            "name": "id",
+            "type": "long"
+        },
+        {
+            "name": "event_time",
+            "type": "int"
+        },
+        {
+            "name": "country",
+            "type": "string"
+        },
+        {
+            "name": "revenue",
+            "type": "double"
+        },
+        {
+            "name": "channel",
+            "type": "string"
+        }
+    ]
+}
+--- each file is self-describing: v2 reads its own schema, new column included ---
+   ┏━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━┓
+   ┃ channel  ┃ events ┃ revenue ┃
+   ┡━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━┩
+1. │ organic  │    334 │   83430 │
+   ├──────────┼────────┼─────────┤
+2. │ paid     │    333 │   85806 │
+   ├──────────┼────────┼─────────┤
+3. │ referral │    333 │   81942 │
+   └──────────┴────────┴─────────┘
+
+=== 5. Throughput: scan + aggregate 3,000,000 rows (42 MB Avro), best of 3 warm ===
+$ clickhouse local --time -q "SELECT country, count(), round(sum(revenue)) FROM file('data/events_big.avro') GROUP BY country FORMAT Null"
+0.270

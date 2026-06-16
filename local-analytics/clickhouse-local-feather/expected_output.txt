@@ -1,0 +1,53 @@
+== 1. Read the first 10 rows (.feather auto-detected as Arrow) ==
+    ┌──────────────event_time─┬─event_id─┬─country─┬─event_type─┬─revenue─┬─quantity─┐
+ 1. │ 2026-01-01 00:00:00.000 │        1 │ GB      │ click      │       5 │        1 │
+ 2. │ 2026-01-01 01:00:00.000 │        2 │ US      │ view       │    6.01 │        2 │
+ 3. │ 2026-01-01 02:00:00.000 │        3 │ DE      │ purchase   │    7.02 │        3 │
+ 4. │ 2026-01-01 03:00:00.000 │        4 │ FR      │ refund     │    8.03 │        4 │
+ 5. │ 2026-01-01 04:00:00.000 │        5 │ IN      │ click      │    9.04 │        5 │
+ 6. │ 2026-01-01 05:00:00.000 │        6 │ AU      │ view       │   10.05 │        1 │
+ 7. │ 2026-01-01 06:00:00.000 │        7 │ GB      │ purchase   │   11.06 │        2 │
+ 8. │ 2026-01-01 07:00:00.000 │        8 │ US      │ refund     │   12.07 │        3 │
+ 9. │ 2026-01-01 08:00:00.000 │        9 │ DE      │ click      │   13.08 │        4 │
+10. │ 2026-01-01 09:00:00.000 │       10 │ FR      │ view       │   14.09 │        5 │
+    └─────────────────────────┴──────────┴─────────┴────────────┴─────────┴──────────┘
+
+== 2. See the schema without declaring one ==
+   ┌─name───────┬─type─────────────────┬─default_type─┬─default_expression─┬─comment─┬─codec_expression─┬─ttl_expression─┐
+1. │ event_time │ DateTime64(3, 'UTC') │              │                    │         │                  │                │
+2. │ event_id   │ UInt64               │              │                    │         │                  │                │
+3. │ country    │ String               │              │                    │         │                  │                │
+4. │ event_type │ String               │              │                    │         │                  │                │
+5. │ revenue    │ Float64              │              │                    │         │                  │                │
+6. │ quantity   │ UInt8                │              │                    │         │                  │                │
+   └────────────┴──────────────────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+== 3. Be explicit: FORMAT Arrow reads a Feather file ==
+20
+
+== 4. Filter, aggregate, group by, straight on the file ==
+   ┌─country─┬─events─┬─revenue─┬─avg_qty─┐
+1. │ GB      │      2 │   34.24 │       3 │
+2. │ DE      │      2 │   26.16 │       4 │
+3. │ IN      │      1 │    15.1 │       1 │
+   └─────────┴────────┴─────────┴─────────┘
+
+== 5. Gotcha: legacy Feather V1 (FEA1) is NOT the Arrow IPC format ==
+Code: 636. DB::Exception: The table structure cannot be extracted from a Arrow format file. Error:
+Code: 1002. DB::Exception: Error while opening a table: Invalid: Not an Arrow file. (UNKNOWN_EXCEPTION) (version 26.6.1.117 (official build)).
+You can specify the structure manually: (in file/uri /Users/al/ch/marketing/examples/local-analytics/clickhouse-local-feather/data/events_v1.feather). (CANNOT_EXTRACT_TABLE_STRUCTURE)
+
+== 6. Convert Feather -> Parquet in one line ==
+20
+
+== 7. Perf: aggregate the 3M-row events_large.feather (best-of-3, warm) ==
+run 1: real 0.20
+run 2: real 0.20
+run 3: real 0.20
+   ┌─country─┬─events─┬─────revenue─┬─avg_qty─┐
+1. │ AU      │  60418 │ 15121656.03 │   3.004 │
+2. │ JP      │  60246 │ 15057500.77 │   2.994 │
+3. │ CA      │  60014 │ 15052158.67 │       3 │
+4. │ FR      │  59932 │    15039964 │   2.998 │
+5. │ DE      │  60137 │ 15025465.43 │   2.996 │
+   └─────────┴────────┴─────────────┴─────────┘

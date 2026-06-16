@@ -1,0 +1,63 @@
+== 1. Parse one form body into a row (keys become columns) ==
+Row 1:
+──────
+event:   signup
+user_id: 1001
+plan:    pro
+amount:  49.00
+country: GB
+
+== 2. See the inferred schema (every field is a String) ==
+event	Nullable(String)					
+user_id	Nullable(String)					
+plan	Nullable(String)					
+amount	Nullable(String)					
+country	Nullable(String)					
+
+== 3. Give fields real types so you can compute on them ==
+Row 1:
+──────
+event:   signup
+user_id: 1001
+plan:    pro
+amount:  49
+country: GB
+
+== 4. Percent-encoding is decoded; '+' is NOT turned into a space ==
+Row 1:
+──────
+name:   Jane+Doe
+city:   São+Paulo
+note:   a&b=c
+amount: 19.99
+-- fix '+' yourself with replaceAll --
+Row 1:
+──────
+name:   Jane Doe
+city:   São Paulo
+note:   a&b=c
+amount: 19.99
+
+== 5. One row per file: glob a folder of webhook bodies ==
+   ┌─src───────┬─event───┬─user_id─┬─plan─┬─amount─┐
+1. │ hook1.txt │ signup  │    1001 │ pro  │     49 │
+2. │ hook2.txt │ upgrade │    1002 │ team │     99 │
+3. │ hook3.txt │ signup  │    1003 │ free │      0 │
+   └───────────┴─────────┴─────────┴──────┴────────┘
+
+== 6. Aggregate across all the form payloads ==
+   ┌─event───┬─n─┬─revenue─┐
+1. │ upgrade │ 1 │      99 │
+2. │ signup  │ 2 │      49 │
+   └─────────┴───┴─────────┘
+
+== 7. Perf: aggregate 2000 one-body form files (best-of-3, warm) ==
+run 1: real 0.20
+run 2: real 0.19
+run 3: real 0.18
+   ┌─plan───────┬───n─┬─revenue─┐
+1. │ enterprise │ 500 │   37500 │
+2. │ team       │ 500 │   25000 │
+3. │ pro        │ 500 │   12500 │
+4. │ free       │ 500 │       0 │
+   └────────────┴─────┴─────────┘

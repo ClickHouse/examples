@@ -1,0 +1,59 @@
+### ./run.sh ###
+
+== 1. The naive convert: SELECT * loses nested structure ==
+"event_id","ts","action","geo","tags"
+1,"2026-06-01 00:00:00","login","London","GB","[]"
+2,"2026-06-01 00:02:17","click","New York","US","['mobile']"
+3,"2026-06-01 00:04:34","purchase","Berlin","DE","['mobile','web']"
+
+== 2. Inspect the inferred schema (geo is a Tuple, tags is an Array) ==
+event_id	Nullable(Int64)					
+ts	Nullable(DateTime)					
+action	Nullable(String)					
+geo	Tuple(\n    city Nullable(String),\n    country Nullable(String))					
+tags	Array(Nullable(String))					
+
+== 3. The correct convert: flatten nested fields into scalar columns ==
+"event_id","ts","action","geo_country","geo_city","tags"
+1,"2026-06-01 00:00:00","login","GB","London",""
+2,"2026-06-01 00:02:17","click","US","New York","mobile"
+3,"2026-06-01 00:04:34","purchase","DE","Berlin","mobile|web"
+4,"2026-06-01 00:06:51","logout","FR","Paris",""
+5,"2026-06-01 00:09:08","login","GB","London","mobile"
+6,"2026-06-01 00:11:25","click","US","New York","mobile|web"
+7,"2026-06-01 00:13:42","purchase","DE","Berlin",""
+8,"2026-06-01 00:15:59","logout","FR","Paris","mobile"
+9,"2026-06-01 00:18:16","login","GB","London","mobile|web"
+10,"2026-06-01 00:20:33","click","US","New York",""
+11,"2026-06-01 00:22:50","purchase","DE","Berlin","mobile"
+12,"2026-06-01 00:25:07","logout","FR","Paris","mobile|web"
+
+== 4. Read the CSV back to confirm the round-trip ==
+DE	3
+FR	3
+GB	3
+US	3
+
+== 5. Perf: convert the 1.2M-row events_large.jsonl (best-of-3, warm) ==
+run 1: real 0.39
+run 2: real 0.39
+run 3: real 0.39
+rows written (incl header):  1200001
+
+### python3 run.py  (chDB — same SELECT, identical CSV) ###
+
+== events_chdb.csv ==
+"event_id","ts","action","geo_country","geo_city","tags"
+1,"2026-06-01 00:00:00","login","GB","London",""
+2,"2026-06-01 00:02:17","click","US","New York","mobile"
+3,"2026-06-01 00:04:34","purchase","DE","Berlin","mobile|web"
+4,"2026-06-01 00:06:51","logout","FR","Paris",""
+5,"2026-06-01 00:09:08","login","GB","London","mobile"
+6,"2026-06-01 00:11:25","click","US","New York","mobile|web"
+7,"2026-06-01 00:13:42","purchase","DE","Berlin",""
+8,"2026-06-01 00:15:59","logout","FR","Paris","mobile"
+9,"2026-06-01 00:18:16","login","GB","London","mobile|web"
+10,"2026-06-01 00:20:33","click","US","New York",""
+11,"2026-06-01 00:22:50","purchase","DE","Berlin","mobile"
+12,"2026-06-01 00:25:07","logout","FR","Paris","mobile|web"
+

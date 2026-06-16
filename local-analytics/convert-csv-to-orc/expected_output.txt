@@ -1,0 +1,65 @@
+### ./run.sh (CLI, clickhouse local) ###
+
+== 1. Convert CSV -> ORC in one line ==
+wrote events.orc
+
+== 2. Schema inferred from the CSV, types carried into ORC ==
+-- CSV (source):
+event_date	Nullable(Date)
+event_id	Nullable(Int64)
+country	Nullable(String)
+action	Nullable(String)
+amount	Nullable(Float64)
+quantity	Nullable(Int64)
+-- ORC (result):
+event_date	Nullable(Date32)
+event_id	Nullable(Int64)
+country	Nullable(String)
+action	Nullable(String)
+amount	Nullable(Float64)
+quantity	Nullable(Int64)
+
+== 3. Read the ORC back, or aggregate on it directly ==
+2026-01-01	1	GB	click	5	1
+2026-01-02	2	US	view	6.01	2
+2026-01-03	3	DE	signup	7.02	3
+2026-01-04	4	FR	purchase	8.03	4
+2026-01-05	5	IN	click	9.04	5
+20
+
+== 4. Pin the types on conversion (note ORC stores signed ints + Date32) ==
+event_date	Nullable(Date32)
+event_id	Nullable(Int32)
+country	Nullable(String)
+action	Nullable(String)
+amount	Nullable(Float64)
+quantity	Nullable(Int8)
+
+== 5. Choose the ORC compression codec ==
+events_large.csv	123.28 MiB
+events_large_none.orc	54.54 MiB
+events_large.orc (lz4 default)	19.50 MiB
+events_large_zstd.orc	19.50 MiB
+
+== 6. Conversion throughput: 3M rows / ~123 MB CSV -> ORC (best-of-3, warm) ==
+# ~0.5s on an Apple M4 Pro (14 cores, 24 GB RAM), warm OS page cache:
+run 1: real 0.50
+run 2: real 0.50
+run 3: real 0.51
+
+
+### python3 run.py (Surface B, chDB) ###
+
+wrote data/events_chdb.orc
+event_date	Nullable(Date32)
+event_id	Nullable(Int64)
+country	Nullable(String)
+action	Nullable(String)
+amount	Nullable(Float64)
+quantity	Nullable(Int64)
+"2026-01-01",1,"GB","click",5,1
+"2026-01-02",2,"US","view",6.01,2
+"2026-01-03",3,"DE","signup",7.02,3
+"2026-01-04",4,"FR","purchase",8.03,4
+"2026-01-05",5,"IN","click",9.04,5
+20

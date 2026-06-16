@@ -1,0 +1,58 @@
+== 1. Read the first rows (JSONEachRow: one JSON object per line) ==
+   ┌─event_date─┬─event_id─┬─country─┬─event_type─┬─revenue─┬─quantity─┐
+1. │ 2026-01-01 │        1 │ GB      │ click      │       5 │        1 │
+2. │ 2026-01-02 │        2 │ US      │ view       │    6.01 │        2 │
+3. │ 2026-01-03 │        3 │ DE      │ purchase   │    7.02 │        3 │
+4. │ 2026-01-04 │        4 │ FR      │ refund     │    8.03 │        4 │
+5. │ 2026-01-05 │        5 │ IN      │ click      │    9.04 │        5 │
+   └────────────┴──────────┴─────────┴────────────┴─────────┴──────────┘
+
+== 2. Inspect the inferred schema (keys -> columns, types from the values) ==
+   ┌─name───────┬─type──────────────┬─default_type─┬─default_expression─┬─comment─┬─codec_expression─┬─ttl_expression─┐
+1. │ event_date │ Nullable(Date)    │              │                    │         │                  │                │
+2. │ event_id   │ Nullable(Int64)   │              │                    │         │                  │                │
+3. │ country    │ Nullable(String)  │              │                    │         │                  │                │
+4. │ event_type │ Nullable(String)  │              │                    │         │                  │                │
+5. │ revenue    │ Nullable(Float64) │              │                    │         │                  │                │
+6. │ quantity   │ Nullable(Int64)   │              │                    │         │                  │                │
+   └────────────┴───────────────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+== 3. Filter, aggregate, and group by directly on the JSONL ==
+   ┌─country─┬─purchases─┬─revenue─┬─avg_qty─┐
+1. │ GB      │         2 │   34.24 │       3 │
+2. │ DE      │         2 │   26.16 │       4 │
+3. │ IN      │         1 │    15.1 │       1 │
+   └─────────┴───────────┴─────────┴─────────┘
+
+== 4. The extension does not matter: .ndjson / .json read the same way ==
+20
+
+== 5. Read a gzipped JSONL transparently (.jsonl.gz) ==
+   ┌─country─┬─count()─┐
+1. │ AU      │       3 │
+2. │ DE      │       3 │
+3. │ FR      │       3 │
+4. │ GB      │       4 │
+5. │ IN      │       3 │
+6. │ US      │       4 │
+   └─────────┴─────────┘
+
+== 6. Convert JSONL -> Parquet in one line ==
+20
+
+== 7. Perf: aggregate the 3M-row, ~342 MB events_large.jsonl (best-of-3, warm) ==
+run 1: real 0.54
+run 2: real 0.54
+run 3: real 0.57
+   ┌─country─┬─count()─┬─────revenue─┬─round(avg(quantity), 3)─┐
+1. │ CA      │   60220 │ 15083278.75 │                   2.998 │
+2. │ DE      │   60186 │ 15068570.66 │                    3.01 │
+3. │ IN      │   60341 │  15051603.7 │                       3 │
+4. │ AU      │   60125 │ 15029470.39 │                   3.002 │
+5. │ BR      │   60161 │ 15021658.23 │                   2.995 │
+   └─────────┴─────────┴─────────────┴─────────────────────────┘
+
+# Perf note: ~0.54s best-of-3, warm OS page cache, Apple M4 Pro (14 cores, 24 GB RAM),
+# clickhouse local 26.6.1.117. events_large.jsonl uses unseeded row ids, so the exact
+# per-country totals vary on regeneration; the shape is stable (~60k purchases/country,
+# ~15M revenue/country, avg_qty ~3.0).

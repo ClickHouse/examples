@@ -1,0 +1,60 @@
+== 1. Read the first 5 rows (.ndjson -> JSONEachRow auto-detected) ==
+   ┌─event_id─┬──────────event_time─┬─country─┬─event_type─┬─amount─┬─quantity─┐
+1. │        1 │ 2026-06-01 00:00:00 │ GB      │ click      │      5 │        1 │
+2. │        2 │ 2026-06-01 00:02:17 │ US      │ view       │   6.01 │        2 │
+3. │        3 │ 2026-06-01 00:04:34 │ DE      │ purchase   │   7.02 │        3 │
+4. │        4 │ 2026-06-01 00:06:51 │ FR      │ refund     │   8.03 │        4 │
+5. │        5 │ 2026-06-01 00:09:08 │ IN      │ click      │   9.04 │        5 │
+   └──────────┴─────────────────────┴─────────┴────────────┴────────┴──────────┘
+
+== 2. Inspect the inferred schema (no CREATE TABLE) ==
+   ┌─name───────┬─type───────────────┬─default_type─┬─default_expression─┬─comment─┬─codec_expression─┬─ttl_expression─┐
+1. │ event_id   │ Nullable(Int64)    │              │                    │         │                  │                │
+2. │ event_time │ Nullable(DateTime) │              │                    │         │                  │                │
+3. │ country    │ Nullable(String)   │              │                    │         │                  │                │
+4. │ event_type │ Nullable(String)   │              │                    │         │                  │                │
+5. │ amount     │ Nullable(Float64)  │              │                    │         │                  │                │
+6. │ quantity   │ Nullable(Int64)    │              │                    │         │                  │                │
+   └────────────┴────────────────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+== 3. Aggregate directly on the NDJSON, no import step ==
+   ┌─country─┬─events─┬─amount─┬─avg_qty─┐
+1. │ US      │      4 │   60.4 │     3.5 │
+2. │ GB      │      4 │  56.36 │     2.5 │
+3. │ AU      │      3 │  48.33 │       2 │
+4. │ IN      │      3 │   45.3 │    2.67 │
+5. │ FR      │      3 │  42.27 │    3.33 │
+6. │ DE      │      3 │  39.24 │       4 │
+   └─────────┴────────┴────────┴─────────┘
+
+== 4. Same data, .jsonl extension, explicit JSONEachRow format ==
+20
+
+== 5. Read a gzipped NDJSON transparently (.ndjson.gz) ==
+   ┌─country─┬─count()─┐
+1. │ AU      │       3 │
+2. │ DE      │       3 │
+3. │ FR      │       3 │
+4. │ GB      │       4 │
+5. │ IN      │       3 │
+6. │ US      │       4 │
+   └─────────┴─────────┘
+
+== 6. Convert NDJSON -> Parquet in one line ==
+20
+
+== 7. Perf: aggregate the 3M-row events_large.ndjson (best-of-3, warm) ==
+# ~0.53s on an Apple M4 Pro (14 cores, 24 GB RAM), warm OS page cache.
+# events_large.ndjson uses unseeded row ids, so the exact per-country totals
+# below shift each time you regenerate; the shape is stable (~75k purchases and
+# ~18.8M amount per country, avg_qty ~3.0).
+run 1: real 0.53
+run 2: real 0.53
+run 3: real 0.53
+   ┌─country─┬─events─┬──────amount─┬─avg_qty─┐
+1. │ DE      │  75413 │ 18878147.28 │   2.997 │
+2. │ NL      │  75408 │ 18826419.38 │   3.001 │
+3. │ US      │  74942 │ 18798448.99 │   2.996 │
+4. │ CA      │  75123 │ 18792932.66 │   3.006 │
+5. │ AU      │  74774 │ 18769216.39 │       3 │
+   └─────────┴────────┴─────────────┴─────────┘

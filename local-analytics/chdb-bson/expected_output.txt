@@ -1,0 +1,29 @@
+=== 1. Read a BSON file into a DataFrame (schema auto-inferred) ===
+   event_id country event_type  revenue
+0         0      GB   purchase    37.41
+1         1      AU       view    76.47
+2         2      IN       cart    67.61
+3         3      GB   purchase    87.69
+4         4      AU       view    18.12
+5         5      IN       cart    35.58
+event_id        int64
+country           str
+event_type        str
+revenue       float64
+dtype: object
+
+=== 2. Filter + aggregate the way you already do (pandas, not SQL) ===
+country
+GB    125.1
+Name: revenue, dtype: float64
+
+=== 3. Hand off to real pandas when you need it ===
+<class 'pandas.DataFrame'>
+
+=== 4. Performance: chDB DataStore vs pymongo decode + pandas on a 2M-row BSON ===
+pymongo decode + pandas:        2.865s
+import chdb.datastore:          0.066s
+speedup:                        43.5x
+
+# Captured on Apple M4 Pro, 14 cores, 24 GB RAM, macOS; chDB 4.1.8, Python 3.14; 2M-row / ~149 MB BSON; best-of-3, warm.
+# Your exact times will vary with hardware and concurrent load; the back-to-back ratio is the robust claim.

@@ -1,0 +1,44 @@
+=== 1. Read a JSONL file into a DataFrame (types auto-inferred) ===
+   order_id country status  amount       customer                   skus
+0         1      GB   paid   49.99    [101, gold]         [sku-a, sku-b]
+1         2      AU   cart    0.00  [102, silver]                [sku-c]
+2         3      GB   paid   19.50    [103, gold]                [sku-a]
+3         4      IN   paid    5.00  [104, bronze]  [sku-d, sku-e, sku-f]
+4         5      AU   paid   99.00    [105, gold]                     []
+order_id      int64
+country         str
+status          str
+amount      float64
+customer     object
+skus         object
+dtype: object
+
+=== 2. Filter + aggregate the way you already do (pandas, not SQL) ===
+country
+AU    99.00
+GB    69.49
+IN     5.00
+Name: amount, dtype: float64
+
+=== 3. Access nested fields and explode arrays with pandas ===
+ order_id country status   tier
+        1      GB   paid   gold
+        2      AU   cart silver
+        3      GB   paid   gold
+        4      IN   paid bronze
+        5      AU   paid   gold
+  country   skus
+0      GB  sku-a
+1      GB  sku-b
+2      GB  sku-a
+3      IN  sku-d
+4      IN  sku-e
+5      IN  sku-f
+
+=== 4. Hand off to real pandas when you need it ===
+<class 'pandas.DataFrame'>
+
+=== 5. Performance: same code, one import swapped, on a 2M-row JSONL ===
+import pandas as pd:              1.555s
+import chdb.datastore as pd:      0.123s
+speedup:                          12.6x
