@@ -75,7 +75,7 @@ proto-plus==1.26.1
 protobuf==5.29.6
 pyarrow==16.1.0
 pyarrow-hotfix==0.7
-pyasn1==0.6.1
+pyasn1==0.6.2
 pyasn1-modules==0.4.2
 pydantic==2.11.5
 pydantic-core==2.33.2
