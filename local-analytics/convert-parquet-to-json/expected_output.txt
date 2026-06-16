@@ -1,0 +1,117 @@
+== 1. Convert Parquet -> JSON (one object per line: JSONEachRow / NDJSON) ==
+wrote events.jsonl; first 3 lines:
+{"event_id":1,"event_date":"2026-01-01","event_ts":"2026-01-01 00:00:00.000","country":"GB","amount":5,"tags":["new","paid"],"account":{"name":"acme","tier":1}}
+{"event_id":2,"event_date":"2026-01-02","event_ts":"2026-01-01 01:00:00.000","country":"US","amount":6.01,"tags":["web"],"account":{"name":"globex","tier":2}}
+{"event_id":3,"event_date":"2026-01-03","event_ts":"2026-01-01 02:00:00.000","country":"DE","amount":7.02,"tags":["api","mobile"],"account":{"name":"initech","tier":3}}
+
+== 2. Same data as a single JSON array (FORMAT JSON) ==
+wrote events.json:
+{
+	"meta":
+	[
+		{
+			"name": "event_id",
+			"type": "UInt64"
+		},
+		{
+			"name": "country",
+			"type": "String"
+		},
+		{
+			"name": "amount",
+			"type": "Decimal(18, 2)"
+		},
+		{
+			"name": "tags",
+			"type": "Array(String)"
+		},
+		{
+			"name": "account",
+			"type": "Tuple(name String, tier UInt8)"
+		}
+	],
+
+	"data":
+	[
+		{
+			"event_id": 1,
+			"country": "GB",
+			"amount": 5,
+			"tags": ["new","paid"],
+			"account": {
+				"name": "acme",
+				"tier": 1
+			}
+		},
+		{
+			"event_id": 2,
+			"country": "US",
+			"amount": 6.01,
+			"tags": ["web"],
+			"account": {
+				"name": "globex",
+				"tier": 2
+			}
+		}
+	],
+
+	"rows": 2,
+
+	"rows_before_limit_at_least": 20,
+
+	"statistics":
+	{
+		"elapsed": 0.002630959,
+		"rows_read": 20,
+		"bytes_read": 1336
+	}
+}
+
+== 3. The schema clickhouse-local read from the Parquet footer ==
+event_id	UInt64					
+event_date	Date32					
+event_ts	DateTime64(3, \'UTC\')					
+country	String					
+amount	Decimal(18, 2)					
+tags	Array(String)					
+account	Tuple(\n    name String,\n    tier UInt8)					
+
+== 4. Typed + nested columns carry into JSON (Date, Decimal, Array, named Tuple) ==
+{"event_id":1,"event_date":"2026-01-01","event_ts":"2026-01-01 00:00:00.000","country":"GB","amount":5,"tags":["new","paid"],"account":{"name":"acme","tier":1}}
+{"event_id":2,"event_date":"2026-01-02","event_ts":"2026-01-01 01:00:00.000","country":"US","amount":6.01,"tags":["web"],"account":{"name":"globex","tier":2}}
+
+== 5. Stringify 64-bit ints to survive JSON parsers (output_format_json_quote_64bit_integers) ==
+{"event_id":"1","amount":5}
+{"event_id":"2","amount":6.01}
+
+== 6. Filter / reshape while converting (it is just SQL) ==
+{"country":"IN","events":4,"total":66.45}
+{"country":"FR","events":4,"total":62.41}
+{"country":"DE","events":4,"total":58.38}
+{"country":"US","events":4,"total":54.34}
+{"country":"GB","events":4,"total":50.29}
+
+== 7. Throughput: convert the ~3M-row events_large.parquet -> JSONL (best-of-3, warm) ==
+run 1: real 0.27
+run 2: real 0.26
+run 3: real 0.37
+rows in events_large.jsonl:  3000000
+size of events_large.jsonl: 486M
+
+============================================================
+== Python / chDB equivalent (./run.py) ==
+============================================================
+== events_chdb.jsonl, first 2 lines ==
+{"event_id":1,"event_date":"2026-01-01","event_ts":"2026-01-01 00:00:00.000","country":"GB","amount":5,"tags":["new","paid"],"account":{"name":"acme","tier":1}}
+{"event_id":2,"event_date":"2026-01-02","event_ts":"2026-01-01 01:00:00.000","country":"US","amount":6.01,"tags":["web"],"account":{"name":"globex","tier":2}}
+
+== nested columns in JSON ==
+{"event_id":1,"tags":["new","paid"],"account":{"name":"acme","tier":1}}
+{"event_id":2,"tags":["web"],"account":{"name":"globex","tier":2}}
+
+== reshape while converting ==
+{"country":"IN","events":4,"total":66.45}
+{"country":"FR","events":4,"total":62.41}
+{"country":"DE","events":4,"total":58.38}
+{"country":"US","events":4,"total":54.34}
+{"country":"GB","events":4,"total":50.29}

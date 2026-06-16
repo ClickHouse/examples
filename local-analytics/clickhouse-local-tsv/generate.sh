@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Generate the sample TSVs locally with clickhouse local, so nothing large is
+# committed to git. Writes into ./data/ (gitignored):
+#   data/orders.tsv        - 20 rows, header + mixed types (the worked example)
+#   data/orders_nohdr.tsv  - same rows, no header (to show the TSV vs TSVWithNames distinction)
+#   data/orders.tsv.gz     - gzipped copy, to show transparent .tsv.gz reads
+#   data/orders_large.tsv  - 3,000,000 rows, ~110 MB (the perf number)
+# Idempotent: TRUNCATE overwrites on re-run.
+set -euo pipefail
+cd "$(dirname "$0")"
+mkdir -p data
+
+SMALL_ROWS=${SMALL_ROWS:-20}
+LARGE_ROWS=${LARGE_ROWS:-3000000}
+
+echo "Generating data/orders.tsv ($SMALL_ROWS rows, with header)..."
+clickhouse local -q "
+SELECT
+  toDate('2026-01-01') + (number % 31)                                 AS order_date,
+  number + 1                                                           AS order_id,
+  ['GB','US','DE','FR','IN','AU'][(number % 6) + 1]                    AS country,
+  ['widget','gadget','gizmo','doohickey'][(number % 4) + 1]            AS product,
+  round(((number % 500) + 5) + (number % 100) / 100.0, 2)             AS revenue,
+  (number % 5 + 1)::UInt8                                              AS quantity
+FROM numbers($SMALL_ROWS)
+INTO OUTFILE 'data/orders.tsv' TRUNCATE FORMAT TSVWithNames
+"
+
+echo "Generating data/orders_nohdr.tsv ($SMALL_ROWS rows, no header)..."
+clickhouse local -q "SELECT * FROM file('data/orders.tsv') INTO OUTFILE 'data/orders_nohdr.tsv' TRUNCATE FORMAT TSV"
+
+echo "Generating data/orders.tsv.gz..."
+clickhouse local -q "SELECT * FROM file('data/orders.tsv') INTO OUTFILE 'data/orders.tsv.gz' TRUNCATE FORMAT TSVWithNames"
+
+echo "Generating data/orders_large.tsv ($LARGE_ROWS rows, ~110 MB)..."
+clickhouse local -q "
+SELECT
+  toDate('2026-01-01') + (rand(1) % 365)                                          AS order_date,
+  number + 1                                                                      AS order_id,
+  ['GB','US','DE','FR','IN','AU','BR','JP','CA','NL'][(rand(2) % 10) + 1]         AS country,
+  ['widget','gadget','gizmo','doohickey','sprocket'][(rand(3) % 5) + 1]          AS product,
+  round((rand(4) % 50000) / 100.0, 2)                                            AS revenue,
+  (rand(5) % 5 + 1)::UInt8                                                        AS quantity
+FROM numbers($LARGE_ROWS)
+INTO OUTFILE 'data/orders_large.tsv' TRUNCATE FORMAT TSVWithNames
+"
+
+echo
+echo "Generated files:"
+ls -la data

@@ -1,0 +1,153 @@
+== 1. Read the first rows (nested objects auto-detected) ==
+Row 1:
+──────
+event_id:   1
+ts:         2026-06-01 01:00:00
+event_type: login
+user:       {
+  "geo": {
+   "city": "London",
+   "country": "GB"
+  },
+  "id": 1000,
+  "name": "Ada"
+}
+items:      [{
+  "price": 10.99,
+  "qty": 1,
+  "sku": "SKU-A"
+}]
+props:      {
+  "approved_by": null,
+  "coupon": null,
+  "gateway": null,
+  "installments": null,
+  "method": "sso",
+  "mfa": true,
+  "reason": null,
+  "referrer": null
+}
+
+Row 2:
+──────
+event_id:   2
+ts:         2026-06-01 01:10:11
+event_type: purchase
+user:       {
+  "geo": {
+   "city": "NYC",
+   "country": "US"
+  },
+  "id": 1001,
+  "name": "Lin"
+}
+items:      [{
+  "price": 11.99,
+  "qty": 1,
+  "sku": "SKU-B"
+},{
+  "price": 12.99,
+  "qty": 2,
+  "sku": "SKU-C"
+}]
+props:      {
+  "approved_by": null,
+  "coupon": "SUMMER",
+  "gateway": "stripe",
+  "installments": 3,
+  "method": null,
+  "mfa": null,
+  "reason": null,
+  "referrer": null
+}
+
+== 2. Inspect the inferred nested schema ==
+event_id: Nullable(Int64)
+ts: Nullable(DateTime)
+event_type: Nullable(String)
+user: Tuple( geo Tuple( city Nullable(String), country Nullable(String)), id Nullable(Int64), name Nullable(String))
+items: Array(Tuple( price Nullable(Float64), qty Nullable(Int64), sku Nullable(String)))
+props: Tuple( approved_by Nullable(String), coupon Nullable(String), gateway Nullable(String), installments Nullable(Int64), method Nullable(String), mfa Nullable(Bool), reason Nullable(String), referrer Nullable(String))
+
+== 3. Dot access into nested objects (user.geo.country) ==
+   ┌─event_id─┬─user.name─┬─user.geo.country─┬─user.geo.city─┐
+1. │        1 │ Ada       │ GB               │ London        │
+2. │        2 │ Lin       │ US               │ NYC           │
+3. │        3 │ Sam       │ DE               │ Berlin        │
+4. │        4 │ Mei       │ FR               │ Paris         │
+5. │        5 │ Omar      │ IN               │ Delhi         │
+   └──────────┴───────────┴──────────────────┴───────────────┘
+
+== 4. Explode a nested array with ARRAY JOIN ==
+   ┌─event_id─┬─sku───┬─qty─┬─price─┐
+1. │        1 │ SKU-A │   1 │ 10.99 │
+2. │        2 │ SKU-B │   1 │ 11.99 │
+3. │        2 │ SKU-C │   2 │ 12.99 │
+4. │        3 │ SKU-C │   1 │ 12.99 │
+5. │        3 │ SKU-D │   2 │ 13.99 │
+6. │        3 │ SKU-A │   3 │ 14.99 │
+7. │        4 │ SKU-D │   1 │ 13.99 │
+8. │        5 │ SKU-A │   1 │ 14.99 │
+9. │        5 │ SKU-B │   2 │ 15.99 │
+   └──────────┴───────┴─────┴───────┘
+
+== 5. Aggregate across the exploded line items ==
+   ┌─sku───┬─units─┬─revenue─┐
+1. │ SKU-A │     5 │   70.95 │
+2. │ SKU-B │     3 │   43.97 │
+3. │ SKU-D │     3 │   41.97 │
+4. │ SKU-C │     3 │   38.97 │
+   └───────┴───────┴─────────┘
+
+== 6. Irregular keys: read props as raw JSON text, pull keys with JSONExtract* ==
+   ┌─event_type─┬─gateway─┬─refund_reason─┬─mfa─┐
+1. │ login      │         │               │   1 │
+2. │ purchase   │ stripe  │               │   0 │
+3. │ view       │         │               │   0 │
+4. │ refund     │         │ damaged       │   0 │
+5. │ login      │         │               │   1 │
+   └────────────┴─────────┴───────────────┴─────┘
+
+== 7. Irregular keys, the native way: read props as the JSON type ==
+   ┌─event_type─┬─gateway─┬─installments─┬─refund_reason─┐
+1. │ login      │ ᴺᵁᴸᴸ    │ ᴺᵁᴸᴸ         │ ᴺᵁᴸᴸ          │
+2. │ purchase   │ stripe  │ 3            │ ᴺᵁᴸᴸ          │
+3. │ view       │ ᴺᵁᴸᴸ    │ ᴺᵁᴸᴸ         │ ᴺᵁᴸᴸ          │
+4. │ refund     │ ᴺᵁᴸᴸ    │ ᴺᵁᴸᴸ         │ damaged       │
+5. │ login      │ ᴺᵁᴸᴸ    │ ᴺᵁᴸᴸ         │ ᴺᵁᴸᴸ          │
+   └────────────┴─────────┴──────────────┴───────────────┘
+
+== 8. Read the whole document as one JSON column with JSONAsObject ==
+   ┌─json.event_type─┬─country─┬─name─┐
+1. │ login           │ GB      │ Ada  │
+2. │ purchase        │ US      │ Lin  │
+3. │ view            │ DE      │ Sam  │
+4. │ refund          │ FR      │ Mei  │
+5. │ login           │ IN      │ Omar │
+   └─────────────────┴─────────┴──────┘
+
+== 9. Read a gzipped JSONL transparently (.jsonl.gz) ==
+   ┌─country─┬─events─┐
+1. │ DE      │      1 │
+2. │ FR      │      1 │
+3. │ GB      │      1 │
+4. │ IN      │      1 │
+5. │ US      │      1 │
+   └─────────┴────────┘
+
+== 10. Perf: explode + group-by on the 500k-row, ~137 MB events_large.jsonl (best-of-3, warm) ==
+run 1: real 0.50
+run 2: real 0.50
+run 3: real 0.50
+   ┌─country─┬─sku───┬─units─┬────revenue─┐
+1. │ FR      │ SKU-B │ 83333 │ 4999060.67 │ -- 5.00 million
+2. │ FR      │ SKU-D │ 83331 │ 4998770.69 │ -- 5.00 million
+3. │ DE      │ SKU-D │ 83336 │ 4749262.64 │ -- 4.75 million
+4. │ US      │ SKU-B │ 83336 │ 4749206.64 │ -- 4.75 million
+5. │ FR      │ SKU-C │ 83336 │ 4749178.64 │ -- 4.75 million
+   └─────────┴───────┴───────┴────────────┘
+
+# NOTE: step 10 timings include process startup (/usr/bin/time -p wraps the whole
+# `clickhouse local` invocation). ~0.50s best-of-3 warm on an Apple M4 Pro
+# (14 cores, 24 GB RAM, clickhouse local 26.6.1.117). The per-country/per-sku
+# totals are deterministic for the default 500,000-row file.

@@ -1,0 +1,42 @@
+== 1. The inferred schema: note the nested 'user' Tuple and 'amounts' Array ==
+event_id	Nullable(Int64)					
+event_type	Nullable(String)					
+ts	Nullable(DateTime)					
+user	Tuple(\n    country Nullable(String),\n    plan Nullable(String))					
+amounts	Array(Nullable(Float64))					
+
+== 2. Naive SELECT * -> CSV: the nested 'user' object splits into unlabelled ==
+==    columns, so the header (5 cols) no longer lines up with the rows (6).  ==
+"event_id","event_type","ts","user","amounts"
+1,"login","2026-06-01 09:00:00","GB","free","[1.5,0.5]"
+2,"purchase","2026-06-01 09:00:37","US","pro","[2.5,1.5]"
+
+== 3. Flatten nested fields explicitly, then write CSV ==
+"event_id","event_type","ts","user_country","user_plan","amount_primary","amounts_list"
+1,"login","2026-06-01 09:00:00","GB","free",1.5,"1.5;0.5"
+2,"purchase","2026-06-01 09:00:37","US","pro",2.5,"2.5;1.5"
+3,"logout","2026-06-01 09:01:14","DE","team",3.5,"3.5;2.5"
+4,"signup","2026-06-01 09:01:51","FR","free",4.5,"4.5;3.5"
+
+== 4. Round-trip: read the CSV back, every column is flat and typed ==
+event_id	Nullable(Int64)					
+event_type	Nullable(String)					
+ts	Nullable(DateTime)					
+user_country	Nullable(String)					
+user_plan	Nullable(String)					
+amount_primary	Nullable(Float64)					
+amounts_list	Nullable(String)					
+
+== 5. chDB Python equivalent (same flattening SELECT, written to a file) ==
+"event_id","event_type","ts","user_country","user_plan","amount_primary","amounts_list"
+1,"login","2026-06-01 09:00:00","GB","free",1.5,"1.5;0.5"
+2,"purchase","2026-06-01 09:00:37","US","pro",2.5,"2.5;1.5"
+3,"logout","2026-06-01 09:01:14","DE","team",3.5,"3.5;2.5"
+4,"signup","2026-06-01 09:01:51","FR","free",4.5,"4.5;3.5"
+
+== 6. Perf: convert the 1M-row, ~125 MB events_large.jsonl -> CSV (best-of-3, warm) ==
+run 1: real 0.44
+run 2: real 0.44
+run 3: real 0.42
+rows written:
+1000000

@@ -1,0 +1,58 @@
+== 1. Read many CSVs as one table with a glob ==
+200
+
+== 2. Aggregate across every file in one query ==
+   ┌─country─┬─orders─┬─revenue─┐
+1. │ US      │     36 │    1089 │
+2. │ GB      │     36 │ 1052.64 │
+3. │ AU      │     32 │ 1000.32 │
+4. │ IN      │     32 │     968 │
+5. │ FR      │     32 │  935.68 │
+6. │ DE      │     32 │  903.36 │
+   └─────────┴────────┴─────────┘
+
+== 3. Attribute rows to their source file with the _file virtual column ==
+   ┌─_file───────┬─rows─┬─revenue─┐
+1. │ 2026-01.csv │   50 │ 1487.25 │
+2. │ 2026-02.csv │   50 │ 1487.25 │
+3. │ 2026-03.csv │   50 │ 1487.25 │
+4. │ 2026-04.csv │   50 │ 1487.25 │
+   └─────────────┴──────┴─────────┘
+
+== 4. Same idea on Parquet: glob a directory of parts ==
+   ┌─_file───────────┬─rows─┐
+1. │ part-00.parquet │   50 │
+2. │ part-01.parquet │   50 │
+3. │ part-02.parquet │   50 │
+4. │ part-03.parquet │   50 │
+   └─────────────────┴──────┘
+
+== 5. _path gives the full absolute path per row ==
+   ┌─_path───────────────────────────────────────────────────────────────────────────────────────────────────────┐
+1. │ /Users/al/ch/marketing/examples/local-analytics/clickhouse-local-multiple-files/data/events/part-00.parquet │
+2. │ /Users/al/ch/marketing/examples/local-analytics/clickhouse-local-multiple-files/data/events/part-01.parquet │
+3. │ /Users/al/ch/marketing/examples/local-analytics/clickhouse-local-multiple-files/data/events/part-02.parquet │
+4. │ /Users/al/ch/marketing/examples/local-analytics/clickhouse-local-multiple-files/data/events/part-03.parquet │
+   └─────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+== 6. Brace and range globs select a subset of files ==
+brace {01,02}:
+100
+range {01..03}:
+150
+
+== 7. Perf: aggregate 12 CSVs / 3,000,000 rows in one query (best-of-3, warm) ==
+# ~0.2s on an Apple M4 Pro (14 cores, 24 GB RAM), warm OS page cache.
+# sales_large uses unseeded rand(), so the exact per-country totals below
+# differ slightly each time you regenerate; the shape is stable
+# (~300k orders/country, ~75M revenue/country, avg_qty ~3.0).
+run 1: real 0.22
+run 2: real 0.23
+run 3: real 0.23
+   ┌─country─┬─orders─┬─────revenue─┬─avg_qty─┐
+1. │ FR      │ 300902 │ 75167415.31 │   3.002 │
+2. │ BR      │ 299994 │ 75103444.72 │   3.001 │
+3. │ CA      │ 299920 │ 75006733.22 │   3.002 │
+4. │ JP      │ 300045 │ 74978490.02 │   2.997 │
+5. │ IN      │ 300285 │ 74955475.99 │   2.998 │
+   └─────────┴────────┴─────────────┴─────────┘

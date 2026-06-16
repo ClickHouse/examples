@@ -1,0 +1,35 @@
+=== 1. Read an NDJSON file into a DataFrame (types auto-inferred) ===
+   event_id country event_type  revenue           user               tags
+0         1      GB   purchase    49.99    [101, gold]       [web, promo]
+1         2      AU       view     0.00  [102, silver]              [app]
+2         3      GB   purchase    19.50    [103, gold]              [web]
+3         4      IN   purchase     5.00  [104, bronze]  [app, promo, ref]
+4         5      AU   purchase    99.00    [105, gold]                 []
+event_id        int64
+country           str
+event_type        str
+revenue       float64
+user           object
+tags           object
+dtype: object
+
+=== 2. Filter + aggregate the way you already do (pandas, not SQL) ===
+country
+AU    99.00
+GB    69.49
+IN     5.00
+Name: revenue, dtype: float64
+
+=== 3. Access nested fields with pandas-style indexing ===
+   event_id  revenue  tier
+0         1    49.99  gold
+2         3    19.50  gold
+4         5    99.00  gold
+
+=== 4. Hand off to real pandas when you need it ===
+<class 'pandas.DataFrame'>
+
+=== 5. Performance: same code, one import swapped, on a 2M-row NDJSON file ===
+import pandas as pd:            0.174s
+import chdb.datastore as pd:    0.031s
+speedup:                        5.5x

@@ -1,0 +1,71 @@
+### ./run.sh ###
+
+== 1. Convert Arrow -> CSV in one line (header from the embedded schema) ==
+"event_date","event_id","country","action","amount","tags"
+"2026-01-01",1,"GB","click",5,"[0]"
+"2026-01-02",2,"US","view",6.01,"[0,1]"
+"2026-01-03",3,"DE","purchase",7.02,"[0,1,2]"
+"2026-01-04",4,"FR","signup",8.03,"[0]"
+"2026-01-05",5,"IN","click",9.04,"[0,1]"
+"2026-01-06",6,"AU","view",10.05,"[0,1,2]"
+"2026-01-07",7,"GB","purchase",11.06,"[0]"
+
+== 2. The schema came from the Arrow file itself (no structure supplied) ==
+event_date	Date32					
+event_id	UInt64					
+country	String					
+action	String					
+amount	Float64					
+tags	Array(UInt16)					
+
+== 3. Nested Array column flattens to a quoted JSON-ish string in CSV (the gotcha) ==
+1	[0]
+2	[0,1]
+3	[0,1,2]
+-> in events.csv the tags column becomes:
+1	[0]
+2	[0,1]
+3	[0,1,2]
+
+== 4. No header? Use FORMAT CSV instead of CSVWithNames ==
+"2026-01-01",1,"GB","click",5,"[0]"
+"2026-01-02",2,"US","view",6.01,"[0,1]"
+"2026-01-03",3,"DE","purchase",7.02,"[0,1,2]"
+
+== 5. Transform during conversion: project, filter, aggregate ==
+"country","events","total"
+"US",4,60.4
+"GB",4,56.36
+"AU",3,48.33
+"IN",3,45.3
+"FR",3,42.27
+"DE",3,39.24
+
+== 6. Perf: convert the 3,000,000-row events_large.arrow (~63 MB) -> CSV (best-of-3, warm) ==
+run 1: real 0.23
+run 2: real 0.23
+run 3: real 0.24
+rows written:
+3000000
+
+### python3 run.py ###
+
+== events_chdb.csv (first 4 lines) ==
+"event_date","event_id","country","action","amount","tags"
+"2026-01-01",1,"GB","click",5,"[0]"
+"2026-01-02",2,"US","view",6.01,"[0,1]"
+"2026-01-03",3,"DE","purchase",7.02,"[0,1,2]"
+
+== tags column round-tripped through CSV ==
+1,"[0]"
+2,"[0,1]"
+3,"[0,1,2]"
+
+== by_country, as a DataFrame ==
+country  events  total
+     US       4  60.40
+     GB       4  56.36
+     AU       3  48.33
+     IN       3  45.30
+     FR       3  42.27
+     DE       3  39.24

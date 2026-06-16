@@ -1,0 +1,49 @@
+== 1. Convert BSON -> CSV in one line (naive) ==
+"event_id","event_type","geo","amount"
+1,"signup","{'city':'London','country':'GB'}",5
+2,"purchase","{'city':'Berlin','country':'DE'}",6.01
+3,"login","{'city':'Paris','country':'FR'}",7.02
+4,"refund","{'city':'Austin','country':'US'}",8.03
+5,"signup","{'city':'London','country':'GB'}",9.04
+
+== 2. Inspect the schema clickhouse-local inferred from the BSON ==
+event_id	Nullable(Int64)
+event_type	Nullable(String)
+geo	Map(String, Nullable(String))
+amount	Nullable(Float64)
+
+== 3. The gotcha: the nested geo sub-document became one Map column ==
+   (look at the 'geo' field in events.csv above - it's a single quoted cell)
+{'city':'London','country':'GB'}
+
+== 4. Flatten the nested sub-document into real CSV columns ==
+"event_id","event_type","city","country","amount"
+1,"signup","London","GB",5
+2,"purchase","Berlin","DE",6.01
+3,"login","Paris","FR",7.02
+4,"refund","Austin","US",8.03
+5,"signup","London","GB",9.04
+
+== 5. The flat CSV reads back with a clean, fully typed schema ==
+event_id	Nullable(Int64)
+event_type	Nullable(String)
+city	Nullable(String)
+country	Nullable(String)
+amount	Nullable(Float64)
+
+== 6. Perf: convert the 1.4M-row, ~145 MB events_large.bson to CSV (best-of-3, warm) ==
+run 1: real 1.65
+run 2: real 1.76
+run 3: real 1.64
+rows in output CSV:
+1400000
+
+== 7. chDB Python equivalent (same SELECT, written to CSV) ==
+wrote .../data/events_flat_chdb.csv
+"event_id","event_type","city","country","amount"
+1,"signup","London","GB",5
+2,"purchase","Berlin","DE",6.01
+3,"login","Paris","FR",7.02
+4,"refund","Austin","US",8.03
+5,"signup","London","GB",9.04
+... (20 rows total)

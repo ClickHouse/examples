@@ -1,0 +1,4 @@
+# Generated locally by generate.sh — never committed.
+access.log
+big_access.log
+logs/

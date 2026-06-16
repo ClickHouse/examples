@@ -1,0 +1,38 @@
+== 1. Read the first 5 rows (schema read from the file) ==
+   ┌─event_date─┬──────────────event_time─┬─event_id─┬─country─┬─event_type─┬─revenue─┬─quantity─┐
+1. │ 2026-01-01 │ 2026-01-01 00:00:00.000 │        1 │ GB      │ click      │       5 │        1 │
+2. │ 2026-01-02 │ 2026-01-01 00:02:17.000 │        2 │ US      │ view       │    6.01 │        2 │
+3. │ 2026-01-03 │ 2026-01-01 00:04:34.000 │        3 │ DE      │ purchase   │    7.02 │        3 │
+4. │ 2026-01-04 │ 2026-01-01 00:06:51.000 │        4 │ FR      │ refund     │    8.03 │        4 │
+5. │ 2026-01-05 │ 2026-01-01 00:09:08.000 │        5 │ IN      │ click      │    9.04 │        5 │
+   └────────────┴─────────────────────────┴──────────┴─────────┴────────────┴─────────┴──────────┘
+
+== 2. See the schema without declaring one (DESCRIBE reads the embedded schema) ==
+   ┌─name───────┬─type──────────┬─default_type─┬─default_expression─┬─comment─┬─codec_expression─┬─ttl_expression─┐
+1. │ event_date │ Date32        │              │                    │         │                  │                │
+2. │ event_time │ DateTime64(3) │              │                    │         │                  │                │
+3. │ event_id   │ Int32         │              │                    │         │                  │                │
+4. │ country    │ String        │              │                    │         │                  │                │
+5. │ event_type │ String        │              │                    │         │                  │                │
+6. │ revenue    │ Float64       │              │                    │         │                  │                │
+7. │ quantity   │ Int32         │              │                    │         │                  │                │
+   └────────────┴───────────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+== 3. Filter, aggregate, group by directly on the Avro file ==
+   ┌─country─┬─events─┬─revenue─┬─avg_qty─┐
+1. │ GB      │      2 │   34.24 │       3 │
+2. │ DE      │      2 │   26.16 │       4 │
+3. │ IN      │      1 │    15.1 │       1 │
+   └─────────┴────────┴─────────┴─────────┘
+
+== 4. Logical types round-trip: dates and timestamps come back typed ==
+   ┌─event_date─┬─date_type─┬──────────────event_time─┬─time_type─────┐
+1. │ 2026-01-01 │ Date32    │ 2026-01-01 00:00:00.000 │ DateTime64(3) │
+2. │ 2026-01-02 │ Date32    │ 2026-01-01 00:02:17.000 │ DateTime64(3) │
+3. │ 2026-01-03 │ Date32    │ 2026-01-01 00:04:34.000 │ DateTime64(3) │
+   └────────────┴───────────┴─────────────────────────┴───────────────┘
+
+== 5. Perf: aggregate the 3M-row events_large.avro (best-of-3, warm) ==
+run 1: real 0.55
+run 2: real 0.56
+run 3: real 0.56

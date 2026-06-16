@@ -1,0 +1,54 @@
+### ./run.sh ###
+== 1. Convert CSV -> JSONL in one line ==
+wrote events.jsonl; first 3 lines:
+{"event_date":"2026-01-01","event_id":1,"country":"GB","action":"click","amount":5,"quantity":1}
+{"event_date":"2026-01-02","event_id":2,"country":"US","action":"view","amount":6.01,"quantity":2}
+{"event_date":"2026-01-03","event_id":3,"country":"DE","action":"purchase","amount":7.02,"quantity":3}
+
+== 2. The CSV schema, auto-inferred (carried into JSONL types) ==
+event_date	Nullable(Date)					
+event_id	Nullable(Int64)					
+country	Nullable(String)					
+action	Nullable(String)					
+amount	Nullable(Float64)					
+quantity	Nullable(Int64)					
+
+== 3. Round-trip: read the JSONL straight back, no schema needed ==
+US	4	60.4
+GB	4	56.36
+AU	3	48.33
+IN	3	45.3
+FR	3	42.27
+DE	3	39.24
+
+== 4. Keep 64-bit integers JS-safe by quoting them ==
+{"event_date":"2026-01-01","event_id":"1","country":"GB","action":"click","amount":5,"quantity":"1"}
+{"event_date":"2026-01-02","event_id":"2","country":"US","action":"view","amount":6.01,"quantity":"2"}
+
+== 5. Convert and gzip in the same command (.jsonl.gz auto-detected) ==
+wrote events.jsonl.gz; read it back transparently:
+20
+
+== 6. Reverse direction: JSONL -> CSV ==
+"event_date","event_id","country","action","amount","quantity"
+"2026-01-01",1,"GB","click",5,1
+"2026-01-02",2,"US","view",6.01,2
+
+== 7. Throughput: convert the 3M-row, ~120 MB events_large.csv (best-of-3, warm) ==
+run 1: real 0.34
+run 2: real 0.34
+run 3: real 0.36
+rows in output:
+3000000
+-rw-r--r--@ 1 al  staff  323711569  6 Jun 20:20 events_large.jsonl
+
+### python3 run.py (chDB) ###
+{"event_date":"2026-01-01","event_id":1,"country":"GB","action":"click","amount":5,"quantity":1}
+{"event_date":"2026-01-02","event_id":2,"country":"US","action":"view","amount":6.01,"quantity":2}
+{"event_date":"2026-01-03","event_id":3,"country":"DE","action":"purchase","amount":7.02,"quantity":3}
+"GB",4
+"US",4
+"AU",3
+"DE",3
+"FR",3
+"IN",3

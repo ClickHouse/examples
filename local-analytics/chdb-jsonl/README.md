@@ -1,0 +1,50 @@
+# Read a JSONL file in Python with chDB (drop-in pandas)
+
+Companion to the article
+[How to read a JSONL file in Python (faster than pandas)](https://clickhouse.com/resources/engineering/read-jsonl-file-python).
+
+chDB is a drop-in replacement for pandas: change one import line and your
+existing pandas code runs on ClickHouse's engine, so it stays fast as files grow.
+
+## Run it
+
+```bash
+./generate.sh        # writes data/ (a small JSONL with nested fields + a 2M-row file)
+python3 run.py       # runs every snippet from the article plus the perf contrast
+# or open run.ipynb in Jupyter
+```
+
+Row counts are overridable for a fast verify: `LARGE_ROWS=100000 ./generate.sh`.
+
+Requirements: `pip install chdb pandas`, plus `clickhouse` for `generate.sh`
+(install with `clickhousectl`: `curl https://clickhouse.com/cli | sh` then
+`clickhousectl local use latest`).
+
+## The one-liner
+
+```python
+import chdb.datastore as pd
+df = pd.read_json("data/orders.jsonl", lines=True)
+```
+
+## What's covered
+
+- `pd.read_json(..., lines=True)` reads JSONL and infers each column's type automatically.
+- Filter + aggregate with the pandas you already write (`df[...]`, `groupby`, `sum`) — no SQL.
+- Nested struct (customer) and array (skus) fields: access via `.to_pandas()` then standard pandas.
+- `df.to_pandas()` returns a real `pandas.DataFrame` when a downstream library needs one.
+- Perf contrast: the same code with one import swapped, on a 2M-row JSONL.
+
+## Files
+
+| File | What it is |
+|---|---|
+| `data/orders.jsonl` | small JSONL with a nested object and a skus array |
+| `data/orders_large.jsonl` | 2M rows for the performance contrast |
+
+`expected_output.txt` has the real (trimmed) output so the example is self-verifying.
+
+Prefer the command line? See the `clickhouse local` version,
+[Run SQL on a JSONL file](https://clickhouse.com/resources/engineering/run-sql-on-jsonl-file).
+
+Perf numbers: Apple M4 Pro (14 cores, 24 GB RAM, macOS); chDB 4.1.8, Python 3.14; best-of-3, warm.

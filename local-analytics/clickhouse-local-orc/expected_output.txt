@@ -1,0 +1,62 @@
+== 1. Read the first rows (schema auto-detected from the ORC footer) ==
+   ┌────────────────────event_time─┬─user_id─┬─country─┬─device──┬─event_type─┬─revenue─┬─quantity─┐
+1. │ 2026-01-01 00:00:00.000000000 │       1 │ GB      │ desktop │ click      │       5 │        1 │
+2. │ 2026-01-01 00:02:17.000000000 │       2 │ US      │ mobile  │ view       │    6.01 │        2 │
+3. │ 2026-01-01 00:04:34.000000000 │       3 │ DE      │ tablet  │ purchase   │    7.02 │        3 │
+4. │ 2026-01-01 00:06:51.000000000 │       4 │ FR      │ desktop │ refund     │    8.03 │        4 │
+5. │ 2026-01-01 00:09:08.000000000 │       5 │ IN      │ mobile  │ click      │    9.04 │        5 │
+   └───────────────────────────────┴─────────┴─────────┴─────────┴────────────┴─────────┴──────────┘
+
+== 2. Inspect the inferred schema, no CREATE TABLE ==
+   ┌─name───────┬─type────────────────────┬─default_type─┬─default_expression─┬─comment─┬─codec_expression─┬─ttl_expression─┐
+1. │ event_time │ Nullable(DateTime64(9)) │              │                    │         │                  │                │
+2. │ user_id    │ Nullable(Int64)         │              │                    │         │                  │                │
+3. │ country    │ Nullable(String)        │              │                    │         │                  │                │
+4. │ device     │ Nullable(String)        │              │                    │         │                  │                │
+5. │ event_type │ Nullable(String)        │              │                    │         │                  │                │
+6. │ revenue    │ Nullable(Float64)       │              │                    │         │                  │                │
+7. │ quantity   │ Nullable(Int8)          │              │                    │         │                  │                │
+   └────────────┴─────────────────────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+== 3. Filter, aggregate, group by directly on the ORC file ==
+   ┌─country─┬─events─┬─revenue─┬─avg_qty─┐
+1. │ GB      │      2 │   34.24 │       3 │
+2. │ DE      │      2 │   26.16 │       4 │
+3. │ IN      │      1 │    15.1 │       1 │
+   └─────────┴────────┴─────────┴─────────┘
+
+== 4. Columnar read: query touches two columns, ORC reads only those ==
+   ┌─country─┬─────────rev─┐
+1. │ JP      │ 75125313.31 │ -- 75.13 million
+2. │ AU      │ 75114924.84 │ -- 75.11 million
+3. │ CA      │ 75095320.01 │ -- 75.10 million
+4. │ US      │ 75066382.72 │ -- 75.07 million
+5. │ DE      │ 74978831.54 │ -- 74.98 million
+   └─────────┴─────────────┘
+
+== 5. Override the inferred structure when you need to ==
+   ┌─country─┬─events─┐
+1. │ AU      │      3 │
+2. │ DE      │      3 │
+3. │ FR      │      3 │
+4. │ GB      │      4 │
+5. │ IN      │      3 │
+6. │ US      │      4 │
+   └─────────┴────────┘
+
+== 6. Read a gzipped ORC transparently (.orc.gz) ==
+   ┌─count()─┐
+1. │      20 │
+   └─────────┘
+
+== 7. Perf: aggregate the 3M-row, ~28 MB events_large.orc (best-of-3, warm) ==
+run 1: real 0.28
+run 2: real 0.28
+run 3: real 0.28
+   ┌─country─┬─events─┬─────revenue─┬─avg_qty─┐
+1. │ JP      │  74986 │ 18786791.43 │   3.002 │
+2. │ GB      │  74968 │ 18777748.86 │   3.007 │
+3. │ AU      │  75299 │ 18777385.67 │   2.996 │
+4. │ DE      │  75153 │ 18776423.62 │       3 │
+5. │ CA      │  74992 │ 18743689.03 │   3.005 │
+   └─────────┴────────┴─────────────┴─────────┘

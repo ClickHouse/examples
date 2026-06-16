@@ -1,0 +1,59 @@
+$ ./run.sh
+
+== 1. Convert Parquet -> Avro in one line ==
+20
+
+== 2. Source Parquet schema (columnar, typed) ==
+event_id	UInt64
+ts	DateTime64(3, 'UTC')
+country	String
+event_type	String
+amount	Float64
+items	UInt8
+device	Tuple(
+    `1` String,
+    `2` UInt8)
+
+== 3. Avro schema after conversion (note the integer widening) ==
+event_id	Int64
+ts	DateTime64(3)
+country	String
+event_type	String
+amount	Float64
+items	Int32
+device	Tuple(
+    `1` String,
+    `2` Int32)
+
+== 4. Read the Avro back: nested tuple became a nested Avro record ==
+{"event_id":1,"ts":"2026-01-01 00:00:00.000","country":"GB","event_type":"click","amount":5,"items":1,"device":{"1":"mobile","2":1}}
+{"event_id":2,"ts":"2026-01-01 01:00:00.000","country":"US","event_type":"view","amount":6.01,"items":2,"device":{"1":"desktop","2":0}}
+{"event_id":3,"ts":"2026-01-01 02:00:00.000","country":"DE","event_type":"purchase","amount":7.02,"items":3,"device":{"1":"tablet","2":1}}
+
+== 5. Access the nested record fields ==
+1	mobile	1
+2	desktop	0
+3	tablet	1
+
+== 6. Smaller Avro with the deflate codec ==
+-rw-r--r--@ 1 al  staff  45574942  6 Jun 20:30 events_large.avro
+-rw-r--r--@ 1 al  staff  40954933  6 Jun 20:29 events_large.parquet
+
+== 7. Perf: convert the 3M-row events_large.parquet -> Avro (best-of-3, warm) ==
+# ~0.6s on an Apple M4 Pro (14 cores, 24 GB RAM), warm OS page cache:
+run 1: real 0.61
+run 2: real 0.64
+run 3: real 0.66
+3000000
+
+
+$ python3 run.py   # chDB equivalent (Surface B)
+
+converted events.parquet -> events.avro
+   rows
+0    20
+   ┌─event_id─┬─country─┬─device_type─┬─is_even─┐
+1. │        1 │ GB      │ mobile      │       1 │
+2. │        2 │ US      │ desktop     │       0 │
+3. │        3 │ DE      │ tablet      │       1 │
+   └──────────┴─────────┴─────────────┴─────────┘

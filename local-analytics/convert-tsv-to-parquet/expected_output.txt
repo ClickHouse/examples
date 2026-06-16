@@ -1,0 +1,63 @@
+### ./run.sh (CLI / clickhouse-local) ###
+
+== 1. Convert TSV -> Parquet in one line ==
+events.tsv     668 bytes
+events.parquet 2875 bytes
+
+== 2. The types were inferred from the TSV and carried into Parquet ==
+event_date	Nullable(Date32)					
+event_id	Nullable(Int64)					
+country	Nullable(String)					
+action	Nullable(String)					
+amount	Nullable(Float64)					
+sessions	Nullable(Int64)					
+
+== 3. Read the Parquet back to confirm it is correct ==
+2026-01-01	1	GB	click	5	1
+2026-01-02	2	US	view	6.01	2
+2026-01-03	3	DE	purchase	7.02	3
+2026-01-04	4	FR	signup	8.03	4
+2026-01-05	5	IN	click	9.04	5
+
+== 4. Lock the schema instead of inferring (keep event_id a UInt32, etc.) ==
+event_date	Date32					
+event_id	UInt32					
+country	String					
+action	String					
+amount	Float64					
+sessions	UInt8					
+
+== 5. Compression: ClickHouse defaults to zstd; compare codecs on the 3M-row file ==
+  none  45304450 bytes
+  lz4   32697093 bytes
+  zstd  22939660 bytes
+  (source events_large.tsv: 110671413 bytes)
+
+== 6. Inspect the Parquet footer (rows, row groups, per-column codec) with ParquetMetadata ==
+Row 1:
+──────
+num_rows:       3000000 -- 3.00 million
+num_row_groups: 3
+codecs:         ['ZSTD']
+
+== 7. Perf: convert the 3M-row, ~111 MB events_large.tsv -> Parquet (best-of-3, warm) ==
+run 1: real 0.30
+run 2: real 0.30
+run 3: real 0.29
+3000000
+
+### python3 run.py (chDB / in-process Python) ###
+
+event_date	Nullable(Date32)					
+event_id	Nullable(Int64)					
+country	Nullable(String)					
+action	Nullable(String)					
+amount	Nullable(Float64)					
+sessions	Nullable(Int64)					
+
+"2026-01-01",1,"GB","click",5,1
+"2026-01-02",2,"US","view",6.01,2
+"2026-01-03",3,"DE","purchase",7.02,3
+"2026-01-04",4,"FR","signup",8.03,4
+"2026-01-05",5,"IN","click",9.04,5
+

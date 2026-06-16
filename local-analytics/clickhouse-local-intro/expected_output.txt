@@ -1,0 +1,34 @@
+=== 1. version (single self-contained binary) ===
+26.6.1.117
+
+=== 2. SELECT straight from a Parquet file, no import ===
+click	250	12750
+login	250	12000
+logout	250	12250
+purchase	250	12500
+
+=== 3. Schema is auto-inferred; DESCRIBE shows it ===
+id	UInt64					
+event	String					
+day	Date32					
+amount	UInt8					
+
+=== 4. Glob over many files + transparent .gz decompression ===
+200	300
+500	150
+404	150
+rows across the .gz file alone:
+300
+
+=== 5. Convert CSV -> Parquet in one line ===
+200	43200
+
+=== 6. JOIN across two different files in one query ===
+user_16	4	1092
+user_15	4	1080
+user_14	4	1068
+user_13	4	1056
+user_12	4	1044
+
+=== 7. Query a remote file over HTTP with url() (skips if offline) ===
+1000000

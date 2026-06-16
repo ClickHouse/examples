@@ -1,5 +1,8 @@
 # Hackbot - A Streamlit chatbot 💬 for Hacker News powered by LlamaIndex 🦙 and ClickHouse 🚀
 
+> [!WARNING]
+> **Unmaintained example.** This example was last updated in December 2024 and is no longer actively maintained. Its dependencies and instructions are likely out of date. It accompanies a point-in-time blog post and is provided as-is — review and update dependencies before running, and do not use this code in production.
+
 Simple chatbot app that uses LllamaIndex, ClickHouse,  Hacker News posts, and Stack Overflow survey results to allow an LLM (chatbot v4.0) to provide answers on people's opinions on technology. Supporting blog post [here](https://clickhouse.com/blog/building-hackernews-stackoverflow-chatbot-with-llamaindex-and-clickhouse).
 
 ![screenshot.png](screenshot.png)

@@ -1,0 +1,53 @@
+== 1. Convert CSV -> TSV in one line (header kept) ==
+order_date	order_id	country	product	revenue	quantity
+2026-01-01	1	GB	widget	5	1
+2026-01-02	2	US	gadget	6.01	2
+2026-01-03	3	DE	gizmo	7.02	3
+2026-01-04	4	FR	doohickey	8.03	4
+
+== 2. The header is preserved by TSVWithNames ==
+order_date	Nullable(Date)					
+order_id	Nullable(Int64)					
+country	Nullable(String)					
+product	Nullable(String)					
+revenue	Nullable(Float64)					
+quantity	Nullable(Int64)					
+
+== 3. Drop the header: FORMAT TSV writes data rows only ==
+2026-01-01	1	GB	widget	5	1
+2026-01-02	2	US	gadget	6.01	2
+2026-01-03	3	DE	gizmo	7.02	3
+
+== 4. Tab and comma handling: convert notes.csv and inspect the bytes ==
+-- raw TSV bytes (note the comma stays literal, the embedded tab becomes \t) --
+0000000    i   d  \t   l   a   b   e   l  \t   n   o   t   e  \n   1  \t
+0000020    r   e   d   ,       l   a   r   g   e  \t   l   i   n   e   1
+0000040    \   t   l   i   n   e   2  \n   2  \t   b   l   u   e  \t   p
+0000060    l   a   i   n  \n                                            
+0000065
+-- read it back: the original tab is restored, round-trip is lossless --
+Row 1:
+──────
+id:    1
+label: red, large
+note:  line1	line2
+
+Row 2:
+──────
+id:    2
+label: blue
+note:  plain
+
+== 5. Perf: convert the ~3M-row orders_large.csv to TSV (best-of-3, warm) ==
+run 1: real 0.32
+run 2: real 0.32
+run 3: real 0.31
+rows written: 3000000
+-rw-r--r--@ 1 al  staff  132271712  6 Jun 20:20 orders_large.csv
+-rw-r--r--@ 1 al  staff  114315131  6 Jun 20:22 orders_large.tsv
+
+== 6. chDB (Python) equivalent — same SELECT ... FORMAT, written to a file ==
+order_date  order_id country product  revenue  quantity
+2026-01-01         1      GB  widget     5.00         1
+2026-01-02         2      US  gadget     6.01         2
+2026-01-03         3      DE   gizmo     7.02         3

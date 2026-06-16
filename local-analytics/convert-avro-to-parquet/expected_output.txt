@@ -1,0 +1,54 @@
+== 1. Convert Avro -> Parquet in one line ==
+wrote events.parquet
+
+== 2. The schema Avro carried, now in the Parquet file ==
+event_date	Date32					
+event_id	Int64					
+country	String					
+action	String					
+amount	Float64					
+items	Int32					
+
+== 3. Read it back to confirm the data round-tripped ==
+2026-01-01	1	GB	click	5	1
+2026-01-02	2	US	view	6.01	2
+2026-01-03	3	DE	signup	7.02	3
+2026-01-04	4	FR	purchase	8.03	4
+2026-01-05	5	IN	click	9.04	5
+
+== 4. Pick the compression codec (default is zstd); compare on the 3M-row file ==
+  none    45054899 bytes
+  snappy  32584563 bytes
+  zstd    22939538 bytes
+
+== 5. Inspect the Parquet footer (row groups, compression) ==
+Row 1:
+──────
+num_rows:       20
+num_row_groups: 1
+format_version: 2
+
+== 6. Conversion throughput: 3,000,000-row events_large.avro -> Parquet (best-of-3, warm) ==
+run 1: real 0.61
+run 2: real 0.62
+run 3: real 0.65
+input  events_large.avro:     45796477 bytes
+output events_large.parquet:  22939538 bytes
+3000000
+
+######## chDB (run.py) ########
+
+wrote events_py.parquet
+"event_date","Date32","","","","",""
+"event_id","Int64","","","","",""
+"country","String","","","","",""
+"action","String","","","","",""
+"amount","Float64","","","","",""
+"items","Int32","","","","",""
+
+  event_date  event_id country    action  amount  items
+0 2026-01-01         1      GB     click    5.00      1
+1 2026-01-02         2      US      view    6.01      2
+2 2026-01-03         3      DE    signup    7.02      3
+3 2026-01-04         4      FR  purchase    8.03      4
+4 2026-01-05         5      IN     click    9.04      5

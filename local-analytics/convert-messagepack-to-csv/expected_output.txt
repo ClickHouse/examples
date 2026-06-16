@@ -1,0 +1,54 @@
+### ./generate.sh
+Generating data/orders.msgpack (20 rows)...
+Generating data/orders_large.msgpack (3000000 rows)...
+
+Generated files:
+total 438576
+drwxr-xr-x@ 7 al  staff        224  6 Jun 20:33 .
+drwxr-xr-x@ 9 al  staff        288  6 Jun 20:33 ..
+-rw-r--r--@ 1 al  staff        817  6 Jun 20:33 orders_chdb.csv
+-rw-r--r--@ 1 al  staff  132265170  6 Jun 20:33 orders_large.csv
+-rw-r--r--@ 1 al  staff   92268320  6 Jun 20:33 orders_large.msgpack
+-rw-r--r--@ 1 al  staff        817  6 Jun 20:33 orders.csv
+-rw-r--r--@ 1 al  staff        530  6 Jun 20:33 orders.msgpack
+
+### ./run.sh
+== 1. MsgPack read needs an explicit structure (this is the gotcha) ==
+-- without a structure, schema cannot be extracted:
+Code: 636. DB::Exception: The table structure cannot be extracted from a MsgPack format file. Error:
+Code: 36. DB::Exception: You must specify setting input_format_msgpack_number_of_columns to extract table schema from MsgPack data. (BAD_ARGUMENTS) (version 26.6.1.117 (official build)).
+You can specify the structure manually: (in file/uri /Users/al/ch/marketing/examples/local-analytics/convert-messagepack-to-csv/data/orders.msgpack). (CANNOT_EXTRACT_TABLE_STRUCTURE)
+
+== 2. Convert MsgPack -> CSV in one line (supply the structure, write CSVWithNames) ==
+-- first rows of the resulting CSV:
+"order_date","order_id","country","product","revenue","quantity"
+"2026-01-01",1,"GB","widget",5,1
+"2026-01-02",2,"US","gadget",6.01,2
+"2026-01-03",3,"DE","gizmo",7.02,3
+"2026-01-04",4,"FR","doohickey",8.03,4
+"2026-01-05",5,"IN","widget",9.04,5
+
+== 3. Confirm the round-trip: query the CSV back ==
+US	4	60.4
+GB	4	56.36
+AU	3	48.33
+IN	3	45.3
+FR	3	42.27
+DE	3	39.24
+
+== 4. Convert MsgPack -> CSV (3,000,000 rows), best-of-3 warm ==
+run 1: real 0.62
+run 2: real 0.69
+run 3: real 0.58
+-- output row count and size:
+3000000
+-rw-r--r--@ 1 al  staff  132269307  6 Jun 20:34 orders_large.csv
+
+### python3 run.py  (chDB equivalent)
+  country  orders  revenue
+0      US       4    60.40
+1      GB       4    56.36
+2      AU       3    48.33
+3      IN       3    45.30
+4      FR       3    42.27
+5      DE       3    39.24

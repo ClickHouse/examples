@@ -1,0 +1,46 @@
+== 1. Read a |~|-delimited file (header auto-detected) ==
+1	GB	widget	5	1
+2	US	gadget	6.01	2
+3	DE	gizmo	7.02	3
+4	FR	doohickey	8.03	4
+5	IN	widget	9.04	5
+
+== 2. Inspect the inferred schema with DESCRIBE ==
+order_id	Nullable(Int64)					
+country	Nullable(String)					
+product	Nullable(String)					
+revenue	Nullable(Float64)					
+quantity	Nullable(Int64)					
+
+== 3. Filter and group by, directly on the file ==
+AU	2	26.16
+IN	2	24.14
+FR	2	22.12
+DE	2	20.1
+US	2	18.08
+GB	2	16.06
+
+== 4. Custom field AND row delimiter, no header ==
+1	GB	5
+2	US	6.01
+3	DE	7.02
+4	FR	8.03
+5	IN	9.04
+
+== 5. A .gz custom-delimited file decompresses transparently ==
+12
+
+== 6. Perf: group the ~112 MB, 3,000,000-row orders_large.txt (best-of-3, warm) ==
+run 1: real 0.56
+run 2: real 0.54
+run 3: real 0.57
+US	300294	75094223.6
+FR	300166	75079479.91
+JP	300169	75064502.48
+CA	300164	75009787.27
+GB	300110	75002592.83
+
+# ~0.55s on an Apple M4 Pro (14 cores, 24 GB RAM), warm OS page cache.
+# orders_large.txt uses an unseeded row id, so the exact per-country totals
+# above differ slightly each regenerate; the shape is stable (~300k orders and
+# ~75M revenue per country across 10 countries).

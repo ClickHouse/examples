@@ -1,0 +1,73 @@
+== 1. Read the first 10 rows (';' delimiter, header auto-detected) ==
+    ┌─order_date─┬─order_id─┬─country─┬─product───┬─revenue─┬─quantity─┐
+ 1. │ 2026-01-01 │        1 │ GB      │ widget    │       5 │        1 │
+ 2. │ 2026-01-02 │        2 │ US      │ gadget    │    6.01 │        2 │
+ 3. │ 2026-01-03 │        3 │ DE      │ gizmo     │    7.02 │        3 │
+ 4. │ 2026-01-04 │        4 │ FR      │ doohickey │    8.03 │        4 │
+ 5. │ 2026-01-05 │        5 │ IN      │ widget    │    9.04 │        5 │
+ 6. │ 2026-01-06 │        6 │ AU      │ gadget    │   10.05 │        1 │
+ 7. │ 2026-01-07 │        7 │ GB      │ gizmo     │   11.06 │        2 │
+ 8. │ 2026-01-08 │        8 │ US      │ doohickey │   12.07 │        3 │
+ 9. │ 2026-01-09 │        9 │ DE      │ widget    │   13.08 │        4 │
+10. │ 2026-01-10 │       10 │ FR      │ gadget    │   14.09 │        5 │
+    └────────────┴──────────┴─────────┴───────────┴─────────┴──────────┘
+
+== 2. Inspect the inferred schema (names from the header, types from the data) ==
+   ┌─name───────┬─type──────────────┬─default_type─┬─default_expression─┬─comment─┬─codec_expression─┬─ttl_expression─┐
+1. │ order_date │ Nullable(Date)    │              │                    │         │                  │                │
+2. │ order_id   │ Nullable(Int64)   │              │                    │         │                  │                │
+3. │ country    │ Nullable(String)  │              │                    │         │                  │                │
+4. │ product    │ Nullable(String)  │              │                    │         │                  │                │
+5. │ revenue    │ Nullable(Float64) │              │                    │         │                  │                │
+6. │ quantity   │ Nullable(Int64)   │              │                    │         │                  │                │
+   └────────────┴───────────────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+== 3. Aggregate directly on the semicolon file, no import step ==
+   ┌─country─┬─orders─┬─revenue─┬─avg_qty─┐
+1. │ US      │      4 │    60.4 │     3.5 │
+2. │ GB      │      4 │   56.36 │     2.5 │
+3. │ AU      │      3 │   48.33 │       2 │
+4. │ IN      │      3 │    45.3 │    2.67 │
+5. │ FR      │      3 │   42.27 │    3.33 │
+6. │ DE      │      3 │   39.24 │       4 │
+   └─────────┴────────┴─────────┴─────────┘
+
+== 4. GOTCHA: European decimal commas (revenue '1234,50') infer as String ==
+   ┌─name───────┬─type─────────────┬─default_type─┬─default_expression─┬─comment─┬─codec_expression─┬─ttl_expression─┐
+1. │ order_date │ Nullable(Date)   │              │                    │         │                  │                │
+2. │ order_id   │ Nullable(Int64)  │              │                    │         │                  │                │
+3. │ country    │ Nullable(String) │              │                    │         │                  │                │
+4. │ product    │ Nullable(String) │              │                    │         │                  │                │
+5. │ revenue    │ Nullable(String) │              │                    │         │                  │                │
+6. │ quantity   │ Nullable(Int64)  │              │                    │         │                  │                │
+   └────────────┴──────────────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+== 5. Fix: convert decimal-comma text to a number with replaceOne(...)::Float64 ==
+   ┌─country─┬─revenue_eur─┐
+1. │ DE      │      1234.5 │
+2. │ FR      │        1000 │
+3. │ DE      │       89.99 │
+4. │ NL      │        7.02 │
+5. │ FR      │        6.01 │
+   └─────────┴─────────────┘
+
+== 6. Aggregate the converted European values ==
+   ┌─total_eur─┐
+1. │   2337.52 │
+   └───────────┘
+
+== 7. Perf: aggregate the 3M-row, ~110 MB orders_large.csv (best-of-3, warm) ==
+# ~0.6s on an Apple M4 Pro (14 cores, 24 GB RAM), warm OS page cache:
+run 1: real 0.60
+run 2: real 0.59
+run 3: real 0.59
+# orders_large.csv uses an unseeded row id, so the exact per-country totals
+# below differ slightly each time you regenerate; the shape is stable:
+# ~300k orders/country, ~75M revenue/country, avg_qty ~3.0.
+   ┌─country─┬─orders─┬─────revenue─┬─avg_qty─┐
+1. │ IN      │ 300629 │ 75308927.76 │   2.997 │
+2. │ JP      │ 300443 │ 75167930.24 │   2.997 │
+3. │ CA      │ 300269 │  75093010.9 │   3.002 │
+4. │ US      │ 300573 │ 75077564.11 │   2.998 │
+5. │ GB      │ 300093 │ 75061851.74 │       3 │
+   └─────────┴────────┴─────────────┴─────────┘

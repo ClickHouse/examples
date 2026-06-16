@@ -1,0 +1,80 @@
+$ ./generate.sh
+Generating data/events.jsonl (20 rows)...
+Generating data/events_large.jsonl (1000000 rows)...
+
+Generated files:
+total 278592
+-rw-r--r--@ 1 al  staff  142632171  events_large.jsonl
+-rw-r--r--@ 1 al  staff       2745  events.jsonl
+
+# A couple of sample JSONL lines (one object per line, incl. a nested device object):
+{"event_id":1,"ts":"2026-01-01 00:00:00","country":"GB","action":"click","amount":5,"is_member":1,"device":{"os":"ios","ver":"1"}}
+{"event_id":2,"ts":"2026-01-01 00:02:17","country":"US","action":"view","amount":6.01,"is_member":0,"device":{"os":"android","ver":"2"}}
+
+
+$ ./run.sh
+== 1. Convert JSONL -> Parquet in one line ==
+wrote events.parquet; row count:
+20
+
+== 2. Schema inferred from JSONL (types per column) ==
+event_id	Nullable(Int64)
+ts	Nullable(DateTime)
+country	Nullable(String)
+action	Nullable(String)
+amount	Nullable(Float64)
+is_member	Nullable(Int64)
+device	Tuple(\n    os Nullable(String),\n    ver Nullable(String))
+
+== 3. Schema carried into the Parquet file (ts -> DateTime64, nested device -> Tuple/struct) ==
+event_id	Nullable(Int64)
+ts	Nullable(DateTime64(3, 'UTC'))
+country	Nullable(String)
+action	Nullable(String)
+amount	Nullable(Float64)
+is_member	Nullable(Int64)
+device	Tuple(\n    os Nullable(String),\n    ver Nullable(String))
+
+== 4. Nested JSON survives as a real Parquet struct ==
+   ┌─event_id─┬─os──────┬─ver─┬─amount─┐
+1. │        1 │ ios     │ 1   │      5 │
+2. │        2 │ android │ 2   │   6.01 │
+3. │        3 │ web     │ 3   │   7.02 │
+4. │        4 │ ios     │ 4   │   8.03 │
+5. │        5 │ android │ 5   │   9.04 │
+   └──────────┴─────────┴─────┴────────┘
+
+== 5. Pick the compression codec explicitly (default is snappy; zstd packs smaller) ==
+wrote events_zstd.parquet
+
+== 6. Inspect the Parquet footer (row groups + compressed size) ==
+Row 1:
+──────
+num_rows:                1000000
+num_row_groups:          1
+total_compressed_size:   9599064 -- 9.60 million
+total_uncompressed_size: 19915486 -- 19.92 million
+
+== 7. Size: 137 MB of JSONL -> a much smaller, typed Parquet file ==
+142632171 bytes  events_large.jsonl
+13927506 bytes  events_large.parquet
+
+== 8. Perf: convert the 1,000,000-row, ~137 MB events_large.jsonl (best-of-3, warm) ==
+run 1: real 0.57
+run 2: real 0.50
+run 3: real 0.50
+
+
+$ python3 run.py    # chDB equivalent
+wrote events_chdb.parquet
+   ┌─rows─┐
+1. │   20 │
+   └──────┘
+# DESCRIBE confirms the same types (DateTime64, Tuple struct) as the CLI.
+   ┌─event_id─┬─os──────┬─ver─┬─amount─┐
+1. │        1 │ ios     │ 1   │      5 │
+2. │        2 │ android │ 2   │   6.01 │
+3. │        3 │ web     │ 3   │   7.02 │
+4. │        4 │ ios     │ 4   │   8.03 │
+5. │        5 │ android │ 5   │   9.04 │
+   └──────────┴─────────┴─────┴────────┘

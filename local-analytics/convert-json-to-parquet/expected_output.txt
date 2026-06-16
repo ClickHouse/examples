@@ -1,0 +1,88 @@
+################################################################
+# ./run.sh  (clickhouse local — CLI)
+################################################################
+== 1. Convert JSON -> Parquet in one line ==
+wrote events.parquet
+
+== 2. Schema inferred from the JSON (note the nested geo object) ==
+event_id	Nullable(Int64)
+ts	Nullable(DateTime)
+event_type	Nullable(String)
+geo	Tuple(\n    city Nullable(String),\n    country Nullable(String))
+tags	Array(Nullable(String))
+amount	Nullable(Float64)
+
+== 3. Same types carried into the Parquet file ==
+event_id	Nullable(Int64)
+ts	Nullable(DateTime64(3, \'UTC\'))
+event_type	Nullable(String)
+geo	Tuple(\n    city Nullable(String),\n    country Nullable(String))
+tags	Array(Nullable(String))
+amount	Nullable(Float64)
+
+== 4. Nested geo object became nested Parquet columns (geo.city, geo.country) ==
+event_id	event_id	1
+ts	ts	1
+event_type	event_type	1
+city	geo.city	1
+country	geo.country	1
+element	tags.list.element	2
+amount	amount	1
+
+== 5. Read the typed columns back, including the nested fields ==
+1	GB	London	[]	1
+2	US	NYC	['mobile']	2.01
+3	DE	Berlin	['mobile','web']	3.02
+4	FR	Paris	[]	4.03
+5	IN	Mumbai	['mobile']	5.04
+
+== 6. Aggregate straight on the nested column ==
+AU	2	18.16
+IN	2	16.14
+FR	2	14.12
+DE	2	12.1
+US	2	10.08
+GB	2	8.06
+
+== 7. Choose the compression codec (default is zstd) ==
+zstd / snappy / none, bytes:
+7849144 events_zstd.parquet
+13951649 events_snappy.parquet
+22969357 events_uncompressed.parquet
+
+== 8. JSON vs Parquet on disk (1,000,000 rows) ==
+139969554 events_large.json
+7849144 events_zstd.parquet
+
+== 9. Perf: convert the 1,000,000-row events_large.json to Parquet (best-of-3, warm) ==
+run 1: real 0.57
+run 2: real 0.59
+run 3: real 0.58
+rows in Parquet: 1000000
+
+################################################################
+# python3 run.py  (chDB — in-process ClickHouse in Python)
+################################################################
+wrote events_chdb.parquet
+         name                                               type
+0    event_id                                    Nullable(Int64)
+1          ts                     Nullable(DateTime64(3, 'UTC'))
+2  event_type                                   Nullable(String)
+3         geo  Tuple(\n    city Nullable(String),\n    countr...
+4        tags                            Array(Nullable(String))
+5      amount                                  Nullable(Float64)
+   ┌─event_id─┬─country─┬─city───┬─tags─────────────┬─amount─┐
+1. │        1 │ GB      │ London │ []               │      1 │
+2. │        2 │ US      │ NYC    │ ['mobile']       │   2.01 │
+3. │        3 │ DE      │ Berlin │ ['mobile','web'] │   3.02 │
+4. │        4 │ FR      │ Paris  │ []               │   4.03 │
+5. │        5 │ IN      │ Mumbai │ ['mobile']       │   5.04 │
+   └──────────┴─────────┴────────┴──────────────────┴────────┘
+
+  country  events  total
+0      AU       2  18.16
+1      IN       2  16.14
+2      FR       2  14.12
+3      DE       2  12.10
+4      US       2  10.08
+5      GB       2   8.06

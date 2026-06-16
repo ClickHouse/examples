@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+// One message = one row. Field numbers (the = 1, = 2 ...) are the wire
+// identity of each field; names are for humans. ClickHouse maps each field
+// to a column by name when reading/writing the Protobuf format.
+message Event {
+  uint64 id         = 1;
+  string country    = 2;
+  string device     = 3;
+  string event_type = 4;
+  double revenue    = 5;
+  uint32 quantity   = 6;
+}
