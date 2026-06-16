@@ -80,7 +80,7 @@ pyasn1-modules==0.4.2
 pydantic==2.11.5
 pydantic-core==2.33.2
 pydot==1.4.2
-pyjwt==2.9.0
+pyjwt==2.13.0
 pymongo==4.13.0
 pyparsing==3.2.3
 python-dateutil==2.9.0.post0
