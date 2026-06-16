@@ -1,5 +1,8 @@
 # UpClick GCP Demo
 
+> [!WARNING]
+> **Unmaintained example.** This example was last updated in December 2024 and is no longer actively maintained. Its dependencies and instructions are likely out of date, and known dependency vulnerabilities are not being patched. It accompanies a point-in-time blog post and is provided as-is — review and update dependencies before running, and do not use this code in production.
+
 ## Description
 
 A demo GCP 2nd gen Pub/Sub NodeJS cloud function triggered by scheduler via pub/sub messages containing a target website.
