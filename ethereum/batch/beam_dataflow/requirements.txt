@@ -72,7 +72,7 @@ packaging==25.0
 pip==25.1.1
 pluggy==1.6.0
 proto-plus==1.26.1
-protobuf==5.29.5
+protobuf==5.29.6
 pyarrow==16.1.0
 pyarrow-hotfix==0.7
 pyasn1==0.6.1
