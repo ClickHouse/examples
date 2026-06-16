@@ -1,0 +1,65 @@
+$ ./generate.sh
+Generating data/events.json (8 rows, top-level array)...
+Generating data/events_large.json (2000000 rows, top-level array)...
+
+Generated files:
+-rw-r--r--  1 al  staff  236535397  events_large.json
+-rw-r--r--  1 al  staff        884  events.json
+
+Preview data/events.json:
+[
+  {"id":1,"event":"login","country":"GB","amount":1,"user":{"name":"Ada","tier":"free"},"items":[0]},
+  ...
+]
+
+$ ./run.sh
+== 1. The one-liner: top-level JSON array -> one object per line (JSONL) ==
+{"id":1,"event":"login","country":"GB","amount":1,"user":{"name":"Ada","tier":"free"},"items":[0]}
+{"id":2,"event":"purchase","country":"US","amount":2.01,"user":{"name":"Linus","tier":"pro"},"items":[0,1]}
+{"id":3,"event":"view","country":"DE","amount":3.02,"user":{"name":"Grace","tier":"free"},"items":[0,1,2]}
+{"id":4,"event":"logout","country":"FR","amount":4.03,"user":{"name":"Dennis","tier":"enterprise"},"items":[0]}
+{"id":5,"event":"login","country":"GB","amount":5.04,"user":{"name":"Ada","tier":"free"},"items":[0,1]}
+{"id":6,"event":"purchase","country":"US","amount":6.05,"user":{"name":"Linus","tier":"pro"},"items":[0,1,2]}
+{"id":7,"event":"view","country":"DE","amount":7.06,"user":{"name":"Grace","tier":"free"},"items":[0]}
+{"id":8,"event":"logout","country":"FR","amount":8.07,"user":{"name":"Dennis","tier":"enterprise"},"items":[0,1]}
+
+== 2. Schema inferred straight from the JSON (nested fields kept) ==
+id	Nullable(Int64)
+event	Nullable(String)
+country	Nullable(String)
+amount	Nullable(Float64)
+user	Tuple(name Nullable(String), tier Nullable(String))
+items	Array(Nullable(Int64))
+
+== 3. Confirm the line count == the array length ==
+array elements: 8
+jsonl lines:           8
+
+== 4. Filter / reshape while you convert ==
+{"id":2,"country":"US","amount":2.01,"name":"Linus"}
+{"id":6,"country":"US","amount":6.05,"name":"Linus"}
+
+== 5. Write gzipped JSONL directly (extension picks the codec) ==
+-rw-r--r--  1 al  staff  265  events.jsonl.gz
+
+== 6. Perf: convert the ~226 MB, 2,000,000-element array (best-of-3, warm) ==
+run 1: real 0.83
+run 2: real 0.85
+run 3: real 0.90
+output lines:  2000000
+
+$ python3 run.py    # Surface B: chDB
+{"id":1,"event":"login","country":"GB","amount":1,"user":{"name":"Ada","tier":"free"},"items":[0]}
+{"id":2,"event":"purchase","country":"US","amount":2.01,"user":{"name":"Linus","tier":"pro"},"items":[0,1]}
+{"id":3,"event":"view","country":"DE","amount":3.02,"user":{"name":"Grace","tier":"free"},"items":[0,1,2]}
+{"id":4,"event":"logout","country":"FR","amount":4.03,"user":{"name":"Dennis","tier":"enterprise"},"items":[0]}
+{"id":5,"event":"login","country":"GB","amount":5.04,"user":{"name":"Ada","tier":"free"},"items":[0,1]}
+{"id":6,"event":"purchase","country":"US","amount":6.05,"user":{"name":"Linus","tier":"pro"},"items":[0,1,2]}
+{"id":7,"event":"view","country":"DE","amount":7.06,"user":{"name":"Grace","tier":"free"},"items":[0]}
+{"id":8,"event":"logout","country":"FR","amount":8.07,"user":{"name":"Dennis","tier":"enterprise"},"items":[0,1]}
+"id","Nullable(Int64)","","","","",""
+"event","Nullable(String)","","","","",""
+"country","Nullable(String)","","","","",""
+"amount","Nullable(Float64)","","","","",""
+"user","Tuple(name Nullable(String), tier Nullable(String))","","","","",""
+"items","Array(Nullable(Int64))","","","","",""

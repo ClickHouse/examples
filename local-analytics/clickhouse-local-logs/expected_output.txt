@@ -1,0 +1,66 @@
+$ ./generate.sh && ./run.sh
+(IPs vary run-to-run; counts are deterministic for a given line count.)
+
+== 1. read raw lines ==
+198.51.100.248 - - [01/Jun/2026:00:00:00 +0000] "POST /login HTTP/1.1" 200 31481 "-" "Mozilla/5.0 (compatible)" 0.25
+198.51.100.223 - - [01/Jun/2026:00:00:00 +0000] "POST /api/products HTTP/1.1" 200 11489 "-" "Mozilla/5.0 (compatible)" 1.82
+198.51.100.227 - - [01/Jun/2026:00:00:00 +0000] "PUT /api/users HTTP/1.1" 200 6366 "-" "Mozilla/5.0 (compatible)" 0.906
+198.51.100.154 - - [01/Jun/2026:00:00:00 +0000] "DELETE /api/orders HTTP/1.1" 304 29177 "-" "Mozilla/5.0 (compatible)" 0.76
+198.51.100.170 - - [01/Jun/2026:00:00:00 +0000] "GET /images/logo.png HTTP/1.1" 200 21098 "-" "Mozilla/5.0 (compatible)" 0.485
+
+== 2. extract fields ==
+198.51.100.248	2026-06-01 00:00:00	POST	/login	200	0.25
+198.51.100.223	2026-06-01 00:00:00	POST	/api/products	200	1.82
+198.51.100.227	2026-06-01 00:00:00	PUT	/api/users	200	0.906
+198.51.100.154	2026-06-01 00:00:00	DELETE	/api/orders	304	0.76
+198.51.100.170	2026-06-01 00:00:00	GET	/images/logo.png	200	0.485
+
+== 3. status-code counts ==
+200	24837
+301	5127
+404	5098
+503	5071
+304	4985
+500	4882
+
+== 4. p95 / p99 latency ==
+1.903	1.982	2
+
+== 5. top URLs ==
+/login	5135
+/images/logo.png	5076
+/checkout	5052
+/api/orders	5011
+/api/users	5005
+
+== 6. top IPs by 5xx errors ==
+198.51.100.67	66
+198.51.100.193	56
+198.51.100.4	55
+198.51.100.242	55
+198.51.100.254	54
+
+== 7. requests per minute ==
+2026-06-01 00:00:00	300
+2026-06-01 00:01:00	300
+2026-06-01 00:02:00	300
+2026-06-01 00:03:00	300
+2026-06-01 00:04:00	300
+
+== 8. glob over rotated, gzipped logs (read transparently) ==
+200	7422
+404	1665
+301	1617
+304	1482
+503	1455
+500	1359
+
+== 9. perf: parse + aggregate 20M lines / 2.4 GB (only with ./generate.sh --big) ==
+200	10002352	1.899
+404	2001484	1.896
+304	2001401	1.894
+503	1999254	1.906
+301	1998715	1.887
+500	1996794	1.891
+# clickhouse local --time reported ~1.80s (best of 3, warm OS page cache)
+# on an Apple M4 Pro (14 cores, 24 GB RAM, macOS / Darwin 25.5).

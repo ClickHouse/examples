@@ -1,0 +1,57 @@
+== 1. Read the first 10 rows (header auto-detected) ==
+2026-01-01	1	GB	widget	5	1
+2026-01-02	2	US	gadget	6.01	2
+2026-01-03	3	DE	gizmo	7.02	3
+2026-01-04	4	FR	doohickey	8.03	4
+2026-01-05	5	IN	widget	9.04	5
+2026-01-06	6	AU	gadget	10.05	1
+2026-01-07	7	GB	gizmo	11.06	2
+2026-01-08	8	US	doohickey	12.07	3
+2026-01-09	9	DE	widget	13.08	4
+2026-01-10	10	FR	gadget	14.09	5
+
+== 2. Inspect the inferred schema (column names from the header, types from the data) ==
+order_date	Nullable(Date)
+order_id	Nullable(Int64)
+country	Nullable(String)
+product	Nullable(String)
+revenue	Nullable(Float64)
+quantity	Nullable(Int64)
+
+== 3. Aggregate directly on the CSV, no import step ==
+US	4	60.4	3.5
+GB	4	56.36	2.5
+AU	3	48.33	2
+IN	3	45.3	2.67
+FR	3	42.27	3.33
+DE	3	39.24	4
+
+== 4. Override the inferred structure when you need to ==
+2026-01-20	20	US	doohickey	24.19	5
+2026-01-19	19	GB	gizmo	23.18	4
+2026-01-18	18	AU	gadget	22.17	3
+
+== 5. Convert CSV -> Parquet in one line ==
+20
+
+== 6. Read a gzipped CSV transparently (.csv.gz) ==
+AU	3
+DE	3
+FR	3
+GB	4
+IN	3
+US	4
+
+== 7. Perf: aggregate the 8M-row, ~338 MB orders_large.csv (best-of-3, warm) ==
+# ~0.5s on an Apple M4 Pro (14 cores, 24 GB RAM), warm OS page cache:
+run 1: real 0.53
+run 2: real 0.53
+run 3: real 0.53
+# orders_large.csv uses an unseeded row id, so the exact per-country totals
+# below differ slightly each time you regenerate; the shape is stable:
+# ~800k orders/country, ~200M revenue/country, avg_qty ~3.0.
+GB	800670	200362459.26	3.002
+US	800786	200149261.53	3
+NL	800762	200083084.43	2.999
+IN	799644	200007826.43	3.002
+DE	800130	199993268.99	3

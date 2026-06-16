@@ -1,0 +1,55 @@
+== 1. Convert CSV -> NDJSON in one line ==
+wrote events.ndjson
+
+== 2. Look at the result (one JSON object per line) ==
+{"event_date":"2026-01-01","event_id":1,"country":"GB","action":"click","value":5,"count":1}
+{"event_date":"2026-01-02","event_id":2,"country":"US","action":"view","value":6.01,"count":2}
+{"event_date":"2026-01-03","event_id":3,"country":"DE","action":"signup","value":7.02,"count":3}
+{"event_date":"2026-01-04","event_id":4,"country":"FR","action":"purchase","value":8.03,"count":4}
+{"event_date":"2026-01-05","event_id":5,"country":"IN","action":"click","value":9.04,"count":5}
+
+== 3. Confirm the inferred types carried into the JSON ==
+event_date	Nullable(Date)					
+event_id	Nullable(Int64)					
+country	Nullable(String)					
+action	Nullable(String)					
+value	Nullable(Float64)					
+count	Nullable(Int64)					
+
+== 4. Round-trip: read the NDJSON straight back, schema re-inferred ==
+US	4	60.4
+GB	4	56.36
+AU	3	48.33
+IN	3	45.3
+FR	3	42.27
+DE	3	39.24
+
+== 5. Force string columns when inference would guess wrong (e.g. zero-padded ids) ==
+{"event_date":"2026-01-01","event_id":"1","country":"GB","action":"click","value":5,"count":1}
+{"event_date":"2026-01-02","event_id":"2","country":"US","action":"view","value":6.01,"count":2}
+
+== 6. Throughput: convert the 3M-row, ~123 MB events_large.csv (best-of-3, warm) ==
+run 1: real 0.35
+run 2: real 0.35
+run 3: real 0.35
+output size:
+312317884 events_large.ndjson
+row count check (CSV vs NDJSON):
+3000000	3000000
+
+== chDB (run.py) ==
+wrote events_chdb.ndjson
+
+{"event_date":"2026-01-01","event_id":1,"country":"GB","action":"click","value":5,"count":1}
+{"event_date":"2026-01-02","event_id":2,"country":"US","action":"view","value":6.01,"count":2}
+{"event_date":"2026-01-03","event_id":3,"country":"DE","action":"signup","value":7.02,"count":3}
+{"event_date":"2026-01-04","event_id":4,"country":"FR","action":"purchase","value":8.03,"count":4}
+{"event_date":"2026-01-05","event_id":5,"country":"IN","action":"click","value":9.04,"count":5}
+
+"US",4,60.4
+"GB",4,56.36
+"AU",3,48.33
+"IN",3,45.3
+"FR",3,42.27
+"DE",3,39.24
+

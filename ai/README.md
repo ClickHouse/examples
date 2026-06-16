@@ -3,3 +3,4 @@
 This part of the repository contains examples of using ClickHouse for AI.
 
 * [MCP Examples](https://github.com/ClickHouse/examples/tree/main/ai/mcp)
+* [clickhousectl Examples](https://github.com/ClickHouse/examples/tree/main/ai/clickhousectl)

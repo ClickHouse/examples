@@ -1,0 +1,30 @@
+$ ./generate.sh && python3 run.py
+
+=== 1. Read an Avro file into a DataFrame (types auto-inferred) ===
+   event_id country event_type  amount           user
+0         0      GB   purchase   50.98    [100, gold]
+1         1      AU       view   30.73  [101, silver]
+2         2      IN   purchase   81.54  [102, bronze]
+3         3      GB       view   28.92    [103, gold]
+4         4      AU   purchase    4.15  [104, silver]
+event_id        int64
+country           str
+event_type        str
+amount        float64
+user           object
+dtype: object
+
+=== 2. Filter + aggregate the way you already do (pandas, not SQL) ===
+country
+AU     4.15
+GB    50.98
+IN    81.54
+Name: amount, dtype: float64
+
+=== 3. Hand off to real pandas when you need it ===
+<class 'pandas.DataFrame'>
+
+=== 4. Performance: DataStore vs fastavro + manual loop, on a 3M-row Avro file ===
+fastavro (manual loop):         1.642s
+import chdb.datastore as pd:    0.288s
+speedup:                        5.7x

@@ -1,0 +1,5 @@
+# Generated locally by generate.sh / run.sh — do not commit
+events.parquet
+sales.csv
+sales.parquet
+logs/

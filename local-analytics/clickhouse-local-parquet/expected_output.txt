@@ -1,0 +1,44 @@
+$ ./run.sh
+
+=== View the first rows (no schema, no import) ===
+   ┌──────────────event_time─┬─user_id─┬─country─┬─device──┬─event_type─┬─revenue─┬─quantity─┐
+1. │ 2026-02-03 10:41:38.000 │  219394 │ IN      │ desktop │ refund     │  147.26 │        2 │
+2. │ 2026-05-18 10:43:26.000 │  364848 │ IN      │ tablet  │ click      │  158.77 │        5 │
+3. │ 2026-03-24 12:00:39.000 │  392522 │ GB      │ mobile  │ refund     │  274.44 │        1 │
+4. │ 2026-03-26 00:02:57.000 │   37983 │ JP      │ tablet  │ click      │  275.96 │        5 │
+5. │ 2026-04-25 00:59:20.000 │  306387 │ IN      │ mobile  │ purchase   │   91.17 │        1 │
+   └─────────────────────────┴─────────┴─────────┴─────────┴────────────┴─────────┴──────────┘
+
+=== Inferred schema ===
+   ┌─name───────┬─type─────────────────┬─default_type─┬─default_expression─┬─comment─┬─codec_expression─┬─ttl_expression─┐
+1. │ event_time │ DateTime64(3, 'UTC') │              │                    │         │                  │                │
+2. │ user_id    │ UInt32               │              │                    │         │                  │                │
+3. │ country    │ String               │              │                    │         │                  │                │
+4. │ device     │ String               │              │                    │         │                  │                │
+5. │ event_type │ String               │              │                    │         │                  │                │
+6. │ revenue    │ Float64              │              │                    │         │                  │                │
+7. │ quantity   │ UInt8                │              │                    │         │                  │                │
+   └────────────┴──────────────────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+=== Filter + aggregate + group by ===
+   ┌─country─┬─purchases─┬───revenue─┬─avg_qty─┐
+1. │ BR      │      2086 │ 526569.59 │   3.015 │
+2. │ FR      │      2027 │ 512719.52 │   2.975 │
+3. │ IN      │      2044 │ 508346.74 │    3.05 │
+4. │ NL      │      2032 │ 505167.61 │   3.036 │
+5. │ JP      │      1998 │ 502163.23 │   3.009 │
+   └─────────┴───────────┴───────────┴─────────┘
+
+=== Read a zstd-compressed Parquet file (no flags needed) ===
+   ┌─count()─┬─round(sum(revenue), 2)─┐
+1. │  100000 │            24957233.46 │ -- 24.96 million
+   └─────────┴────────────────────────┘
+
+=== Perf: aggregate the ~1 GB file (best of 3, warm cache) ===
+run 1: 0.438
+run 2: 0.440
+run 3: 0.445
+
+# Data is deterministic (every value is a hash of the row number), so rows and
+# aggregates above reproduce exactly. Only the timings vary per machine and run.
+# Measured on an Apple M4 Pro (14 cores, 24 GB RAM), macOS, clickhouse local 26.6.1.117.

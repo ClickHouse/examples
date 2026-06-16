@@ -1,0 +1,30 @@
+== 1. Read fails without an explicit structure (MsgPack carries no schema) ==
+Code: 636. DB::Exception: The table structure cannot be extracted from a MsgPack format file. Error:
+Code: 36. DB::Exception: You must specify setting input_format_msgpack_number_of_columns to extract table schema from MsgPack data. (BAD_ARGUMENTS) (version 26.6.1.117 (official build)).
+You can specify the structure manually: (in file/uri /Users/al/ch/marketing/examples/local-analytics/clickhouse-local-messagepack/data/events.msgpack). (CANNOT_EXTRACT_TABLE_STRUCTURE)
+
+== 2. Read with an explicit structure (format + schema as 2nd and 3rd args) ==
+   ┌─id─┬─country─┬─event_type─┬─revenue─┬─quantity─┐
+1. │  1 │ GB      │ click      │       5 │        1 │
+2. │  2 │ US      │ view       │    6.01 │        2 │
+3. │  3 │ DE      │ purchase   │    7.02 │        3 │
+4. │  4 │ FR      │ refund     │    8.03 │        4 │
+5. │  5 │ IN      │ click      │    9.04 │        5 │
+   └────┴─────────┴────────────┴─────────┴──────────┘
+
+== 3. Filter, aggregate, group by — full SQL on the file ==
+   ┌─country─┬─purchases─┬─revenue─┬─avg_qty─┐
+1. │ GB      │         2 │   34.24 │       3 │
+2. │ DE      │         2 │   26.16 │       4 │
+3. │ IN      │         1 │    15.1 │       1 │
+   └─────────┴───────────┴─────────┴─────────┘
+
+== 4. Compressed MsgPack (.msgpack.gz) reads transparently ==
+   ┌─count()─┬─round(sum(revenue), 2)─┐
+1. │      20 │                  291.9 │
+   └─────────┴────────────────────────┘
+
+== 5. Perf: aggregate the 3M-row events_large.msgpack (best-of-3, warm) ==
+run 1: real 0.47
+run 2: real 0.48
+run 3: real 0.47

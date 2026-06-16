@@ -1,0 +1,71 @@
+$ ./generate.sh
+Generating data/events.csv (20 rows)...
+Generating data/events_large.csv (3000000 rows, ~120 MB)...
+
+Generated files:
+-rw-r--r--  1 al  staff  128668985  events_large.csv
+-rw-r--r--  1 al  staff        800  events.csv
+
+$ ./run.sh
+== 1. Convert CSV -> Arrow in one line ==
+2026-01-01	1	GB	click	5	1
+2026-01-02	2	US	view	6.01	2
+2026-01-03	3	DE	purchase	7.02	3
+2026-01-04	4	FR	signup	8.03	4
+2026-01-05	5	IN	click	9.04	5
+
+== 2. Types carried from CSV inference into the Arrow file ==
+-- CSV (text, types inferred):
+event_date	Nullable(Date)
+event_id	Nullable(Int64)
+country	Nullable(String)
+action	Nullable(String)
+amount	Nullable(Float64)
+sessions	Nullable(Int64)
+-- Arrow (types embedded in the file's schema):
+event_date	Nullable(Date32)
+event_id	Nullable(Int64)
+country	Nullable(String)
+action	Nullable(String)
+amount	Nullable(Float64)
+sessions	Nullable(Int64)
+
+== 3. Feather is the Arrow IPC format (same FORMAT, .feather extension) ==
+20
+
+== 4. Compress the Arrow buffers (zstd) ==
+20
+
+== 5. Query the Arrow file directly (columnar + typed, no re-parse) ==
+US	4	60.4
+GB	4	56.36
+AU	3	48.33
+IN	3	45.3
+FR	3	42.27
+
+== 6. Perf: convert the 3M-row, ~129 MB events_large.csv -> Arrow (best-of-3, warm) ==
+run 1: real 0.38
+run 2: real 0.39
+run 3: real 0.38
+-- on-disk sizes:
+70M events_large.arrow
+123M events_large.csv
+-- roundtrip row count:
+3000000
+
+# Surface B: chDB Python (run.py) -- same SELECT ... FORMAT Arrow, in-process
+$ python3 run.py
+written events_py.arrow
+rows: 20
+event_date	Nullable(Date32)
+event_id	Nullable(Int64)
+country	Nullable(String)
+action	Nullable(String)
+amount	Nullable(Float64)
+sessions	Nullable(Int64)
+country  events  amount
+     US       4   60.40
+     GB       4   56.36
+     AU       3   48.33
+     IN       3   45.30
+     FR       3   42.27

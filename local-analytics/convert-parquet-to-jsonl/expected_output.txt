@@ -1,0 +1,58 @@
+### ./generate.sh
+Generating data/events.parquet (20 rows)...
+Generating data/events_large.parquet (3000000 rows)...
+
+Generated files:
+total 879912
+drwxr-xr-x@ 8 al  staff        256  6 Jun 20:29 .
+drwxr-xr-x@ 9 al  staff        288  6 Jun 20:29 ..
+-rw-r--r--@ 1 al  staff  408663177  6 Jun 20:29 events_large.jsonl
+-rw-r--r--@ 1 al  staff   41831463  6 Jun 20:29 events_large.parquet
+-rw-r--r--@ 1 al  staff       2605  6 Jun 20:29 events.jsonl
+-rw-r--r--@ 1 al  staff        547  6 Jun 20:29 events.jsonl.gz
+-rw-r--r--@ 1 al  staff       3232  6 Jun 20:29 events.parquet
+-rw-r--r--@ 1 al  staff        226  6 Jun 20:29 purchases.jsonl
+
+### ./run.sh
+== 1. Convert Parquet -> JSONL (one object per line) ==
+first 3 lines:
+{"event_id":1,"ts":"2026-01-01 00:00:00.000","country":"GB","action":"click","amount":5,"attrs":{"os":"ios","version":"1"}}
+{"event_id":2,"ts":"2026-01-01 00:02:17.000","country":"US","action":"view","amount":6.01,"attrs":{"os":"android","version":"2"}}
+{"event_id":3,"ts":"2026-01-01 00:04:34.000","country":"DE","action":"purchase","amount":7.02,"attrs":{"os":"web","version":"3"}}
+
+== 2. Schema is read from the Parquet footer; types carry into JSON ==
+event_id	UInt64					
+ts	DateTime64(3, \'UTC\')					
+country	String					
+action	String					
+amount	Float64					
+attrs	Map(String, String)					
+
+== 3. The Map column becomes a nested JSON object, not a flattened string ==
+{"attrs":{"os":"ios","version":"1"}}
+{"attrs":{"os":"android","version":"2"}}
+{"attrs":{"os":"web","version":"3"}}
+
+== 4. Filter / reshape on the way out (any SQL works) ==
+{"event_id":19,"country":"GB","amount":23.18}
+{"event_id":15,"country":"DE","amount":19.14}
+{"event_id":11,"country":"IN","amount":15.1}
+
+== 5. Compress on the way out: .jsonl.gz is auto-detected ==
+-rw-r--r--@ 1 al  staff  2605  6 Jun 20:29 events.jsonl
+-rw-r--r--@ 1 al  staff   547  6 Jun 20:29 events.jsonl.gz
+read the .gz back transparently:
+20
+
+== 6. Perf: convert the 3,000,000-row events_large.parquet (best-of-3, warm) ==
+run 1: real 0.30
+run 2: real 0.29
+run 3: real 0.30
+-rw-r--r--@ 1 al  staff  408668796  6 Jun 20:29 events_large.jsonl
+
+### python3 run.py  (chDB / Surface B)
+first 3 lines:
+{"event_id":1,"ts":"2026-01-01 00:00:00.000","country":"GB","action":"click","amount":5,"attrs":{"os":"ios","version":"1"}}
+{"event_id":2,"ts":"2026-01-01 00:02:17.000","country":"US","action":"view","amount":6.01,"attrs":{"os":"android","version":"2"}}
+{"event_id":3,"ts":"2026-01-01 00:04:34.000","country":"DE","action":"purchase","amount":7.02,"attrs":{"os":"web","version":"3"}}
+total lines: 20

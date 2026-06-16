@@ -1,0 +1,58 @@
+# Real capture: ./generate.sh (defaults) then ./run.sh
+# Hardware: Apple M4 Pro, 14 cores, 24 GB RAM, macOS; clickhouse local 26.6.1.117
+# access_large.log = 2,000,000 lines, ~163 MB. rand()-based, so exact
+# per-status counts shift slightly each regen; the shape is stable.
+
+== 1. A raw log line is unstructured text ==
+203.0.113.7 - - [07/Jun/2026:08:44:18 +0000] "GET /api/login HTTP/1.1" 500 1253 1.329
+192.168.1.10 - - [06/Jun/2026:23:43:01 +0000] "GET /static/app.js HTTP/1.1" 301 724 0.2
+192.168.1.10 - - [06/Jun/2026:10:05:01 +0000] "PUT /cart HTTP/1.1" 404 3870 0.324
+
+== 2. Parse it into typed columns with the Regexp format ==
+   ┌─ip───────────┬─ts─────────────────────────┬─method─┬─path───────────┬─status─┬─size─┬────rt─┐
+1. │ 203.0.113.7  │ 07/Jun/2026:08:44:18 +0000 │ GET    │ /api/login     │    500 │ 1253 │ 1.329 │
+2. │ 192.168.1.10 │ 06/Jun/2026:23:43:01 +0000 │ GET    │ /static/app.js │    301 │  724 │   0.2 │
+3. │ 192.168.1.10 │ 06/Jun/2026:10:05:01 +0000 │ PUT    │ /cart          │    404 │ 3870 │ 0.324 │
+4. │ 203.0.113.7  │ 06/Jun/2026:16:16:21 +0000 │ GET    │ /api/orders    │    200 │ 4855 │ 0.729 │
+5. │ 198.51.100.2 │ 06/Jun/2026:21:35:01 +0000 │ DELETE │ /static/app.js │    200 │ 2928 │ 0.245 │
+   └──────────────┴────────────────────────────┴────────┴────────────────┴────────┴──────┴───────┘
+
+== 3. Turn the log timestamp into a real DateTime ==
+   ┌─ip───────────┬──────────event_time─┬─method─┬─path───────────┬─status─┐
+1. │ 192.168.1.10 │ 2026-06-06 10:05:01 │ PUT    │ /cart          │    404 │
+2. │ 10.0.0.5     │ 2026-06-06 12:33:01 │ POST   │ /api/login     │    301 │
+3. │ 203.0.113.7  │ 2026-06-06 16:16:21 │ GET    │ /api/orders    │    200 │
+4. │ 172.16.0.9   │ 2026-06-06 16:34:10 │ POST   │ /cart          │    404 │
+5. │ 192.168.1.10 │ 2026-06-06 16:40:47 │ DELETE │ /static/app.js │    401 │
+   └──────────────┴─────────────────────┴────────┴────────────────┴────────┘
+
+== 4. Aggregate: error rate and traffic by path ==
+   ┌─path───────────┬─hits─┬─errors─┬─error_pct─┬─avg_rt_s─┐
+1. │ /static/app.js │    5 │      2 │        40 │    0.726 │
+2. │ /api/orders    │    4 │      3 │        75 │     0.97 │
+3. │ /cart          │    3 │      2 │      66.7 │     1.11 │
+4. │ /health        │    3 │      1 │      33.3 │    1.006 │
+5. │ /api/login     │    3 │      1 │      33.3 │    0.793 │
+6. │ /index.html    │    2 │      2 │       100 │    1.392 │
+   └────────────────┴──────┴────────┴───────────┴──────────┘
+
+== 5. Read a gzipped log transparently (.log.gz) ==
+   ┌─status─┬─n─┐
+1. │    200 │ 5 │
+2. │    301 │ 4 │
+3. │    401 │ 3 │
+4. │    404 │ 4 │
+5. │    500 │ 4 │
+   └────────┴───┘
+
+== 6. Perf: parse + aggregate the 2M-line, ~163 MB access_large.log (best-of-3, warm) ==
+run 1: real 0.46
+run 2: real 0.48
+run 3: real 0.46
+   ┌─status─┬──────n─┬─avg_rt─┐
+1. │    200 │ 999191 │  0.998 │
+2. │    301 │ 249591 │  1.002 │
+3. │    401 │ 250955 │  0.999 │
+4. │    404 │ 249448 │  0.999 │
+5. │    500 │ 250815 │  1.001 │
+   └────────┴────────┴────────┘

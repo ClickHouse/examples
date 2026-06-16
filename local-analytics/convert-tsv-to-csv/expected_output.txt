@@ -1,0 +1,65 @@
+$ ./generate.sh
+Generating data/events.tsv (20 rows)...
+Generating data/events_large.tsv (3000000 rows, ~120 MB)...
+
+Generated files:
+total 481568
+drwxr-xr-x@ 9 al  staff        288  6 Jun 20:23 .
+drwxr-xr-x@ 9 al  staff        288  6 Jun 20:23 ..
+-rw-r--r--@ 1 al  staff        795  6 Jun 20:22 events_chdb.csv
+-rw-r--r--@ 1 al  staff        508  6 Jun 20:22 events_clean.csv
+-rw-r--r--@ 1 al  staff  135267980  6 Jun 20:22 events_large.csv
+-rw-r--r--@ 1 al  staff  111269256  6 Jun 20:23 events_large.tsv
+-rw-r--r--@ 1 al  staff        737  6 Jun 20:22 events_noheader.csv
+-rw-r--r--@ 1 al  staff        795  6 Jun 20:22 events.csv
+-rw-r--r--@ 1 al  staff        663  6 Jun 20:23 events.tsv
+
+$ ./run.sh
+== 1. Convert TSV -> CSV in one line (header carried over) ==
+wrote events.csv
+
+== 2. Look at the result (first 6 lines: header + 5 rows) ==
+"event_date","event_id","country","action","amount","qty"
+"2026-01-01",1,"GB","click",5,1
+"2026-01-02",2,"US","view",6.01,2
+"2026-01-03",3,"DE","signup",7.02,3
+"2026-01-04",4,"FR","purchase",8.03,4
+"2026-01-05",5,"IN","click",9.04,5
+
+== 3. Confirm the schema survived the round trip (types inferred from the TSV header) ==
+event_date	Nullable(Date)					
+event_id	Nullable(Int64)					
+country	Nullable(String)					
+action	Nullable(String)					
+amount	Nullable(Float64)					
+qty	Nullable(Int64)					
+
+== 4. Convert with NO header row in the output (plain CSV) ==
+"2026-01-01",1,"GB","click",5,1
+"2026-01-02",2,"US","view",6.01,2
+"2026-01-03",3,"DE","signup",7.02,3
+
+== 5. Project / rename / cast columns during the conversion ==
+"event_date","country_code","amount"
+"2026-01-01","GB",5
+"2026-01-02","US",6.01
+"2026-01-03","DE",7.02
+
+== 6. Row counts match (no data lost) ==
+TSV rows: 20
+CSV rows: 20
+
+== 7. Perf: convert the 3M-row, ~106 MB events_large.tsv -> CSV (best-of-3, warm) ==
+run 1: real 0.23
+run 2: real 0.24
+run 3: real 0.25
+-rw-r--r--@ 1 al  staff  135269268  6 Jun 20:23 events_large.csv
+
+$ python3 run.py
+wrote events_chdb.csv
+"event_date","event_id","country","action","amount","qty"
+"2026-01-01",1,"GB","click",5,1
+"2026-01-02",2,"US","view",6.01,2
+"2026-01-03",3,"DE","signup",7.02,3
+"2026-01-04",4,"FR","purchase",8.03,4
+"2026-01-05",5,"IN","click",9.04,5

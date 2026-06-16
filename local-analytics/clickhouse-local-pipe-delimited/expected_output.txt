@@ -1,0 +1,56 @@
+== 1. Read the first 5 rows (header row -> column names) ==
+2026-01-01	1	GB	widget	5	1
+2026-01-02	2	US	gadget	6.01	2
+2026-01-03	3	DE	gizmo	7.02	3
+2026-01-04	4	FR	doohickey	8.03	4
+2026-01-05	5	IN	widget	9.04	5
+
+== 2. Inspect the inferred schema ==
+order_date	Nullable(Date)
+order_id	Nullable(Int64)
+country	Nullable(String)
+product	Nullable(String)
+revenue	Nullable(Float64)
+quantity	Nullable(Int64)
+
+== 3. The gotcha: drop format_custom_escaping_rule='CSV' and the quotes are NOT stripped ==
+   (the whole line collapses into one String column named with the quoted header)
+"order_date"|"order_id"|"country"|"product"|"revenue"|"quantity"	Nullable(String)
+
+== 4. Aggregate directly on the pipe-delimited file ==
+US	4	60.4	3.5
+GB	4	56.36	2.5
+AU	3	48.33	2
+IN	3	45.3	2.67
+FR	3	42.27	3.33
+DE	3	39.24	4
+
+== 5. No header row? Use CustomSeparated + an explicit schema ==
+2026-01-20	20	US	doohickey	24.19	5
+2026-01-19	19	GB	gizmo	23.18	4
+2026-01-18	18	AU	gadget	22.17	3
+
+== 6. Set the format once with SET, then query normally ==
+20
+
+== 7. Gzipped pipe-delimited (.psv.gz) reads transparently ==
+AU	3
+DE	3
+FR	3
+GB	4
+IN	3
+US	4
+
+== 8. Perf: aggregate the 3M-row, ~126 MB orders_large.psv (best-of-3, warm) ==
+# ~0.6s on an Apple M4 Pro (14 cores, 24 GB RAM), warm OS page cache:
+run 1: real 0.60
+run 2: real 0.61
+run 3: real 0.62
+# orders_large.psv uses an unseeded row id, so the exact per-country totals
+# below differ slightly each time you regenerate; the shape is stable:
+# ~300k orders/country, ~75M revenue/country, avg_qty ~3.0.
+NL	300988	75191558.42	3.001
+GB	300526	75132319	3
+CA	300299	75057329.64	3.005
+DE	299479	74996100.41	3
+BR	300154	74991283.46	3

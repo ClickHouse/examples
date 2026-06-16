@@ -17,10 +17,12 @@ Examples cover a range of topics, from ClickHouse internals to integrating with 
 
 ## Repo contents
 
+- [ai](./ai/): Examples using AI with ClickHouse via clickhousectl and mcp.
 - [blog-examples](./blog-examples/): Resources that support the [ClickHouse Blog](clickhouse.com/blog).
 - [docker-compose-recipes](./docker-compose-recipes/README.md): Various docker compose recipes for spinning up ClickHouse and common integrations, like Kafka, Grafana, Dagster and more.
 - [ethereum](./ethereum/README.md): Examples for working with Ethereum blockchain data, including table schemas, batch and streaming load examples, and various queries.
-- [learn-clickhouse-with-mark](./learn-clickhouse-with-mark/README.md): A collection of resources for learning ClickHouse from Mark Needham.
+- [LearnClickHouseWithMark](./LearnClickHouseWithMark/README.md): A collection of resources for learning ClickHouse from Mark Needham.
+- [local-analytics](./local-analytics/README.md): Runnable companions for analysing local files and data sources with clickhouse-local and chDB — no server, no import.
 
 ## Contributing
 

@@ -1,0 +1,61 @@
+== 1. Read a plain .avro file (schema embedded, no declaration) ==
+   ┌─event_date─┬─event_id─┬─event_type─┬─country─┬─user_id─┬─amount─┐
+1. │ 2026-01-01 │        1 │ login      │ GB      │  100000 │      0 │
+2. │ 2026-01-02 │        2 │ click      │ US      │  100001 │   0.01 │
+3. │ 2026-01-03 │        3 │ purchase   │ DE      │  100002 │   0.02 │
+4. │ 2026-01-04 │        4 │ refund     │ FR      │  100003 │   0.03 │
+5. │ 2026-01-05 │        5 │ logout     │ IN      │  100004 │   0.04 │
+6. │ 2026-01-06 │        6 │ login      │ GB      │  100005 │   0.05 │
+7. │ 2026-01-07 │        7 │ click      │ US      │  100006 │   0.06 │
+8. │ 2026-01-08 │        8 │ purchase   │ DE      │  100007 │   0.07 │
+   └────────────┴──────────┴────────────┴─────────┴─────────┴────────┘
+
+== 2. See the schema clickhouse local read from the file ==
+event_date	String					
+event_id	Int64					
+event_type	String					
+country	String					
+user_id	Int32					
+amount	Float64					
+
+== 3. Aggregate directly on the Avro file ==
+   ┌─country─┬─events─┬─total─┐
+1. │ DE      │      2 │  0.09 │
+2. │ FR      │      1 │  0.03 │
+3. │ GB      │      2 │  0.05 │
+4. │ IN      │      1 │  0.04 │
+5. │ US      │      2 │  0.07 │
+   └─────────┴────────┴───────┘
+
+== 4. Plain Avro vs the Confluent wire format: the first bytes differ ==
+Plain Avro Object Container File starts with the magic 'Obj\x01':
+4F626A01
+(A Confluent wire-format message instead starts with a 0x00 magic byte
+ followed by a 4-byte big-endian schema id, then the Avro body.)
+
+== 5. AvroConfluent on a plain .avro file fails on the magic byte (expected) ==
+This proves the two framings are NOT interchangeable:
+Code: 636. DB::Exception: The table structure cannot be extracted from a AvroConfluent format file. Error:
+Code: 117. DB::Exception: Invalid magic byte before AvroConfluent schema identifier. Must be zero byte, found 79 instead. (INCORRECT_DATA) (version 26.6.1.117 (official build)).
+You can specify the structure manually: (in file/uri /Users/al/ch/marketing/examples/local-analytics/clickhouse-local-avro-confluent/data/events.avro). (CANNOT_EXTRACT_TABLE_STRUCTURE)
+
+== 6. The AvroConfluent command form (requires a RUNNING Schema Registry) ==
+Against real Confluent-framed messages, point clickhouse local at the registry:
+clickhouse local -q "
+SELECT *
+FROM file('messages.bin', 'AvroConfluent')
+SETTINGS format_avro_schema_registry_url = 'http://schema-registry:8081'"
+(Not run here: there is no live registry in this folder. The error in step 5
+ is exactly what you would see if you aimed AvroConfluent at a plain .avro file.)
+
+== 7. Perf: group-by over the 3M-row, ~62 MB events_large.avro (best-of-3, warm) ==
+run 1: real 0.55
+run 2: real 0.55
+run 3: real 0.54
+   ┌─country─┬─events─┬───────total─┬─avg_amt─┐
+1. │ US      │ 375326 │ 94031906.31 │ 250.534 │
+2. │ IN      │ 375177 │ 93873018.64 │  250.21 │
+3. │ NL      │ 375143 │ 93866767.07 │ 250.216 │
+4. │ GB      │ 375532 │ 93832312.11 │ 249.865 │
+5. │ BR      │ 374783 │ 93730967.27 │ 250.094 │
+   └─────────┴────────┴─────────────┴─────────┘

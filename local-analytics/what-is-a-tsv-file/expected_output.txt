@@ -1,0 +1,59 @@
+=== 1. The raw bytes: tabs shown as -> ===
+id->country->event_type->revenue
+0->GB->view->282.08
+1->AU->click->292.07
+2->IN->purchase->206.03
+3->US->view->261.97
+4->DE->click->235.26
+5->GB->purchase->189.43
+6->AU->view->466.64
+7->IN->click->412.43
+8->US->purchase->499.25
+9->DE->view->10.72
+10->GB->click->412.02
+11->AU->purchase->53.8
+
+=== 2. clickhouse local infers the schema from the header (DESCRIBE) ===
+   ┌─name───────┬─type──────────────┬─default_type─┬─default_expression─┬─comment─┬─codec_expression─┬─ttl_expression─┐
+1. │ id         │ Nullable(Int64)   │              │                    │         │                  │                │
+2. │ country    │ Nullable(String)  │              │                    │         │                  │                │
+3. │ event_type │ Nullable(String)  │              │                    │         │                  │                │
+4. │ revenue    │ Nullable(Float64) │              │                    │         │                  │                │
+   └────────────┴───────────────────┴──────────────┴────────────────────┴─────────┴──────────────────┴────────────────┘
+
+=== 3. Query the TSV in place (filter + aggregate) ===
+   ┏━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━┓
+   ┃ country ┃ events ┃ revenue ┃
+   ┡━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━┩
+1. │ GB      │      3 │  883.53 │
+   ├─────────┼────────┼─────────┤
+2. │ AU      │      3 │  812.51 │
+   ├─────────┼────────┼─────────┤
+3. │ US      │      2 │  761.22 │
+   ├─────────┼────────┼─────────┤
+4. │ IN      │      2 │  618.46 │
+   ├─────────┼────────┼─────────┤
+5. │ DE      │      2 │  245.98 │
+   └─────────┴────────┴─────────┘
+
+=== 4. Contrast: a CSV needs quoting/escaping; a tab delimiter does not ===
+--- raw CSV (one quoted field holds a comma AND an escaped quote) ---
+"id","country","label"
+0,"GB","VIP, ""gold"" tier #0"
+1,"AU","VIP, ""gold"" tier #1"
+2,"IN","VIP, ""gold"" tier #2"
+3,"US","VIP, ""gold"" tier #3"
+4,"DE","VIP, ""gold"" tier #4"
+5,"GB","VIP, ""gold"" tier #5"
+6,"AU","VIP, ""gold"" tier #6"
+7,"IN","VIP, ""gold"" tier #7"
+8,"US","VIP, ""gold"" tier #8"
+9,"DE","VIP, ""gold"" tier #9"
+10,"GB","VIP, ""gold"" tier #10"
+11,"AU","VIP, ""gold"" tier #11"
+--- ClickHouse parses the quoting correctly ---
+Row 1:
+──────
+id:      7
+country: IN
+label:   VIP, "gold" tier #7

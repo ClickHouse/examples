@@ -1,0 +1,48 @@
+######## run.sh ########
+== 1. The naive one-liner: SELECT * (watch what happens to nested fields) ==
+header columns: 7
+data columns:   8
+"event_id","ts","country","action","amount","device","tags"
+1,"2026-06-01 00:00:00","GB","click",5,"2.0","macos","[]"
+2,"2026-06-01 00:02:17","US","view",6.01,"2.1","linux","[0]"
+
+== 2. Why: the nested 'device' object is inferred as a Tuple ==
+event_id	Nullable(Int64)
+ts	Nullable(DateTime)
+country	Nullable(String)
+action	Nullable(String)
+amount	Nullable(Float64)
+device	Tuple(\n    app_version Nullable(String),\n    os Nullable(String))
+tags	Array(Nullable(Int64))
+
+== 3. The correct conversion: flatten nested fields, serialise the array as a JSON string ==
+header columns: 8
+data columns:   8
+"event_id","ts","country","action","amount","device_os","device_version","tags"
+1,"2026-06-01 00:00:00","GB","click",5,"macos","2.0","[]"
+2,"2026-06-01 00:02:17","US","view",6.01,"linux","2.1","[0]"
+
+== 4. Read the flat CSV back: clean tabular data, types preserved ==
+IN	4	66.46
+FR	4	62.42
+DE	4	58.38
+US	4	54.34
+GB	4	50.3
+
+== 5. Perf: convert the 1,000,000-row, ~151 MB events_large.ndjson (best-of-3, warm) ==
+run 1: real 0.41
+run 2: real 0.42
+run 3: real 0.41
+rows written: 1000000
+-rw-r--r--@ 1 al  staff  70316160  6 Jun 20:27 events_large.csv
+
+######## run.py (chDB) ########
+wrote data/events_flat_chdb.csv
+   event_id                  ts country  ... device_os  device_version    tags
+0         1 2026-05-31 23:00:00      GB  ...     macos             2.0      []
+1         2 2026-05-31 23:02:17      US  ...     linux             2.1     [0]
+2         3 2026-05-31 23:04:34      DE  ...   windows             2.2  [0, 1]
+
+[3 rows x 8 columns]
+# Note: the chDB DataFrame above renders ts in the local timezone for display;
+# the CSV file itself stores the original UTC value 2026-06-01 00:00:00 (see step 1).
