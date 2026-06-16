@@ -1,5 +1,8 @@
 # Ingesting data with the Golang driver
 
+> [!WARNING]
+> **Unmaintained example.** This example was last updated in March 2024 and is no longer actively maintained. Its dependencies and instructions are likely out of date. It is provided as-is — review and update dependencies before running, and do not use this code in production.
+
 In this recipe, we're going to learn how to ingest data into ClickHouse using the Golang driver.
 
 ## Download Clickhouse
