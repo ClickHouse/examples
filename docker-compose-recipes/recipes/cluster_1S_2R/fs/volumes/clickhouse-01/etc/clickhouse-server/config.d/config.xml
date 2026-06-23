@@ -21,7 +21,7 @@
     <distributed_ddl>
         <path>/clickhouse/task_queue/ddl</path>
     </distributed_ddl>
-    <remote_servers >
+    <remote_servers>
         <cluster_1S_2R>
             <shard>
                 <internal_replication>true</internal_replication>
