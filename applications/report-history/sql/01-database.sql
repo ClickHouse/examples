@@ -1,0 +1,1 @@
+CREATE DATABASE IF NOT EXISTS report_history
