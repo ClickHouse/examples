@@ -1,0 +1,3 @@
+# Direct dependencies selected on 2026-09-05. Python 3.13.
+streamlit==1.63.0
+agno[mcp,anthropic,openai]==3.0.6

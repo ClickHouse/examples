@@ -1,60 +1,42 @@
-# LibreChat and the ClickHouse MCP Server
+# LibreChat with ClickHouse MCP
 
-LibreChat lets you build LLM-based chat apps.
+LibreChat **0.8.7** (latest stable on 5 September 2026) connects to ClickHouse MCP **0.6.0** over authenticated Streamable HTTP. The app started and its native MCP client discovered tools, queried SELECT 1, and returned query errors. The native agent graph and MCP client passed a live Luna query; browser conversations remain unverified; see [validation](../VALIDATION.md).
 
-If you want to run these examples locally, you'll need to first clone the repository:
+Connect your data using [ClickHouse Cloud](https://console.clickhouse.cloud/signUp), including **$300 credits for a 30-day trial**.
 
-```
-git clone https://github.com/ClickHouse/examples.git
-cd examples/ai/mcp/librechat
-```
+## Run the standalone example
 
-Next, we'll clone the LibreChat repository:
+Install Docker with Compose. From this directory:
 
-```
-git clone https://github.com/danny-avila/LibreChat.git libre
-```
-
-Copy the `docker-compose-override.yml` file into the `libre` directory:
-
-```
-cp docker-compose.override.yml libre
-```
-
-Navigate into the `LibreChat` directory:
-
-```
-cd libre
-```
-
-Create and edit the `.env` file to include your API key:
-
-```
+```sh
 cp .env.example .env
 ```
 
-Create the librechat.yaml configuration file:
+Edit `.env` with your Anthropic or OpenAI API key and independently generated random values:
 
-```
-cp librechat.example.yaml librechat.yaml
-```
+- `CREDS_KEY`, `JWT_SECRET`, `JWT_REFRESH_SECRET`, `CLICKHOUSE_MCP_AUTH_TOKEN`: generate each using `openssl rand -hex 32`.
+- `CREDS_IV`: generate using `openssl rand -hex 16`.
 
-Add the following configuration to the end of the file:
-
-```
-mcpServers:
-  clickhouse-playground:
-    type: sse
-    url: http://host.docker.internal:8001/sse
+```sh
+docker compose up -d
 ```
 
-Run LibreChat:
+Open http://localhost:3080, create a local account, and select an available provider/model. In the agent builder, add the ClickHouse MCP tools to an agent and chat with it. Ask “What tables are available?”
 
+The Compose file contains LibreChat, MongoDB, and MCP. Search and RAG services are omitted because this walkthrough queries ClickHouse through tools. [librechat.yaml](librechat.yaml) configures the internal URL, bearer header, and required `mcpSettings.allowedDomains` entry. See [LibreChat MCP configuration](https://www.librechat.ai/docs/configuration/librechat_yaml/object_structure/mcp_servers).
+
+The default database is the public SQL playground. For local ClickHouse or Cloud, add the `CLICKHOUSE_*` values from the [shared setup](../README.md#local-clickhouse) to `.env`. With the shared fixture, ask “Calculate revenue by region from mcp_demo.sales.” Expected revenue: North 250, South 500.
+
+## Existing upstream checkout
+
+The retained [docker-compose.override.yml](docker-compose.override.yml) supports an upstream LibreChat 0.8.7 checkout. Copy it and `librechat.yaml` to that checkout and provide the same environment values. The standalone `compose.yaml` above is the tested setup and requires no upstream clone.
+
+## Verify and clean up
+
+```sh
+uv run --env-file .env ../smoke_test.py --url http://127.0.0.1:8001/mcp
+docker compose logs api
+docker compose down
 ```
-docker compose up
-```
 
-Navigate to http://localhost:3080/.
-You should now see the LibreChat interface connected to the ClickHouse MCP server
-
-![LibreChat UI](images/librechat-ui.png)
+Look for successful ClickHouse tool initialization in the app logs. Use `MCP_PORT=8002 docker compose up -d` if port 8001 is occupied. Volumes retain chats, uploads, and accounts; `docker compose down -v` deletes them.

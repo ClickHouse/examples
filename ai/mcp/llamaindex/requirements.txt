@@ -1,0 +1,5 @@
+# Direct dependencies selected on 2026-09-05. Python 3.13.
+llama-index-core==0.14.24
+llama-index-llms-anthropic==0.12.0
+llama-index-tools-mcp==0.6.0
+llama-index-llms-openai==0.8.1

@@ -1,0 +1,31 @@
+services:
+  api:
+    image: ghcr.io/danny-avila/librechat:v0.8.7
+    ports:
+      - "127.0.0.1:3080:3080"
+    env_file: .env
+    environment:
+      HOST: 0.0.0.0
+      PORT: "3080"
+      MONGO_URI: mongodb://mongodb:27017/LibreChat
+      SEARCH: "false"
+      RAG_API_URL: ""
+    volumes:
+      - ./librechat.yaml:/app/librechat.yaml:ro
+      - librechat-uploads:/app/uploads
+      - librechat-logs:/app/logs
+    depends_on:
+      - mongodb
+      - mcp-clickhouse
+  mongodb:
+    image: mongo:8.0.20
+    volumes:
+      - librechat-mongo:/data/db
+  mcp-clickhouse:
+    extends:
+      file: ../compose.yaml
+      service: mcp-clickhouse
+volumes:
+  librechat-mongo:
+  librechat-uploads:
+  librechat-logs:

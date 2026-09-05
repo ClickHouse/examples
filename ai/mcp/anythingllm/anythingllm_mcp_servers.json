@@ -3,17 +3,20 @@
     "mcp-clickhouse": {
       "command": "uv",
       "args": [
+        "tool",
         "run",
-        "--with",
-        "mcp-clickhouse",
         "--python",
-        "3.10",
+        "3.13",
+        "--from",
+        "mcp-clickhouse==0.6.0",
         "mcp-clickhouse"
       ],
       "env": {
         "CLICKHOUSE_HOST": "sql-clickhouse.clickhouse.com",
         "CLICKHOUSE_USER": "demo",
-        "CLICKHOUSE_PASSWORD": ""
+        "CLICKHOUSE_PASSWORD": "",
+        "CLICKHOUSE_PORT": "8443",
+        "CLICKHOUSE_SECURE": "true"
       }
     }
   }

@@ -1,0 +1,6 @@
+# Direct dependencies selected on 2026-09-05. Python 3.13.
+upsonic[mcp,sqlite-storage]==0.77.3
+openai==3.8.0
+# This framework still requires the MCP SDK 1.x API.
+mcp==1.28.1
+fastmcp==3.4.7

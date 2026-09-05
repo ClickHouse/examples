@@ -1,29 +1,26 @@
-import {
-  CopilotRuntime,
-  AnthropicAdapter,
-  copilotRuntimeNextJSAppRouterEndpoint,
-} from "@copilotkit/runtime";
-import { NextRequest } from "next/server";
-import { MCPClient } from "@/app/utils/mcp-client";
+import { BuiltInAgent, CopilotRuntime, createCopilotRuntimeHandler } from "@copilotkit/runtime/v2";
+import { clickhouseMcpConfig } from "@/app/utils/mcp-client";
 
-const serviceAdapter = new AnthropicAdapter({model: "claude-3-7-sonnet-latest"});
+export const runtime = "nodejs";
+let handler: ReturnType<typeof createCopilotRuntimeHandler> | undefined;
 
-const runtime = new CopilotRuntime({
-  createMCPClient: async (config) => {
-    const mcpClient = new MCPClient({
-      serverUrl: config.endpoint,
+function getHandler() {
+  if (!handler) {
+    const copilotRuntime = new CopilotRuntime({
+      agents: {
+        default: new BuiltInAgent({
+          model: process.env.LLM_PROVIDER === "openai"
+            ? `openai:${process.env.OPENAI_MODEL || "gpt-5.6-luna"}`
+            : `anthropic:${process.env.ANTHROPIC_MODEL || "claude-sonnet-5"}`,
+          maxSteps: 12,
+          prompt: "Help users analyze ClickHouse data. Discover tables before querying. Use generateChart to visualize query results; keep chart titles under 30 characters.",
+          mcpServers: [clickhouseMcpConfig()],
+        }),
+      },
     });
-    await mcpClient.connect();
-    return mcpClient;
-  },
-});
-
-export const POST = async (req: NextRequest) => {
-  const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
-    runtime,
-    serviceAdapter,
-    endpoint: "/api/copilotkit",
-  });
-
-  return handleRequest(req);
-};
+    handler = createCopilotRuntimeHandler({ runtime: copilotRuntime, basePath: "/api/copilotkit" });
+  }
+  return handler;
+}
+export const GET = (request: Request) => getHandler()(request);
+export const POST = (request: Request) => getHandler()(request);

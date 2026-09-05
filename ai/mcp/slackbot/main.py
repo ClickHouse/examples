@@ -10,8 +10,9 @@ from slack_bolt.async_app import AsyncApp
 from slack_bolt.adapter.socket_mode.aiohttp import AsyncSocketModeHandler
 from slack_sdk.web.async_client import AsyncWebClient
 from pydantic_ai import Agent
-from pydantic_ai.mcp import MCPServerStdio
-import altair as alt
+from pydantic_ai.mcp import MCPToolset
+from fastmcp import Client
+from fastmcp.client.transports import StdioTransport
 import vl_convert as vlc
 
 # Load environment variables from .env file
@@ -35,21 +36,16 @@ CLICKHOUSE_ENV = {
 logging.basicConfig(level=logging.INFO)
 
 # --- MCP SERVER AND AGENT SETUP ---
-clickhouse_server = MCPServerStdio(
-    'uv',
-    args=[
-        'run',
-        '--with', 'mcp-clickhouse',
-        '--python', '3.13',
-        'mcp-clickhouse'
-    ],
+clickhouse_server = MCPToolset(Client(StdioTransport(
+    "uv", ["tool", "run", "--python", "3.13", "--from", "mcp-clickhouse==0.6.0", "mcp-clickhouse"],
     env=CLICKHOUSE_ENV,
-    timeout=30.0
-)
+), timeout=60))
 
 agent = Agent(
-    "anthropic:claude-sonnet-4-0",
-    mcp_servers=[clickhouse_server],
+    ("openai:" + os.getenv("OPENAI_MODEL", "gpt-5.6-luna")
+     if os.getenv("LLM_PROVIDER", "anthropic") == "openai"
+     else "anthropic:" + os.getenv("ANTHROPIC_MODEL", "claude-sonnet-5")),
+    toolsets=[clickhouse_server],
     system_prompt="""You are a data assistant with visualization capabilities. You have access to a ClickHouse database and can create charts from query results.
 
 Available capabilities:
@@ -82,41 +78,18 @@ Always include a summary of your approach: what data you used, how you queried i
 app = AsyncApp(token=SLACK_BOT_TOKEN)
 
 async def render_and_upload_chart(client, channel, thread_ts, vega_lite_spec, title="Chart"):
-    """Render Vega-Lite spec to PNG and upload to Slack"""
-    try:
-        # Parse the Vega-Lite specification
-        if isinstance(vega_lite_spec, str):
-            spec = json.loads(vega_lite_spec)
-        else:
-            spec = vega_lite_spec
-            
-        # Ensure title is a valid non-empty string
-        if not isinstance(title, str) or not title.strip():
-            title = "Chart"
-            
-        # Render to PNG using vl-convert
-        png_data = vlc.vegalite_to_png(spec)
-        
-        # Create temporary file
-        with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp_file:
-            tmp_file.write(png_data)
-            tmp_file.flush()
-            
-            # Upload file to Slack
-            response = await client.files_upload_v2(
-                channel=channel,
-                file=tmp_file.name,
-                title=title.strip(),
-                thread_ts=thread_ts
-            )
-            
-        # Clean up temp file
-        os.unlink(tmp_file.name)
-        return response
-        
-    except Exception as e:
-        logging.error(f"Error rendering and uploading chart: {e}")
-        return None
+    """Render and upload a chart; clean up even when Slack rejects the upload."""
+    spec = json.loads(vega_lite_spec) if isinstance(vega_lite_spec, str) else vega_lite_spec
+    title = title.strip() if isinstance(title, str) and title.strip() else "Chart"
+    png_data = await asyncio.to_thread(vlc.vegalite_to_png, spec)
+    with tempfile.TemporaryDirectory(prefix="clickhouse-chart-") as directory:
+        filename = os.path.join(directory, "chart.png")
+        with open(filename, "wb") as output:
+            output.write(png_data)
+        return await client.files_upload_v2(
+            channel=channel, file=filename, title=title, thread_ts=thread_ts
+        )
+
 
 def extract_vega_lite_specs(text):
     """Extract Vega-Lite JSON specifications from text"""
@@ -149,9 +122,16 @@ async def handle_slack_query(event, say):
         context = ""
         if thread_ts and thread_ts != event["ts"]:
             client = AsyncWebClient(token=SLACK_BOT_TOKEN)
-            replies = await client.conversations_replies(channel=channel, ts=thread_ts)
-            # Exclude the current message, and bot messages
-            messages = [m for m in replies["messages"] if m["ts"] != event["ts"]]
+            messages = []
+            cursor = None
+            while True:
+                replies = await client.conversations_replies(
+                    channel=channel, ts=thread_ts, limit=100, cursor=cursor
+                )
+                messages.extend(m for m in replies["messages"] if m["ts"] != event["ts"])
+                cursor = replies.get("response_metadata", {}).get("next_cursor")
+                if not cursor:
+                    break
             # Format as "user: message"
             context_lines = []
             for m in messages:
@@ -166,7 +146,7 @@ async def handle_slack_query(event, say):
         else:
             prompt = text
 
-        async with agent.run_mcp_servers():
+        async with agent:
             result = await agent.run(prompt)
             
             # Check if the response contains Vega-Lite chart specifications
@@ -197,7 +177,11 @@ async def handle_slack_query(event, say):
             else:
                 await say(text=response_text, thread_ts=thread_ts)
 
-    asyncio.create_task(do_agent())
+    try:
+        await do_agent()
+    except Exception:
+        logging.exception("Agent query failed")
+        await say(text="The query failed. Check the application logs and try again.", thread_ts=thread_ts)
 
 @app.event("assistant_thread_started")
 async def handle_assistant_thread_started_events(body, logger):
@@ -206,11 +190,12 @@ async def handle_assistant_thread_started_events(body, logger):
 
 @app.event("app_mention")
 async def handle_app_mention(event, say):
-    await handle_slack_query(event, say)
+    if not event.get("bot_id") and not event.get("subtype"):
+        await handle_slack_query(event, say)
 
 @app.event("message")
 async def handle_dm(event, say):
-    if event.get("channel_type") == "im":
+    if event.get("channel_type") == "im" and not event.get("bot_id") and not event.get("subtype"):
         await handle_slack_query(event, say)
 
 async def main():
@@ -218,5 +203,4 @@ async def main():
     await handler.start_async()
 
 if __name__ == "__main__":
-    import asyncio
     asyncio.run(main())

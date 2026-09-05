@@ -1,0 +1,18 @@
+services:
+  mcp-clickhouse:
+    extends:
+      file: ../compose.yaml
+      service: mcp-clickhouse
+  anythingllm:
+    image: mintplexlabs/anythingllm:1.16.1
+    ports:
+      - "127.0.0.1:3001:3001"
+    environment:
+      STORAGE_DIR: /app/server/storage
+    volumes:
+      - anythingllm-data:/app/server/storage
+      - ./mcp-config.json:/app/server/storage/plugins/anythingllm_mcp_servers.json
+    depends_on:
+      - mcp-clickhouse
+volumes:
+  anythingllm-data:
