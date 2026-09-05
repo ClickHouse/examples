@@ -1,4 +1,5 @@
 node_modules/
+.clickhouse/
 .env
 .cloud-service.json
 .cloud-create-response.json

@@ -4,17 +4,16 @@ Editorial status: proposed engineering resource, not a published page. Review
 the companion example before publication. While the code PR is under review,
 link to its PR branch; update the link to `main` only after merge.
 
-A reporting application usually has two kinds of data: the result rows that
-people analyze, and the small amount of metadata needed to find a previous run.
-The word “metadata” does not, by itself, make the second part a transactional
-workload. The important questions are what changes, who changes it, and which
-invariants must be enforced while they do.
+This walkthrough builds a small command-line sales-reporting application. It
+reads sales CSV files, writes human-readable Markdown reports, and stores the
+result rows and completed-run history in ClickHouse. You can find an earlier
+run or compare revenue across reports without reopening each input file.
 
-Consider a worker that reads a file, generates a sales report, uploads the
-finished artifact, and records the results. Users retrieve a past report or
-compare revenue across thousands of completed runs. If a completed run is
-immutable and partial publication can be retried, the run history and the
-analytical rows can share a ClickHouse service in ClickHouse Cloud.
+The design question is: **can an application keep analytical results and the
+metadata needed to find completed reports in one ClickHouse service?** For
+this append-oriented workflow, the example shows how to do that, including
+retries and incomplete writes. A run-history table does not, by itself, require
+a separate transactional database.
 
 ClickHouse Cloud is the platform for both ClickHouse and ClickHouse Managed
 Postgres services. This example provisions only the ClickHouse analytical
@@ -47,27 +46,74 @@ old report but perhaps keep its old result rows” operation.
 
 ## Provision from the terminal
 
-Install the [ClickHouse CLI](https://github.com/ClickHouse/clickhousectl), verify
-Cloud API-key authentication, and run the helper from the example directory:
+[Sign up for ClickHouse Cloud](https://console.clickhouse.cloud/signUp) to try
+this example. New accounts start with **$300 in free credits for a 30-day trial**;
+see the [current trial offer](https://clickhouse.com/cloud). If you already have
+an account, use it for the steps below.
+
+### 1. Clone the repository and enter the example
+
+You need Git, Node.js 22 or newer, and npm. Start by cloning the repository and
+entering the example directory:
 
 ```sh
-curl -fsSL https://clickhouse.com/cli | sh
-export PATH="$HOME/.local/bin:$PATH"
-clickhousectl cloud auth status
-clickhousectl cloud org list
 git clone https://github.com/ClickHouse/examples.git
 git -C examples switch --track origin/add-report-history-example
 cd examples/applications/report-history
 npm ci
+```
+
+The branch checkout is needed while the example PR is under review; omit it
+after the example merges into `main`. Stay in `examples/applications/report-history`
+for authentication and all subsequent commands, including after opening a new
+terminal.
+
+Install the [ClickHouse CLI](https://github.com/ClickHouse/clickhousectl) if
+needed. Review the installer according to your organization's policy first:
+
+```sh
+curl -fsSL https://clickhouse.com/cli | sh
+export PATH="$HOME/.local/bin:$PATH"
+clickhousectl --version
+```
+
+### 2. Authenticate from the example directory
+
+Create a Cloud API key with the **Admin** role for your organization using the
+[API-key guide](https://clickhouse.com/docs/products/cloud/features/admin-features/api/openapi).
+Keep both the Key ID and Key Secret. This example needs permission to create a
+service and provision a per-service Query API key during schema setup.
+
+In a private terminal, still in `examples/applications/report-history`, run:
+
+```sh
+clickhousectl cloud auth login --interactive
+clickhousectl cloud auth status
+clickhousectl cloud org list
+```
+
+Enter the Key ID and Key Secret at the prompts. Check that status shows API-key
+authentication and the organization list contains your intended organization
+before continuing. Browser-only OAuth login is read-only and cannot perform
+this setup. Do not paste secrets into an agent conversation or commit credential
+files. If an agent is running the remaining steps, complete the interactive login
+yourself in a terminal in this same directory first.
+
+### 3. Create the service and schema
+
+From the same directory, set your public outbound IP and provision the service:
+
+```sh
 export REPORT_DEMO_IP='YOUR_PUBLIC_IP'
 npm run cloud:create
 npm run cloud:setup
 ```
 
-Read the installer and credential instructions in the example README before
-running them. The helper creates one IP-restricted AWS `eu-west-1` service with
-one fixed 8 GiB replica and idle scaling enabled. This configuration is for a
-demo, not a high-availability recommendation. Creating it incurs Cloud charges.
+The helper creates one IP-restricted AWS `eu-west-1` service with one fixed
+8 GiB replica and idle scaling enabled. This configuration is for a demo, not
+a high-availability recommendation. Usage draws down available trial credits;
+paid accounts incur normal Cloud charges. Check your credit balance and stop
+the service when you finish.
 
 Setup applies the SQL files and creates a dedicated application user with only
 `SELECT` and `INSERT` on the three example tables. It writes credentials to a

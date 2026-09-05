@@ -40,33 +40,15 @@ recount the entire tenant on every history request.
 - Node.js 22 or newer, npm, Git, and a ClickHouse Cloud account with billing/trial
   capacity. This example creates a chargeable ClickHouse service in ClickHouse Cloud.
 - An **Admin-role Cloud API key**: setup's first SQL request auto-provisions a
-  per-service Query API key, which needs key-creation permission. A
-  Developer-scoped key may create the service but fail that step. The
+  per-service Query API key, which needs key-creation permission. The
   CLI's OAuth login is read-only; it cannot perform this setup.
 - Your public outbound IP address and permission to create one AWS `eu-west-1`
   service. Change provider/region in `scripts/cloud.mjs` if required.
 
-Install the CLI, review the installer according to your organization's policy,
-and verify it is on your PATH:
-
-```sh
-curl -fsSL https://clickhouse.com/cli | sh
-export PATH="$HOME/.local/bin:$PATH"
-clickhousectl --version
-clickhousectl cloud auth status
-clickhousectl cloud org list
-```
-
-If not already authenticated, use a private terminal to run:
-
-```sh
-clickhousectl cloud auth login --api-key <key-id> --api-secret <key-secret>
-```
-
-Do not commit API keys or paste them into an agent conversation. Follow the
-[CLI authentication documentation](https://github.com/ClickHouse/clickhousectl)
-for your environment's credential policy. Initial account/API-key issuance may
-require the Cloud account administrator; everything below is CLI-driven.
+[Sign up for ClickHouse Cloud](https://console.clickhouse.cloud/signUp) if you
+need an account. New accounts start with $300 in free credits for a 30-day trial;
+see the [current trial offer](https://clickhouse.com/cloud). Usage draws down
+available trial credits; paid accounts incur normal Cloud charges.
 
 ## 1. Install the example
 
@@ -81,6 +63,41 @@ npm test
 
 The `git switch` line checks out this contribution's review branch. Omit it once
 the example has merged into `main`.
+
+Keep your terminal in `examples/applications/report-history` for authentication
+and all remaining commands. Return to this directory if you open a new terminal.
+
+Install the CLI, review the installer according to your organization's policy,
+and verify it is on your PATH:
+
+```sh
+curl -fsSL https://clickhouse.com/cli | sh
+export PATH="$HOME/.local/bin:$PATH"
+clickhousectl --version
+```
+
+### Authenticate from the example directory
+
+Create an **Admin-role Cloud API key** for your organization using the
+[API-key guide](https://clickhouse.com/docs/products/cloud/features/admin-features/api/openapi).
+Keep both the Key ID and Key Secret. In a private terminal, still in
+`examples/applications/report-history`, enter them at the interactive prompts:
+
+```sh
+clickhousectl cloud auth login --interactive
+clickhousectl cloud auth status
+clickhousectl cloud org list
+```
+
+Before continuing, check that status shows API-key authentication and the
+organization list contains your intended organization. OAuth-only authentication
+is read-only and cannot perform this setup. If an agent is running the remaining
+steps, complete the interactive login yourself in this same directory first.
+
+Do not commit `.clickhouse/`, API keys or `.env`, or paste secrets into an agent
+conversation. Follow the [CLI authentication documentation](https://github.com/ClickHouse/clickhousectl)
+for your environment's credential policy. Initial account/API-key issuance may
+require the Cloud account administrator; provisioning and setup below are CLI-driven.
 
 ## 2. Create a bounded, IP-restricted ClickHouse service
 
