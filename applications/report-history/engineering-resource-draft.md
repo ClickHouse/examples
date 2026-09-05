@@ -168,11 +168,12 @@ GROUP BY day, d.region, d.category
 ORDER BY day, d.region, d.category
 ```
 
-This shortened query shows the analytical shape. The runnable `analytics()`
-method additionally gates the joined runs by expected-versus-actual row count;
-use that implementation when incomplete publication is possible. Integer cents
-avoid floating-point currency arithmetic, and the client returns 64-bit
-aggregates as strings.
+The query above totals revenue by day, region and category. In your application,
+use the example's `analytics()` method. It also excludes reports with missing
+rows, so an interrupted upload cannot contribute a partial total.
+
+Revenue is stored in whole cents to avoid rounding errors. Totals are returned
+as strings so JavaScript can read large values without losing precision.
 
 Run `npm run demo`, `npm run history`, and `npm run analytics`. The demo generates
 CSV inputs, parses them, writes separate Markdown reports, and stores 2,000
