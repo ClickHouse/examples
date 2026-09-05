@@ -5,6 +5,10 @@ their analytical result rows, retrieves a previous report, and aggregates across
 completed runs. Provision the database using `clickhousectl`; the application
 uses the official ClickHouse JavaScript client over HTTPS.
 
+ClickHouse Cloud is the platform for both ClickHouse and ClickHouse Managed
+Postgres services. This example provisions a ClickHouse analytical service;
+it does not provision a Postgres service.
+
 The main lifecycle is **completed-run inserts**, not a transactional job queue.
 An optional versioned status table shows how a single workflow owner can publish
 current-state observations without waiting for a background merge.
@@ -16,11 +20,11 @@ current-state observations without waiting for a background merge.
 - Run metadata is small relative to analytical results.
 - The application can retry an interrupted publication and hide incomplete runs.
 
-Choose a transactional store, such as [Postgres managed by ClickHouse](https://clickhouse.com/cloud/postgres),
-for concurrent job claiming, compare-and-swap state transitions, uniqueness
+Choose a transactional service, such as [ClickHouse Managed Postgres](https://clickhouse.com/cloud/postgres)
+within ClickHouse Cloud, for concurrent job claiming, compare-and-swap state transitions, uniqueness
 constraints, balances, or multi-row transactions. This example does not implement
-those guarantees. A Postgres application can separately send analytical results
-to ClickHouse if both workloads matter.
+those guarantees. If both workloads matter, you can use Postgres and ClickHouse
+services together within ClickHouse Cloud, sending analytical results to ClickHouse.
 
 This is an executable design example, **not a hundreds-of-millions-of-rows
 benchmark or production application**. The example accepts at most 100,000 rows
@@ -34,7 +38,7 @@ recount the entire tenant on every history request.
 ## Prerequisites
 
 - Node.js 22 or newer, npm, Git, and a ClickHouse Cloud account with billing/trial
-  capacity. This example creates a chargeable Cloud service.
+  capacity. This example creates a chargeable ClickHouse service in ClickHouse Cloud.
 - An **Admin-role Cloud API key**: setup's first SQL request auto-provisions a
   per-service Query API key, which needs key-creation permission. A
   Developer-scoped key may create the service but fail that step. The
@@ -78,7 +82,7 @@ npm test
 The `git switch` line checks out this contribution's review branch. Omit it once
 the example has merged into `main`.
 
-## 2. Create a bounded, IP-restricted Cloud service
+## 2. Create a bounded, IP-restricted ClickHouse service
 
 Set your public outbound IP explicitly. For example, `curl -fsS
 https://api.ipify.org` displays the IPv4 address seen by that external service;
@@ -260,7 +264,7 @@ sizing. There is no background worker, message broker, dashboard, or paid third-
 party dependency hidden in this example.
 
 Verified on 2026-09-05 with `clickhousectl 0.4.2`, Node.js 25.9.0,
-`@clickhouse/client 1.23.1`, and ClickHouse Cloud 26.2.1.641:
+`@clickhouse/client 1.23.1`, and ClickHouse 26.2.1.641 running in ClickHouse Cloud:
 
 - Type checking and six offline unit tests, including CSV-to-Markdown generation,
   timeout retries and exact money sums.

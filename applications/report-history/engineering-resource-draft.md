@@ -14,7 +14,12 @@ Consider a worker that reads a file, generates a sales report, uploads the
 finished artifact, and records the results. Users retrieve a past report or
 compare revenue across thousands of completed runs. If a completed run is
 immutable and partial publication can be retried, the run history and the
-analytical rows can share a ClickHouse Cloud service.
+analytical rows can share a ClickHouse service in ClickHouse Cloud.
+
+ClickHouse Cloud is the platform for both ClickHouse and ClickHouse Managed
+Postgres services. This example provisions only the ClickHouse analytical
+service; the transactional alternative discussed below is also part of
+ClickHouse Cloud.
 
 The [runnable TypeScript example](https://github.com/ClickHouse/examples/tree/add-report-history-example/applications/report-history)
 implements that lifecycle, including interruption tests. It uses the official
@@ -147,14 +152,14 @@ const current = await store.currentStatus(tenant, runId);
 
 Repeated versions must have identical values. This does not implement
 compare-and-swap, concurrent job claiming, or atomic state transitions. Use a
-transactional store such as [Postgres managed by ClickHouse](https://clickhouse.com/cloud/postgres)
-if those requirements are central. A workflow ID assigned before execution can
+transactional service such as [ClickHouse Managed Postgres](https://clickhouse.com/cloud/postgres)
+within ClickHouse Cloud if those requirements are central. A workflow ID assigned before execution can
 identify progress observations; the immutable report ID is only available once
 the completed payload is known.
 
 ## What the example proves—and what remains yours
 
-The companion was verified on ClickHouse Cloud 26.2.1.641 with actual CLI service
+The companion was verified on ClickHouse 26.2.1.641 in ClickHouse Cloud with actual CLI service
 creation, a restricted application user, and integration tests for retries,
 partial publication, empty reports, duplicate rows, cross-run totals, and late
 status observations. It is not a scale benchmark: it accepts at most 100,000
