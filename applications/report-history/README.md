@@ -306,5 +306,5 @@ If you no longer need the data, inspect the recorded ID and explicitly delete
 that service with `clickhousectl cloud service delete YOUR_SERVICE_ID`. Deletion
 is destructive; the example never performs it automatically.
 
-See [engineering-resource-draft.md](engineering-resource-draft.md) for a
-companion article explaining the design and its boundaries.
+Read [Building report results and run history with ClickHouse Cloud](https://clickhouse.com/resources/engineering/building-report-results-and-run-history-with-clickhouse-cloud)
+for a companion article explaining the design and its boundaries.
