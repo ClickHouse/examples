@@ -27,13 +27,13 @@ those guarantees. If both workloads matter, you can use Postgres and ClickHouse
 services together within ClickHouse Cloud, sending analytical results to ClickHouse.
 
 This is an executable design example, **not a hundreds-of-millions-of-rows
-benchmark or production application**. The example accepts at most 100,000 rows
-per report and buffers input in memory (the CSV parser reads before validating
-that row-count limit). The completeness checks intentionally prioritize understandable
-correctness over optimization: they count this tenant's result rows on reads.
-At large scale, add time/run filters, benchmark `FINAL` and joins with realistic
-data, and design an ingestion reconciliation/manifest strategy that does not
-recount the entire tenant on every history request.
+benchmark or production application**. To keep the example small, the generator
+reads each CSV into memory, then rejects reports with more than 100,000 rows.
+That row cap is a guard in the sample code, not a ClickHouse limit. The history
+query counts stored result rows to avoid showing incomplete reports. This makes
+the check easy to follow but adds work as the history grows. For larger inputs,
+use a streaming parser and test queries that limit the rows scanned to the
+reports or time range you need.
 
 ## Prerequisites
 
@@ -42,8 +42,9 @@ recount the entire tenant on every history request.
 - An **Admin-role Cloud API key**: setup's first SQL request auto-provisions a
   per-service Query API key, which needs key-creation permission. The
   CLI's OAuth login is read-only; it cannot perform this setup.
-- Your public outbound IP address and permission to create one AWS `eu-west-1`
-  service. Change provider/region in `scripts/cloud.mjs` if required.
+- Permission to create one AWS `eu-west-1` service. The commands below fetch your
+  public IP address automatically. Change provider/region in `scripts/cloud.mjs`
+  if required.
 
 [Sign up for ClickHouse Cloud](https://console.clickhouse.cloud/signUp) if you
 need an account. New accounts start with $300 in free credits for a 30-day trial;
@@ -54,20 +55,16 @@ available trial credits; paid accounts incur normal Cloud charges.
 
 ```sh
 git clone https://github.com/ClickHouse/examples.git
-git -C examples switch --track origin/add-report-history-example
 cd examples/applications/report-history
 npm ci
 npm run typecheck
 npm test
 ```
 
-The `git switch` line checks out this contribution's review branch. Omit it once
-the example has merged into `main`.
-
 Keep your terminal in `examples/applications/report-history` for authentication
 and all remaining commands. Return to this directory if you open a new terminal.
 
-Install the CLI, review the installer according to your organization's policy,
+Install the [ClickHouse CLI](https://clickhouse.com/docs/products/cloud/features/cli)
 and verify it is on your PATH:
 
 ```sh
@@ -95,34 +92,31 @@ is read-only and cannot perform this setup. If an agent is running the remaining
 steps, complete the interactive login yourself in this same directory first.
 
 Do not commit `.clickhouse/`, API keys or `.env`, or paste secrets into an agent
-conversation. Follow the [CLI authentication documentation](https://github.com/ClickHouse/clickhousectl)
-for your environment's credential policy. Initial account/API-key issuance may
-require the Cloud account administrator; provisioning and setup below are CLI-driven.
+conversation. See the [CLI authentication documentation](https://clickhouse.com/docs/products/cloud/features/cli#authentication)
+for more detail.
 
 ## 2. Create a bounded, IP-restricted ClickHouse service
 
-Set your public outbound IP explicitly. For example, `curl -fsS
-https://api.ipify.org` displays the IPv4 address seen by that external service;
-only use an IP-check service approved by your organization.
+The command fetches your public IPv4 address and passes it to the helper, which
+allows connections from that address only:
 
 ```sh
-export REPORT_DEMO_IP='YOUR_PUBLIC_IP'
 export REPORT_DEMO_SERVICE_NAME='report-history-example'
 # If you have more than one Cloud organization:
 # export REPORT_DEMO_ORG_ID='YOUR_ORG_ID'
-npm run cloud:create
+REPORT_DEMO_IP="$(curl -4fsS https://api.ipify.org)" npm run cloud:create
 npm run cloud:setup
 ```
 
-The helper runs this real CLI command, capturing the one-time password securely
-instead of printing it into an agent transcript:
+The equivalent CLI command is shown below. The helper captures the one-time
+password instead of printing it:
 
 ```sh
 clickhousectl cloud service create \
   --name report-history-example --provider aws --region eu-west-1 \
   --min-replica-memory-gb 8 --max-replica-memory-gb 8 --num-replicas 1 \
   --idle-scaling true --idle-timeout-minutes 5 \
-  --ip-allow YOUR_PUBLIC_IP/32 --tag example=report-history --json
+  --ip-allow "$(curl -4fsS https://api.ipify.org)/32" --tag example=report-history --json
 ```
 
 For IPv6, the helper uses `/128` instead of `/32`. It never opens access to
@@ -142,8 +136,8 @@ clickhousectl cloud service query --id YOUR_SERVICE_ID \
   --queries-file sql/02-results.sql
 ```
 
-It also applies `03-runs.sql` and `04-status.sql`, generates a policy-compliant
-random password, saves it **before** creating the user, and grants only
+It also applies `03-runs.sql` and `04-status.sql`, generates a random password,
+saves it **before** creating the user, and grants only
 `SELECT, INSERT` on the example's three tables to `report_history_app`.
 Application credentials are in `.env`; the initial admin response is in
 `.cloud-create-response.json`. Both are gitignored and created with mode `0600`.
@@ -312,5 +306,5 @@ If you no longer need the data, inspect the recorded ID and explicitly delete
 that service with `clickhousectl cloud service delete YOUR_SERVICE_ID`. Deletion
 is destructive; the example never performs it automatically.
 
-See [engineering-resource-draft.md](engineering-resource-draft.md) for a proposed
+See [engineering-resource-draft.md](engineering-resource-draft.md) for a
 companion article explaining the design and its boundaries.

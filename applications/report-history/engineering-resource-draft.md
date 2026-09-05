@@ -1,9 +1,5 @@
 # Building report results and run history with ClickHouse Cloud
 
-Editorial status: proposed engineering resource, not a published page. Review
-the companion example before publication. While the code PR is under review,
-link to its PR branch; update the link to `main` only after merge.
-
 This walkthrough builds a small command-line sales-reporting application. It
 reads sales CSV files, writes human-readable Markdown reports, and stores the
 result rows and completed-run history in ClickHouse. You can find an earlier
@@ -20,15 +16,15 @@ Postgres services. This example provisions only the ClickHouse analytical
 service; the transactional alternative discussed below is also part of
 ClickHouse Cloud.
 
-The [runnable TypeScript example](https://github.com/ClickHouse/examples/tree/add-report-history-example/applications/report-history)
+The [runnable TypeScript example](https://github.com/ClickHouse/examples/tree/main/applications/report-history)
 implements that lifecycle, including interruption tests. It uses the official
 JavaScript client and provisions infrastructure with `clickhousectl`; no
 console-clicking walkthrough is required after account authentication.
 
-## Make the lifecycle explicit
+## Store report results and run history
 
-This example publishes a completed report, not a job that must be atomically
-claimed by one of many workers. The application writes two tables:
+Each report has two parts: the result rows you want to analyze and a record
+describing the completed run. They go into two tables:
 
 | Table | Purpose | Logical identity |
 | --- | --- | --- |
@@ -58,18 +54,15 @@ entering the example directory:
 
 ```sh
 git clone https://github.com/ClickHouse/examples.git
-git -C examples switch --track origin/add-report-history-example
 cd examples/applications/report-history
 npm ci
 ```
 
-The branch checkout is needed while the example PR is under review; omit it
-after the example merges into `main`. Stay in `examples/applications/report-history`
-for authentication and all subsequent commands, including after opening a new
-terminal.
+Stay in `examples/applications/report-history` for authentication and all
+subsequent commands. Return to this directory if you open a new terminal.
 
-Install the [ClickHouse CLI](https://github.com/ClickHouse/clickhousectl) if
-needed. Review the installer according to your organization's policy first:
+Install the [ClickHouse CLI](https://clickhouse.com/docs/products/cloud/features/cli)
+if needed:
 
 ```sh
 curl -fsSL https://clickhouse.com/cli | sh
@@ -101,11 +94,11 @@ yourself in a terminal in this same directory first.
 
 ### 3. Create the service and schema
 
-From the same directory, set your public outbound IP and provision the service:
+From the same directory, fetch your public IPv4 address and provision the
+service. The helper allows connections from that address only:
 
 ```sh
-export REPORT_DEMO_IP='YOUR_PUBLIC_IP'
-npm run cloud:create
+REPORT_DEMO_IP="$(curl -4fsS https://api.ipify.org)" npm run cloud:create
 npm run cloud:setup
 ```
 
@@ -121,9 +114,11 @@ gitignored private `.env`; the application never uses the default administrator.
 If creation times out, the helper records that an attempt occurred so a retry
 does not silently create another service.
 
-## Publish results before advertising completion
+## Show a report only after all its rows are stored
 
-The worker awaits each result batch, then writes the completed-run marker:
+A report should not appear in the run history while some of its rows are still
+being uploaded. The application first inserts all the rows into `report_results`.
+Only after those inserts succeed does it add the report to `report_runs`:
 
 ```ts
 const report = prepareReport(input);
@@ -131,11 +126,13 @@ await store.writeResults(report);
 await store.writeCompletion(report);
 ```
 
-This is an application publication protocol, **not a cross-table transaction**.
-If the process stops between the two operations, the result rows exist but the
-run is not advertised. Retrying the same input finishes publication. Reads also
-check that the marker's expected row count matches the logical result count;
-a marker with missing rows stays hidden.
+These are two separate database operations, not one transaction. If the process
+stops after storing the result rows but before adding the history record, the
+report stays out of the history. Retrying the same input finishes saving it.
+
+Queries also check that the number of stored result rows matches the row count
+recorded in `report_runs`. A report with missing rows is excluded from the
+history and from queries across reports.
 
 Stable batch contents, ordering, and deduplication tokens handle ordinary
 retries. ClickHouse's insert-deduplication history is finite, so the design does
@@ -183,7 +180,7 @@ analytical rows for each report. No LLM key is needed: the deterministic generat
 isolates the storage lifecycle. It deliberately republishes each report. The
 logical result remains three reports, 6,000 rows and 7,197,000 cents of revenue.
 
-## A status display is optional—and not a queue
+## Track progress without using the status table as a job queue
 
 If users also want progress observations, the example includes a separate
 `run_status` table with `ReplacingMergeTree(version)`. A single workflow owner
@@ -203,15 +200,14 @@ within ClickHouse Cloud if those requirements are central. A workflow ID assigne
 identify progress observations; the immutable report ID is only available once
 the completed payload is known.
 
-## What the example proves—and what remains yours
+## What the example demonstrates
 
-The companion was verified on ClickHouse 26.2.1.641 in ClickHouse Cloud with actual CLI service
-creation, a restricted application user, and integration tests for retries,
-partial publication, empty reports, duplicate rows, cross-run totals, and late
-status observations. It is not a scale benchmark: it accepts at most 100,000
-rows per report, buffers input in memory, and recounts tenant results for completeness checks. A large
-deployment needs narrower query windows, representative measurements, and an
-appropriate manifest/reconciliation strategy.
+The example was tested on ClickHouse 26.2.1.641 in ClickHouse Cloud. Tests cover
+CLI setup, interrupted uploads, retries, empty reports, duplicate rows,
+cross-report totals, and status updates arriving out of order. These checks
+verify that the workflow produces the expected results; they do not measure
+performance at scale. The [README](https://github.com/ClickHouse/examples/tree/main/applications/report-history#when-this-design-fits)
+documents the sample code's implementation limits.
 
 The application still owns authorization, file storage, retries, batching,
 orphan cleanup and workload sizing. Tenant filtering in example queries is not
