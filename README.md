@@ -17,6 +17,7 @@ Examples cover a range of topics, from ClickHouse internals to integrating with 
 
 ## Repo contents
 
+- [Report results and run history](./applications/report-history/README.md): A CLI-first TypeScript application example with ClickHouse Cloud provisioning, retry-safe report publication, and cross-run analytics.
 - [ai](./ai/): Examples using AI with ClickHouse via clickhousectl and mcp.
 - [blog-examples](./blog-examples/): Resources that support the [ClickHouse Blog](clickhouse.com/blog).
 - [docker-compose-recipes](./docker-compose-recipes/README.md): Various docker compose recipes for spinning up ClickHouse and common integrations, like Kafka, Grafana, Dagster and more.
