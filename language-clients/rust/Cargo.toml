@@ -1,0 +1,15 @@
+[package]
+name = "client-tour-rust"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.89"
+
+[dependencies]
+clickhouse = { version = "=0.15.2", features = ["rustls-tls", "uuid", "time"] }
+serde = { version = "=1.0.228", features = ["derive"] }
+time = { version = "=0.3.44", features = ["macros"] }
+tokio = { version = "=1.48.0", features = ["macros", "rt-multi-thread"] }
+uuid = "=1.18.1"
+
+[profile.release]
+debug = false
