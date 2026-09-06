@@ -19,7 +19,7 @@
 
 Examples and recipes for building with ClickHouse, from your first SQL query to applications, data pipelines, observability, and AI agents. Explore a product below, or jump to the [repository contents](#repository-contents).
 
-**[Try ClickHouse Cloud](https://console.clickhouse.cloud/signUp)** · [Documentation](https://clickhouse.com/docs) · [SQL playground](https://sql.clickhouse.com/) · [Learn ClickHouse with Mark](./LearnClickHouseWithMark/README.md)
+**[Try ClickHouse Cloud](https://clickhouse.com/cloud)** · [Documentation](https://clickhouse.com/docs) · [SQL playground](https://sql.clickhouse.com/) · [Learn ClickHouse with Mark](./LearnClickHouseWithMark/README.md)
 
 ## What is ClickHouse?
 
@@ -29,7 +29,7 @@ You can use the engine as a managed Cloud service, run your own server, embed it
 
 ## How to get started
 
-For a managed service, [sign up for ClickHouse Cloud](https://console.clickhouse.cloud/signUp) and follow the [Cloud quickstart](https://clickhouse.com/docs/products/cloud/getting-started/cloud-get-started). To run ClickHouse yourself, follow the [installation guide](https://clickhouse.com/docs/get-started/setup/install). You can also explore public datasets in the [SQL playground](https://sql.clickhouse.com/) or start with the local file examples below.
+For a managed service, [sign up for ClickHouse Cloud](https://clickhouse.com/cloud) and follow the [Cloud quickstart](https://clickhouse.com/docs/products/cloud/getting-started/cloud-get-started). To run ClickHouse yourself, follow the [installation guide](https://clickhouse.com/docs/get-started/setup/install). You can also explore public datasets in the [SQL playground](https://sql.clickhouse.com/) or start with the local file examples below.
 
 To run an example, clone this repository:
 
