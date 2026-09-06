@@ -1,12 +1,4 @@
-#!/bin/bash
-
-# install mcp-clickhouse
-mkdir -p external
-git clone https://github.com/ClickHouse/mcp-clickhouse external/mcp-clickhouse
-cd external/mcp-clickhouse
-uv sync     
-uv add fastmcp
-cd ../..
-
-# install application dependencies
-npm install
+#!/bin/sh
+set -eu
+npm ci --ignore-scripts
+uv tool run --python 3.13 --from mcp-clickhouse==0.6.0 python -c 'import mcp_clickhouse'

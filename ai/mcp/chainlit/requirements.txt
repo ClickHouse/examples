@@ -1,0 +1,5 @@
+# Direct dependencies selected on 2026-09-05. Python 3.13.
+chainlit==2.12.0
+anthropic==1.4.0
+mcp==1.28.1
+openai==3.8.0

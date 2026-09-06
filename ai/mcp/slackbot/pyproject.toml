@@ -1,16 +1,13 @@
 [project]
-name = "slackbot"
-version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.13"
+name = "clickhouse-mcp-slackbot"
+version = "0.2.0"
+description = "A Slack data assistant using ClickHouse MCP and PydanticAI"
+requires-python = ">=3.13,<3.14"
 dependencies = [
-    "aiohttp>=3.12.13",
-    "anthropic>=0.56.0",
-    "pydantic-ai>=0.3.5",
-    "python-dotenv>=1.1.1",
-    "slack-bolt>=1.23.0",
-    "altair>=5.0.0",
-    "vl-convert-python>=1.6.0",
-    "pillow>=10.0.0",
+    "aiohttp==3.14.3",
+    "pydantic-ai-slim[mcp,anthropic,openai]==2.40.0",
+    "httpx==0.28.1",
+    "python-dotenv==1.2.3",
+    "slack-bolt==1.30.0",
+    "vl-convert-python==1.9.0.post1",
 ]

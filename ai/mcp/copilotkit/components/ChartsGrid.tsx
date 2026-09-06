@@ -1,65 +1,37 @@
-"use client"
-import GenericChart, { ChartProps } from "./GenericChart";
+"use client";
 import { useState } from "react";
-import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
+import { useAgentContext, useFrontendTool } from "@copilotkit/react-core/v2";
+import { z } from "zod";
+import GenericChart, { ChartProps } from "./GenericChart";
 
-function DynamicGrid({ charts }: { charts: ChartProps[] }) {
-    return (
-        charts.map((chart, index) => (
-            <div className="flex flex-col gap-4" key={index}>
-                <p className="text-white whitespace-nowrap overflow-hidden text-overflow-ellipsis text-(length:--typography-font-sizes-1,20px) leading-[150%] font-bold font-inter">{chart.title}</p>
-                <GenericChart {...chart} />
-            </div>))
-    )
-}
+const chartSchema = z.object({
+  data: z.array(z.record(z.string(), z.union([z.string(), z.number()]))),
+  chartType: z.enum(["bar", "line", "area", "pie"]),
+  title: z.string().max(30),
+  xAxis: z.string(),
+});
 
 export default function ChartsGrid() {
-    const [charts, setCharts] = useState<ChartProps[]>([]);
-
-    useCopilotReadable({
-        description: "These are all the charts props",
-        value: charts,
-    });
-
-    useCopilotAction({
-        name: "generateChart",
-        description: "Generate a chart based on the provided data. Make sure to provide the data in the correct format and specify what field should be used a x-axis.",
-        parameters: [
-            {
-                name: "data",
-                type: "object[]",
-                description: "Data to be used for the chart. The data should be an array of objects, where each object represents a data point.",
-            },
-            {
-                name: "chartType",
-                type: "string",
-                description: "Type of chart to be generated. Let's use bar, line, area, or pie.",
-            },
-            {
-                name: "title",
-                type: "string",
-                description: "Title of the chart. Can't be more than 30 characters.",
-            },
-            { name: "xAxis", type: "string", description: "x-axis label" }
-        ],
-
-        handler: async ({ data, chartType, title, xAxis }) => {
-            const newChart: ChartProps = {
-                data,
-                chartType,
-                title,
-                xAxis
-            };
-
-            setCharts((charts) => [...charts, newChart]);
-        },
-        render: "Adding chart...",
-    });
-
-    return (
-        <div className="grid grid-cols-2 lg:grid-cols-2 gap-8">
-            {charts.length > 0 ? <DynamicGrid charts={charts} /> :
-                <div className="mt-10 flex items-center justify-center w-full h-[400px] border border-[#414141] bg-[#282828] font-inter font-medium leading-[150%] text-base text-[#B3B6BD] rounded-lg">Your chart will appear here</div>}
-        </div>
-    )
+  const [charts, setCharts] = useState<ChartProps[]>([]);
+  useAgentContext({ description: "Charts currently displayed", value: JSON.stringify(charts) });
+  useFrontendTool({
+    name: "generateChart",
+    description: "Visualize the ClickHouse query results on the dashboard.",
+    parameters: chartSchema,
+    handler: async (args) => {
+      const chart = chartSchema.parse(args);
+      setCharts(current => [...current, chart]);
+      return "Chart added to the dashboard.";
+    },
+  }, []);
+  return (
+    <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
+      {charts.length ? charts.map((chart, index) => (
+        <section key={index}>
+          <h2 className="mb-4 text-xl font-bold">{chart.title}</h2>
+          <GenericChart {...chart} />
+        </section>
+      )) : <p className="rounded border border-neutral-700 p-12 text-neutral-400">Ask the assistant to chart your data.</p>}
+    </div>
+  );
 }

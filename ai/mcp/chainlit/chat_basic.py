@@ -1,3 +1,4 @@
+import os
 import anthropic
 import chainlit as cl
 
@@ -16,14 +17,14 @@ async def call_claude(query: str):
     msg = cl.Message(content="", author="Claude")
 
     stream = await c.messages.create(
-        model="claude-3-5-sonnet-latest",
+        model=os.getenv("ANTHROPIC_MODEL", "claude-sonnet-5"),
         messages=messages,
         max_tokens=1000,
         stream=True,
     )
 
     async for data in stream:
-        if data.type == "content_block_delta":
+        if data.type == "content_block_delta" and data.delta.type == "text_delta":
             await msg.stream_token(data.delta.text)
 
     await msg.send()

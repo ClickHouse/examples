@@ -1,0 +1,2 @@
+# Direct dependencies selected on 2026-09-05. Python 3.13.
+claude-agent-sdk==0.2.152

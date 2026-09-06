@@ -1,63 +1,52 @@
-This is an example of how to build an agentic application using data stored in ClickHouse. It uses the [ClickHouse MCP Server](https://github.com/ClickHouse/mcp-clickhouse) to query data from ClickHouse and generate charts based on the data. 
+# CopilotKit analytics dashboard with ClickHouse MCP
 
-[CopilotKit](https://github.com/CopilotKit/CopilotKit) is used to build the UI and provide a chat interface to the user.
+A dashboard using **CopilotKit 1.70.1**, **Next.js 16.3.4**, **React 19.2.8**, and ClickHouse MCP **0.6.0**. The v2 agent calls MCP tools on the server and a frontend tool adds charts. Production build, lint, runtime startup, and MCP discovery/query/error checks passed on 5 September 2026. The live Luna runtime queried the fixture and emitted correct chart-tool arguments; browser rendering remains unverified.
 
-# Prerequisites
+Build this with your data in [ClickHouse Cloud](https://clickhouse.com/cloud), including **$300 credits for a 30-day trial**.
 
-- Node.js >= 20.14.0
-- uv >= 0.1.0
 
-# Install dependencies
+## OpenAI configuration
 
-Clone the project locally: `git clone https://github.com/ClickHouse/examples` and navigate to the `ai/mcp/copilotkit` directory.
+Set `LLM_PROVIDER=openai`, `OPENAI_MODEL=gpt-5.6-luna`, and `OPENAI_API_KEY` before launching. Put these in `.env.local`. `OPENAI_BASE_URL` optionally selects an OpenAI-compatible endpoint. The Luna path was tested live against ClickHouse 26.8.2.7. Other provider paths retain their configurable models and are separately unverified.
 
-Skip this section and run the script `./install.sh` to install dependencies. If you want to install dependencies manually, follow the instructions below.
 
-## Install dependencies manually
+## Setup
 
-1. Install dependencies: 
+Install **Node.js 24 LTS** and [uv](https://docs.astral.sh/uv/getting-started/installation/). From this directory:
 
-Run `npm install` to install node dependencies.
-
-2. Install mcp-clickhouse:
-
-Create a new folder `external` and clone the mcp-clickhouse repository into it.
-
-```
-mkdir -p external
-git clone https://github.com/ClickHouse/mcp-clickhouse external/mcp-clickhouse
+```sh
+./install.sh
+cp env.example .env.local
 ```
 
-Install Python dependencies and add fastmcp cli tool.
+Edit `.env.local`: provide `OPENAI_API_KEY` and a random `CLICKHOUSE_MCP_AUTH_TOKEN` generated with `openssl rand -hex 32`. The supplied environment selects `gpt-5.6-luna`. For Anthropic, set `LLM_PROVIDER=anthropic` and provide `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL`.
 
+The defaults query the public playground. For your own database, use the connection values and shared fixture in the [local/Cloud setup](../README.md#local-clickhouse). Keep the values in `.env.local`. `MCP_ENDPOINT` and the token are server settings.
+
+## Run
+
+```sh
+npm run dev
 ```
-cd external/mcp-clickhouse
-uv sync
-uv add fastmcp
+
+This starts Next.js and a pinned MCP server on `127.0.0.1:8000`. Open http://localhost:3000 and ask “Show a chart of Manchester property prices by year for the last ten years.” With the shared fixture, ask “Create a bar chart of revenue by region from mcp_demo.sales.” Expected revenue: North 250, South 500.
+
+The runtime uses CopilotKit's current `BuiltInAgent` with native MCP configuration. The dashboard registers a typed chart tool through the v2 React API. See [CopilotKit MCP servers](https://docs.copilotkit.ai/mcp-servers).
+
+To use an existing HTTP MCP server, set `MCP_ENDPOINT` and its bearer token, then run `npm run dev:next` instead. It must expose Streamable HTTP at `/mcp`.
+
+## Validate and stop
+
+```sh
+npm run lint
+npm run build
+npm run test:mcp
 ```
 
-# Configure the application
+The MCP test requires the server to be running; it does not need an Anthropic key. To run the production build, use `npm start` and start MCP separately with `npm run dev:mcp`.
 
-Copy the `env.example` file to `.env` and edit it to provide your ANTHROPIC_API_KEY. 
+All CopilotKit packages are aligned. TypeScript **6.0.3** and ESLint **9.39.5** are the newest compatible versions tested: TypeScript 7 and ESLint 10 broke the current lint plugins. Remaining upstream dependency advisories are recorded in [PR #407](https://github.com/ClickHouse/examples/pull/407).
 
-## Bring your own LLM
+Stop development processes with Ctrl-C; see [database cleanup](../README.md#cleanup).
 
-If you'd rather use another LLM provider than Anthropic, you can modify the [Copilotkit runtime](./app/api/copilotkit/route.ts) to use a different LLM adapter. [Here](https://docs.copilotkit.ai/direct-to-llm/guides/bring-your-own-llm) is a list of supported providers.
-
-## Use your own ClickHouse cluster
-
-By default, the example is configured to connect to the [ClickHouse demo cluster](https://sql.clickhouse.com/). You can also use your own ClickHouse cluster by setting the following environment variables:
-
-- `CLICKHOUSE_HOST`
-- `CLICKHOUSE_PORT`
-- `CLICKHOUSE_USER`
-- `CLICKHOUSE_PASSWORD`
-- `CLICKHOUSE_SECURE`
-
-# Run the application
-
-Run `npm run dev` to start the development server.
-
-You can test the Agent using prompt like: "Show me the price evolution in Manchester for the last 10 years.", please note that this is only a demo and a lot of edge cases have not been tested.
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Companion article: [Building an agentic application with ClickHouse MCP and CopilotKit](https://clickhouse.com/blog/building-an-agentic-application-with-clickhouse-mcp-server-and-copilotkit). Its v1/SSE setup needs the [listed corrections](../CONTENT_UPDATES.md).

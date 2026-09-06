@@ -1,0 +1,4 @@
+# Direct dependencies selected on 2026-09-05. Python 3.13.
+pydantic-ai-slim[mcp,anthropic,openai]==2.40.0
+# Required by PydanticAI's MCP adapter alongside HTTPX2.
+httpx==0.28.1

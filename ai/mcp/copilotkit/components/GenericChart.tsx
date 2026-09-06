@@ -1,9 +1,7 @@
 import React, { useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
-import { color } from 'echarts';
 
 export interface DataPoint {
-  name: string;
   [key: string]: string | number; // Additional data properties
 }
 
@@ -14,7 +12,7 @@ export interface ChartProps {
   xAxis?: string; // Optional x-axis label
 }
 
-const GenericChart = ({ data, chartType, title, xAxis }: ChartProps) => {
+const GenericChart = ({ data, chartType, xAxis }: ChartProps) => {
 
   const colors = [
     '#FAFF69',

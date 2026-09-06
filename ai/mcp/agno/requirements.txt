@@ -1,0 +1,2 @@
+# Direct dependencies selected on 2026-09-05. Python 3.13.
+agno[mcp,anthropic,openai]==3.0.6

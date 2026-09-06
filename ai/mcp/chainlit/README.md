@@ -1,59 +1,37 @@
-# Chainlit and the ClickHouse MCP Server
+# Chainlit with ClickHouse MCP
 
-Chainlit lets you build LLM-based chat apps.
+A streaming chat app using **Chainlit 2.12.0** and **ClickHouse MCP 0.6.0**. The OpenAI entry point passed a live GPT-5.6 Luna query, follow-up, and failed-SQL check on 5 September 2026. Anthropic's tool loop passed offline regressions. Browser interaction remains unverified.
 
-If you want to run these examples locally, you'll need to first clone the repository:
+Query your own data with [ClickHouse Cloud](https://clickhouse.com/cloud), including **$300 credits for a 30-day trial**.
 
-```
-git clone https://github.com/ClickHouse/examples.git
-cd examples/ai/mcp/chainlit
-```
+## Run with OpenAI
 
-We're going to explore it using Anthropic, so you'll need to have you Anthropic API key configured:
+Follow the [shared setup](../README.md#setup), export `OPENAI_API_KEY` and your ClickHouse connection, then run from this directory:
 
-```
-export ANTHROPIC_API_KEY='sk-xxx'
+```sh
+uv run --python 3.13 --with-requirements requirements.txt chainlit run chat_openai.py --port 8090
 ```
 
-## Basic Chainlit app
+Open http://localhost:8090. In the MCP menu, connect **clickhouse**. Ask “What tables can you query?” With the shared local/Cloud fixture, ask “Calculate revenue by region from mcp_demo.sales.” Expected revenue: North 250, South 500.
 
-You can see an example of a basic chat app by running the following:
+`OPENAI_MODEL` defaults to `gpt-5.6-luna`. The app streams text and tool arguments, keeps conversation history, and returns query errors to the model.
 
-```
-uv run --with anthropic --with chainlit chainlit run chat_basic.py -w -h
-```
+Chainlit 2.12 uses server entries in [.chainlit/config.toml](.chainlit/config.toml). The shared connection hooks in `chat_mcp.py` pass ClickHouse environment variables explicitly to the pinned subprocess. Users select the named server. See [Chainlit MCP documentation](https://docs.chainlit.io/advanced-features/mcp).
 
-Then navigate to http://localhost:8000
+## Anthropic alternatives
 
-## Adding ClickHouse MCP Server
+Export `ANTHROPIC_API_KEY`, then run `chat_mcp.py` for the Anthropic MCP example or `chat_basic.py` for chat without database tools:
 
-Things get more interesting if we add the ClickHouse MCP Server.
-You'll need to update your `.chainlit/config.toml` file to allow the `uv` command to be used:
-
-```toml
-[features.mcp.stdio]
-    enabled = true
-    # Only the executables in the allow list can be used for MCP stdio server.
-    # Only need the base name of the executable, e.g. "npx", not "/usr/bin/npx".
-    # Please don't comment this line for now, we need it to parse the executable name.
-    allowed_executables = [ "npx", "uvx", "uv" ]
+```sh
+uv run --python 3.13 --with-requirements requirements.txt chainlit run chat_mcp.py --port 8090
 ```
 
-There's some glue code to get MCP Servers working with Chainlit, so we'll need to run this command to launch Chainlit instead:
+`ANTHROPIC_MODEL` defaults to `claude-sonnet-5`. These model calls were not included in the Luna-only live validation. MCP SDK 1.28.1 is pinned because Chainlit requires SDK 1.x; the MCP server runs in its own environment.
 
-```
-uv run --with anthropic --with chainlit chainlit run chat_mcp.py -w -h
-```
+## Offline checks and cleanup
 
-To add the MCP Server, click on the plug icon in the chat interface, and then add the following command to connect to use the ClickHouse SQL Playground:
-
-```
-CLICKHOUSE_HOST=sql-clickhouse.clickhouse.com CLICKHOUSE_USER=demo CLICKHOUSE_PASSWORD= CLICKHOUSE_SECURE=true uv run --with mcp-clickhouse --python 3.13 mcp-clickhouse
+```sh
+uv run --python 3.13 --with-requirements requirements.txt ../tests/app_smoke.py chainlit
 ```
 
-If you want to use your own ClickHouse instance, you can adjust the values of the environment variables.
-
-You can then ask it questions like this:
-
-* Tell me about the tables that you have to query
-* What's something interesting about New York taxis?
+Stop the app with Ctrl-C; see [database cleanup](../README.md#cleanup).

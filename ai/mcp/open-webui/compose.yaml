@@ -1,0 +1,19 @@
+services:
+  mcp-clickhouse:
+    extends:
+      file: ../compose.yaml
+      service: mcp-clickhouse
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:v0.11.3
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      ENABLE_OLLAMA_API: "false"
+      ENABLE_OPENAI_API: "true"
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    volumes:
+      - open-webui-data:/app/backend/data
+    depends_on:
+      - mcp-clickhouse
+volumes:
+  open-webui-data:
