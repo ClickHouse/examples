@@ -1,13 +1,3 @@
-# possible additions:
-# dbt-core 
-# dagster-dbt 
-# dbt-clickhouse 
-# dagster-docker 
-# pandas
-# infi.clickhouse_orm
-# clickhouse-connect
-# pandahouse
-
-dagster 
-dagster-webserver 
-clickhouse-driver
+dagster==1.13.21
+dagster-webserver==1.13.21
+clickhouse-driver==0.2.11
