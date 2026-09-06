@@ -1,22 +1,29 @@
-version: '3.8'
 services:
   clickhouse:
-    image: clickhouse/clickhouse-server
-    user: "101:101"
-    container_name: clickhouse
-    hostname: clickhouse
+    image: clickhouse/clickhouse-server:${CHVER:-latest}
+    environment:
+      CLICKHOUSE_USER: demo
+      CLICKHOUSE_PASSWORD: local-example-password
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
     volumes:
-      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
-      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
-      - ${PWD}/fs/volumes/clickhouse/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./fs/volumes/clickhouse/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+      - clickhouse-data:/var/lib/clickhouse
     ports:
-      - "127.0.0.1:8123:8123"
-      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:18123:8123"
+    healthcheck:
+      test: ["CMD", "clickhouse-client", "--user", "demo", "--password", "local-example-password", "--query", "SELECT count() FROM syslog_raw_data UNION ALL SELECT count() FROM apache_raw_data"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
   vector:
-    image: timberio/vector:latest-alpine
-    container_name: vector
-    hostname: vector
+    image: timberio/vector:0.58.0-alpine
+    command: ["--config", "/etc/vector/vector.toml"]
     volumes:
-      - ${PWD}/fs/volumes/vector/vector.toml:/etc/vector/vector.toml
+      - ./fs/volumes/vector/vector.toml:/etc/vector/vector.toml:ro
     depends_on:
-      - clickhouse
+      clickhouse:
+        condition: service_healthy
+
+volumes:
+  clickhouse-data:
