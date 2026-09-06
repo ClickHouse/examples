@@ -1,6 +1,10 @@
 # ClickHouse Docker Compose recipes
 
-A list of ClickHouse docker compose recipes
+Small local examples for learning ClickHouse topologies and integrations. These
+are development environments with public example credentials and no production
+security, backup or availability guarantees. Run one recipe at a time: several
+use the same host ports. Refreshed core recipes bind host ports to loopback;
+check older integrations before starting them on a shared machine.
 
 - [ClickHouse single node with Keeper](./recipes/ch-1S_1K/README.md)
 - [ClickHouse single node with Keeper and IMDB dataset](./recipes/ch-1S_1K_IMDB_dataset/README.md)
@@ -19,112 +23,62 @@ A list of ClickHouse docker compose recipes
 - [ClickHouse and LDAP (OpenLDAP)](./recipes/ch-and-openldap/README.md)
 - [ClickHouse and Vector syslog and apache demo data](./recipes/ch-and-vector/README.md)
 
-These recipes are provided "AS-IS" and intended strictly and only for local quick and dirty testing.
+## Start, verify and reset
 
+Install Docker with Compose v2 (`docker compose version`). No host application
+packages are needed. Allow Docker access to your checkout if your desktop runtime
+requires file sharing. Budget at least 2 CPUs and 4 GiB RAM for a small recipe;
+clusters need more, as described in their READMEs.
 
+From the repository root, for example:
 
-## How to use
-
-Each recipe runs as a pre-configured docker compose setup.
-
-- clone this repository locally (`cd /opt && git clone https://github.com/ClickHouse/examples`)
-- make sure the path _where_ you clone this repo (in this _example_ `/opt`) is added to your docker sharing settings
-![](./extras/add_path_to_docker_settings.png)
-- `cd` into the desire recipe directory (e.g. `cd recipes/ch-and-grafana`)
-- run `docker compose up` to launch the recipe
-- ctrl+C will abort execution
-- once done, run `docker compose down` to tear down the environment
-
-## Resources
-
-Make sure enough cpu cores, memory and disk are allocated for docker containers through docker settings.
-Some of these recipes do use up to 8 different containers.
-
-## Configuration files
-
-The configuration files for ClickHouse server, ClickHouse Keeper, and all of the other components that
-are deployed by the recipes are located in the `fs/volumes/` subdirectory of each recipe.  For example,
-to learn how ClickHouse Keeper is configured for the `cluster_1S_2R` recipe, you would look at [keeper_config.xml](./recipes/cluster_1S_2R/fs/volumes/clickhouse-keeper-01/etc/clickhouse-keeper/keeper_config.xml) and the similar files for the other two Keeper servers.
-
-## Connecting to ClickHouse
-
-All recipes have the `default` user configured with no password and full privileges.
-
-If you have `clickhouse client` on your workstation you can generally run `clickhouse client` and connect to the Docker ClickHouse instance.
-
-If running a recipe with multiple ClickHouse ([example](https://github.com/ClickHouse/examples/tree/main/docker-compose-recipes/recipes/cluster_2S_1R)), while the first instance normally binds to your localhost as the default ClickHouse native protocol port [9000](https://github.com/ClickHouse/examples//blob/93291fe2ca143d7d0ec1ec02ad61f50dc2f83788/docker-compose-recipes/recipes/cluster_2S_2R/docker-compose.yaml#L13-L14) normally, however other instances will use a different port to bind the ClickHouse native TCP connection to your localhost ([example](https://github.com/ClickHouse/examples/blob/93291fe2ca143d7d0ec1ec02ad61f50dc2f83788/docker-compose-recipes/recipes/cluster_2S_2R/docker-compose.yaml#L28) where `clickhouse-02` binds on localhost port `9001`), in this case you will want to specify:
-
-`clickhouse client --port 9001`
-
-
-You may want to run `clickhouse client` within one of more of the containers so that the version of the client matches the version
-of the server.  You can run a command like this:
-
-```bash
-docker compose exec clickhouse-01 clickhouse-client
+```sh
+cd docker-compose-recipes/recipes/ch-1S_1K
+docker compose up -d
 ```
 
-Or, to open a shell on the server you can run the following and then look around or run `clickhouse client` from the shell:
+Refreshed recipes include bounded verification commands, fixture assertions and
+the actual ClickHouse version from their manual run. Follow the selected README;
+older integrations are being refreshed independently.
+To inspect a failure, use `docker compose ps` and `docker compose logs --tail=100`.
+To stop and reset a recipe:
 
-```bash
-docker compose exec clickhouse-01 bash
+```sh
+docker compose down -v --remove-orphans
 ```
 
-## Example use
+`down -v` deletes that project's volumes and their data. It does not delete any
+host bind-mounted data; follow the recipe's instructions for those paths.
 
-To test ClickHouse with S3 functionalities, launch the [ClickHouse and MinIO S3](./recipes/ch-and-minio-S3/README.md) recipe:
+ClickHouse defaults to `CHVER=latest`; Keeper defaults to `CHKVER=latest-alpine`.
+To try a particular release, set `CHVER` and `CHKVER` before starting the recipe.
+Manual verification records a date, platform and actual version; floating defaults
+can change after that date. Third-party images may use a tested stable tag.
 
+Configuration lives in each recipe's `fs/volumes/` directory. Existing cluster
+paths are used by [ClickHouse's replication documentation](https://clickhouse.com/docs/architecture/replication).
+The XML element is named `zookeeper` even when its servers are ClickHouse Keeper.
+Coordinate changes to those documented cluster configurations with documentation
+owners before merging.
+
+## Lightweight validation
+
+Run from the repository root with existing Python 3 (standard library only) and
+Docker Compose v2; no package installation or running containers are needed:
+
+```sh
+python3 docker-compose-recipes/scripts/validate.py
 ```
-➜ ch-and-minio-S3$ docker compose up
-[+] Running 4/2
- ⠿ Network ch-and-minio-s3_default            Created                                                                                                                                                                                         0.0s
- ⠿ Container minio                            Created                                                                                                                                                                                         0.0s
- ⠿ Container clickhouse                       Created                                                                                                                                                                                         0.0s
- ⠿ Container ch-and-minio-s3-createbuckets-1  Created                                                                                                                                                                                         0.0s
-Attaching to ch-and-minio-s3-createbuckets-1, clickhouse, minio
-minio                            | Formatting 1st pool, 1 set(s), 1 drives per set.
-minio                            | WARNING: Host local has more than 0 drives of set. A host failure will result in data becoming unavailable.
-minio                            | MinIO Object Storage Server
-minio                            | Copyright: 2015-2023 MinIO, Inc.
-minio                            | License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl-3.0.html>
-minio                            | Version: RELEASE.2023-03-24T21-41-23Z (go1.19.7 linux/arm64)
-minio                            |
-minio                            | Status:         1 Online, 0 Offline.
-minio                            | API: http://0.0.0.0:10000
-minio                            | Console: http://0.0.0.0:10001
-minio                            |
-minio                            | Documentation: https://min.io/docs/minio/linux/index.html
-minio                            | Warning: The standard parity is set to 0. This can lead to data loss.
-ch-and-minio-s3-createbuckets-1  | Added `myminio` successfully.
-ch-and-minio-s3-createbuckets-1  | ●  minio:10000
-ch-and-minio-s3-createbuckets-1  |    Uptime: 1 second
-ch-and-minio-s3-createbuckets-1  |    Version: 2023-03-24T21:41:23Z
-ch-and-minio-s3-createbuckets-1  |    Network: 1/1 OK
-ch-and-minio-s3-createbuckets-1  |    Drives: 1/1 OK
-ch-and-minio-s3-createbuckets-1  |    Pool: 1
-ch-and-minio-s3-createbuckets-1  |
-ch-and-minio-s3-createbuckets-1  | Pools:
-ch-and-minio-s3-createbuckets-1  |    1st, Erasure sets: 1, Drives per erasure set: 1
-ch-and-minio-s3-createbuckets-1  |
-ch-and-minio-s3-createbuckets-1  | 1 drive online, 0 drives offline
-ch-and-minio-s3-createbuckets-1  | Bucket created successfully `myminio/clickhouse`.
-ch-and-minio-s3-createbuckets-1  | mc: Please use 'mc anonymous'
-ch-and-minio-s3-createbuckets-1 exited with code 0
-clickhouse                       | Processing configuration file '/etc/clickhouse-server/config.xml'.
-clickhouse                       | Merging configuration file '/etc/clickhouse-server/config.d/config.xml'.
-clickhouse                       | Merging configuration file '/etc/clickhouse-server/config.d/docker_related_config.xml'.
-clickhouse                       | Logging debug to /var/log/clickhouse-server/clickhouse-server.log
-clickhouse                       | Logging errors to /var/log/clickhouse-server/clickhouse-server.err.log
-minio                            |
-minio                            |  You are running an older version of MinIO released 1 week ago
-minio                            |  Update: Run `mc admin update`
-minio                            |
-minio                            |
-clickhouse                       | Processing configuration file '/etc/clickhouse-server/config.xml'.
-clickhouse                       | Merging configuration file '/etc/clickhouse-server/config.d/config.xml'.
-clickhouse                       | Merging configuration file '/etc/clickhouse-server/config.d/docker_related_config.xml'.
-clickhouse                       | Saved preprocessed configuration to '/var/lib/clickhouse/preprocessed_configs/config.xml'.
-clickhouse                       | Processing configuration file '/etc/clickhouse-server/users.xml'.
-clickhouse                       | Merging configuration file '/etc/clickhouse-server/users.d/users.xml'.
-clickhouse                       | Saved preprocessed configuration to '/var/lib/clickhouse/preprocessed_configs/users.xml'.
-```
+
+This checks local index links, a README for every recipe, Compose configuration,
+and XML syntax. It does not start services or prove integration compatibility.
+When changing a recipe, run its documented happy path once from empty volumes and
+include commands, results, date, platform and versions in the PR. There is no
+scheduled test suite or version matrix.
+
+## ClickHouse Cloud
+
+[ClickHouse Cloud](https://clickhouse.com/cloud) manages ClickHouse infrastructure.
+[ClickPipes](https://clickhouse.com/cloud/clickpipes) provides managed ingestion for
+supported sources. Each refreshed recipe explains the applicable Cloud path;
+Keeper and proxy topology internals are self-managed lessons.
