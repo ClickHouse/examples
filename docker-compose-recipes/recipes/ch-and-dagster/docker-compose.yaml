@@ -1,35 +1,39 @@
-version: '3.8'
 services:
   clickhouse:
-    image: 'clickhouse/clickhouse-server:${CHVER:-latest}'
-    user: '101:101'
-    container_name: clickhouse
-    hostname: clickhouse
-    volumes:
-      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
-      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
+    image: clickhouse/clickhouse-server:${CHVER:-latest}
+    environment:
+      CLICKHOUSE_USER: demo
+      CLICKHOUSE_PASSWORD: local-example-password
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
     ports:
-      - '127.0.0.1:8123:8123'
-      - '127.0.0.1:9000:9000'
-    depends_on:
-      - clickhouse-keeper
-
-  clickhouse-keeper:
-    image: 'clickhouse/clickhouse-keeper:${CHKVER:-latest-alpine}'
-    user: '101:101'
-    container_name: clickhouse-keeper
-    hostname: clickhouse-keeper
+      - "127.0.0.1:18123:8123"
     volumes:
-      - ${PWD}/fs/volumes/clickhouse-keeper/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
-    ports:
-      - '127.0.0.1:9181:9181'
+      - clickhouse-data:/var/lib/clickhouse
+    healthcheck:
+      test: ["CMD", "clickhouse-client", "--user", "demo", "--password", "local-example-password", "--query", "SELECT 1"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
 
   dagster_webserver:
     build:
       context: .
-      dockerfile: ./dagster/Dockerfile
-    container_name: dagster_webserver
+      dockerfile: dagster/Dockerfile
+    environment:
+      CLICKHOUSE_HOST: clickhouse
+      CLICKHOUSE_PORT: "9000"
+      CLICKHOUSE_USER: demo
+      CLICKHOUSE_PASSWORD: local-example-password
+      CLICKHOUSE_SECURE: "false"
     ports:
-      - 3000:3000
-    volumes: 
-      - ${PWD}/user_code:/opt/dagster/dagster_home/user_code
+      - "127.0.0.1:13000:3000"
+    volumes:
+      - ./user_code:/opt/dagster/app/user_code:ro
+      - dagster-data:/opt/dagster/dagster_home
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+
+volumes:
+  clickhouse-data:
+  dagster-data:
