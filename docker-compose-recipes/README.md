@@ -8,6 +8,7 @@ check older integrations before starting them on a shared machine.
 
 - [ClickHouse single node with Keeper](./recipes/ch-1S_1K/README.md)
 - [ClickHouse single node with Keeper and IMDB dataset](./recipes/ch-1S_1K_IMDB_dataset/README.md)
+- [ClickHouse with Kafka-compatible Redpanda](./recipes/ch-and-redpanda/README.md)
 - [ClickHouse and Dagster](./recipes/ch-and-dagster/README.md)
 - [ClickHouse and Grafana](./recipes/ch-and-grafana/README.md)
 - [ClickHouse and MSSQL Server 2022](./recipes/ch-and-mssql/README.md)
