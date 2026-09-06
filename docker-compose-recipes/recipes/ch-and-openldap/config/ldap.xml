@@ -1,15 +1,4 @@
-<clickhouse replace="true">
-    <logger>
-        <level>trace</level>
-        <log>/var/log/clickhouse-server/clickhouse-server.log</log>
-        <errorlog>/var/log/clickhouse-server/clickhouse-server.err.log</errorlog>
-        <size>1000M</size>
-        <count>3</count>
-    </logger>
-    <display_name>ch_openldap</display_name>
-    <listen_host>0.0.0.0</listen_host>
-    <http_port>8123</http_port>
-    <tcp_port>9000</tcp_port>
+<clickhouse>
     <ldap_servers>
         <openldap>
             <host>openldap</host>
@@ -19,7 +8,8 @@
                 <base_dn>ou=Users,dc=clickhouse,dc=test</base_dn>
                 <search_filter>(&amp;(objectClass=inetOrgPerson)(cn={user_name}))</search_filter>
             </user_dn_detection>
-            <verification_cooldown>300</verification_cooldown>
+            <!-- Recheck credentials for each login in this authentication lesson. -->
+            <verification_cooldown>0</verification_cooldown>
             <enable_tls>no</enable_tls>
         </openldap>
     </ldap_servers>

@@ -51,7 +51,7 @@ givenname: alice
 sn: alice
 displayname: Alice
 mail: alice@clickhouse.test
-userPassword:: cGFzc3dvcmQ=      
+userPassword:: cGFzc3dvcmQ=
 
 #bob (Development)
 dn: cn=bob,ou=Users,dc=clickhouse,dc=test
@@ -64,7 +64,7 @@ displayname: Bob
 mail: bob@clickhouse.test
 userPassword:: cGFzc3dvcmQ=
 
-#ldapadmin 
+#ldapadmin
 dn: cn=ldapadmin,ou=Users,dc=clickhouse,dc=test
 changetype: add
 objectclass: inetOrgPerson
