@@ -2,7 +2,7 @@
 
 Query ClickHouse through an agent built with PydanticAI. Follow the [shared setup](../README.md#setup) for the public playground, local fixture, or ClickHouse Cloud.
 
-Use your own data with [ClickHouse Cloud](https://console.clickhouse.cloud/signUp), including **$300 credits for a 30-day trial**.
+Use your own data with [ClickHouse Cloud](https://clickhouse.com/cloud), including **$300 credits for a 30-day trial**.
 
 
 ## OpenAI configuration

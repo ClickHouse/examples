@@ -2,7 +2,7 @@
 
 Connect an agent framework or chat app to [ClickHouse MCP](https://github.com/ClickHouse/mcp-clickhouse). These examples use **MCP server 0.6.0**, Python **3.13**, and configurable model IDs. Framework dependencies were refreshed on **5 September 2026**. See [validation results and limitations](VALIDATION.md); 18 integrations have passed live OpenAI/MCP checks with GPT-5.6 Luna at the scopes recorded there. Claude Agent SDK and browser walkthroughs remain unverified.
 
-Use your own data with [ClickHouse Cloud](https://console.clickhouse.cloud/signUp), including **$300 credits for a 30-day trial**. The examples also support the public SQL playground and local ClickHouse.
+Use your own data with [ClickHouse Cloud](https://clickhouse.com/cloud), including **$300 credits for a 30-day trial**. The examples also support the public SQL playground and local ClickHouse.
 
 ## Choose an example
 
@@ -77,7 +77,7 @@ For a containerized MCP server, `localhost` means the container. Set `CLICKHOUSE
 
 ### ClickHouse Cloud
 
-Create a [Cloud service](https://console.clickhouse.cloud/signUp). Apply the same [fixture.sql](fixture.sql) in its SQL console, and obtain connection details from **Connect**. Set:
+Create a [Cloud service](https://clickhouse.com/cloud). Apply the same [fixture.sql](fixture.sql) in its SQL console, and obtain connection details from **Connect**. Set:
 
 ```sh
 export CLICKHOUSE_HOST=YOUR_SERVICE.clickhouse.cloud

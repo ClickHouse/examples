@@ -2,7 +2,7 @@
 
 A dashboard using **CopilotKit 1.70.1**, **Next.js 16.3.4**, **React 19.2.8**, and ClickHouse MCP **0.6.0**. The v2 agent calls MCP tools on the server and a frontend tool adds charts. Production build, lint, runtime startup, and MCP discovery/query/error checks passed on 5 September 2026. The live Luna runtime queried the fixture and emitted correct chart-tool arguments; browser rendering remains unverified; see [validation](../VALIDATION.md).
 
-Build this with your data in [ClickHouse Cloud](https://console.clickhouse.cloud/signUp), including **$300 credits for a 30-day trial**.
+Build this with your data in [ClickHouse Cloud](https://clickhouse.com/cloud), including **$300 credits for a 30-day trial**.
 
 
 ## OpenAI configuration

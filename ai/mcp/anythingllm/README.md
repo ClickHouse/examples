@@ -2,7 +2,7 @@
 
 AnythingLLM **1.16.1** and ClickHouse MCP **0.6.0** can use stdio on the desktop or authenticated Streamable HTTP in Docker. The Docker app started and its native MCP client queried ClickHouse on 5 September 2026. The native agent/MCP path passed a live Luna query; Desktop setup and browser interaction remain unverified; see [validation](../VALIDATION.md).
 
-Explore your data with [ClickHouse Cloud](https://console.clickhouse.cloud/signUp), including **$300 credits for a 30-day trial**.
+Explore your data with [ClickHouse Cloud](https://clickhouse.com/cloud), including **$300 credits for a 30-day trial**.
 
 ## Docker
 

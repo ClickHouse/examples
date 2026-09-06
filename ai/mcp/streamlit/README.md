@@ -2,7 +2,7 @@
 
 A chat app using Streamlit **1.63.0**, Agno **3.0.6**, and ClickHouse MCP **0.6.0**. Startup, Streamlit's app test, the Agno MCP adapter, and stream-failure regression checks passed on 5 September 2026. The live Luna fixture query and Streamlit AppTest passed; browser rendering remains unverified; see [validation](../VALIDATION.md).
 
-Analyze your own data with [ClickHouse Cloud](https://console.clickhouse.cloud/signUp), including **$300 credits for a 30-day trial**.
+Analyze your own data with [ClickHouse Cloud](https://clickhouse.com/cloud), including **$300 credits for a 30-day trial**.
 
 
 ## OpenAI configuration

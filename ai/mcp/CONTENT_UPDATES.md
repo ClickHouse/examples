@@ -32,4 +32,4 @@ The separate `ai/clickstack` observability examples and their [LLM observability
 
 ## Publication gate
 
-Complete the remaining provider/UI checks in [VALIDATION.md](VALIDATION.md), assign the content owners, and prepare the corresponding docs/CMS revisions using these replacements. The README Cloud CTAs use the checked offer: [sign up](https://console.clickhouse.cloud/signUp), $300 credits for a 30-day trial. Recheck the offer at publication time.
+Complete the remaining provider/UI checks in [VALIDATION.md](VALIDATION.md), assign the content owners, and prepare the corresponding docs/CMS revisions using these replacements. The README Cloud CTAs use the checked offer: [sign up](https://clickhouse.com/cloud), $300 credits for a 30-day trial. Recheck the offer at publication time.
