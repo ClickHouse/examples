@@ -1,175 +1,112 @@
-# ClickHouse and OpenLDAP
+# ClickHouse authentication and role mapping with OpenLDAP
 
-1 single ClickHouse Instance configured with 1 OpenLDAP instance
+One ClickHouse server authenticates users against one OpenLDAP directory and maps their LDAP groups to ClickHouse roles. Three one-row tables make the permissions visible: Alice can read sales and shared data, Bob can read development and shared data, and Alice is denied development data. An incorrect password must be rejected.
 
-The OpenLdap server in use has the [following users and groups](./docker_files/bootstrap/98-data.ldif):
+This is a self-managed, local authentication lesson. LDAP and HTTP traffic are unencrypted; all credentials below are public development values. Only ClickHouse HTTP is published, at `127.0.0.1:18123`; LDAP is reachable only on the Compose network. Do not expose this stack or reuse these passwords on a shared host.
 
-```ldif
-dn: ou=Groups,dc=clickhouse,dc=test
-changetype: add
-objectclass: organizationalUnit
-ou: Groups
+## Components, credentials, and requirements
 
-dn: ou=Users,dc=clickhouse,dc=test
-changetype: add
-objectclass: organizationalUnit
-ou: Users
+The directory uses the community-maintained `chrroessner/openldap:2.6.14-r1` image, which publishes Linux amd64 and arm64 variants. It is not an official OpenLDAP-project container. This replaces the old ARM-only osixia image; the osixia-specific configuration bootstrap and phpLDAPadmin are no longer needed for the authentication walkthrough.
 
-# GROUPS used for role mapping
+Use Docker Engine/Desktop or OrbStack with Docker Compose v2 and a POSIX shell. Allocate roughly 4 GiB of Docker memory, 2 CPUs, and several GiB of disk. No host LDAP tools, ClickHouse client, Python packages, or npm dependencies are required. Docker uses a Linux VM on macOS/Windows.
 
-# Admins
-dn: cn=clickhouse_Admins,ou=Groups,dc=clickhouse,dc=test
-changetype: add
-cn: clickhouse_Admins
-objectclass: groupOfUniqueNames
-uniqueMember: cn=ldapadmin,ou=Users,dc=clickhouse,dc=test
+ClickHouse intentionally defaults to `${CHVER:-latest}`; export `CHVER` before starting to override it. OpenLDAP stays pinned to `2.6.14-r1`. Floating ClickHouse tags are not compatibility guarantees.
 
-# Development
-dn: cn=clickhouse_Development,ou=Groups,dc=clickhouse,dc=test
-changetype: add
-cn: clickhouse_Development
-objectclass: groupOfUniqueNames
-uniqueMember: cn=bob,ou=Users,dc=clickhouse,dc=test
+| Account | Password | Purpose |
+| --- | --- | --- |
+| `alice` | `password` | LDAP Sales + AllUsers roles |
+| `bob` | `password` | LDAP Development + AllUsers roles |
+| `ldapadmin` | `password` | LDAP Admins + AllUsers roles; management of the three demo databases' tables |
+| `demo` | `local-example-password` | Local ClickHouse administration and fixture initialization |
+| `cn=admin,dc=clickhouse,dc=test` | `local-admin-password` | OpenLDAP directory administrator |
 
-# Sales
-dn: cn=clickhouse_Sales,ou=Groups,dc=clickhouse,dc=test
-changetype: add
-cn: clickhouse_Sales
-objectclass: groupOfUniqueNames
-uniqueMember: cn=alice,ou=Users,dc=clickhouse,dc=test
+Last manually verified: **2026-09-06**, ClickHouse **26.8.2.7**, OpenLDAP **2.6.14** (image **2.6.14-r1**), Linux **aarch64** on OrbStack (Docker 29.4.0 / Compose 5.1.2). From empty volumes, Alice/Bob authentication, mapped roles, permitted reads, incorrect-password rejection, and Alice's denied development read all passed. This is a single-platform manual check.
 
-# AllUsers
-dn: cn=clickhouse_AllUsers,ou=Groups,dc=clickhouse,dc=test
-changetype: add
-cn: clickhouse_AllUsers
-objectclass: groupOfUniqueNames
-uniqueMember: cn=bob,ou=Users,dc=clickhouse,dc=test
-uniqueMember: cn=alice,ou=Users,dc=clickhouse,dc=test
-uniqueMember: cn=ldapadmin,ou=Users,dc=clickhouse,dc=test
+## Start and verify
 
-#USERS
+From this directory, run the following complete block from empty volumes:
 
-#alice (Sales)
-dn: cn=alice,ou=Users,dc=clickhouse,dc=test
-changetype: add
-objectclass: inetOrgPerson
-cn: alice
-givenname: alice
-sn: alice
-displayname: Alice
-mail: alice@clickhouse.test
-userPassword:: cGFzc3dvcmQ=      
-
-#bob (Development)
-dn: cn=bob,ou=Users,dc=clickhouse,dc=test
-changetype: add
-objectclass: inetOrgPerson
-cn: bob
-givenname: bob
-sn: bob
-displayname: Bob
-mail: bob@clickhouse.test
-userPassword:: cGFzc3dvcmQ=
-
-#ldapadmin 
-dn: cn=ldapadmin,ou=Users,dc=clickhouse,dc=test
-changetype: add
-objectclass: inetOrgPerson
-cn: ldapadmin
-givenname: ldapadmin
-sn: LDAPAdmin
-displayname: LDAP Admin User
-mail: ldapadmin@clickhouse.test
-userPassword:: cGFzc3dvcmQ=
-
+```sh
+set -eu
+docker compose up -d
+q() {
+  docker compose exec -T clickhouse clickhouse-client \
+    --user "$1" --password "$2" --connect_timeout 3 --receive_timeout 10 \
+    --max_execution_time 10 --query "$3"
+}
+# Wait for both LDAP authentication and SQL role/fixture initialization.
+ready=false
+attempt=0
+while [ "$attempt" -lt 30 ]; do
+  attempt=$((attempt + 1))
+  if [ "$(q alice password 'SELECT message FROM sales_db.sample WHERE id = 1' 2>/dev/null)" = 'sales row' ]; then
+    ready=true
+    break
+  fi
+  sleep 2
+done
+[ "$ready" = true ]
+q alice password 'SELECT version()'
+[ "$(q alice password 'SELECT currentUser()')" = alice ]
+[ "$(q alice password "SELECT has(currentRoles(), 'Sales') AND has(currentRoles(), 'AllUsers')")" = 1 ]
+[ "$(q alice password 'SELECT message FROM other_data_db.sample WHERE id = 1')" = 'shared row' ]
+[ "$(q bob password 'SELECT message FROM development_db.sample WHERE id = 1')" = 'development row' ]
+[ "$(q bob password "SELECT has(currentRoles(), 'Development') AND has(currentRoles(), 'AllUsers')")" = 1 ]
+if failure=$(q alice wrong-password 'SELECT 1' 2>&1); then
+  echo 'ERROR: invalid credentials were accepted' >&2
+  exit 1
+fi
+case "$failure" in
+  *AUTHENTICATION_FAILED*) echo 'OK: incorrect password rejected' ;;
+  *) printf 'Unexpected authentication error: %s\n' "$failure" >&2; exit 1 ;;
+esac
+if failure=$(q alice password 'SELECT * FROM development_db.sample' 2>&1); then
+  echo 'ERROR: Alice read development data' >&2
+  exit 1
+fi
+case "$failure" in
+  *ACCESS_DENIED*) echo 'OK: Alice cannot read development data' ;;
+  *) printf 'Unexpected authorization error: %s\n' "$failure" >&2; exit 1 ;;
+esac
+echo 'OK: Alice and Bob authenticate; LDAP groups supply the expected roles and reads'
 ```
 
-These roles are mapped respectively in ClickHouse through the [db](./fs/volumes/clickhouse/docker-entrypoint-initdb.d/1_create_ldap_dbs.sh) and [roles](./fs/volumes/clickhouse/docker-entrypoint-initdb.d/2_create_ldap_roles.sh) configs:
+OpenLDAP readiness authenticates the fixture's Alice account before ClickHouse starts (30 attempts, each limited to 5 seconds). The SQL readiness loop also has 30 attempts, with each query limited to 10 seconds plus a 3-second connection timeout. A failure exits nonzero; inspect `docker compose logs --tail=100` for details.
 
-```sql
-CREATE DATABASE IF NOT EXISTS sales_db;
-CREATE DATABASE IF NOT EXISTS development_db;
-CREATE DATABASE IF NOT EXISTS other_data_db;
-CREATE ROLE IF NOT EXISTS Admins;
-GRANT ALL ON *.* TO Admins;
-CREATE ROLE IF NOT EXISTS Sales;
-GRANT ALL ON sales_db.* TO Sales;
-CREATE ROLE IF NOT EXISTS Development;
-GRANT ALL ON development_db.* TO Development;
-CREATE ROLE IF NOT EXISTS AllUsers;
-GRANT SELECT ON *.* TO AllUsers;
+Expected output includes the actual ClickHouse version and all three `OK` lines. The negative checks require the expected ClickHouse error names, so a network error cannot masquerade as successful rejection. The verification is safe to repeat because it only reads the fixture.
+
+## How the role mapping works
+
+The [LDIF fixture](./docker_files/bootstrap/98-data.ldif) defines Users/Groups organizational units, three accounts, and `groupOfUniqueNames` groups. The base64 password values in LDIF are the text `password`, not encrypted secrets.
+
+[ldap.xml](./config/ldap.xml) binds `cn={user_name},ou=Users,dc=clickhouse,dc=test`, finds groups containing the authenticated user's DN, and removes the `clickhouse_` prefix from each group name. For example, `clickhouse_Sales` maps to the existing SQL role `Sales`. Authentication caching is disabled for this lesson so each login is checked against LDAP.
+
+[The SQL fixture](./clickhouse-init/00-fixture.sql) creates the roles and their grants. Sales and Development each have SELECT access only to their own database; AllUsers has SELECT access to `other_data_db`. Admins has SELECT, INSERT, and table creation/alteration/drop permissions in the three demonstration databases. LDAP stores credentials and group membership; ClickHouse stores the SQL roles and permissions.
+
+To inspect Alice's entry with the client already inside the LDAP image:
+
+```sh
+docker compose exec -T openldap ldapsearch -x -o nettimeout=3 \
+  -H ldap://127.0.0.1:389 -D 'cn=alice,ou=Users,dc=clickhouse,dc=test' \
+  -w password -b 'ou=Users,dc=clickhouse,dc=test' '(cn=alice)' cn
 ```
 
-the rest of configuration to define the LDAP server and map the LDAP groups to ClickHouse roles is defined in clickhouse [config.xml](./fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml):
+## Stop, rerun, and reset
 
-```xml
-<ldap_servers>
-        <openldap>
-            <host>openldap</host>
-            <port>389</port>
-            <bind_dn>cn={user_name},ou=Users,dc=clickhouse,dc=test</bind_dn>
-            <user_dn_detection>
-                <base_dn>ou=Users,dc=clickhouse,dc=test</base_dn>
-                <search_filter>(&amp;(objectClass=inetOrgPerson)(cn={user_name}))</search_filter>
-            </user_dn_detection>
-            <verification_cooldown>300</verification_cooldown>
-            <enable_tls>no</enable_tls>
-        </openldap>
-    </ldap_servers>
-    <user_directories>
-        <ldap>
-            <server>openldap</server>
-            <role_mapping>
-                <base_dn>ou=Groups,dc=clickhouse,dc=test</base_dn>
-                <attribute>cn</attribute>
-                <scope>subtree</scope>
-                <search_filter>(&amp;(objectClass=groupOfUniqueNames)(uniqueMember={user_dn}))</search_filter>
-                <prefix>clickhouse_</prefix>
-            </role_mapping>
-        </ldap>
-    </user_directories>
+`docker compose stop` preserves both named volumes, and `docker compose up -d` resumes the stack. For an empty-state rerun:
+
+```sh
+docker compose down -v --remove-orphans
 ```
 
-All LDAP users are using password: `password`
+This is destructive: it removes the LDAP directory and the ClickHouse data/access state. The checked-in LDIF, SQL, and XML remain. Repeat the start/verify block; bootstrap runs on the fresh volumes.
 
-You can validate the LDAP schema using PhpLDAPAdmin UI at http://localhost
+## ClickHouse Cloud counterpart and documentation
 
-Login DN: `cn=ldapadmin,ou=Users,dc=clickhouse,dc=test`
+This LDAP configuration is a **self-managed ClickHouse** feature and is not an LDAP endpoint configuration for ClickHouse Cloud. For Cloud, use its supported authentication and access-management options, with SQL users/roles for database permissions; do not point a Cloud service at this local LDAP container.
 
-Password: `password`
-
-Or by running on your host `ldapsearch` command, example:
-
-If you do not have `ldapsearch` on your host you can run it from the openldap container:
-
-```
-ldapsearch  -D 'cn=bob,ou=Users,dc=clickhouse,dc=test' -b'dc=clickhouse,dc=test' -H ldap://localhost:389 -w password
-```
-
-When authenticating with user `bob` and `alice` in ClickHouse, you will see in the ClickHouse server trace logs they will receive different ClickHouse roles assigned, based on their LDAP group membership:
-
-```
-//bob - Development
-
-2023.07.11 16:09:42.170685 [ 312 ] {} <Debug> TCPHandler: Connected ClickHouse client version 23.2.0, revision: 54461, user: bob.
-2023.07.11 16:09:42.171241 [ 312 ] {} <Debug> TCP-Session: 161ba538-b6c2-48bc-b194-3196fed67124 Authenticating user 'bob' from 172.21.0.1:33822
-2023.07.11 16:09:42.179125 [ 312 ] {} <Debug> TCP-Session: 161ba538-b6c2-48bc-b194-3196fed67124 Authenticated with global context as user 0640083d-fdab-3b41-2d9a-19f1eac6f19f
-2023.07.11 16:09:42.179185 [ 312 ] {} <Warning> TCPHandler: Using deprecated interserver protocol because the client is too old. Consider upgrading all nodes in cluster. (skipped 1 similar messages)
-2023.07.11 16:09:42.181927 [ 312 ] {} <Debug> TCP-Session: 161ba538-b6c2-48bc-b194-3196fed67124 Creating session context with user_id: 0640083d-fdab-3b41-2d9a-19f1eac6f19f
-2023.07.11 16:09:42.182675 [ 312 ] {} <Trace> ContextAccess (bob): Current_roles: Development, AllUsers, enabled_roles: Development, AllUsers
-
-
-//alice - Sales
-
-2023.07.11 16:10:27.820959 [ 312 ] {} <Debug> TCPHandler: Connected ClickHouse client version 23.2.0, revision: 54461, user: alice.
-2023.07.11 16:10:27.821076 [ 312 ] {} <Debug> TCP-Session: b0043532-e590-4421-8ce7-2885a7cc32e3 Authenticating user 'alice' from 172.21.0.1:56200
-2023.07.11 16:10:27.831634 [ 312 ] {} <Debug> TCP-Session: b0043532-e590-4421-8ce7-2885a7cc32e3 Authenticated with global context as user 9f402224-724b-a201-241a-20358865cab0
-2023.07.11 16:10:27.831712 [ 312 ] {} <Warning> TCPHandler: Using deprecated interserver protocol because the client is too old. Consider upgrading all nodes in cluster. (skipped 1 similar messages)
-2023.07.11 16:10:27.837146 [ 312 ] {} <Debug> TCP-Session: b0043532-e590-4421-8ce7-2885a7cc32e3 Creating session context with user_id: 9f402224-724b-a201-241a-20358865cab0
-2023.07.11 16:10:27.837589 [ 312 ] {} <Trace> ContextAccess (alice): Current_roles: AllUsers, Sales, enabled_roles: AllUsers, Sales
-```
-
-
-The documentation for ClickHouse and LDAP is available in the [ClickHouse documentation](https://clickhouse.com/docs/en/guides/sre/configuring-ldap).
-
-If you would like to contribute to this example, please file a PR in this repo.  Thanks in advance for your contribution!
+- [ClickHouse LDAP authentication and role mapping](https://clickhouse.com/docs/guides/sre/configuring-ldap)
+- [ClickHouse access control](https://clickhouse.com/docs/operations/access-rights)
+- [ClickHouse Cloud access management](https://clickhouse.com/docs/cloud/security/cloud-access-management/overview)
+- [OpenLDAP image maintainer documentation and source](https://github.com/croessner/docker-openldap)
+- [OpenLDAP administration guide](https://www.openldap.org/doc/admin26/)

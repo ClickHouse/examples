@@ -1,35 +1,41 @@
-version: '3.8'
 services:
   clickhouse:
-    image: clickhouse/clickhouse-server
-    user: "101:101"
-    container_name: clickhouse
-    hostname: clickhouse
-    volumes:
-      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
-      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
-      - ${PWD}/fs/volumes/clickhouse/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-    ports:
-      - "127.0.0.1:8123:8123"
-      - "127.0.0.1:9000:9000"
-    depends_on: 
-    - openldap
-  openldap:
-    build: 
-      context: ./docker_files
-      dockerfile: openldap.Dockerfile
-    container_name: openldap
-    hostname: openldap
-    ports:
-      - "127.0.0.1:389:389"
-    command: --copy-service --loglevel debug
-  phpldapadmin:
-    image: osixia/phpldapadmin:latest
-    container_name: phpldapadmin
+    image: clickhouse/clickhouse-server:${CHVER:-latest}
     environment:
-      PHPLDAPADMIN_LDAP_HOSTS: "openldap"
-      PHPLDAPADMIN_HTTPS: "false"
-    depends_on:
-      - openldap
+      CLICKHOUSE_USER: demo
+      CLICKHOUSE_PASSWORD: local-example-password
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    volumes:
+      - ./config/ldap.xml:/etc/clickhouse-server/config.d/ldap.xml:ro
+      - ./clickhouse-init:/docker-entrypoint-initdb.d:ro
+      - clickhouse-data:/var/lib/clickhouse
     ports:
-      - "127.0.0.1:80:80"
+      - "127.0.0.1:18123:8123"
+    depends_on:
+      openldap:
+        condition: service_healthy
+
+  openldap:
+    # Community-maintained image; publishes both amd64 and arm64 variants.
+    image: chrroessner/openldap:2.6.14-r1
+    environment:
+      LDAP_DOMAIN: clickhouse.test
+      LDAP_BASE_DN: dc=clickhouse,dc=test
+      LDAP_ORGANISATION: ClickHouse example
+      LDAP_ADMIN_PASSWORD: local-admin-password
+      LDAP_CREATE_PEOPLE_OU: "false"
+      LDAP_CREATE_GROUPS_OU: "false"
+      LDAP_ENABLE_TLS: "false"
+    volumes:
+      - ./docker_files/bootstrap/98-data.ldif:/docker-entrypoint-initdb.d/20-data.ldif:ro
+      - ldap-data:/var/lib/openldap/openldap-data
+    healthcheck:
+      test: ["CMD", "ldapwhoami", "-x", "-o", "nettimeout=3", "-H", "ldap://127.0.0.1:389", "-D", "cn=alice,ou=Users,dc=clickhouse,dc=test", "-w", "password"]
+      interval: 3s
+      timeout: 5s
+      retries: 30
+      start_period: 5s
+
+volumes:
+  clickhouse-data:
+  ldap-data:
