@@ -1,6 +1,6 @@
 # OpenAI Agents SDK with ClickHouse MCP
 
-Examples using **openai-agents 0.22.0**, ClickHouse MCP **0.6.0**, and configurable `OPENAI_MODEL` (default `gpt-5.6-luna`). The MCP adapter and actual SDK span export to ClickHouse passed on 5 September 2026. The live Luna query and trace export passed; the ClickStack UI remains unverified; see [validation](../VALIDATION.md).
+Examples using **openai-agents 0.22.0**, ClickHouse MCP **0.6.0**, and configurable `OPENAI_MODEL` (default `gpt-5.6-luna`). The MCP adapter and actual SDK span export to ClickHouse passed on 5 September 2026. The live Luna query and trace export passed; the ClickStack UI remains unverified.
 
 Query and trace agents with [ClickHouse Cloud](https://clickhouse.com/cloud), including **$300 credits for a 30-day trial**.
 

@@ -1,6 +1,6 @@
 # ClickHouse MCP examples
 
-Connect an agent framework or chat app to [ClickHouse MCP](https://github.com/ClickHouse/mcp-clickhouse). These examples use **MCP server 0.6.0**, Python **3.13**, and configurable model IDs. Framework dependencies were refreshed on **5 September 2026**. See [validation results and limitations](VALIDATION.md); 18 integrations have passed live OpenAI/MCP checks with GPT-5.6 Luna at the scopes recorded there. Claude Agent SDK and browser walkthroughs remain unverified.
+Connect an agent framework or chat app to [ClickHouse MCP](https://github.com/ClickHouse/mcp-clickhouse). These examples use **MCP server 0.6.0**, Python **3.13**, and configurable model IDs. Framework dependencies were refreshed on **5 September 2026**. 18 integrations have passed live OpenAI/MCP checks with GPT-5.6 Luna; see [PR #407](https://github.com/ClickHouse/examples/pull/407) for the scope and limitations. Claude Agent SDK and browser walkthroughs remain unverified.
 
 Use your own data with [ClickHouse Cloud](https://clickhouse.com/cloud), including **$300 credits for a 30-day trial**. The examples also support the public SQL playground and local ClickHouse.
 
@@ -137,7 +137,7 @@ This makes paid OpenAI calls with GPT-5.6 Luna. Load the shared fixture in local
 uv run --python 3.13 --with-requirements agno/requirements.txt tests/live_notebook.py agno
 ```
 
-The check executes the notebook's code cells in the selected environment and checks the fixture answer. It leaves saved notebook outputs unchanged. See [validation](VALIDATION.md) for live app checks.
+The check executes the notebook's code cells in the selected environment and checks the fixture answer. It leaves saved notebook outputs unchanged.
 
 ## Cleanup
 
@@ -150,4 +150,4 @@ docker compose down
 
 Stop Jupyter and Python apps with Ctrl-C. App Compose volumes persist after `down`; `down -v` deletes their demo chats and settings. Remove `mcp_demo` from your local/Cloud database only when you no longer need the fixture. Stopping a Cloud service retains data and may retain charges; delete an unwanted service in the console.
 
-[Validation record](VALIDATION.md) · [Companion documentation changes](CONTENT_UPDATES.md)
+[Companion documentation changes](CONTENT_UPDATES.md)

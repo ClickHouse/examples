@@ -16,7 +16,7 @@ For HTTP examples, replace old `/sse` setup with Streamable HTTP `/mcp`, a gener
 
 Suggested dated note:
 
-> The repository examples were refreshed on 5 September 2026. Dependency installation and MCP checks have passed. Eighteen integrations also passed live GPT-5.6 Luna checks at the scopes recorded in VALIDATION.md; browser walkthroughs and Claude Agent SDK conversations remain unverified. Use the repository README for current setup commands.
+> The repository examples were refreshed on 5 September 2026. Dependency installation and MCP checks have passed. Eighteen integrations also passed live GPT-5.6 Luna checks at the scopes recorded in [PR #407](https://github.com/ClickHouse/examples/pull/407); browser walkthroughs and Claude Agent SDK conversations remain unverified. Use the repository README for current setup commands.
 
 ## Affected content and exact changes
 
@@ -32,4 +32,4 @@ The separate `ai/clickstack` observability examples and their [LLM observability
 
 ## Publication gate
 
-Complete the remaining provider/UI checks in [VALIDATION.md](VALIDATION.md), assign the content owners, and prepare the corresponding docs/CMS revisions using these replacements. The README Cloud CTAs use the checked offer: [sign up](https://clickhouse.com/cloud), $300 credits for a 30-day trial. Recheck the offer at publication time.
+Complete the remaining provider/UI checks in [PR #407](https://github.com/ClickHouse/examples/pull/407), assign the content owners, and prepare the corresponding docs/CMS revisions using these replacements. The README Cloud CTAs use the checked offer: [sign up](https://clickhouse.com/cloud), $300 credits for a 30-day trial. Recheck the offer at publication time.

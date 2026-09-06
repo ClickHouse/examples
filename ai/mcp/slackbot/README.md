@@ -1,6 +1,6 @@
 # ClickHouse MCP Slack bot
 
-Ask about ClickHouse data in mentions or direct messages and receive optional Vega-Lite charts. This example uses **PydanticAI 2.40.0**, **Slack Bolt 1.30.0**, and **ClickHouse MCP 0.6.0**, with a refreshed uv lockfile. Imports, real PNG rendering, mocked uploads, and error handling passed on 5 September 2026. The live Luna query passed with mocked Slack transport; Slack delivery remains unverified; see [validation](../VALIDATION.md).
+Ask about ClickHouse data in mentions or direct messages and receive optional Vega-Lite charts. This example uses **PydanticAI 2.40.0**, **Slack Bolt 1.30.0**, and **ClickHouse MCP 0.6.0**, with a refreshed uv lockfile. Imports, real PNG rendering, mocked uploads, and error handling passed on 5 September 2026. The live Luna query passed with mocked Slack transport; Slack delivery remains unverified.
 
 Connect your data using [ClickHouse Cloud](https://clickhouse.com/cloud), including **$300 credits for a 30-day trial**.
 

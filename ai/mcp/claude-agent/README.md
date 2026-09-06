@@ -26,6 +26,6 @@ Selected direct dependencies: claude-agent-sdk==0.2.152. MCP server: **0.6.0**, 
 
 The Claude SDK allowlist names list_databases, list_tables, and run_query. chDB is not used. The SDK also requires its bundled Claude runtime and Anthropic authentication for a conversation.
 
-The native MCP adapter passed `SELECT 1` against ClickHouse 26.8.2.7. Claude model conversations remain unverified: this refresh's paid tests were restricted to OpenAI Luna. See [validation](../VALIDATION.md) for the exact scope.
+The native MCP adapter passed `SELECT 1` against ClickHouse 26.8.2.7. Claude model conversations remain unverified: this refresh's paid tests were restricted to OpenAI Luna.
 
 Stop Jupyter with Ctrl-C and follow [shared cleanup](../README.md#cleanup).

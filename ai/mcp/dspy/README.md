@@ -26,6 +26,6 @@ Selected direct dependencies: dspy==3.3.1; mcp==2.1.1. MCP server: **0.6.0**, Py
 
 Model IDs and ClickHouse credentials can be overridden through environment variables.
 
-The native MCP adapter passed `SELECT 1` against ClickHouse 26.8.2.7. The live Luna fixture query passed. See [validation](../VALIDATION.md) for the exact scope.
+The native MCP adapter passed `SELECT 1` against ClickHouse 26.8.2.7. The live Luna fixture query passed.
 
 Stop Jupyter with Ctrl-C and follow [shared cleanup](../README.md#cleanup).

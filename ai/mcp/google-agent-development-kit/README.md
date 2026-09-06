@@ -1,6 +1,6 @@
 # Google ADK with ClickHouse MCP
 
-An ADK agent using **google-adk[mcp] 2.8.0** and ClickHouse MCP **0.6.0**. The MCP adapter queried local ClickHouse 26.8.2.7 and the ADK web UI started on 5 September 2026. The live Luna path through LiteLLM passed; Gemini remains unverified; see [validation](../VALIDATION.md).
+An ADK agent using **google-adk[mcp] 2.8.0** and ClickHouse MCP **0.6.0**. The MCP adapter queried local ClickHouse 26.8.2.7 and the ADK web UI started on 5 September 2026. The live Luna path through LiteLLM passed; Gemini remains unverified.
 
 Use the agent with [ClickHouse Cloud](https://clickhouse.com/cloud), including **$300 credits for a 30-day trial**.
 

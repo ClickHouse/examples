@@ -26,6 +26,6 @@ Selected direct dependencies: llama-index-core==0.14.24; llama-index-llms-anthro
 
 The agent uses FunctionAgent and its asynchronous run method. Temperature is 1 for compatibility with the default Claude model.
 
-The native MCP adapter passed `SELECT 1` against ClickHouse 26.8.2.7. The live Luna fixture query passed. See [validation](../VALIDATION.md) for the exact scope.
+The native MCP adapter passed `SELECT 1` against ClickHouse 26.8.2.7. The live Luna fixture query passed.
 
 Stop Jupyter with Ctrl-C and follow [shared cleanup](../README.md#cleanup).

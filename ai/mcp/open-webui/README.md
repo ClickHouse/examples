@@ -1,6 +1,6 @@
 # Open WebUI with ClickHouse MCP
 
-Open WebUI **0.11.3** connects directly to ClickHouse MCP **0.6.0** using authenticated Streamable HTTP. Container startup and queries through Open WebUI's native MCP client passed on 5 September 2026. The app chat pipeline passed a live Luna query; browser interaction remains unverified; see [validation](../VALIDATION.md).
+Open WebUI **0.11.3** connects directly to ClickHouse MCP **0.6.0** using authenticated Streamable HTTP. Container startup and queries through Open WebUI's native MCP client passed on 5 September 2026. The app chat pipeline passed a live Luna query; browser interaction remains unverified.
 
 Use your own data with [ClickHouse Cloud](https://clickhouse.com/cloud), including **$300 credits for a 30-day trial**.
 

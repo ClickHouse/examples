@@ -1,6 +1,6 @@
 # LibreChat with ClickHouse MCP
 
-LibreChat **0.8.7** (latest stable on 5 September 2026) connects to ClickHouse MCP **0.6.0** over authenticated Streamable HTTP. The app started and its native MCP client discovered tools, queried SELECT 1, and returned query errors. The native agent graph and MCP client passed a live Luna query; browser conversations remain unverified; see [validation](../VALIDATION.md).
+LibreChat **0.8.7** (latest stable on 5 September 2026) connects to ClickHouse MCP **0.6.0** over authenticated Streamable HTTP. The app started and its native MCP client discovered tools, queried SELECT 1, and returned query errors. The native agent graph and MCP client passed a live Luna query; browser conversations remain unverified.
 
 Connect your data using [ClickHouse Cloud](https://clickhouse.com/cloud), including **$300 credits for a 30-day trial**.
 

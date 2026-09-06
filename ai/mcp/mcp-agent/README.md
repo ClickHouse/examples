@@ -26,6 +26,6 @@ Selected direct dependencies: mcp-agent==0.2.6; openai==3.8.0; mcp==1.28.1. MCP 
 
 The current mcp-agent release still imports MCP SDK 1.x APIs. Its requirements explicitly pin MCP 1.28.1.
 
-The native MCP adapter passed `SELECT 1` against ClickHouse 26.8.2.7. The live GPT-5.6 Luna fixture query passed. See [validation](../VALIDATION.md) for the exact scope.
+The native MCP adapter passed `SELECT 1` against ClickHouse 26.8.2.7. The live GPT-5.6 Luna fixture query passed.
 
 Stop Jupyter with Ctrl-C and follow [shared cleanup](../README.md#cleanup).

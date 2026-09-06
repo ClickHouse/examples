@@ -1,6 +1,6 @@
 # CopilotKit analytics dashboard with ClickHouse MCP
 
-A dashboard using **CopilotKit 1.70.1**, **Next.js 16.3.4**, **React 19.2.8**, and ClickHouse MCP **0.6.0**. The v2 agent calls MCP tools on the server and a frontend tool adds charts. Production build, lint, runtime startup, and MCP discovery/query/error checks passed on 5 September 2026. The live Luna runtime queried the fixture and emitted correct chart-tool arguments; browser rendering remains unverified; see [validation](../VALIDATION.md).
+A dashboard using **CopilotKit 1.70.1**, **Next.js 16.3.4**, **React 19.2.8**, and ClickHouse MCP **0.6.0**. The v2 agent calls MCP tools on the server and a frontend tool adds charts. Production build, lint, runtime startup, and MCP discovery/query/error checks passed on 5 September 2026. The live Luna runtime queried the fixture and emitted correct chart-tool arguments; browser rendering remains unverified.
 
 Build this with your data in [ClickHouse Cloud](https://clickhouse.com/cloud), including **$300 credits for a 30-day trial**.
 
@@ -45,7 +45,7 @@ npm run test:mcp
 
 The MCP test requires the server to be running; it does not need an Anthropic key. To run the production build, use `npm start` and start MCP separately with `npm run dev:mcp`.
 
-All CopilotKit packages are aligned. TypeScript **6.0.3** and ESLint **9.39.5** are the newest compatible versions tested: TypeScript 7 and ESLint 10 broke the current lint plugins. Remaining upstream dependency advisories are recorded in [validation](../VALIDATION.md).
+All CopilotKit packages are aligned. TypeScript **6.0.3** and ESLint **9.39.5** are the newest compatible versions tested: TypeScript 7 and ESLint 10 broke the current lint plugins. Remaining upstream dependency advisories are recorded in [PR #407](https://github.com/ClickHouse/examples/pull/407).
 
 Stop development processes with Ctrl-C; see [database cleanup](../README.md#cleanup).
 

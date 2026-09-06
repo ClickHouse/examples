@@ -1,6 +1,6 @@
 # Chainlit with ClickHouse MCP
 
-A streaming chat app using **Chainlit 2.12.0** and **ClickHouse MCP 0.6.0**. The OpenAI entry point passed a live GPT-5.6 Luna query, follow-up, and failed-SQL check on 5 September 2026. Anthropic's tool loop passed offline regressions. Browser interaction remains unverified; see [validation](../VALIDATION.md).
+A streaming chat app using **Chainlit 2.12.0** and **ClickHouse MCP 0.6.0**. The OpenAI entry point passed a live GPT-5.6 Luna query, follow-up, and failed-SQL check on 5 September 2026. Anthropic's tool loop passed offline regressions. Browser interaction remains unverified.
 
 Query your own data with [ClickHouse Cloud](https://clickhouse.com/cloud), including **$300 credits for a 30-day trial**.
 
