@@ -1,0 +1,49 @@
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:${CHVER:-latest}
+    environment:
+      CLICKHOUSE_USER: demo
+      CLICKHOUSE_PASSWORD: local-example-password
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    ports:
+      - "127.0.0.1:18123:8123"
+    volumes:
+      - ./config/storage.xml:/etc/clickhouse-server/config.d/storage.xml:ro
+      - clickhouse-data:/var/lib/clickhouse
+    depends_on:
+      bucket-init:
+        condition: service_completed_successfully
+
+  rustfs:
+    image: rustfs/rustfs:1.0.0-beta.12
+    command: ["/data"]
+    environment:
+      RUSTFS_ACCESS_KEY: local-access-key
+      RUSTFS_SECRET_KEY: local-secret-key
+      RUSTFS_ADDRESS: ":9000"
+      RUSTFS_CONSOLE_ENABLE: "false"
+    ports:
+      - "127.0.0.1:18333:9000"
+    volumes:
+      - storage-data:/data
+
+  bucket-init:
+    image: amazon/aws-cli:2.31.0
+    entrypoint: ["/bin/sh", "/setup-bucket.sh"]
+    environment:
+      AWS_ACCESS_KEY_ID: local-access-key
+      AWS_SECRET_ACCESS_KEY: local-secret-key
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_MAX_ATTEMPTS: "1"
+      AWS_PAGER: ""
+      S3_ENDPOINT: http://rustfs:9000
+    volumes:
+      - ./setup-bucket.sh:/setup-bucket.sh:ro
+    depends_on:
+      rustfs:
+        condition: service_started
+
+volumes:
+  clickhouse-data:
+  storage-data:

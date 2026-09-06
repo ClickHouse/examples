@@ -1,0 +1,48 @@
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:${CHVER:-latest}
+    environment:
+      CLICKHOUSE_USER: demo
+      CLICKHOUSE_PASSWORD: local-example-password
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    ports:
+      - "127.0.0.1:18123:8123"
+    volumes:
+      - ./config/storage.xml:/etc/clickhouse-server/config.d/storage.xml:ro
+      - clickhouse-data:/var/lib/clickhouse
+    depends_on:
+      bucket-init:
+        condition: service_completed_successfully
+
+  seaweedfs:
+    image: chrislusf/seaweedfs:4.45
+    command: ["mini", "-dir=/data"]
+    environment:
+      AWS_ACCESS_KEY_ID: local-access-key
+      AWS_SECRET_ACCESS_KEY: local-secret-key
+      S3_BUCKET: clickhouse
+    ports:
+      - "127.0.0.1:18333:8333"
+    volumes:
+      - storage-data:/data
+
+  bucket-init:
+    image: amazon/aws-cli:2.31.0
+    entrypoint: ["/bin/sh", "/setup-bucket.sh"]
+    environment:
+      AWS_ACCESS_KEY_ID: local-access-key
+      AWS_SECRET_ACCESS_KEY: local-secret-key
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_MAX_ATTEMPTS: "1"
+      AWS_PAGER: ""
+      S3_ENDPOINT: http://seaweedfs:8333
+    volumes:
+      - ./setup-bucket.sh:/setup-bucket.sh:ro
+    depends_on:
+      seaweedfs:
+        condition: service_started
+
+volumes:
+  clickhouse-data:
+  storage-data:
