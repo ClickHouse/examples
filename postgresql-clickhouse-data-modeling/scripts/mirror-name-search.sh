@@ -1,11 +1,16 @@
 #!/bin/sh
-
-sleep 5
-
-# Check if MirrorName attribute exists
-if ! temporal operator search-attribute list | grep -w MirrorName >/dev/null 2>&1; then
-    # If not, create MirrorName attribute
-    temporal operator search-attribute create --name MirrorName --type Text --namespace default
-fi
-
-tini -s -- sleep infinity
+set -eu
+attempt=0
+while [ "$attempt" -lt 30 ]; do
+  attempt=$((attempt + 1))
+  if temporal --command-timeout 5s operator search-attribute list > /tmp/search-attributes; then
+    if ! grep -q 'MirrorName' /tmp/search-attributes; then
+      temporal --command-timeout 5s operator search-attribute create --name MirrorName --type Text --namespace default
+    fi
+    echo 'Temporal namespace and MirrorName search attribute ready'
+    exit 0
+  fi
+  sleep 2
+done
+echo 'Temporal setup failed after 30 attempts' >&2
+exit 1

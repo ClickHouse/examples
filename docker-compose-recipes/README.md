@@ -14,7 +14,7 @@ check older integrations before starting them on a shared machine.
 - [ClickHouse and MSSQL Server 2022](./recipes/ch-and-mssql/README.md)
 - [ClickHouse and S3-compatible SeaweedFS](./recipes/ch-and-seaweedfs/README.md)
 - [ClickHouse and S3-compatible RustFS (beta)](./recipes/ch-and-rustfs/README.md)
-- [ClickHouse and Postgres](./recipes/ch-and-postgres/README.md)
+- [Postgres to ClickHouse CDC with PeerDB](../postgresql-clickhouse-data-modeling/README.md)
 - [ClickHouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas) - CH Proxy LB](./recipes/cluster_1S_2R_ch_proxy/README.md)
 - [ClickHouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas)](./recipes/cluster_1S_2R/README.md)
 - [ClickHouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (2 Shards 1 Replica) - CH Proxy LB](./recipes/cluster_2S_1R_ch_proxy/README.md)

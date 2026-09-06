@@ -1,6 +1,5 @@
-#!/bin/sh 
-
-VENV_DIR="venv"
-. $VENV_DIR/bin/activate
-
-python python/generate_activity.py clickhouse_pg_db admin password localhost 5432 
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")"
+docker compose exec -T postgres psql -v ON_ERROR_STOP=1 \
+  -U admin -d clickhouse_pg_db < fixtures/changes.sql

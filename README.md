@@ -47,7 +47,7 @@ Open the example's README for its prerequisites, setup, and commands. Each examp
 Use [ClickHouse](https://clickhouse.com/clickhouse) to ingest, transform, and query analytical data with SQL. [ClickHouse Cloud](https://clickhouse.com/cloud) runs it as a fully managed service on AWS, Google Cloud, and Azure, handling infrastructure, scaling, and upgrades so you can focus on your application.
 
 - [Report results and run history](./applications/report-history/README.md): Build a TypeScript application that provisions ClickHouse Cloud, stores report results, and queries across completed runs.
-- [Docker Compose recipes](./docker-compose-recipes/README.md): Run ClickHouse locally alongside tools such as Grafana, Dagster, and MinIO, or explore replicated clusters.
+- [Docker Compose recipes](./docker-compose-recipes/README.md): Run ClickHouse locally alongside Grafana, Dagster, Redpanda, SeaweedFS, and RustFS, or explore replicated clusters.
 - [Learn ClickHouse with Mark](./LearnClickHouseWithMark/README.md): Work through SQL techniques, JSON, aggregations, geospatial queries, and more, with companion videos.
 
 ### clickhousectl: manage local and Cloud services
@@ -63,7 +63,7 @@ Use [ClickHouse](https://clickhouse.com/clickhouse) to ingest, transform, and qu
 
 [ClickPipes](https://clickhouse.com/cloud/clickpipes) provides managed ingestion into ClickHouse Cloud, including Postgres change data capture (CDC), streaming sources, and object storage.
 
-- [Postgres-to-ClickHouse data modeling](./postgresql-clickhouse-data-modeling/README.md): Explore the replication workflow locally with a Stack Overflow dataset, PostgreSQL, ClickHouse, and PeerDB. Generate inserts, updates, and deletes and follow them into ClickHouse.
+- [Postgres-to-ClickHouse data modeling](./postgresql-clickhouse-data-modeling/README.md): Replicate a tiny fixture from PostgreSQL to ClickHouse with PeerDB, then verify inserts, updates, and deletes. Follow the separate managed Postgres and ClickPipes walkthrough for ClickHouse Cloud; a larger Stack Overflow import is optional.
 
 ### ClickStack: logs, metrics, traces, and session replay
 

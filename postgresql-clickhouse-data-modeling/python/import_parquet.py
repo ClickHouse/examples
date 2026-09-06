@@ -1,11 +1,15 @@
-import os
+"""Optional large Stack Overflow import; run in the recipe's loader container."""
+from contextlib import closing
+from pathlib import Path
 import sys
-import pandas as pd
-import psycopg2
-import requests
-from tqdm import tqdm
+from urllib.request import urlopen
 
-# Parquet file URLs
+import psycopg2
+from psycopg2 import sql
+import pyarrow as pa
+import pyarrow.csv as csv
+import pyarrow.parquet as parquet
+
 datasets = {
     "posts": [
         "https://datasets-documentation.s3.eu-west-3.amazonaws.com/stackoverflow/parquet/posts/2023.parquet",
@@ -24,72 +28,64 @@ datasets = {
     ]
 }
 
+
 def download_parquet(url, output_path):
-    print(f"Downloading {url}...")
-    response = requests.get(url, stream=True)
-    if response.status_code == 200:
-        with open(output_path, "wb") as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
-        print(f"Downloaded {output_path}")
-    else:
-        print(f"Failed to download {url}")
-        sys.exit(1)
+    """Publish a complete download only; HTTP and transport errors propagate."""
+    partial = output_path.with_suffix(output_path.suffix + ".part")
+    try:
+        print(f"Downloading {url}", flush=True)
+        with urlopen(url, timeout=60) as response, partial.open("wb") as output:
+            while chunk := response.read(1024 * 1024):
+                output.write(chunk)
+        partial.replace(output_path)
+    finally:
+        partial.unlink(missing_ok=True)
+
+
+def import_file(conn, table, path, batch_size):
+    """Bound memory by Arrow batches and keep COPY headers/column order explicit."""
+    count = 0
+    with parquet.ParquetFile(path) as source, conn.cursor() as cursor:
+        for batch in source.iter_batches(batch_size=batch_size):
+            columns = sql.SQL(", ").join(sql.Identifier(name.lower()) for name in batch.schema.names)
+            statement = sql.SQL("COPY {} ({}) FROM STDIN WITH (FORMAT CSV, HEADER TRUE)").format(
+                sql.Identifier(table), columns
+            )
+            buffer = pa.BufferOutputStream()
+            # Every COPY receives its own header, including the second and later batches.
+            csv.write_csv(batch, buffer, write_options=csv.WriteOptions(include_header=True))
+            with pa.BufferReader(buffer.getvalue()) as stream:
+                cursor.copy_expert(statement.as_string(conn), stream)
+            count += batch.num_rows
+        cursor.execute(
+            sql.SQL("SELECT setval(pg_get_serial_sequence(%s, 'id'), COALESCE(max(id), 1), count(*) > 0) FROM {}").format(sql.Identifier(table)),
+            (table,),
+        )
+    return count
+
 
 def main():
     if len(sys.argv) != 7:
-        print("Usage: python import_parquet.py <database> <user> <password> <host> <port> <chunk_size>")
-        sys.exit(1)
-
-    database, user, password, host, port, chunk_size = sys.argv[1:]
-    chunk_size = int(chunk_size)
-    temp_dir = "data"
-    os.makedirs(temp_dir, exist_ok=True)
-
-    # Connect to PostgreSQL
-    try:
-        conn = psycopg2.connect(dbname=database, user=user, password=password, host=host, port=port)
-        conn.autocommit = True
-        cursor = conn.cursor()
-    except Exception as e:
-        print(f"Error connecting to PostgreSQL: {e}")
-        sys.exit(1)
-
-    for table, urls in datasets.items():
-        for url in urls:
-            parquet_file = os.path.join(temp_dir, os.path.basename(url))
-            csv_file = parquet_file.replace(".parquet", ".csv")
-            
-            download_parquet(url, parquet_file)
-            
-            # Convert Parquet to CSV
-            print(f"Read {parquet_file}...")
-            df = pd.read_parquet(parquet_file)
-            print(f"Convert {parquet_file} to CSV...")
-            df.to_csv(csv_file, index=False)
-            
-            # Read CSV in chunks and import to PostgreSQL
-            try:
-                for i, chunk in enumerate(tqdm(pd.read_csv(csv_file, chunksize=chunk_size, dtype=str, keep_default_na=False))):
-                    print(f"Importing chunk {i} into {table}...")
-                    chunk_file = os.path.join(temp_dir, f"chunk_{i}.csv")
-                    chunk.to_csv(chunk_file, index=False, header=(i == 0))  # Write header only for the first chunk
-                    try:
-                        with open(chunk_file, "r", encoding="utf-8") as f:
-                            cursor.copy_expert(f"COPY {table} FROM STDIN WITH CSV HEADER", f)
-                    except Exception as e:
-                        print(f"Error importing chunk {i}: {e}")
-                        continue
-
-            except Exception as e:
-                print(f"Error processing CSV: {e}")
-
-            os.remove(parquet_file)
-            os.remove(csv_file)
-
-    cursor.close()
-    conn.close()
+        raise SystemExit("Usage: import_parquet.py <database> <user> <password> <host> <port> <batch_size>")
+    database, user, password, host, port, batch_size = sys.argv[1:]
+    batch_size = int(batch_size)
+    if batch_size < 1:
+        raise SystemExit("batch_size must be positive")
+    cache = Path("data")
+    cache.mkdir(exist_ok=True)
+    with closing(psycopg2.connect(dbname=database, user=user, password=password,
+                                host=host, port=port, connect_timeout=10)) as conn:
+        for table, urls in datasets.items():
+            for url in urls:
+                path = cache / (table + "-" + url.rsplit("/", 1)[-1])
+                download_parquet(url, path)
+                # Roll back the current file and stop on any COPY error; never report false success.
+                with conn:
+                    count = import_file(conn, table, path, batch_size)
+                path.unlink()
+                print(f"Imported {count} rows into {table}", flush=True)
     print("All imports completed successfully!")
+
 
 if __name__ == "__main__":
     main()

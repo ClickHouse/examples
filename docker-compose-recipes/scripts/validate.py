@@ -8,9 +8,10 @@ import sys
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
+RECIPE_ROOTS = [ROOT / "recipes", ROOT.parent / "postgresql-clickhouse-data-modeling"]
 errors = []
 compose_files = sorted(
-    path for path in (ROOT / "recipes").rglob("*")
+    path for recipe_root in RECIPE_ROOTS for path in recipe_root.rglob("*")
     if path.name in {"compose.yaml", "compose.yml", "docker-compose.yaml", "docker-compose.yml"}
 )
 for target in re.findall(r"\]\(([^)]+)\)", (ROOT / "README.md").read_text()):
@@ -19,7 +20,7 @@ for target in re.findall(r"\]\(([^)]+)\)", (ROOT / "README.md").read_text()):
             errors.append(f"Broken index link: {target}")
 for path in compose_files:
     if not (path.parent / "README.md").is_file():
-        errors.append(f"Missing README: {path.parent.relative_to(ROOT)}")
+        errors.append(f"Missing README: {path.parent.relative_to(ROOT.parent)}")
     try:
         result = subprocess.run(
             ["docker", "compose", "-f", str(path), "config", "--quiet"],
@@ -28,15 +29,15 @@ for path in compose_files:
             capture_output=True, text=True, timeout=60,
         )
         if result.returncode:
-            errors.append(f"{path.relative_to(ROOT)}: {result.stderr.strip()}")
+            errors.append(f"{path.relative_to(ROOT.parent)}: {result.stderr.strip()}")
     except (OSError, subprocess.TimeoutExpired) as error:
-        errors.append(f"{path.relative_to(ROOT)}: {error}")
-xml_files = sorted((ROOT / "recipes").rglob("*.xml"))
+        errors.append(f"{path.relative_to(ROOT.parent)}: {error}")
+xml_files = sorted(path for recipe_root in RECIPE_ROOTS for path in recipe_root.rglob("*.xml"))
 for path in xml_files:
     try:
         ET.parse(path)
     except (ET.ParseError, OSError) as error:
-        errors.append(f"{path.relative_to(ROOT)}: {error}")
+        errors.append(f"{path.relative_to(ROOT.parent)}: {error}")
 if errors:
     print("\n".join(errors), file=sys.stderr)
     sys.exit(1)
