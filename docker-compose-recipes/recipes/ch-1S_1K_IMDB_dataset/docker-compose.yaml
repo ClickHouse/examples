@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   clickhouse:
     image: 'clickhouse/clickhouse-server:${CHVER:-latest}'
@@ -6,9 +5,9 @@ services:
     container_name: clickhouse
     hostname: clickhouse
     volumes:
-      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
-      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
-      - ${PWD}/fs/volumes/clickhouse/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ./fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
+      - ./fs/volumes/clickhouse/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
       - '127.0.0.1:8123:8123'
       - '127.0.0.1:9000:9000'
@@ -20,6 +19,6 @@ services:
     container_name: clickhouse-keeper
     hostname: clickhouse-keeper
     volumes:
-      - ${PWD}/fs/volumes/clickhouse-keeper/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
+      - ./fs/volumes/clickhouse-keeper/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
     ports:
       - '127.0.0.1:9181:9181'
