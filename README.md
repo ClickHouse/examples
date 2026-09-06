@@ -50,6 +50,12 @@ Use [ClickHouse](https://clickhouse.com/clickhouse) to ingest, transform, and qu
 - [Docker Compose recipes](./docker-compose-recipes/README.md): Run ClickHouse locally alongside Grafana, Dagster, Redpanda, SeaweedFS, and RustFS, or explore replicated clusters.
 - [Learn ClickHouse with Mark](./LearnClickHouseWithMark/README.md): Work through SQL techniques, JSON, aggregations, geospatial queries, and more, with companion videos.
 
+### Language clients: the same tour in eight official clients
+
+ClickHouse ships official client libraries for [C# / .NET](https://clickhouse.com/docs/integrations/csharp), [Java](https://clickhouse.com/docs/integrations/language-clients/java) (Client V2 and JDBC), [Rust](https://clickhouse.com/docs/integrations/rust), [Go](https://clickhouse.com/docs/integrations/go), [C++](https://clickhouse.com/docs/integrations/language-clients/cpp), [Python](https://clickhouse.com/docs/integrations/python), and [Node.js](https://clickhouse.com/docs/integrations/javascript). The language clients example writes one small program in every one of them against a ClickHouse Cloud service provisioned with `clickhousectl`: connect over TLS, create a table, batch insert typed rows, bind query parameters, stream results, map aggregates into typed records, and handle a server error.
+
+- [Language client tour](./language-clients/README.md): Pick your language, run it, and compare it side by side with the others. Every implementation prints the same output.
+
 ### clickhousectl: manage local and Cloud services
 
 [`clickhousectl`](https://clickhouse.com/docs/products/cloud/features/cli) is the CLI for managing local ClickHouse installations and ClickHouse Cloud. Install and switch local versions, start development servers, provision and scale Cloud services, run queries, and manage Postgres and ClickPipes. JSON output and installable agent skills make it useful for scripts and AI coding agents. See the [CLI repository](https://github.com/ClickHouse/clickhousectl) for source code and installation options.
@@ -107,6 +113,7 @@ Browse [all local analytics examples](./local-analytics/README.md) for more file
 | [clickstack](./clickstack/) | Observability examples for LLM applications and MCP servers. |
 | [docker-compose-recipes](./docker-compose-recipes/README.md) | Local deployments, integrations, and cluster configurations. |
 | [ethereum](./ethereum/README.md) | Blockchain schemas, batch and streaming ingestion, and queries. |
+| [language-clients](./language-clients/README.md) | The same client tour in C#, Java, Rust, Go, C++, Python, and Node.js against ClickHouse Cloud. |
 | [LearnClickHouseWithMark](./LearnClickHouseWithMark/README.md) | Code accompanying Mark Needham's ClickHouse video tutorials. |
 | [local-analytics](./local-analytics/README.md) | File queries and conversions with `clickhouse-local` and chDB. |
 | [postgresql-clickhouse-data-modeling](./postgresql-clickhouse-data-modeling/README.md) | PostgreSQL replication and data modeling with PeerDB and ClickHouse. |

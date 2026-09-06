@@ -1,0 +1,12 @@
+1 connect: ok, server version <version>
+2 create table: ok
+3 insert: 10000 rows in 10 batches
+4 parameterized query: 48 readings for device-07 above 30.0 C
+5 stream: 10000 rows, battery total 500050, humidity null in 1000 rows, 10000 tags
+6 aggregate: site readings avg_temp_c max_temp_c
+6 aggregate: amsterdam 2000 24.98 34.96
+6 aggregate: berlin 2000 24.99 34.96
+6 aggregate: london 2000 24.99 34.96
+6 aggregate: madrid 2000 24.99 34.96
+6 aggregate: paris 2000 24.99 34.96
+7 error: server error code 60
