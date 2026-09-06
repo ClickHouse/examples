@@ -1,26 +1,35 @@
 #!/usr/bin/env bash
-# Read-only watcher. Prints the SLA p99 and the key
-# resource-pressure metrics side by side so you can see the breach and
-# eyeball the root cause before handing off to the agent.
+# Read-only after the Query API has been enabled during setup.
 set -euo pipefail
-: "${SERVICE_ID:?source config.env first}"
-SLA_MS="${SLA_MS:-200}"
-
-SLA="SELECT toUInt64(quantile(0.99)(query_duration_ms))
-     FROM clusterAllReplicas(default, system.query_log)
-     WHERE event_time > now() - INTERVAL 1 MINUTE
-       AND type='QueryFinish' AND log_comment='frontend-dashboard'"
-
+# shellcheck source=common.sh
+source "$(dirname -- "${BASH_SOURCE[0]}")/common.sh"
+if (( $# > 1 )) || [[ "${1:-}" != '' && "${1:-}" != --once ]]; then
+  echo "usage: $0 [--once]" >&2
+  exit 1
+fi
+sla_config
 while true; do
-  p99=$(clickhousectl cloud service query --id "$SERVICE_ID" --format TSV --query "$SLA" 2>/dev/null || echo "?")
-  flag=""; [[ "$p99" =~ ^[0-9]+$ ]] && (( p99 > SLA_MS )) && flag="  <-- BREACH"
-  echo "[$(date +%T)] p99=${p99}ms (SLA ${SLA_MS}ms)${flag}"
-  # Prometheus exposition format is `Name{labels} value` (labels optional), so
-  # match the metric name followed by either '{' or a space. Guard with
-  # `|| true` so a no-match grep (exit 1) doesn't trip `set -o pipefail` and
-  # kill the loop.
-  clickhousectl cloud service prometheus "$SERVICE_ID" --filtered-metrics true 2>/dev/null \
-    | grep -E '^(ClickHouseMetrics_Query|ClickHouseAsyncMetrics_CGroupMemoryUsed|ClickHouseMetrics_BackgroundMergesAndMutationsPoolTask)[ {]' \
-    | sed 's/^/    /' || true
+  status=0
+  if sla_snapshot; then
+    print_snapshot
+  else
+    echo "[$(date +%T)] UNKNOWN (SLA snapshot unavailable)" >&2
+    status=1
+  fi
+  if metrics=$(clickhousectl cloud service prometheus "$SERVICE_ID" --filtered-metrics true); then
+    # Keep per-replica labels. Counters need deltas over time, not a one-sample
+    # interpretation as CPU utilization. Missing metrics are not zero pressure.
+    selected=$(printf '%s\n' "$metrics" | awk '
+      /^(ClickHouseMetrics_(Query|BackgroundMergesAndMutationsPoolTask)|ClickHouseAsyncMetrics_CGroup[^ {]*|ClickHouseProfileEvents_(UserTimeMicroseconds|SystemTimeMicroseconds|OSCPUWaitMicroseconds))[ {]/ {print "    " $0}')
+    if [[ -n "$selected" ]]; then
+      printf '%s\n' "$selected"
+    else
+      echo '    No matching pressure metrics returned.' >&2
+    fi
+  else
+    echo '    Prometheus metrics unavailable; pressure is unknown.' >&2
+    status=1
+  fi
+  [[ "${1:-}" != --once ]] || exit "$status"
   sleep 10
 done
