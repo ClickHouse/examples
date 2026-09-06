@@ -2,11 +2,11 @@
 
 Examples that use [`clickhousectl`](https://github.com/ClickHouse/clickhousectl), the ClickHouse CLI for managing local and Cloud services, to build agentic workflows around ClickHouse.
 
+[Try ClickHouse Cloud](https://clickhouse.com/cloud) with $300 in credits for a 30-day trial. The scaling example below requires a Cloud service on a tier that supports scaling. For a local AI walkthrough, see the [MCP examples](../mcp/README.md).
+
 ## Cloning the repository
 
-If you want to run these examples locally, you'll need to first clone the repository:
-
-```
+```bash
 git clone https://github.com/ClickHouse/examples.git
 cd examples/ai/clickhousectl
 ```
@@ -15,4 +15,6 @@ cd examples/ai/clickhousectl
 
 | Example | Description |
 |---------|-------------|
-| [Agentic SLA-breach detection and scaling](agentic-sla-scaling/README.md) | An AI agent that defends a query-latency SLA on ClickHouse Cloud: manufacture load, watch the SLA breach, then hand the breach to an agent that investigates the live system and applies the right scaling action (horizontal or vertical) on its own. |
+| [Agentic SLA-breach detection and scaling](agentic-sla-scaling/README.md) | Generate workload pressure on a dedicated ClickHouse Cloud service, measure dashboard query latency, and hand a current breach to an agent that investigates and can request one scaling action when justified. |
+
+See [VALIDATION.md](VALIDATION.md) for tested versions, checks and remaining Cloud validation.
