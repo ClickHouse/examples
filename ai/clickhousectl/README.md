@@ -16,5 +16,3 @@ cd examples/ai/clickhousectl
 | Example | Description |
 |---------|-------------|
 | [Agentic SLA-breach detection and scaling](agentic-sla-scaling/README.md) | Generate workload pressure on a dedicated ClickHouse Cloud service, measure dashboard query latency, and hand a current breach to an agent that investigates and can request one scaling action when justified. |
-
-See [VALIDATION.md](VALIDATION.md) for tested versions, checks and remaining Cloud validation.

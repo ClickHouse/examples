@@ -8,7 +8,7 @@ This is a Cloud scaling demonstration, not a production autoscaler or a guarante
 
 [Try ClickHouse Cloud](https://clickhouse.com/cloud) with $300 in credits for a 30-day trial. Use a **dedicated disposable service** in a Scale or Enterprise organization with a standard profile that supports both manual horizontal and vertical scaling. Basic services have fixed size; Enterprise custom profiles can require support for vertical resizing. See the [scaling documentation](https://clickhouse.com/docs/manage/scaling).
 
-A local server can run the SQL smoke checks, but it cannot exercise Cloud service scaling, the Cloud Query API or Cloud Prometheus. For a local AI application walkthrough, use the [MCP examples](../../mcp/README.md). [Validation](../VALIDATION.md) distinguishes local checks from live Cloud and model testing.
+A local server can run the SQL smoke checks, but it cannot exercise Cloud service scaling, the Cloud Query API or Cloud Prometheus. For a local AI application walkthrough, use the [MCP examples](../../mcp/README.md).
 
 You need Bash, `awk`, `xargs`, and:
 
