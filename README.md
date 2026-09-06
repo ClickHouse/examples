@@ -50,6 +50,13 @@ Use [ClickHouse](https://clickhouse.com/clickhouse) to ingest, transform, and qu
 - [Docker Compose recipes](./docker-compose-recipes/README.md): Run ClickHouse locally alongside tools such as Grafana, Dagster, and MinIO, or explore replicated clusters.
 - [Learn ClickHouse with Mark](./LearnClickHouseWithMark/README.md): Work through SQL techniques, JSON, aggregations, geospatial queries, and more, with companion videos.
 
+### clickhousectl: manage local and Cloud services
+
+[`clickhousectl`](https://clickhouse.com/docs/products/cloud/features/cli) is the CLI for managing local ClickHouse installations and ClickHouse Cloud. Install and switch local versions, start development servers, provision and scale Cloud services, run queries, and manage Postgres and ClickPipes. JSON output and installable agent skills make it useful for scripts and AI coding agents. See the [CLI repository](https://github.com/ClickHouse/clickhousectl) for source code and installation options.
+
+- [Provision a database for a TypeScript application](./applications/report-history/README.md): Use `clickhousectl` to create the Cloud service for a report-history application.
+- [Investigate and resolve a latency SLA breach](./ai/clickhousectl/agentic-sla-scaling/README.md): Give an agent access to `clickhousectl` to inspect a live service and apply a scaling change.
+
 ### Postgres managed by ClickHouse: transactions alongside analytics
 
 [Postgres managed by ClickHouse](https://clickhouse.com/cloud/postgres) is a managed PostgreSQL service in ClickHouse Cloud for transactional applications, with native integration into ClickHouse for analytics. Use Postgres for application records and transactions, then replicate changes to ClickHouse for reporting and aggregation.
@@ -71,7 +78,6 @@ LibreChat is an open-source chat interface for working with different LLM provid
 
 - [LibreChat with the ClickHouse MCP server](./ai/mcp/librechat/README.md): Run a chat interface connected to the public ClickHouse playground.
 - [More MCP integrations](./ai/mcp/README.md): Connect ClickHouse to other chat interfaces and agent frameworks.
-- [Agent workflows with clickhousectl](./ai/clickhousectl/README.md): Explore agents that investigate and manage ClickHouse Cloud services.
 
 ### chDB: ClickHouse inside Python
 
