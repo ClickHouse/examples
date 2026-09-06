@@ -11,7 +11,8 @@ check older integrations before starting them on a shared machine.
 - [ClickHouse and Dagster](./recipes/ch-and-dagster/README.md)
 - [ClickHouse and Grafana](./recipes/ch-and-grafana/README.md)
 - [ClickHouse and MSSQL Server 2022](./recipes/ch-and-mssql/README.md)
-- [ClickHouse and MinIO S3](./recipes/ch-and-minio-S3/README.md)
+- [ClickHouse and S3-compatible SeaweedFS](./recipes/ch-and-seaweedfs/README.md)
+- [ClickHouse and S3-compatible RustFS (beta)](./recipes/ch-and-rustfs/README.md)
 - [ClickHouse and Postgres](./recipes/ch-and-postgres/README.md)
 - [ClickHouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas) - CH Proxy LB](./recipes/cluster_1S_2R_ch_proxy/README.md)
 - [ClickHouse Cluster: 2 CH nodes - 3 ClickHouse Keeper (1 Shard 2 Replicas)](./recipes/cluster_1S_2R/README.md)
@@ -22,6 +23,9 @@ check older integrations before starting them on a shared machine.
 - [ClickHouse Cluster: 4 CH nodes - 3 ClickHouse Keeper (2 Shards 2 Replicas)](./recipes/cluster_2S_2R/README.md)
 - [ClickHouse and LDAP (OpenLDAP)](./recipes/ch-and-openldap/README.md)
 - [ClickHouse and Vector syslog and apache demo data](./recipes/ch-and-vector/README.md)
+
+SeaweedFS and RustFS keep the object-storage lesson small. Ceph was evaluated but
+excluded because its local operational footprint is disproportionate to this quick start.
 
 ## Start, verify and reset
 

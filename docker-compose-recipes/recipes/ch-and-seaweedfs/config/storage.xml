@@ -1,0 +1,22 @@
+<clickhouse>
+    <storage_configuration>
+        <disks>
+            <s3_store>
+                <type>s3</type>
+                <endpoint>http://seaweedfs:8333/clickhouse/data/</endpoint>
+                <access_key_id>local-access-key</access_key_id>
+                <secret_access_key>local-secret-key</secret_access_key>
+                <region>us-east-1</region>
+            </s3_store>
+        </disks>
+        <policies>
+            <s3_store>
+                <volumes>
+                    <main>
+                        <disk>s3_store</disk>
+                    </main>
+                </volumes>
+            </s3_store>
+        </policies>
+    </storage_configuration>
+</clickhouse>
