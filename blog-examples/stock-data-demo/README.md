@@ -84,12 +84,6 @@ If using a delayed feed, set `MASSIVE_WS_URL=wss://delayed.massive.com/stocks` a
 
 Optional Kafka support uses `KAFKA_BROKER`, `KAFKA_USERNAME`, and `KAFKA_PASSWORD` for SASL/PLAIN over TLS. Create `stocks-trades` and `stocks-quotes` topics first; automatic topic creation is disabled. This is a best-effort secondary copy, not a durable ingestion queue. Kafka failures do not undo a successful ClickHouse insert.
 
-### Existing installations
-
-The example moved from `stock-data-demo/` to `blog-examples/stock-data-demo/`. Rename `POLYGON_API_KEY` to `MASSIVE_API_KEY` and `CLICKHOUSE_HOST` to `CLICKHOUSE_URL`. Remove the old `NEXT_PUBLIC_CLICKHOUSE_*` variables and rebuild.
-
-For tables created with the old DDL, run [scripts/migrate.sql](./scripts/migrate.sql) once in the existing database. `npm run setup` creates missing tables but does not modify existing schemas. The migration widens condition/indicator arrays and adds the optional `ds` (fractional trade size as text) and `pt` (participant timestamp) fields. Dashboard volume still sums the integer `s` field; quote sizes are shares in the current feed.
-
 ## Behavior and limits
 
 - Subscriptions are sent after authentication succeeds. The default three symbols keep the demo manageable; the watchlist does not change the upstream subscription.
