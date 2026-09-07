@@ -1,0 +1,7 @@
+.env*
+node_modules/
+.clickhouse/
+frontend/.next/
+frontend/out/
+*.tsbuildinfo
+frontend/next-env.d.ts

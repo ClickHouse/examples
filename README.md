@@ -46,6 +46,7 @@ Open the example's README for its prerequisites, setup, and commands. Each examp
 
 Use [ClickHouse](https://clickhouse.com/clickhouse) to ingest, transform, and query analytical data with SQL. [ClickHouse Cloud](https://clickhouse.com/cloud) runs it as a fully managed service on AWS, Google Cloud, and Azure, handling infrastructure, scaling, and upgrades so you can focus on your application.
 
+- [Real-time stock data with Massive](./blog-examples/stock-data-demo/README.md): Stream trades and quotes into ClickHouse and explore them in a React dashboard.
 - [Report results and run history](./applications/report-history/README.md): Build a TypeScript application that provisions ClickHouse Cloud, stores report results, and queries across completed runs.
 - [Docker Compose recipes](./docker-compose-recipes/README.md): Run ClickHouse locally alongside Grafana, Dagster, Redpanda, SeaweedFS, and RustFS, or explore replicated clusters.
 - [Learn ClickHouse with Mark](./LearnClickHouseWithMark/README.md): Work through SQL techniques, JSON, aggregations, geospatial queries, and more, with companion videos.
