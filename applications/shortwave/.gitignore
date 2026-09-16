@@ -1,0 +1,24 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.output/
+.tanstack/
+dist/
+.vite/
+coverage/
+*.log
+.DS_Store
+.secrets/
+.deployment/
+.private/
+# clickhousectl can save Cloud credentials and Query API keys here.
+.clickhouse/
+.wrangler/
+.dev.vars
+.dev.vars.*
+*.pem
+test-results/
+playwright-report/
+playwright/.auth/
+playwright/.clerk/

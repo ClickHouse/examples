@@ -1,0 +1,54 @@
+{
+  "name": "shortwave",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env ./node_modules/vite/bin/vite.js --host 0.0.0.0 --port 4317 --strictPort",
+    "build": "vite build",
+    "start": "node --env-file-if-exists=.env .output/server/index.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "test:integration": "RUN_INTEGRATION=1 tsx --test tests/*.test.ts",
+    "test:browser": "playwright test",
+    "events:flush": "tsx scripts/flush-events.ts",
+    "build:workers": "vite build --mode workers",
+    "dev:workers": "vite --mode workers --host 0.0.0.0 --port 4318 --strictPort",
+    "types:workers": "wrangler types --strict-vars false"
+  },
+  "dependencies": {
+    "@clerk/tanstack-react-start": "^1.5.8",
+    "@clickhouse/click-ui": "^0.10.0",
+    "@clickhouse/client": "^1.12.1",
+    "@clickhouse/client-web": "^1.23.1",
+    "@tanstack/react-router": "^1.170.32",
+    "@tanstack/react-start": "^1.168.49",
+    "lucide-react": "^0.577.0",
+    "pg": "^8.16.3",
+    "qr-code-styling": "^1.9.2",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@clerk/testing": "^2.2.33",
+    "@cloudflare/vite-plugin": "^1.54.8",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.19.0",
+    "@types/pg": "^8.16.0",
+    "@types/pngjs": "^6.0.5",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "jsqr": "^1.4.0",
+    "nitro": "3.0.260903-beta",
+    "pngjs": "^7.0.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.2.2",
+    "wrangler": "^4.131.1"
+  }
+}

@@ -1,0 +1,30 @@
+.folder-anchor { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.folder-trigger { display: flex; align-items: center; gap: 9px; width: 100%; min-height: 46px; padding: 10px 12px; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; text-align: left; }
+.folder-trigger > span, .folder-popup button > span { flex: 1; overflow-wrap: anywhere; }
+.folder-popup { display: none; position: fixed; inset: auto; margin: 0; flex-direction: column; gap: 4px; min-height: 0; height: 172px; max-height: 172px; overflow: hidden; padding: 8px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); color: var(--text); box-shadow: 0 10px 24px #0005; }
+.folder-popup:popover-open { display: flex; }
+.folder-popup > input { flex-shrink: 0; }
+.folder-options { position: relative; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+.folder-popup button { display: flex; align-items: center; gap: 8px; width: 100%; height: 36px; padding: 9px 8px; margin: 0; color: var(--text); background: transparent; border: 0; border-radius: 5px; text-align: left; line-height: 18px; }
+.folder-popup button > span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.folder-popup button > svg { flex-shrink: 0; }
+.folder-popup button:hover, .folder-popup button:focus-visible { color: var(--yellow); background: var(--yellow-muted); }
+.folder-popup p { padding: 4px 8px; }
+.folder-popup .error-notice { font-size: 12px; margin: 8px 0; }
+.folder-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.folder-manager { display: grid; gap: 16px; }
+.folder-manager form, .folder-manager-row { display: flex; align-items: center; gap: 8px; }
+.folder-manager .field { flex: 1; margin: 0; min-width: 0; }
+.folder-manager-row { padding-top: 12px; border-top: 1px solid var(--border); }
+.folder-manager-row input { width: 100%; min-width: 0; padding: 10px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg); color: var(--text); }
+.folder-manager-row > input { flex: 1; }
+.folder-manager .folder-delete-confirm { margin: 0; font-size: 13px; }
+.folder-tag { display: inline-flex; align-items: center; gap: 5px; }
+@media (max-width: 540px) { .folder-manager-row { flex-wrap: wrap; } .folder-manager-row > input { flex-basis: 100%; } }
+
+.links-filter-bar { flex-wrap: wrap; }
+.links-filter-bar .search-field { min-width: min(100%, 240px); }
+@media (max-width: 620px) {
+  .links-filter-bar .search-field { flex: 1 1 100%; max-width: none; }
+  .links-filter-bar .button-secondary { margin-left: auto; font-size: 11px; padding: 8px 10px; }
+}

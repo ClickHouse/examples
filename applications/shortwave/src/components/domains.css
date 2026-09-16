@@ -1,0 +1,43 @@
+.domain-hosting-notice { margin: 0 0 24px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.domain-list { display: grid; gap: 20px; }
+.domain-card { min-width: 0; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+.domain-card-heading { display: flex; gap: 13px; align-items: center; padding: 20px 22px; }
+.domain-icon { flex-shrink: 0; color: var(--muted); }
+.domain-card-heading h2 { margin: 0; font-size: 16px; font-weight: 550; overflow-wrap: anywhere; min-width: 0; }
+.domain-status { display: inline-flex; flex-shrink: 0; align-items: center; gap: 5px; padding: 5px 9px; border-radius: 6px; color: #d7d8df; background: #ffffff09; font-size: 11px; }
+.domain-status-verified { color: #a9ddb7; background: #a9ddb710; }
+.domain-remove { margin-left: auto; flex-shrink: 0; }
+.domain-dns { padding: 0 22px 22px; }
+.domain-dns > p { margin: 0 0 16px; font-size: 12px; line-height: 1.6; color: var(--muted); }
+.domain-dns-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 100%; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; font-size: 12px; }
+.domain-table-caption { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.domain-dns-table th { text-align: left; color: var(--muted); background: var(--bg); font-size: 11px; font-weight: 500; }
+.domain-dns-table th, .domain-dns-table td { padding: 12px; vertical-align: top; }
+.domain-dns-table th:first-child { width: 65px; }
+.domain-dns-table th:last-child { width: 65px; }
+.domain-dns-table td { border-top: 1px solid var(--border); }
+.domain-dns-value { min-width: 0; }
+.domain-dns-value-line { display: flex; align-items: flex-start; gap: 6px; }
+.domain-dns-value code { font-size: 11px; line-height: 1.7; overflow-wrap: anywhere; user-select: all; min-width: 0; }
+.domain-dns-value .icon-button { width: 25px; height: 25px; flex-shrink: 0; margin: -3px 0 0 auto; }
+.domain-copy-feedback { display: block; color: #a9ddb7; margin-top: 5px; font-size: 11px; line-height: 1.5; }
+.domain-copy-error { color: #ffb4ae; }
+.domain-dns > .domain-dns-help { margin: 12px 0 20px; font-size: 11px; }
+.domain-check-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 18px; }
+.domain-check-row .button-secondary { min-height: 37px; font-size: 12px; }
+.domain-last-checked { color: var(--muted); font-size: 11px; }
+.domain-dns > .domain-check-success { margin: 12px 0 0; color: #a9ddb7; }
+.domain-remove-body { overflow-wrap: anywhere; }
+.modal-body > .domain-input-help { margin: -7px 0 0; color: var(--muted); line-height: 1.6; }
+@media (max-width: 700px) {
+  .domain-card-heading { display: grid; grid-template-columns: 22px minmax(0, 1fr) 32px; gap: 10px; padding: 16px; }
+  .domain-card-heading h2 { font-size: 14px; }
+  .domain-status { grid-column: 2; justify-self: start; }
+  .domain-remove { grid-column: 3; grid-row: 1 / 3; }
+  .domain-dns { padding: 0 16px 16px; }
+  .domain-dns-table, .domain-dns-table tbody, .domain-dns-table tr { display: block; }
+  .domain-dns-table thead { display: none; }
+  .domain-dns-table td { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 10px; padding: 12px; }
+  .domain-dns-table td:first-child { border-top: 0; }
+  .domain-dns-table td::before { content: attr(data-label); font-size: 11px; color: var(--muted); }
+}

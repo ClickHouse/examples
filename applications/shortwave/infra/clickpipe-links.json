@@ -1,0 +1,11 @@
+{
+  "sourceSchemaName": "public",
+  "sourceTable": "links",
+  "targetTable": "cdc_links",
+  "excludedColumns": [],
+  "sortingKeys": ["id"],
+  "useCustomSortingKey": true,
+  "partitionByExpr": "",
+  "partitionKey": "",
+  "tableEngine": "ReplacingMergeTree"
+}

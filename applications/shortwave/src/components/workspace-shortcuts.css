@@ -1,0 +1,39 @@
+kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  padding: 2px 5px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 11px;
+  line-height: 1.3;
+  opacity: .75;
+}
+.workspace-shortcuts-button {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 14px;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  font-size: 12px;
+}
+.workspace-shortcuts-button kbd { margin-left: auto; }
+.workspace-shortcuts-button:hover { color: var(--text); background: #ffffff05; }
+.shortcut-help dl { margin: 0 0 22px; }
+.shortcut-help dl > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.shortcut-help dt { font-size: 14px; }
+.shortcut-help dd { margin: 0; }

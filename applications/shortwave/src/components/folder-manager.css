@@ -1,0 +1,24 @@
+.folder-workspace { display: grid; gap: 30px; }
+.folder-create-form { display: flex; align-items: end; gap: 12px; max-width: 560px; }
+.folder-create-form .field { flex: 1; min-width: 0; margin: 0; }
+.folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 22px; align-items: start; }
+.folder-tile { position: relative; min-width: 0; border-radius: 12px; }
+.folder-tile-link { display: flex; flex-direction: column; align-items: center; width: 100%; padding: 26px 16px 18px; border-radius: inherit; color: inherit; }
+.folder-tile:hover, .folder-tile:focus-within { background: var(--yellow-muted); }
+.folder-tile-icon { color: var(--yellow); fill: #faff6924; flex-shrink: 0; margin-bottom: 14px; }
+.folder-tile h2 { max-width: 100%; margin: 0; font-size: 14px; font-weight: 500; line-height: 1.5; text-align: center; overflow-wrap: anywhere; }
+.folder-tile-actions { position: absolute; top: 0; right: 0; }
+.folder-tile-actions > .icon-button { width: 36px; height: 36px; }
+.folder-action-menu { position: absolute; top: calc(100% + 4px); right: 0; width: 156px; padding: 6px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); box-shadow: 0 10px 24px #0005; z-index: 8; }
+.folder-action-menu-above { top: auto; bottom: calc(100% + 4px); }
+.folder-action-menu button { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 9px 10px; border: 0; border-radius: 5px; background: transparent; color: var(--text); text-align: left; }
+.folder-action-menu button:hover, .folder-action-menu button:focus-visible { color: var(--yellow); background: var(--yellow-muted); }
+.folder-action-menu button svg { flex-shrink: 0; }
+.folder-delete-name { overflow-wrap: anywhere; }
+@media (max-width: 540px) {
+  .folder-create-form { flex-wrap: wrap; }
+  .folder-create-form .field { flex-basis: 100%; }
+  .folder-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 12px; }
+  .folder-tile-link { padding-inline: 10px; }
+  .folder-action-menu { width: min(156px, calc((100vw - 60px) / 2)); }
+}
