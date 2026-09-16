@@ -64,13 +64,14 @@ ClickHouse ships official client libraries for [C# / .NET](https://clickhouse.co
 - [Provision a database for a TypeScript application](./applications/report-history/README.md): Use `clickhousectl` to create the Cloud service for a report-history application.
 - [Investigate and resolve a latency SLA breach](./ai/clickhousectl/agentic-sla-scaling/README.md): Give an agent access to `clickhousectl` to inspect a live service and apply a scaling change.
 
-### Postgres managed by ClickHouse: transactions alongside analytics
+### ClickHouse Managed Postgres: transactions alongside analytics
 
-[Postgres managed by ClickHouse](https://clickhouse.com/cloud/postgres) is a managed PostgreSQL service in ClickHouse Cloud for transactional applications, with native integration into ClickHouse for analytics. Use Postgres for application records and transactions, then replicate changes to ClickHouse for reporting and aggregation.
+[ClickHouse Managed Postgres](https://clickhouse.com/cloud/postgres) is a managed PostgreSQL service in ClickHouse Cloud for transactional applications, with native integration into ClickHouse for analytics. Use Postgres for application records and transactions, then replicate changes to ClickHouse for reporting and aggregation.
 
 [ClickPipes](https://clickhouse.com/cloud/clickpipes) provides managed ingestion into ClickHouse Cloud, including Postgres change data capture (CDC), streaming sources, and object storage.
 
-- [Postgres-to-ClickHouse data modeling](./postgresql-clickhouse-data-modeling/README.md): Replicate a tiny fixture from PostgreSQL to ClickHouse with PeerDB, then verify inserts, updates, and deletes. Follow the separate managed Postgres and ClickPipes walkthrough for ClickHouse Cloud; a larger Stack Overflow import is optional.
+- [Shortwave link shortener](./applications/shortwave/README.md): Build and deploy a link shortener using ClickHouse Managed Postgres for application data, ClickPipes for metadata sync, and ClickHouse for click analytics.
+- [Postgres-to-ClickHouse data modeling](./postgresql-clickhouse-data-modeling/README.md): Replicate a tiny fixture from PostgreSQL to ClickHouse with PeerDB, then verify inserts, updates, and deletes. Follow the separate ClickHouse Managed Postgres and ClickPipes walkthrough for ClickHouse Cloud; a larger Stack Overflow import is optional.
 
 ### ClickStack: logs, metrics, traces, and session replay
 
@@ -108,7 +109,7 @@ Browse [all local analytics examples](./local-analytics/README.md) for more file
 
 | Directory | What you'll find |
 | --- | --- |
-| [applications](./applications/) | Application examples, including report results and run history with ClickHouse Cloud. |
+| [applications](./applications/) | Application examples: a link shortener, report results, and run history with ClickHouse Cloud. |
 | [ai](./ai/README.md) | AI agents, MCP integrations, and workflows using `clickhousectl`. |
 | [blog-examples](./blog-examples/) | Code and resources accompanying the [ClickHouse Blog](https://clickhouse.com/blog). |
 | [clickstack](./clickstack/) | Observability examples for LLM applications and MCP servers. |

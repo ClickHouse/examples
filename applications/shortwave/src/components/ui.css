@@ -1,0 +1,8 @@
+.primary-button { min-height: 40px; padding: 0 16px; }
+.primary-button-content { display: inline-flex; align-items: center; justify-content: center; gap: 9px; }
+.primary-button-content > svg, .primary-button-content > kbd { flex-shrink: 0; }
+.primary-button-content > kbd { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; min-height: 22px; padding: 1px 5px; border: 1px solid currentColor; border-radius: 4px; font: inherit; font-size: 11px; line-height: 1; opacity: .7; white-space: nowrap; }
+@media (max-width: 420px) {
+  .primary-button { padding-left: 12px; padding-right: 12px; }
+  .primary-button-content { gap: 7px; }
+}

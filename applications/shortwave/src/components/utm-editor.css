@@ -1,0 +1,30 @@
+.utm-editor { display: grid; gap: 18px; }
+.utm-editor .field { margin: 0; }
+.utm-parameter-rows { min-width: 0; margin: 0; padding: 0; border: 0; }
+.utm-parameter-rows .form-grid { grid-template-columns: 1fr; gap: 10px; }
+.utm-parameter-rows .field { display: grid; grid-template-columns: 150px minmax(0, 1fr); align-items: center; gap: 12px; }
+.utm-url-preview-field { display: grid; gap: 8px; min-width: 0; color: var(--muted); font-size: 11px; }
+.utm-url-preview { width: 100%; min-width: 0; height: 36px; padding: 0 10px; border: 1px solid var(--border); border-radius: 6px; background: #17181c; color: var(--text); font-family: monospace; font-size: 11px; white-space: nowrap; }
+.utm-url-preview::placeholder { color: var(--muted); font-family: inherit; }
+.utm-dialog-actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.utm-dialog-save-actions { display: flex; align-items: center; gap: 8px; }
+.utm-dialog-actions button { height: 36px; padding: 0 12px; font-size: 12px; }
+.utm-dialog-actions .utm-templates-toggle { display: inline-flex; align-items: center; gap: 7px; padding: 0 10px; font-size: 11px; }
+.utm-templates-toggle[aria-expanded="true"] { border-color: var(--yellow); }
+.utm-template-menu { display: none; position: fixed; inset: auto; margin: 0; width: 300px; max-width: calc(100% - 16px); flex-direction: column; gap: 8px; overflow-y: auto; overscroll-behavior: contain; padding: 8px; border: 1px solid #484b54; border-radius: 8px; background: #24252b; color: var(--text); box-shadow: 0 12px 30px #0008; }
+.utm-template-menu:popover-open { display: flex; }
+.utm-saved-templates { min-height: 0; max-height: 172px; overflow-y: auto; overscroll-behavior: contain; }
+.utm-saved-templates:empty { display: none; }
+.utm-saved-templates > button { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 36px; padding: 8px; border: 0; border-radius: 5px; background: transparent; color: var(--text); text-align: left; font-size: 12px; }
+.utm-saved-templates > button > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.utm-saved-templates > button > svg { flex-shrink: 0; color: var(--yellow); }
+.utm-saved-templates > button:hover, .utm-saved-templates > button:focus-visible { color: var(--yellow); background: var(--yellow-muted); }
+.utm-saved-templates > p { margin: 0; padding: 8px; font-size: 12px; }
+.utm-template-create { display: grid; flex-shrink: 0; gap: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+.utm-saved-templates:empty + .utm-template-create { padding-top: 0; border-top: 0; }
+.utm-template-create > button { height: 36px; justify-content: center; font-size: 12px; }
+.utm-template-menu .error-notice { margin: 0; font-size: 12px; }
+@media (max-width: 550px) {
+  .utm-parameter-rows .field { grid-template-columns: 104px minmax(0, 1fr); gap: 8px; }
+  .utm-parameter-rows .field > span small { display: block; margin: 4px 0 0; }
+}

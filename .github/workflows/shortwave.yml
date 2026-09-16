@@ -1,0 +1,38 @@
+name: Shortwave checks
+
+on:
+  pull_request:
+    paths:
+      - 'applications/shortwave/**'
+      - '.github/workflows/shortwave.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'applications/shortwave/**'
+      - '.github/workflows/shortwave.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/shortwave
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.2
+          cache: npm
+          cache-dependency-path: applications/shortwave/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run types:workers
+      - run: npm run typecheck
+      - run: npm run build:workers
+      - run: npx wrangler deploy --dry-run
+
+# Live Cloud and browser acceptance is a separate, explicitly configured run.
