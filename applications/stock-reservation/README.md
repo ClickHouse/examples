@@ -6,6 +6,8 @@ Competing requests cannot reserve more units than are available. Retrying a
 successful request with its original idempotency key returns the original
 reservation without consuming stock again.
 
+Read the walkthrough: [Build a stock reservation API with Hono, Bun, and ClickHouse Managed Postgres](https://clickhouse.com/resources/engineering/build-stock-reservation-api-hono-bun-postgres).
+
 The example contains four authenticated routes, three application tables, seed
 data, explicit SQL setup, and tests. It is an API for a small, trusted set of
 clients; payments, expiring reservations, and a browser interface are outside its
