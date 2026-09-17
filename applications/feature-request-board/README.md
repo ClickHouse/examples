@@ -1,6 +1,6 @@
 # Feature Request Board
 
-[Read the accompanying article (staging preview)](https://staging.clickhouse.com/resources/engineering/build-feature-request-board-nextjs-prisma-postgres).
+[Read the accompanying article](https://clickhouse.com/resources/engineering/build-feature-request-board-nextjs-prisma-postgres).
 
 A small feature request board built with **Next.js, Prisma ORM, node-postgres,
 Clerk, and [ClickHouse Managed Postgres](https://clickhouse.com/cloud/postgres)**.
