@@ -71,6 +71,7 @@ ClickHouse ships official client libraries for [C# / .NET](https://clickhouse.co
 [ClickPipes](https://clickhouse.com/cloud/clickpipes) provides managed ingestion into ClickHouse Cloud, including Postgres change data capture (CDC), streaming sources, and object storage.
 
 - [Shortwave link shortener](./applications/shortwave/README.md): Build and deploy a link shortener using ClickHouse Managed Postgres for application data, ClickPipes for metadata sync, and ClickHouse for click analytics.
+- [Workshop Booking API](./applications/workshop-booking/README.md): Build a FastAPI and SQLAlchemy application on ClickHouse Managed Postgres with transactional seat allocation, cancellation, and safe retries.
 - [Postgres-to-ClickHouse data modeling](./postgresql-clickhouse-data-modeling/README.md): Replicate a tiny fixture from PostgreSQL to ClickHouse with PeerDB, then verify inserts, updates, and deletes. Follow the separate ClickHouse Managed Postgres and ClickPipes walkthrough for ClickHouse Cloud; a larger Stack Overflow import is optional.
 
 ### ClickStack: logs, metrics, traces, and session replay
@@ -109,7 +110,7 @@ Browse [all local analytics examples](./local-analytics/README.md) for more file
 
 | Directory | What you'll find |
 | --- | --- |
-| [applications](./applications/) | Application examples: a link shortener, report results, and run history with ClickHouse Cloud. |
+| [applications](./applications/) | Application examples: workshop bookings, a link shortener, report results, and run history with ClickHouse Cloud. |
 | [ai](./ai/README.md) | AI agents, MCP integrations, and workflows using `clickhousectl`. |
 | [blog-examples](./blog-examples/) | Code and resources accompanying the [ClickHouse Blog](https://clickhouse.com/blog). |
 | [clickstack](./clickstack/) | Observability examples for LLM applications and MCP servers. |
