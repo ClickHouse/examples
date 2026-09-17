@@ -11,11 +11,13 @@ delete their requests; designated maintainers can change their status.
 
 ## What runs where
 
-[ClickHouse Cloud](https://clickhouse.com/cloud) provides managed ClickHouse for
-analytics. [ClickHouse Managed Postgres](https://clickhouse.com/cloud/postgres)
-is its PostgreSQL service, with local NVMe storage and managed operations. It is
-part of the same unified data stack: ClickPipes provides managed replication
-into ClickHouse, and `pg_clickhouse` lets Postgres query ClickHouse.
+[ClickHouse Cloud](https://clickhouse.com/cloud) is the platform that offers both
+managed ClickHouse for analytics and
+[ClickHouse Managed Postgres](https://clickhouse.com/cloud/postgres) for
+transactional workloads. ClickHouse Managed Postgres provides PostgreSQL with
+local NVMe storage and managed database operations. These services are connected
+through a unified data stack: ClickPipes can replicate Postgres data into
+ClickHouse, and `pg_clickhouse` can query ClickHouse from Postgres.
 
 This example uses Managed Postgres as an ordinary PostgreSQL database. All
 application records, relationships, and vote counts stay there. No ClickHouse
