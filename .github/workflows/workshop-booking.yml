@@ -1,0 +1,38 @@
+name: Workshop booking checks
+
+on:
+  pull_request:
+    paths:
+      - 'applications/workshop-booking/**'
+      - '.github/workflows/workshop-booking.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'applications/workshop-booking/**'
+      - '.github/workflows/workshop-booking.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/workshop-booking
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: applications/workshop-booking/requirements*.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m pip check
+      - run: ruff check app migrations tests
+      - run: ruff format --check app migrations tests
+      - run: pytest tests/unit
+
+# The explicitly configured managed-service tests are documented in tests/README.md.
+# Pull requests do not receive Cloud or database credentials.

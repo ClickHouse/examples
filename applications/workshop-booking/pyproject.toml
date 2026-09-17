@@ -1,0 +1,18 @@
+[project]
+name = "workshop-booking"
+version = "1.0.0"
+description = "A FastAPI workshop booking example for ClickHouse Managed Postgres"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests/unit"]
+pythonpath = ["."]
+addopts = "-ra"
+markers = ["integration: requires the explicitly configured managed Postgres test database"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

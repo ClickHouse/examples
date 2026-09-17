@@ -1,0 +1,37 @@
+name: Feature Request Board checks
+
+on:
+  pull_request:
+    paths:
+      - 'applications/feature-request-board/**'
+      - '.github/workflows/feature-request-board.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'applications/feature-request-board/**'
+      - '.github/workflows/feature-request-board.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/feature-request-board
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.21.0
+          cache: npm
+          cache-dependency-path: applications/feature-request-board/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm run db:generate
+      - run: npm test
+      - run: npm run typecheck
+      - run: npm run build
+
+# Live database and Clerk browser checks require explicit development resources.
