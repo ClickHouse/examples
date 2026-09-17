@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["feature_board"]
+}
+
+enum RequestStatus {
+  OPEN
+  PLANNED
+  IN_PROGRESS
+  SHIPPED
+
+  @@schema("feature_board")
+}
+
+model FeatureRequest {
+  id          String        @id @default(uuid()) @db.Uuid
+  title       String        @db.VarChar(120)
+  description String        @db.VarChar(4000)
+  authorId    String        @map("author_id") @db.VarChar(255)
+  authorName  String        @map("author_name") @db.VarChar(80)
+  status      RequestStatus @default(OPEN)
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+  votes       Vote[]
+
+  @@index([status, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([createdAt(sort: Desc), id(sort: Desc)])
+  @@map("feature_requests")
+  @@schema("feature_board")
+}
+
+model Vote {
+  requestId String         @map("request_id") @db.Uuid
+  userId    String         @map("user_id") @db.VarChar(255)
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  request   FeatureRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  // The database arbitrates duplicate votes, including concurrent requests.
+  @@id([requestId, userId])
+  @@map("votes")
+  @@schema("feature_board")
+}
