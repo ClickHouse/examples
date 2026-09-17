@@ -25,7 +25,9 @@ Examples and recipes for building with ClickHouse, from your first SQL query to 
 
 [ClickHouse](https://clickhouse.com/clickhouse) is an open-source, column-oriented SQL database for fast analytics on large datasets. It powers real-time dashboards, reporting, observability, and applications that need to query data as it arrives.
 
-You can use the engine as a managed Cloud service, run your own server, embed it in Python with chDB, or query files from the command line with `clickhouse-local`. The wider ClickHouse ecosystem brings together Postgres for transactions, ClickStack for observability, and LibreChat for working with data through AI agents.
+[ClickHouse Cloud](https://clickhouse.com/cloud) is the overall managed data platform. Within it, ClickHouse is the analytical database service, and [ClickHouse Managed Postgres](https://clickhouse.com/cloud/postgres) is the PostgreSQL service for transactional applications.
+
+You can use ClickHouse as a managed service within that platform, run your own server, embed it in Python with chDB, or query files from the command line with `clickhouse-local`. The wider ClickHouse ecosystem brings together Postgres for transactions, ClickStack for observability, and LibreChat for working with data through AI agents.
 
 ## How to get started
 
@@ -42,18 +44,18 @@ Open the example's README for its prerequisites, setup, and commands. Each examp
 
 ## Explore products and examples
 
-### ClickHouse and ClickHouse Cloud: real-time analytics
+### ClickHouse: the analytical database service
 
-Use [ClickHouse](https://clickhouse.com/clickhouse) to ingest, transform, and query analytical data with SQL. [ClickHouse Cloud](https://clickhouse.com/cloud) runs it as a fully managed service on AWS, Google Cloud, and Azure, handling infrastructure, scaling, and upgrades so you can focus on your application.
+Use [ClickHouse](https://clickhouse.com/clickhouse) to ingest, transform, and query analytical data with SQL. The ClickHouse analytical database service runs within the ClickHouse Cloud platform on AWS, Google Cloud, and Azure, with managed infrastructure, scaling, and upgrades so you can focus on your application.
 
 - [Real-time stock data with Massive](./blog-examples/stock-data-demo/README.md): Stream trades and quotes into ClickHouse and explore them in a React dashboard.
-- [Report results and run history](./applications/report-history/README.md): Build a TypeScript application that provisions ClickHouse Cloud, stores report results, and queries across completed runs.
+- [Report results and run history](./applications/report-history/README.md): Build a TypeScript application that provisions a ClickHouse service within ClickHouse Cloud, stores report results, and queries across completed runs.
 - [Docker Compose recipes](./docker-compose-recipes/README.md): Run ClickHouse locally alongside Grafana, Dagster, Redpanda, SeaweedFS, and RustFS, or explore replicated clusters.
 - [Learn ClickHouse with Mark](./LearnClickHouseWithMark/README.md): Work through SQL techniques, JSON, aggregations, geospatial queries, and more, with companion videos.
 
 ### Language clients: the same tour in eight official clients
 
-ClickHouse ships official client libraries for [C# / .NET](https://clickhouse.com/docs/integrations/csharp), [Java](https://clickhouse.com/docs/integrations/language-clients/java) (Client V2 and JDBC), [Rust](https://clickhouse.com/docs/integrations/rust), [Go](https://clickhouse.com/docs/integrations/go), [C++](https://clickhouse.com/docs/integrations/language-clients/cpp), [Python](https://clickhouse.com/docs/integrations/python), and [Node.js](https://clickhouse.com/docs/integrations/javascript). The language clients example writes one small program in every one of them against a ClickHouse Cloud service provisioned with `clickhousectl`: connect over TLS, create a table, batch insert typed rows, bind query parameters, stream results, map aggregates into typed records, and handle a server error.
+ClickHouse ships official client libraries for [C# / .NET](https://clickhouse.com/docs/integrations/csharp), [Java](https://clickhouse.com/docs/integrations/language-clients/java) (Client V2 and JDBC), [Rust](https://clickhouse.com/docs/integrations/rust), [Go](https://clickhouse.com/docs/integrations/go), [C++](https://clickhouse.com/docs/integrations/language-clients/cpp), [Python](https://clickhouse.com/docs/integrations/python), and [Node.js](https://clickhouse.com/docs/integrations/javascript). The language clients example writes one small program in every one of them against a ClickHouse analytical database service provisioned within ClickHouse Cloud using `clickhousectl`: connect over TLS, create a table, batch insert typed rows, bind query parameters, stream results, map aggregates into typed records, and handle a server error.
 
 - [Language client tour](./language-clients/README.md): Pick your language, run it, and compare it side by side with the others. Every implementation prints the same output.
 
@@ -61,16 +63,17 @@ ClickHouse ships official client libraries for [C# / .NET](https://clickhouse.co
 
 [`clickhousectl`](https://clickhouse.com/docs/products/cloud/features/cli) is the CLI for managing local ClickHouse installations and ClickHouse Cloud. Install and switch local versions, start development servers, provision and scale Cloud services, run queries, and manage Postgres and ClickPipes. JSON output and installable agent skills make it useful for scripts and AI coding agents. See the [CLI repository](https://github.com/ClickHouse/clickhousectl) for source code and installation options.
 
-- [Provision a database for a TypeScript application](./applications/report-history/README.md): Use `clickhousectl` to create the Cloud service for a report-history application.
+- [Provision a database for a TypeScript application](./applications/report-history/README.md): Use `clickhousectl` to create a ClickHouse analytical database service for a report-history application.
 - [Investigate and resolve a latency SLA breach](./ai/clickhousectl/agentic-sla-scaling/README.md): Give an agent access to `clickhousectl` to inspect a live service and apply a scaling change.
 
-### ClickHouse Managed Postgres: transactions alongside analytics
+### ClickHouse Managed Postgres: the PostgreSQL service
 
-[ClickHouse Managed Postgres](https://clickhouse.com/cloud/postgres) is a managed PostgreSQL service in ClickHouse Cloud for transactional applications, with native integration into ClickHouse for analytics. Use Postgres for application records and transactions, then replicate changes to ClickHouse for reporting and aggregation.
+[ClickHouse Managed Postgres](https://clickhouse.com/cloud/postgres) is the PostgreSQL service within the ClickHouse Cloud platform. It handles transactional applications and integrates with the ClickHouse analytical database service. Use Postgres for application records and transactions, then replicate changes to ClickHouse for reporting and aggregation when needed.
 
-[ClickPipes](https://clickhouse.com/cloud/clickpipes) provides managed ingestion into ClickHouse Cloud, including Postgres change data capture (CDC), streaming sources, and object storage.
+[ClickPipes](https://clickhouse.com/cloud/clickpipes) provides managed ingestion into the ClickHouse analytical database service within ClickHouse Cloud, including Postgres change data capture (CDC), streaming sources, and object storage.
 
 - [Shortwave link shortener](./applications/shortwave/README.md): Build and deploy a link shortener using ClickHouse Managed Postgres for application data, ClickPipes for metadata sync, and ClickHouse for click analytics.
+- [Workshop Booking API](./applications/workshop-booking/README.md): Build a FastAPI and SQLAlchemy application on ClickHouse Managed Postgres with transactional seat allocation, cancellation, and safe retries.
 - [Postgres-to-ClickHouse data modeling](./postgresql-clickhouse-data-modeling/README.md): Replicate a tiny fixture from PostgreSQL to ClickHouse with PeerDB, then verify inserts, updates, and deletes. Follow the separate ClickHouse Managed Postgres and ClickPipes walkthrough for ClickHouse Cloud; a larger Stack Overflow import is optional.
 
 ### ClickStack: logs, metrics, traces, and session replay
@@ -109,13 +112,13 @@ Browse [all local analytics examples](./local-analytics/README.md) for more file
 
 | Directory | What you'll find |
 | --- | --- |
-| [applications](./applications/) | Application examples: a link shortener, report results, and run history with ClickHouse Cloud. |
+| [applications](./applications/) | Application examples: workshop bookings, a link shortener, report results, and run history with ClickHouse Cloud. |
 | [ai](./ai/README.md) | AI agents, MCP integrations, and workflows using `clickhousectl`. |
 | [blog-examples](./blog-examples/) | Code and resources accompanying the [ClickHouse Blog](https://clickhouse.com/blog). |
 | [clickstack](./clickstack/) | Observability examples for LLM applications and MCP servers. |
 | [docker-compose-recipes](./docker-compose-recipes/README.md) | Local deployments, integrations, and cluster configurations. |
 | [ethereum](./ethereum/README.md) | Blockchain schemas, batch and streaming ingestion, and queries. |
-| [language-clients](./language-clients/README.md) | The same client tour in C#, Java, Rust, Go, C++, Python, and Node.js against ClickHouse Cloud. |
+| [language-clients](./language-clients/README.md) | The same client tour in C#, Java, Rust, Go, C++, Python, and Node.js against a ClickHouse service within ClickHouse Cloud. |
 | [LearnClickHouseWithMark](./LearnClickHouseWithMark/README.md) | Code accompanying Mark Needham's ClickHouse video tutorials. |
 | [local-analytics](./local-analytics/README.md) | File queries and conversions with `clickhouse-local` and chDB. |
 | [postgresql-clickhouse-data-modeling](./postgresql-clickhouse-data-modeling/README.md) | PostgreSQL replication and data modeling with PeerDB and ClickHouse. |
