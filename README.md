@@ -70,6 +70,7 @@ ClickHouse ships official client libraries for [C# / .NET](https://clickhouse.co
 
 [ClickPipes](https://clickhouse.com/cloud/clickpipes) provides managed ingestion into ClickHouse Cloud, including Postgres change data capture (CDC), streaming sources, and object storage.
 
+- [Stock Reservation API](./applications/stock-reservation/README.md): Reserve limited inventory with Hono, Bun.SQL, and ClickHouse Managed Postgres; use transactions and idempotency keys to handle competing requests and retries.
 - [Shortwave link shortener](./applications/shortwave/README.md): Build and deploy a link shortener using ClickHouse Managed Postgres for application data, ClickPipes for metadata sync, and ClickHouse for click analytics.
 - [Postgres-to-ClickHouse data modeling](./postgresql-clickhouse-data-modeling/README.md): Replicate a tiny fixture from PostgreSQL to ClickHouse with PeerDB, then verify inserts, updates, and deletes. Follow the separate ClickHouse Managed Postgres and ClickPipes walkthrough for ClickHouse Cloud; a larger Stack Overflow import is optional.
 
