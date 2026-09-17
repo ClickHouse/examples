@@ -1,0 +1,11 @@
+node_modules/
+.env
+.env.*
+!.env.example
+.deployment/
+coverage/
+*.pem
+*.key
+*.log
+.DS_Store
+!tests/fixtures/untrusted-ca.pem

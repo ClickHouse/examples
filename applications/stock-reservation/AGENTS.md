@@ -1,0 +1,13 @@
+# Agent instructions
+
+- Read [README.md](README.md). This is a small Hono + Bun + Bun.SQL application backed by ClickHouse Managed Postgres. Preserve its four-route scope: inventory, reserve, inspect, release.
+- Install dependencies and run application code only inside the isolated OrbStack machine `stock-reservation-dev`. Create it with `orb create --isolated --isolate-network ubuntu:noble stock-reservation-dev` if absent, and verify its isolation settings before use. Keep macOS file sharing, host integration, host network access, SSH-agent forwarding, and host Docker sockets disabled. Host-side source editing and read-only inspection are fine.
+- Keep infrastructure commands visible in the README. Keep bootstrap, grants, ordered migrations, seed data, and cleanup in readable SQL files. Do not hide provisioning or migrations in application scripts.
+- Never commit credentials, Cloud resource IDs, private endpoints, personal paths, `.deployment/`, or environment files other than the generic `.env.example`. Transfer only the credentials needed for a specific VM task; the running app receives only runtime credentials.
+- Preserve the plain PostgreSQL connection URL and explicit CA and hostname verification. Do not disable TLS checks or copy driver-specific URL parameters into Bun.SQL. Separate Cloud management, database administration, migrations, and runtime access.
+- Postgres must enforce stock integrity across processes. Keep inventory updates, reservation insertion, and the successful idempotency response in one transaction. Keep releases atomic and repeat-safe. Failed reservations roll back their idempotency key; successful requests replay their original response even after release.
+- Derive client identity from a configured API token. Every reservation lookup and release must include the authenticated client. Do not accept an owner from a request body.
+- Run `bun run typecheck` and `bun run test` in the VM. Run the documented integration suite against a disposable managed-service fixture after database changes. Recheck concurrency, rollback, ownership, and strict TLS when their implementation changes; report skipped checks explicitly.
+- Record actual test commands and results in the pull request. An expected result in the README is not evidence that a check ran.
+- Reuse recorded Cloud resources after interrupted setup. Inspect uncertain create/delete outcomes before retrying. Target destructive cleanup by the recorded service ID and keep receipts until deletion is confirmed.
+- Keep article drafts, verification reports, and maintainer notes outside this example and its pull request. Add an article link only after publication.

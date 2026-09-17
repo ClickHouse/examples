@@ -72,6 +72,7 @@ ClickHouse ships official client libraries for [C# / .NET](https://clickhouse.co
 
 [ClickPipes](https://clickhouse.com/cloud/clickpipes) provides managed ingestion into the ClickHouse analytical database service within ClickHouse Cloud, including Postgres change data capture (CDC), streaming sources, and object storage.
 
+- [Stock Reservation API](./applications/stock-reservation/README.md): Reserve limited inventory with Hono, Bun.SQL, and ClickHouse Managed Postgres; use transactions and idempotency keys to handle competing requests and retries.
 - [Shortwave link shortener](./applications/shortwave/README.md): Build and deploy a link shortener using ClickHouse Managed Postgres for application data, ClickPipes for metadata sync, and ClickHouse for click analytics.
 - [Feature Request Board](./applications/feature-request-board/README.md): Build a Next.js and Prisma board with Clerk sign-in, request ownership, and one vote per user on ClickHouse Managed Postgres.
 - [Workshop Booking API](./applications/workshop-booking/README.md): Build a FastAPI and SQLAlchemy application on ClickHouse Managed Postgres with transactional seat allocation, cancellation, and safe retries.
