@@ -8,15 +8,22 @@ explore the application without building a separate frontend.
 
 **[Sign up for ClickHouse Cloud with $300 in free trial credits](https://clickhouse.com/cloud).**
 
-[ClickHouse Cloud](https://clickhouse.com/cloud) is the managed platform for
-ClickHouse and its data services. [ClickHouse Managed Postgres](https://clickhouse.com/cloud/postgres)
-provides PostgreSQL on local NVMe storage, with managed backups and options for
-high availability. Its built-in ClickHouse integration includes CDC through
-ClickPipes and the `pg_clickhouse` extension for a unified transactional and
-analytical data stack. This application uses it as ordinary Postgres: bookings
-need transactions, constraints, and current availability. No ClickHouse service
-or ClickPipe is required. [Shortwave](../shortwave) provides the complete example
-and explicit setup commands for the combined Postgres/ClickHouse architecture.
+[ClickHouse Cloud](https://clickhouse.com/cloud) is the overall managed data
+platform. Within it, [ClickHouse](https://clickhouse.com/clickhouse) is the
+analytical database service, and
+[ClickHouse Managed Postgres](https://clickhouse.com/cloud/postgres) is the
+PostgreSQL service for transactional applications.
+
+ClickHouse Managed Postgres runs on local NVMe storage, with managed backups and
+options for high availability. It integrates with the ClickHouse analytical
+database through ClickPipes CDC and the `pg_clickhouse` extension. Together, the
+two database services provide a unified transactional and analytical data stack
+within ClickHouse Cloud.
+
+This application uses only the ClickHouse Managed Postgres service: bookings
+need transactions, constraints, and current availability. [Shortwave](../shortwave)
+provides the complete example and explicit setup commands for using both database
+services with ClickPipes.
 
 ## How it works
 
@@ -382,7 +389,7 @@ unset PGPASSWORD
 ```
 
 Use the reset password if it has changed. Cleanup deletes this example's data
-and roles. It does not delete the Cloud service or stop its charges. For a
+and roles. It does not delete the Managed Postgres service or stop its charges. For a
 service created exclusively for this example, check the saved ID, then delete it:
 
 ```sh
