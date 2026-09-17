@@ -1,0 +1,24 @@
+# Direct dependencies. Resolved and tested on Python 3.12, 2026-09-17.
+fastapi==0.141.1
+pydantic==2.13.5
+psycopg[binary]==3.3.5
+SQLAlchemy==2.0.54
+uvicorn==0.53.0
+python-dotenv==1.2.3
+alembic==1.20.0
+
+# Transitive runtime dependencies, pinned for reproducible installs.
+annotated-doc==0.0.5
+annotated-types==0.8.0
+anyio==4.15.1
+click==8.5.0
+greenlet==3.5.6
+h11==0.16.0
+idna==3.19
+Mako==1.4.1
+MarkupSafe==3.0.3
+psycopg-binary==3.3.5
+pydantic_core==2.46.5
+starlette==1.6.0
+typing-inspection==0.4.4
+typing_extensions==4.16.0
