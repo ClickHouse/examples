@@ -6,6 +6,9 @@ The example demonstrates a small but important promise: two concurrent requests
 cannot take the same last seat. FastAPI's generated OpenAPI interface lets you
 explore the application without building a separate frontend.
 
+Read the companion guide:
+[Build a workshop booking API with FastAPI, SQLAlchemy, and Postgres](https://clickhouse.com/resources/engineering/build-workshop-booking-api-fastapi-sqlalchemy-postgres).
+
 **[Sign up for ClickHouse Cloud with $300 in free trial credits](https://clickhouse.com/cloud).**
 
 [ClickHouse Cloud](https://clickhouse.com/cloud) is the overall managed data
