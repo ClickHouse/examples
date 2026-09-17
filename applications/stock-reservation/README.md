@@ -11,6 +11,8 @@ data, explicit SQL setup, and tests. It is an API for a small, trusted set of
 clients; payments, expiring reservations, and a browser interface are outside its
 scope. See [Verify changes](#verify-changes) for the test commands.
 
+**[Create a ClickHouse Cloud account and start a free 30-day trial with $300 in credits](https://clickhouse.com/cloud).**
+
 ## How it works
 
 ```mermaid
@@ -47,9 +49,10 @@ Postgres, ClickHouse, and ClickPipes architecture.
 
 ## Set up the example
 
-The instructions use Bash, a ClickHouse Cloud account with Managed Postgres
-access, Git, `curl`, `jq`, OpenSSL, and `psql` 15 or later. Run Bun and application
-dependencies in a Linux development environment. Maintainers on macOS use the
+The instructions use Bash, a [ClickHouse Cloud account](https://clickhouse.com/cloud)
+with Managed Postgres access, Git, `curl`, `jq`, OpenSSL, and `psql` 15 or later.
+Run Bun and application dependencies in a Linux development environment.
+Maintainers on macOS use the
 [isolated OrbStack machines](https://docs.orbstack.dev/machines/isolated); install
 no Node.js or Bun packages on the host.
 
