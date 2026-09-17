@@ -1,7 +1,5 @@
 # Stock Reservation API
 
-[Read the accompanying article](docs/article.md).
-
 Reserve and release limited inventory with **Hono**, **Bun 1.4.2**, and
 **Bun.SQL**, backed by [ClickHouse Managed Postgres](https://clickhouse.com/cloud/postgres).
 Competing requests cannot reserve more units than are available. Retrying a
@@ -11,7 +9,7 @@ reservation without consuming stock again.
 The example contains four authenticated routes, three application tables, seed
 data, explicit SQL setup, and tests. It is an API for a small, trusted set of
 clients; payments, expiring reservations, and a browser interface are outside its
-scope. [Verification](docs/verification.md) records what was actually tested.
+scope. See [Verify changes](#verify-changes) for the test commands.
 
 ## How it works
 
@@ -52,8 +50,8 @@ Postgres, ClickHouse, and ClickPipes architecture.
 The instructions use Bash, a ClickHouse Cloud account with Managed Postgres
 access, Git, `curl`, `jq`, OpenSSL, and `psql` 15 or later. Run Bun and application
 dependencies in a Linux development environment. Maintainers on macOS use the
-[isolated OrbStack workflow](docs/maintainer-environment.md); install no Node.js
-or Bun packages on the host.
+[isolated OrbStack machines](https://docs.orbstack.dev/machines/isolated); install
+no Node.js or Bun packages on the host.
 
 ### 1. Get the source and install pinned dependencies
 
@@ -181,8 +179,9 @@ PGADMIN=YOUR_SERVICE_ADMIN_USERNAME
 Use the direct Postgres endpoint for this example. Match the connection details
 returned for your service rather than copying a hostname from another deployment.
 The recorded test setup uses the direct port `5432` and database `postgres`.
-For an isolated VM, copy the CA and only the required credentials as described
-in the [maintainer guide](docs/maintainer-environment.md).
+For an isolated VM, transfer only the source files, CA, and credentials needed
+for the current step into its own filesystem. Keep Cloud API credentials on the
+host and administrator credentials separate from the runtime configuration.
 
 ### 4. Create roles, apply the schema, and seed inventory
 
@@ -429,8 +428,7 @@ bun --env-file=.deployment/test.env run test:integration
 ```
 
 Missing test credentials fail the run rather than skipping database checks. See
-[tests/README.md](tests/README.md) for fixture permissions, scope, and cleanup, and
-[verification.md](docs/verification.md) for recorded commands and observed results.
+[tests/README.md](tests/README.md) for fixture permissions, scope, and cleanup.
 
 The important accounting check is that available stock plus active reservation
 quantities remains equal to the starting stock for each SKU. HTTP responses

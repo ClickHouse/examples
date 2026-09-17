@@ -1,7 +1,7 @@
 # Verification suites
 
-Run Bun and dependency commands inside the isolated OrbStack development VM,
-following [the maintainer environment](../docs/maintainer-environment.md).
+Run Bun and dependency commands inside the isolated OrbStack development VM.
+See [AGENTS.md](../AGENTS.md) for the isolation requirements.
 
 ```sh
 bun run typecheck
@@ -75,4 +75,4 @@ with an ambient `PGSSLMODE=verify-ca`. Bun 1.4.2 may emit only an empty Error wi
 alongside explicit hostname errors. The independent verified-TLS control and
 successful application query before/after bound that evidence; generic timeout,
 DNS, authentication, and connection-closed errors do not pass. Record actual
-runtime and managed-service results in [verification](../docs/verification.md).
+runtime and managed-service results in the pull request.

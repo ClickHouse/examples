@@ -31,4 +31,4 @@ jobs:
       - run: bun run test:unit
 
 # Managed Postgres integration tests are an explicit run with dedicated fixtures.
-# See applications/stock-reservation/docs/verification.md for recorded Cloud tests.
+# See applications/stock-reservation/tests/README.md for the managed-service suite.
