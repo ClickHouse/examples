@@ -25,7 +25,7 @@ MCC,Country
 350,Bermuda
 402,Bhutan
 736,Bolivia
-362,Bonaire Sint Eustatius and Saba
+362,Netherlands Antilles
 218,Bosnia and Herzegovina
 652,Botswana
 724,Brazil
@@ -81,8 +81,8 @@ MCC,Country
 202,Greece
 290,Greenland
 352,Grenada
-310,Guam
-311,Guam
+310,United States of America
+311,United States of America
 704,Guatemala
 611,Guinea
 632,Guinea-Bissau
@@ -95,7 +95,7 @@ MCC,Country
 404,India
 405,India
 510,Indonesia
-901,International Networks
+901,Satellite Networks
 432,Iran
 418,Iraq
 272,Ireland
@@ -131,7 +131,7 @@ MCC,Country
 551,Marshall Islands
 609,Mauritania
 617,Mauritius
-647,Mayotte
+647,Reunion
 334,Mexico
 550,Micronesia
 259,Moldova
