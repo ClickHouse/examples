@@ -1,0 +1,31 @@
+name: Checklist runs
+on:
+  push:
+    paths: ['applications/checklist-runs/**', '.github/workflows/checklist-runs.yml']
+  pull_request:
+    paths: ['applications/checklist-runs/**', '.github/workflows/checklist-runs.yml']
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: applications/checklist-runs
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.21.0'
+          cache: npm
+          cache-dependency-path: applications/checklist-runs/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run build
+      - run: python3 -m unittest discover -s tests -p 'test_*.py' -v
+      - run: python3 scripts/install_postgrest.py
+      - run: .local/bin/postgrest --version
+      - run: PGRST_JWT_SECRET=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa .local/bin/postgrest --dump-config postgrest.conf

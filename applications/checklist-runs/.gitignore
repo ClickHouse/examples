@@ -1,0 +1,10 @@
+.env
+*.env
+.venv/
+__pycache__/
+*.pyc
+.local/
+postgrest
+*.tar.xz
+node_modules/
+dist/

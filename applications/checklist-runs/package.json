@@ -1,0 +1,31 @@
+{
+  "name": "checklist-runs",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0 <25"
+  },
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview",
+    "test:browser": "node tests/browser.mjs",
+    "format:check": "prettier --check src vite.config.ts package.json tsconfig.json index.html tests/*.mjs"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "5.104.1",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "playwright": "1.63.0",
+    "typescript": "7.0.2",
+    "vite": "8.3.2",
+    "prettier": "3.9.9"
+  }
+}
