@@ -1,6 +1,6 @@
 # NestJS shipment tracker
 
-A small account-scoped API tracks seeded shipments through `created → dispatched → delivered`, with cancellation from `created` or `dispatched`. ClickHouse Managed Postgres (public beta) stores current state and immutable accepted transition events. ClickPipes copies those events to analytical ClickHouse; the official Node.js client reads bounded delivery reports. All database services run in ClickHouse Cloud. There is no carrier, address, payment or tracking-provider integration.
+A small account-scoped API tracks seeded shipments through `created → dispatched → delivered`, with cancellation from `created` or `dispatched`. ClickHouse Managed Postgres stores current state and immutable accepted transition events. ClickPipes copies those events to analytical ClickHouse; the official Node.js client reads bounded delivery reports. All database services run in ClickHouse Cloud. There is no carrier, address, payment or tracking-provider integration.
 
 Shipment creation is a seed/admin operation. The HTTP API provides reads, history and lifecycle transitions. A static server-configured bearer token identifies an account; callers cannot choose their account. The server binds to loopback by default. Deploy behind trusted HTTPS and replace demo tokens with proper identity and access policies before public use.
 
