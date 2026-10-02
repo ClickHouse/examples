@@ -1,0 +1,30 @@
+name: Invoice tracker checks
+on:
+  push:
+    paths: [applications/invoice-tracker/**, .github/workflows/invoice-tracker.yml]
+  pull_request:
+    paths: [applications/invoice-tracker/**, .github/workflows/invoice-tracker.yml]
+permissions:
+  contents: read
+jobs:
+  php-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/invoice-tracker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_pgsql, mbstring, dom, curl, zip
+          tools: composer
+          coverage: none
+      - run: mkdir -p storage/framework/{sessions,views,cache/data} storage/logs bootstrap/cache
+      - run: composer install --no-interaction --prefer-dist
+      - run: composer validate --strict --no-check-all
+      - run: composer test
+      - run: vendor/bin/pint --test
+      - run: php artisan route:list
+      - run: php artisan view:cache
+# Real HTTP/database acceptance is manual on a dedicated Cloud service; no CI secrets.

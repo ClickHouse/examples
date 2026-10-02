@@ -1,0 +1,8 @@
+/vendor/
+/.env
+/.deployment/
+/bootstrap/cache/*.php
+/storage/*
+!/storage/.gitkeep
+/.phpunit.cache/
+/__pycache__/

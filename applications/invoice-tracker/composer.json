@@ -1,0 +1,17 @@
+{
+  "name": "clickhouse/invoice-tracker",
+  "description": "Laravel invoice lifecycle example on ClickHouse Managed Postgres",
+  "type": "project",
+  "license": "Apache-2.0",
+  "require": {"php": "^8.3", "ext-pdo": "*", "ext-pdo_pgsql": "*", "laravel/framework": "13.34.0"},
+  "require-dev": {
+    "laravel/pint": "^1.0",
+    "phpunit/phpunit": "^12.0"
+  },
+  "autoload": {"psr-4": {"App\\": "app/", "Database\\Seeders\\": "database/seeders/"}},
+  "autoload-dev": {"psr-4": {"Tests\\": "tests/"}},
+  "scripts": {"post-autoload-dump": ["Illuminate\\Foundation\\ComposerScripts::postAutoloadDump", "@php artisan package:discover --ansi"], "test": "phpunit"},
+  "config": {"optimize-autoloader": true, "sort-packages": true},
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
