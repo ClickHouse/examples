@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+bundle _4.0.22_ check
+while IFS= read -r file; do bundle _4.0.22_ exec ruby -c "$file"; done < <(find lib db test -name '*.rb' -print)
+bundle _4.0.22_ exec ruby -c app.rb
+bundle _4.0.22_ exec ruby -c config.ru
+bundle _4.0.22_ exec ruby -c puma.rb
+bundle _4.0.22_ exec ruby -c bin/migrate
+bundle _4.0.22_ exec ruby -Itest -e 'Dir.glob("test/*_test.rb").sort.each { |file| require_relative file }'
+bundle _4.0.22_ exec ruby -rerb -e 'Dir.glob("views/*.erb").sort.each { |file| RubyVM::InstructionSequence.compile("def render_template\n#{ERB.new(File.read(file)).src}\nend") }; puts "ERB templates compile"'

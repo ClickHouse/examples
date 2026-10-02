@@ -1,0 +1,12 @@
+<section class="intro"><p class="eyebrow">Local operator workspace</p><h1>Record an inspection</h1><p>Choose a synthetic asset, record the checklist, and save one complete inspection.</p></section>
+<% if @error %><p class="notice" role="alert"><%= h(@error) %></p><% end %>
+<form class="panel" method="post" action="/inspections">
+<input type="hidden" name="authenticity_token" value="<%= h(csrf) %>">
+<input type="hidden" name="request_id" value="<%= h(@fields['request_id']) %>">
+<div class="grid"><label>Asset<select name="asset_id" required><% unless assets.any? { |asset| asset[:id].to_s == @fields['asset_id'] } %><option value="<%= h(@fields['asset_id']) %>" selected>Invalid submitted selection</option><% end %><% assets.each do |asset| %><option value="<%= h(asset[:id]) %>" <%= selected(@fields['asset_id'], asset[:id]) %>><%= h(asset[:name]) %></option><% end %></select></label>
+<label>Inspection day<input type="date" name="inspected_on" min="2000-01-01" max="2100-12-31" value="<%= h(@fields['inspected_on']) %>" required></label></div>
+<label>Overall outcome<select name="outcome" required><% unless InspectionLog::Inputs::OUTCOMES.include?(@fields['outcome']) %><option value="<%= h(@fields['outcome']) %>" selected>Invalid submitted selection</option><% end %><% InspectionLog::Inputs::OUTCOMES.each do |value| %><option value="<%= h(value) %>" <%= selected(@fields['outcome'], value) %>><%= h(value.capitalize) %></option><% end %></select></label>
+<fieldset><legend>Checklist</legend><div class="checks"><% InspectionLog::Inputs::CHECKS.each do |name| %><label><%= h(name.capitalize) %><select name="<%= h(name) %>" required><% unless InspectionLog::Inputs::RESULTS.include?(@fields[name]) %><option value="<%= h(@fields[name]) %>" selected>Invalid submitted selection</option><% end %><% InspectionLog::Inputs::RESULTS.each do |value| %><option value="<%= h(value) %>" <%= selected(@fields[name], value) %>><%= h(value == 'ok' ? 'OK' : 'Issue') %></option><% end %></select></label><% end %></div></fieldset>
+<label>Short note<textarea name="note" maxlength="600" rows="5"><%= h(@fields['note']) %></textarea><span class="hint">Optional, up to 600 characters.</span></label>
+<div class="actions"><button type="submit">Save inspection</button><span class="hint">Saved records can't be edited.</span></div>
+</form>
