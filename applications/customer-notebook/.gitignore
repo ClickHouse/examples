@@ -1,0 +1,7 @@
+.cpcache/
+target/
+.deployment/
+.env
+*.env
+!*.env.example
+__pycache__/

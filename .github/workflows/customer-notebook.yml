@@ -1,0 +1,33 @@
+name: Customer notebook
+on:
+  push:
+    paths: ['applications/customer-notebook/**', '.github/workflows/customer-notebook.yml']
+  pull_request:
+    paths: ['applications/customer-notebook/**', '.github/workflows/customer-notebook.yml']
+jobs:
+  clojure:
+    runs-on: ubuntu-24.04-arm
+    defaults:
+      run:
+        working-directory: applications/customer-notebook
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install stable native Java21 and verified Clojure CLI
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq openjdk-21-jdk-headless curl ca-certificates
+          curl -fSLo "$RUNNER_TEMP/install-clojure.sh" https://download.clojure.org/install/linux-install-1.12.6.1673.sh
+          echo "5ae63b082ed33bf4c29bf1a8317c5c15249d1bc753676b2f5177fb3804ad6f77  $RUNNER_TEMP/install-clojure.sh" | sha256sum -c -
+          cd "$RUNNER_TEMP"
+          bash install-clojure.sh --prefix "$RUNNER_TEMP/clojure"
+          echo "$RUNNER_TEMP/clojure/bin" >> "$GITHUB_PATH"
+          echo '/usr/lib/jvm/java-21-openjdk-arm64/bin' >> "$GITHUB_PATH"
+          echo 'JAVA_HOME=/usr/lib/jvm/java-21-openjdk-arm64' >> "$GITHUB_ENV"
+      - name: Resolve exact dependency versions without Cloud credentials
+        run: clojure -Srepro -Sdeps "$(cat deps-lock.edn)" -P -M:locked:test
+      - name: Build and test
+        run: |
+          clojure -Srepro -Sdeps "$(cat deps-lock.edn)" -M:locked:build
+          clojure -Srepro -Sdeps "$(cat deps-lock.edn)" -M:locked:test
