@@ -1,0 +1,62 @@
+{:aliases
+ {:locked
+  {:override-deps
+   {camel-snake-kebab/camel-snake-kebab #:mvn{:version "0.4.3"},
+    com.github.seancorfield/next.jdbc #:mvn{:version "1.3.1118"},
+    com.zaxxer/HikariCP #:mvn{:version "7.1.0"},
+    commons-codec/commons-codec #:mvn{:version "1.15"},
+    commons-io/commons-io #:mvn{:version "2.21.0"},
+    crypto-equality/crypto-equality #:mvn{:version "1.0.1"},
+    crypto-random/crypto-random #:mvn{:version "1.2.1"},
+    hiccup/hiccup #:mvn{:version "2.0.0"},
+    meta-merge/meta-merge #:mvn{:version "1.0.0"},
+    metosin/reitit-core #:mvn{:version "0.11.0"},
+    metosin/reitit-ring #:mvn{:version "0.11.0"},
+    org.apache.commons/commons-fileupload2-core
+    #:mvn{:version "2.0.0-M5"},
+    org.checkerframework/checker-qual #:mvn{:version "3.55.1"},
+    org.clojure/clojure #:mvn{:version "1.12.6"},
+    org.clojure/core.specs.alpha #:mvn{:version "0.4.74"},
+    org.clojure/java.data #:mvn{:version "1.4.120"},
+    org.clojure/spec.alpha #:mvn{:version "0.5.238"},
+    org.eclipse.jetty/jetty-http #:mvn{:version "12.1.8"},
+    org.eclipse.jetty/jetty-io #:mvn{:version "12.1.8"},
+    org.eclipse.jetty/jetty-security #:mvn{:version "12.1.8"},
+    org.eclipse.jetty/jetty-server #:mvn{:version "12.1.8"},
+    org.eclipse.jetty/jetty-session #:mvn{:version "12.1.8"},
+    org.eclipse.jetty/jetty-unixdomain-server #:mvn{:version "12.1.8"},
+    org.eclipse.jetty/jetty-util #:mvn{:version "12.1.8"},
+    org.eclipse.jetty/jetty-xml #:mvn{:version "12.1.8"},
+    org.eclipse.jetty.ee/jetty-ee-webapp #:mvn{:version "12.1.8"},
+    org.eclipse.jetty.ee9/jetty-ee9-nested #:mvn{:version "12.1.8"},
+    org.eclipse.jetty.ee9/jetty-ee9-security #:mvn{:version "12.1.8"},
+    org.eclipse.jetty.ee9/jetty-ee9-servlet #:mvn{:version "12.1.8"},
+    org.eclipse.jetty.ee9/jetty-ee9-webapp #:mvn{:version "12.1.8"},
+    org.eclipse.jetty.ee9.websocket/jetty-ee9-websocket-jetty-api
+    #:mvn{:version "12.1.8"},
+    org.eclipse.jetty.ee9.websocket/jetty-ee9-websocket-jetty-common
+    #:mvn{:version "12.1.8"},
+    org.eclipse.jetty.ee9.websocket/jetty-ee9-websocket-jetty-server
+    #:mvn{:version "12.1.8"},
+    org.eclipse.jetty.ee9.websocket/jetty-ee9-websocket-servlet
+    #:mvn{:version "12.1.8"},
+    org.eclipse.jetty.toolchain/jetty-jakarta-servlet-api
+    #:mvn{:version "5.0.2"},
+    org.eclipse.jetty.websocket/jetty-websocket-core-common
+    #:mvn{:version "12.1.8"},
+    org.eclipse.jetty.websocket/jetty-websocket-core-server
+    #:mvn{:version "12.1.8"},
+    org.postgresql/postgresql #:mvn{:version "42.7.13"},
+    org.ring-clojure/ring-core-protocols #:mvn{:version "1.15.5"},
+    org.ring-clojure/ring-jakarta-servlet #:mvn{:version "1.15.5"},
+    org.ring-clojure/ring-websocket-middleware #:mvn{:version "0.2.1"},
+    org.ring-clojure/ring-websocket-protocols #:mvn{:version "1.15.5"},
+    org.slf4j/slf4j-api #:mvn{:version "2.0.17"},
+    org.slf4j/slf4j-simple #:mvn{:version "2.0.17"},
+    ring/ring-anti-forgery #:mvn{:version "1.4.0"},
+    ring/ring-codec #:mvn{:version "1.3.0"},
+    ring/ring-core #:mvn{:version "1.15.5"},
+    ring/ring-defaults #:mvn{:version "0.7.1"},
+    ring/ring-headers #:mvn{:version "0.4.0"},
+    ring/ring-jetty-adapter #:mvn{:version "1.15.5"},
+    ring/ring-ssl #:mvn{:version "0.4.0"}}}}}
