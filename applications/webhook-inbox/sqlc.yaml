@@ -1,0 +1,11 @@
+version: '2'
+sql:
+  - engine: postgresql
+    queries: sql/queries.sql
+    schema: [sql/sqlc_schema.sql, sql/001_initial.sql]
+    gen:
+      go:
+        package: store
+        out: internal/store
+        sql_package: pgx/v5
+        emit_json_tags: true
