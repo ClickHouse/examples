@@ -1,6 +1,6 @@
 # Task dependencies with Go, Gin and GORM
 
-A bounded account-scoped task API on **ClickHouse Managed Postgres (public beta)**. Create tasks inside a seeded project, add/remove prerequisites, and complete a task once its current prerequisites are done. The project lock makes one graph authoritative while competing changes are checked and committed.
+A bounded account-scoped task API on **ClickHouse Managed Postgres**. Create tasks inside a seeded project, add/remove prerequisites, and complete a task once its current prerequisites are done. The project lock makes one graph authoritative while competing changes are checked and committed.
 
 Pinned stack: Go 1.27.1, Gin 1.12.0, GORM 1.31.2, GORM Postgres driver 1.6.3 and pgx 5.11.0. Native Linux ARM64 was tested; PostgreSQL 18 is the Cloud major. No browser interface, project creation, task deletion or reopening route is included. This is a loopback API with two synthetic accounts, not an identity provider.
 
