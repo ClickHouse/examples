@@ -1,0 +1,20 @@
+name: Release registry
+on:
+  push:
+    paths: ['applications/release-registry/**', '.github/workflows/release-registry.yml']
+  pull_request:
+    paths: ['applications/release-registry/**', '.github/workflows/release-registry.yml']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/release-registry
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install 1.99.0 --profile minimal --component rustfmt
+      - run: cargo fmt --check
+      - run: cargo test --locked
+      - run: cargo build --locked
