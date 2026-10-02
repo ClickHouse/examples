@@ -1,6 +1,6 @@
 # Checklist runs with React, TanStack Query and PostgREST
 
-A small TypeScript interface over a SQL-first API on **ClickHouse Managed Postgres (public beta)**. Choose a versioned template, start a labelled run and complete its steps with retained notes. Two synthetic operator roles see their own runs and nested records. No external task service or analytical database is required.
+A small TypeScript interface over a SQL-first API on **ClickHouse Managed Postgres**. Choose a versioned template, start a labelled run and complete its steps with retained notes. Two synthetic operator roles see their own runs and nested records. No external task service or analytical database is required.
 
 The UI uses React 19.3.0, TanStack Query 5.104.1 and Vite 8.3.2. TypeScript 7.0.2, Node 24.21.0 LTS, PostgREST 16.4 and helper dependencies are pinned. PostgreSQL 18 is the documented Cloud major. This is a loopback demo: Vite preview is not production hosting, and the offline fixture token issuer is not a login provider.
 
