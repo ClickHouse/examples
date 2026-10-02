@@ -2,7 +2,7 @@
 
 A small Dart and Shelf JSON API moves synthetic stock between warehouses within one organization. A retained request UUID makes a matching retry return the original immutable transfer. Balances are read separately because they may have changed since that transfer.
 
-This example uses ClickHouse Managed Postgres (public beta) in ClickHouse Cloud. It demonstrates stock movement, not purchasing, shipping, payments or reconciliation with physical inventory. Two environment bearer tokens represent trusted organization operators. This is a loopback workbench, not a public identity system; a Flutter/mobile client must never contain database credentials or these shared tokens.
+This example uses ClickHouse Managed Postgres in ClickHouse Cloud. It demonstrates stock movement, not purchasing, shipping, payments or reconciliation with physical inventory. Two environment bearer tokens represent trusted organization operators. This is a loopback workbench, not a public identity system; a Flutter/mobile client must never contain database credentials or these shared tokens.
 
 Tested on 2 October 2026 with Dart 3.13.5 on Linux ARM64, Shelf 1.4.2, shelf_router 1.1.4, postgres 3.5.18 and PostgreSQL 18.6. `pubspec.lock` fixes transitive packages.
 
