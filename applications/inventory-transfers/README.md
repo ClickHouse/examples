@@ -112,10 +112,10 @@ Repeat that exact payload for 200/replay; change units under its key for 409. Ne
 | Route | Bounded behavior |
 | --- | --- |
 | GET `/balances?limit=25&after=depot%2Fbolts` | Warehouse/SKU ascending; tuple cursor matches that order |
-| GET `/transfers?limit=25&before=123` | Identity descending; IDs remain decimal strings |
+| GET `/transfers?limit=25&before=123` | Numeric identity descending; IDs remain decimal strings |
 | POST `/transfers` | Exactly five fields; UUID, ASCII keys and integer units 1–1,000,000 |
 
-Both lists default to 25 and cap at 100. `next_after`/`next_before` contain the last row's cursor; an additional empty page finishes traversal. Identity sequences can have gaps from retries/rollbacks, and their order is allocation order, not commit chronology. Retained rows are not automatically deleted. Lists are live reads, not a snapshot across pages.
+Both lists default to 25 and cap at 100. `next_after`/`next_before` contain the last row's cursor; an additional empty page finishes traversal. Identity sequences can have gaps from retries/rollbacks, and their order is allocation order, not commit chronology. Retained rows are not automatically deleted. Lists are live reads, not a snapshot across pages. Transfer ordering qualifies the numeric table column: an unqualified `id` would select the `id::text` output alias and sort lexically. A targeted real API regression creates 12 transfers and pages across the 9/10/11/12 boundary.
 
 JSON bodies cap at 4 KiB, with a 3-second **inactivity** timeout between stream events. Authentication happens before reading the body; eight active requests are admitted and further requests return 503. Error responses close their HTTP connection to avoid reusing unread rejected body bytes. A client still streaming a rejected body may observe a disconnect rather than a JSON response; the acceptance helper sends an explicit Content-Length. The pool caps at 4 connections; postgres 3.5.18's 5-second connectTimeout covers pool wait plus remaining connection setup. Queries have 8-second client timeout, 5-second server statement timeout and 3-second lock timeout. Busy/transient or unknown-outcome errors use 503/retry_request_id. Tokens, passwords and query parameters are not logged.
 

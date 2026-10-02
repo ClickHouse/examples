@@ -130,7 +130,7 @@ class Transfers {
     final rows = await session.execute(
       Sql.named('''SELECT $_projection FROM transfers.transfers
       WHERE organization = @org AND (@before::bigint IS NULL OR id < @before::bigint)
-      ORDER BY id DESC LIMIT @count'''),
+      ORDER BY transfers.transfers.id DESC LIMIT @count'''),
       parameters: {'org': org, 'before': before, 'count': count},
     );
     return rows.map(transferRow).toList();

@@ -286,6 +286,40 @@ void main() {
         );
       });
 
+      test('numeric identity pagination across two-digit IDs', () async {
+        final created = <String>[];
+        for (var n = 0; n < 12; n++) {
+          final result = await call('/transfers', body: payload(units: 1));
+          expect(result.$1, 201);
+          created.add((result.$2['transfer'] as Map)['id'] as String);
+        }
+        print('Created numeric pagination IDs: ${created.join(',')}');
+        expect(created.toSet().length, 12);
+        // Original unqualified alias sorts text: retain a real PostgreSQL control.
+        final oldOrder = (await owner.execute(
+          "SELECT id::text AS id FROM generate_series(1,12) AS fixture(id) ORDER BY id DESC",
+        )).map((row) => row[0] as String).toList();
+        expect(oldOrder, isNot(List.generate(12, (n) => '${12 - n}')));
+        final expected = (await owner.execute(
+          "SELECT id::text FROM transfers.transfers WHERE organization='north' ORDER BY transfers.transfers.id DESC",
+        )).map((row) => row[0] as String).toList();
+        final seen = <String>[];
+        String? before;
+        for (var page = 0; page < 8; page++) {
+          final result = await call(
+            '/transfers?limit=2${before == null ? '' : '&before=$before'}',
+          );
+          expect(result.$1, 200);
+          final rows = result.$2['rows'] as List;
+          if (rows.isEmpty) break;
+          seen.addAll(rows.map((row) => (row as Map)['id'] as String));
+          before = result.$2['next_before'] as String;
+        }
+        expect(seen, expected);
+        expect(seen.toSet().length, expected.length);
+        expect(await quantities(), [988, 1012]);
+      });
+
       test('native constraints and restricted runtime grants', () async {
         await denied("UPDATE transfers.transfers SET units=1", '42501');
         await denied("DELETE FROM transfers.transfers", '42501');
