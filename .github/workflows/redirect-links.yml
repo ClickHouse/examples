@@ -1,0 +1,31 @@
+name: Redirect Links checks
+on:
+  pull_request:
+    paths:
+      - 'applications/redirect-links/**'
+      - '.github/workflows/redirect-links.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'applications/redirect-links/**'
+      - '.github/workflows/redirect-links.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: applications/redirect-links
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: sudo apt-get update && sudo apt-get install -y libpq-dev pkg-config
+      - name: Locked native checks
+        run: |
+          rustup toolchain install 1.99.0 --profile minimal --component rustfmt --component clippy
+          cargo fmt --check
+          cargo test --locked
+          cargo clippy --locked --all-targets -- -D warnings
+          cargo build --release --locked
+          python3 test/preflight.py "$PWD/target/release/redirect-links"
