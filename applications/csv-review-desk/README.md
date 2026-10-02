@@ -1,6 +1,6 @@
 # CSV review desk
 
-Stage a CSV, correct its invalid rows, and approve the complete batch into a catalogue backed by [ClickHouse Managed Postgres (public beta)](https://clickhouse.com/docs/products/managed-postgres/overview). This small Streamlit workbench uses SQLAlchemy, psycopg, Alembic and pandas. Invalid values and their feedback remain durable, so closing the browser does not lose a review.
+Stage a CSV, correct its invalid rows, and approve the complete batch into a catalogue backed by [ClickHouse Managed Postgres](https://clickhouse.com/docs/products/managed-postgres/overview). This small Streamlit workbench uses SQLAlchemy, psycopg, Alembic and pandas. Invalid values and their feedback remain durable, so closing the browser does not lose a review.
 
 Two views cover the workflow: upload/list saved batches, then review a batch in a fixed-row data editor. Approval inserts new catalogue items; it never updates an existing SKU. This is a trusted local workbench bound to loopback, without application authentication. Anyone who can reach the process has the same operator authority. Public deployment requires an authentication boundary and appropriate HTTPS/proxy configuration; it is outside this example's tested scope.
 
