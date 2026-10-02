@@ -1,0 +1,31 @@
+{
+  "name": "durable-imports",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.21.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/src/server.js",
+    "worker": "node dist/src/worker.js",
+    "db:queue": "node dist/scripts/migrate-queue.js",
+    "test": "node --test dist/test/domain.test.js",
+    "test:cloud": "node --test --test-concurrency=1 dist/test/cloud.test.js",
+    "format": "prettier --write src test scripts package.json tsconfig.json",
+    "format:check": "prettier --check src test scripts package.json tsconfig.json"
+  },
+  "dependencies": {
+    "express": "5.2.1",
+    "pg": "8.23.1",
+    "pg-boss": "12.35.1"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.6",
+    "@types/node": "24.19.1",
+    "@types/pg": "8.23.1",
+    "typescript": "7.0.2",
+    "prettier": "3.9.9"
+  }
+}
