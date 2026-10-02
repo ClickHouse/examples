@@ -1,0 +1,9 @@
+{% load static %}<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Equipment Checkout Board</title><link rel="stylesheet" href="{% static 'board/style.css' %}">
+<script defer src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.11/dist/htmx.min.js" integrity="sha384-2OatzQy1H+Zd/IIrjr1TcuDGqLXeHhbooAyJY1KdQMKnr4LZ22k31GBLdYKHmVjg" crossorigin="anonymous"></script>
+<script defer src="{% static 'board/app.js' %}"></script></head>
+<body><header><a class="brand" href="{% url 'board' %}"><span class="mark">↗</span> Equipment room</a>
+{% if user.is_authenticated %}<nav><span>{{ user.username }}</span>{% if user.is_staff %}<a href="{% url 'admin:index' %}">Manage inventory</a>{% endif %}
+<form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="quiet">Sign out</button></form></nav>{% endif %}</header>
+<main>{% block content %}{% endblock %}</main><footer>Shared equipment. One clear record.</footer></body></html>

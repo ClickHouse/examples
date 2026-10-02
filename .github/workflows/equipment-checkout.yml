@@ -1,0 +1,29 @@
+name: Equipment checkout checks
+on:
+  pull_request:
+    paths: [applications/equipment-checkout/**, .github/workflows/equipment-checkout.yml]
+  push:
+    paths: [applications/equipment-checkout/**, .github/workflows/equipment-checkout.yml]
+permissions:
+  contents: read
+jobs:
+  django-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/equipment-checkout
+    env:
+      DJANGO_SECRET_KEY: ci-configuration-check-only
+      PGHOST: unused.example.invalid
+      PGUSER: equipment_app
+      PGPASSWORD: unused
+      PGSSLROOTCERT: /etc/ssl/certs/ca-certificates.crt
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt
+      - run: python manage.py check
+      - run: python -m compileall -q config board tests
+# Cloud integration tests are intentionally manual against a dedicated service.
