@@ -1,6 +1,6 @@
 # Team directory
 
-Sign in, find a colleague, and maintain your own profile backed by [ClickHouse Managed Postgres (public beta)](https://clickhouse.com/docs/products/managed-postgres/). This Nuxt application uses Vue, Nitro server routes, Knex, node-postgres and nuxt-auth-utils. Two main screens cover the directory and your profile; sign-in uses synthetic seeded accounts with an operator-provided password. No sign-up, password reset, uploads or external identity provider is included.
+Sign in, find a colleague, and maintain your own profile backed by [ClickHouse Managed Postgres](https://clickhouse.com/docs/products/managed-postgres/). This Nuxt application uses Vue, Nitro server routes, Knex, node-postgres and nuxt-auth-utils. Two main screens cover the directory and your profile; sign-in uses synthetic seeded accounts with an operator-provided password. No sign-up, password reset, uploads or external identity provider is included.
 
 Profile fields and selected skills save in one transaction. The server derives the owner from a sealed session cookie and requires the revision the editor saw. Competing saves cannot silently overwrite each other. Skills come from a controlled seeded list; a composite membership key, foreign keys and a parent-locking trigger enforce distinct, existing skills and a maximum of six.
 
