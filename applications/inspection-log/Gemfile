@@ -1,0 +1,17 @@
+source 'https://rubygems.org'
+ruby '4.0.7'
+
+gem 'sinatra', '4.2.1'
+gem 'sequel', '5.109.0'
+gem 'pg', '1.7.0', force_ruby_platform: true
+gem 'puma', '8.0.2'
+gem 'rack', '3.2.7'
+gem 'rack-session', '2.1.2'
+gem 'rack-protection', '4.2.1'
+gem 'erb', '6.0.7'
+gem 'csv', '3.3.6'
+
+group :test do
+  gem 'minitest', '6.0.6'
+  gem 'rack-test', '2.2.0'
+end

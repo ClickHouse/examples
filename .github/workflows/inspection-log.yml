@@ -1,0 +1,36 @@
+name: Inspection log
+on:
+  push:
+    paths: ['applications/inspection-log/**', '.github/workflows/inspection-log.yml']
+  pull_request:
+    paths: ['applications/inspection-log/**', '.github/workflows/inspection-log.yml']
+permissions:
+  contents: read
+jobs:
+  ruby:
+    runs-on: ubuntu-24.04-arm
+    defaults:
+      run:
+        working-directory: applications/inspection-log
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Build verified Ruby 4.0.7
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential autoconf bison pkg-config libssl-dev libyaml-dev libreadline-dev zlib1g-dev libffi-dev libgmp-dev libpq-dev libncurses-dev libgdbm-dev
+          curl -fsSLo "$RUNNER_TEMP/ruby.tar.gz" https://cache.ruby-lang.org/pub/ruby/4.0/ruby-4.0.7.tar.gz
+          echo "911ace20f90d068ca0e4dda6d0e4f0f81e52e52f2dd4f4004c721e253412e82d  $RUNNER_TEMP/ruby.tar.gz" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/ruby.tar.gz" -C "$RUNNER_TEMP"
+          cd "$RUNNER_TEMP/ruby-4.0.7"
+          ./configure --prefix="$RUNNER_TEMP/ruby" --disable-install-doc --disable-yjit --disable-zjit
+          make -j2
+          make install
+          echo "$RUNNER_TEMP/ruby/bin" >> "$GITHUB_PATH"
+      - name: Frozen native bundle and input/form/CSV checks without database credentials
+        env:
+          BUNDLE_PATH: ${{ runner.temp }}/inspection-bundle
+          BUNDLE_FROZEN: 'true'
+        run: |
+          gem install bundler --version 4.0.22 --no-document
+          bundle _4.0.22_ install
+          bin/check

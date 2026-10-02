@@ -1,0 +1,5 @@
+<section class="intro"><p class="eyebrow">Saved inspection #<%= h(@inspection[:id]) %></p><h1><%= h(@asset[:name]) %></h1><p><%= h(@inspection[:inspected_on].iso8601) %> · <span class="badge"><%= h(@inspection[:outcome].capitalize) %></span></p></section>
+<section class="panel"><h2>Checklist results</h2><dl class="results"><% InspectionLog::Inputs::CHECKS.each do |name| %><div><dt><%= h(name.capitalize) %></dt><dd><%= h(@inspection[:checklist].fetch(name)) %></dd></div><% end %></dl>
+<h2>Note</h2><p class="note"><%= h(@inspection[:note].empty? ? 'No note provided.' : @inspection[:note]) %></p>
+<p class="hint">Saved <%= h(@inspection[:created_at].getutc.iso8601(6)) %>. Retained request ID: <%= h(@inspection[:request_id]) %>.</p>
+<div class="actions"><a class="button" href="/">Record another</a><a href="/history?asset_id=<%= h(@asset[:id]) %>&amp;from=<%= h(@inspection[:inspected_on].iso8601) %>&amp;to=<%= h(@inspection[:inspected_on].iso8601) %>&amp;outcome=">View asset history</a></div></section>

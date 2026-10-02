@@ -1,0 +1,11 @@
+<section class="intro"><p class="eyebrow">Retained records</p><h1>History &amp; export</h1><p>View up to 25 matching inspections. CSV exports include at most 100 records across 31 calendar days.</p></section>
+<% if @error %><p class="notice" role="alert"><%= h(@error) %></p><% end %>
+<form class="panel filters" method="get" action="/history">
+<label>Asset<select name="asset_id"><% assets.each do |asset| %><option value="<%= h(asset[:id]) %>" <%= selected(@filter_fields['asset_id'], asset[:id]) %>><%= h(asset[:name]) %></option><% end %></select></label>
+<label>From<input type="date" name="from" min="2000-01-01" max="2100-12-31" value="<%= h(@filter_fields['from']) %>" required></label>
+<label>To<input type="date" name="to" min="2000-01-01" max="2100-12-31" value="<%= h(@filter_fields['to']) %>" required></label>
+<label>Outcome<select name="outcome"><option value="">All outcomes</option><% InspectionLog::Inputs::OUTCOMES.each do |value| %><option value="<%= h(value) %>" <%= selected(@filter_fields['outcome'], value) %>><%= h(value.capitalize) %></option><% end %></select></label>
+<div class="actions"><button>Apply filters</button><button class="secondary" formaction="/report.csv">Download CSV</button></div>
+<p class="hint">Spreadsheet-looking text gets a leading apostrophe in CSV. Review exported text for your import workflow.</p>
+</form>
+<section class="panel"><h2>Matching inspections</h2><% if @history.empty? %><p>No matching records.</p><% else %><table><thead><tr><th>Day</th><th>Outcome</th><th>Note</th><th>Record</th></tr></thead><tbody><% @history.each do |row| %><tr><td><%= h(row[:inspected_on].iso8601) %></td><td><%= h(row[:outcome].capitalize) %></td><td class="note"><%= h(row[:note]) %></td><td><a href="/inspections/<%= h(row[:id]) %>">#<%= h(row[:id]) %></a></td></tr><% end %></tbody></table><% end %></section>

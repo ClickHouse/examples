@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+require 'sequel'
+require 'sequel/extensions/migration'
+require_relative '../lib/database'
+
+raise ArgumentError, 'Use no argument to migrate, or exactly 0 to reset this disposable schema' unless ARGV.empty? || ARGV == ['0']
+db = InspectionLog::Database.connect(migration: true)
+begin
+  options = ARGV.empty? ? {} : {target: 0}
+  Sequel::Migrator.run(db, File.expand_path('../db/migrations', __dir__), **options)
+  puts "Sequel migration version: #{db[:schema_info].get(:version)}"
+ensure
+  db.disconnect
+end
