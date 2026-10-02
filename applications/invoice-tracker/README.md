@@ -1,6 +1,6 @@
 # Invoice tracker
 
-Draft invoices with line items, issue a fixed snapshot, and manually record settlement with **PHP, Laravel, Eloquent and Blade** on **ClickHouse Managed Postgres (public beta)**. Each authenticated user sees only their own invoices. This example records a lifecycle; it does not process payments or integrate tax/accounting systems.
+Draft invoices with line items, issue a fixed snapshot, and manually record settlement with **PHP, Laravel, Eloquent and Blade** on **ClickHouse Managed Postgres**. Each authenticated user sees only their own invoices. This example records a lifecycle; it does not process payments or integrate tax/accounting systems.
 
 [ClickHouse Cloud](https://clickhouse.com/cloud) is the managed data platform; [ClickHouse Managed Postgres](https://clickhouse.com/docs/products/managed-postgres/overview) is the transactional Postgres service used here.
 
