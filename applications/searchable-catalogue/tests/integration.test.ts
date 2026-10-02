@@ -101,7 +101,7 @@ await test('real Cloud catalogue workflow over HTTP', async t => {
         finally { await client.end(); }
       }
     });
-    await t.test('API restart preserves data and signed cursor continuation', async () => {
+    await t.test('listener and pool recreation preserves data and signed cursor continuation', async () => {
       const first = await get('/products?limit=2');
       await app.close(); app = await buildApp(database(), secret);
       base = await app.listen({host:'127.0.0.1',port:0});

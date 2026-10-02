@@ -7,7 +7,7 @@ Equal prices are ordered by product ID. The example is read-only over HTTP;
 administrators load products through a separate migration login.
 
 [ClickHouse Cloud](https://clickhouse.com/cloud) is the managed data platform.
-[ClickHouse Managed Postgres](https://clickhouse.com/docs/products/managed-postgres)
+[ClickHouse Managed Postgres](https://clickhouse.com/docs/products/managed-postgres/overview)
 stores this application's catalogue. The ClickHouse analytical database service
 isn't required for this workflow.
 
@@ -226,10 +226,20 @@ integration tests are a separate explicit check.
 
 ## Cleanup
 
-Stop the API with Ctrl-C. On a retained service, review `sql/cleanup.sql` and run
-it explicitly with the administrator; it removes this schema and its roles.
-It does not stop Cloud charges. For a dedicated service, verify the saved ID,
-delete it, and confirm that ID is absent:
+Stop the API with Ctrl-C. On a retained service, review `sql/cleanup.sql`; it
+removes this schema and its roles. Use the administrator explicitly, since
+`app.env` set the reader login. Keep the endpoint and CA fields loaded:
+
+```sh
+export PGPASSWORD="$(jq -er '.password' .deployment/postgres-create.json)"
+PGADMIN="$(jq -er '.username' .deployment/postgres-create.json)"
+psql -X -v ON_ERROR_STOP=1 -U "$PGADMIN" -f sql/cleanup.sql
+unset PGPASSWORD
+```
+
+If the administrator password was rotated, use the replacement password.
+Schema cleanup does not stop Cloud charges. For a dedicated service, verify the
+saved ID, delete it, and confirm that ID is absent:
 
 ```sh
 source .deployment/resources.env
