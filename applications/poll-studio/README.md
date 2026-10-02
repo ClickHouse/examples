@@ -1,6 +1,6 @@
 # Poll studio
 
-A trusted local R/Shiny workbench creates a fictional poll, records synthetic responses, draws stored counts, refreshes another browser's changes and closes the poll. ClickHouse Managed Postgres (public beta) stores the durable poll, choices and responses. Participant codes deduplicate submissions; they are not authenticated identities. All operators share authority. Use made-up labels/codes and no personal information.
+A trusted local R/Shiny workbench creates a fictional poll, records synthetic responses, draws stored counts, refreshes another browser's changes and closes the poll. ClickHouse Managed Postgres stores the durable poll, choices and responses. Participant codes deduplicate submissions; they are not authenticated identities. All operators share authority. Use made-up labels/codes and no personal information.
 
 ## Boundaries and behavior
 
