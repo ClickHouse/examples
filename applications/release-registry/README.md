@@ -1,7 +1,7 @@
 # Release registry
 
 Register immutable release metadata and change channel pointers with **Rust,
-Axum, SQLx, Tokio and ClickHouse Managed Postgres (public beta)**. A version belongs
+Axum, SQLx, Tokio and ClickHouse Managed Postgres**. A version belongs
 to one project. Matching registration retries return the original release;
 conflicting data returns 409. Promotion requires the channel's current revision.
 This API records decisions; it never deploys software or downloads artifacts.
