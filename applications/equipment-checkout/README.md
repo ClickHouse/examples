@@ -1,6 +1,6 @@
 # Equipment Checkout Board
 
-Borrow shared equipment, see your current loans, and return items with **Django**, **Django ORM**, **psycopg**, and **htmx** on **ClickHouse Managed Postgres (public beta)**. Native Django authentication identifies borrowers. Staff use Django admin to add or disable inventory and can return any current loan.
+Borrow shared equipment, see your current loans, and return items with **Django**, **Django ORM**, **psycopg**, and **htmx** on **ClickHouse Managed Postgres**. Native Django authentication identifies borrowers. Staff use Django admin to add or disable inventory and can return any current loan.
 
 Two people can see the same available camera. Only one can check it out: a transaction locks the item, and a Postgres partial unique constraint permits one active loan per item. Returns preserve history and are idempotent. An ordinary member can return only their own loans; staff can return anyone's. Available inventory contains no borrower names.
 
