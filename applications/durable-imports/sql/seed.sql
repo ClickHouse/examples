@@ -1,0 +1,5 @@
+\set ON_ERROR_STOP on
+INSERT INTO contact_imports.accounts (id, name) VALUES
+  ('00000000-0000-0000-0000-000000000001', 'Casey'),
+  ('00000000-0000-0000-0000-000000000002', 'Morgan')
+ON CONFLICT (id) DO NOTHING;
