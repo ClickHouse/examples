@@ -1,0 +1,6 @@
+/vendor/
+/var/
+/.deployment/
+/.phpunit.cache/
+/.env
+__pycache__/

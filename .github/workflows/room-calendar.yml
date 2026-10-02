@@ -1,0 +1,50 @@
+name: Room calendar
+on:
+  push:
+    paths: ['applications/room-calendar/**', '.github/workflows/room-calendar.yml']
+  pull_request:
+    paths: ['applications/room-calendar/**', '.github/workflows/room-calendar.yml']
+permissions:
+  contents: read
+jobs:
+  php:
+    runs-on: ubuntu-24.04-arm
+    defaults:
+      run:
+        working-directory: applications/room-calendar
+    env:
+      APP_SECRET: ci-only-not-a-runtime-secret
+      MEMBER_001_TOKEN: '1111111111111111111111111111111111111111111111111111111111111111'
+      MEMBER_002_TOKEN: '2222222222222222222222222222222222222222222222222222222222222222'
+      PGHOST: unallocated.invalid
+      PGPORT: '5432'
+      PGDATABASE: postgres
+      PGUSER: calendar_app
+      PGPASSWORD: ci-placeholder
+      PGSSLROOTCERT: /nonexistent-preflight.pem
+    steps:
+      - uses: actions/checkout@v4
+      - name: Native PHP and verified Composer installer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y php8.3-cli php8.3-pgsql php8.3-mbstring php8.3-xml php8.3-curl php8.3-intl unzip
+          curl -fsSLo composer-setup.php https://getcomposer.org/installer
+          expected=$(curl -fsS https://composer.github.io/installer.sig)
+          actual=$(php8.3 -r "echo hash_file('sha384', 'composer-setup.php');")
+          test "$actual" = "$expected"
+          php8.3 composer-setup.php --install-dir="$RUNNER_TEMP" --filename=composer
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+          rm composer-setup.php
+          sudo update-alternatives --set php /usr/bin/php8.3
+      - name: Locked installation, audit, lint and domain checks
+        run: |
+          composer install --no-interaction --prefer-dist
+          composer validate --strict
+          composer audit
+          composer lint
+          composer test
+      - name: Compile Symfony and Doctrine without a database
+        run: |
+          php bin/console cache:clear --no-warmup
+          php bin/console cache:warmup
+          php bin/preflight.php
