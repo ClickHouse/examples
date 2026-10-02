@@ -1,0 +1,4 @@
+\set ON_ERROR_STOP on
+DROP SCHEMA IF EXISTS habits CASCADE;
+DROP ROLE IF EXISTS habit_app;
+DROP ROLE IF EXISTS habit_migration;
