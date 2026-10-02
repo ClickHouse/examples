@@ -1,0 +1,22 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  database: <%= ENV.fetch("PGDATABASE", "postgres") %>
+  host: <%= ENV.fetch("PGHOST") %>
+  port: <%= ENV.fetch("PGPORT", "5432") %>
+  username: <%= ENV.fetch("PGUSER") %>
+  password: <%= ENV.fetch("PGPASSWORD").to_json %>
+  sslmode: verify-full
+  sslrootcert: <%= ENV.fetch("PGSSLROOTCERT").to_json %>
+  connect_timeout: 10
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", "5") %>
+  schema_search_path: support_desk,public
+  variables:
+    statement_timeout: 10000
+    lock_timeout: 5000
+
+development:
+  <<: *default
+production:
+  <<: *default
+# No automatically created local test, cache, queue or cable database.

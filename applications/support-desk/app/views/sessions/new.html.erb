@@ -1,0 +1,11 @@
+<section class="login">
+  <p class="eyebrow">A LITTLE HELP GOES A LONG WAY</p>
+  <h1>Let's work it out.</h1>
+  <p>Sign in to start a conversation or help someone find an answer.</p>
+  <% if flash[:alert] %><p class="alert" role="alert"><%= flash[:alert] %></p><% end %>
+  <%= form_with url: session_path do |form| %>
+    <%= form.label :email %><%= form.email_field :email, required: true, autocomplete: "username" %>
+    <%= form.label :password %><%= form.password_field :password, required: true, autocomplete: "current-password" %>
+    <%= form.submit "Sign in" %>
+  <% end %>
+</section>

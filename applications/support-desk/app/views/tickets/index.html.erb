@@ -1,0 +1,19 @@
+<div class="intro">
+  <p class="eyebrow"><%= current_user.staff? ? "THE SUPPORT QUEUE" : "YOUR CONVERSATIONS" %></p>
+  <div class="heading"><div><h1><%= current_user.staff? ? "Good help starts here." : "How can we help?" %></h1><p><%= current_user.staff? ? "Pick a conversation, take ownership, and follow it through." : "Start a ticket and keep the whole conversation together." %></p></div>
+  <% unless current_user.staff? %><%= link_to "New ticket  +", new_ticket_path, class: "button" %><% end %></div>
+</div>
+<div class="section-heading"><h2><%= current_user.staff? ? "All tickets" : "Your tickets" %></h2><span>Page <%= @page %> · <%= @tickets.length %> shown</span></div>
+<section class="ticket-list">
+  <% @tickets.each do |ticket| %>
+    <%= link_to ticket, class: "ticket-row", id: dom_id(ticket) do %>
+      <div><span class="ticket-number">#<%= ticket.id %></span><h3><%= ticket.subject %></h3><p><%= current_user.staff? ? ticket.customer.name : "Created" %> · <%= ticket.created_at.strftime("%-d %b, %H:%M") %></p></div>
+      <div class="row-status"><span class="badge <%= ticket.status %>"><%= ticket.status.capitalize %></span><span><%= ticket.assignee&.name || "Unassigned" %></span><b>↗</b></div>
+    <% end %>
+  <% end %>
+  <% if @tickets.empty? %><div class="empty">No conversations yet. Your first ticket starts here.</div><% end %>
+</section>
+<nav class="pagination" aria-label="Ticket pages">
+  <% if @page > 1 %><%= link_to "← Newer tickets", tickets_path(page: @page - 1) %><% end %>
+  <% if @next_page %><%= link_to "Older tickets →", tickets_path(page: @page + 1) %><% end %>
+</nav>

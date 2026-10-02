@@ -1,0 +1,32 @@
+name: Support desk checks
+on:
+  pull_request:
+    paths: [applications/support-desk/**, .github/workflows/support-desk.yml]
+  push:
+    paths: [applications/support-desk/**, .github/workflows/support-desk.yml]
+permissions:
+  contents: read
+jobs:
+  rails-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/support-desk
+    env:
+      SECRET_KEY_BASE: ci-configuration-check-only-ci-configuration-check-only
+      PGHOST: unused.example.invalid
+      PGUSER: support_desk_app
+      PGPASSWORD: unused
+      PGSSLROOTCERT: /etc/ssl/certs/ca-certificates.crt
+      COOKIE_SECURE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2.3'
+          bundler-cache: true
+          working-directory: applications/support-desk
+      - run: bundle exec rails zeitwerk:check
+      - run: bundle exec rails routes
+      - run: find app config db test -name '*.rb' -print0 | xargs -0 -n 1 ruby -c
+# Real database/HTTP acceptance uses a dedicated Cloud service, never CI secrets.

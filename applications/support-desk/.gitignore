@@ -1,0 +1,8 @@
+.bundle/
+vendor/bundle/
+.deployment/
+.env
+log/*
+tmp/*
+public/assets/
+__pycache__/

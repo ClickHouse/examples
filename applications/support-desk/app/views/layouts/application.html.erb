@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Support desk</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+</head>
+<body>
+  <header><%= link_to "◌  Support desk", tickets_path, class: "brand" %>
+    <% if current_user %>
+      <nav><span><%= current_user.name %> · <%= current_user.role %></span><%= button_to "Sign out", session_path, method: :delete, class: "quiet" %></nav>
+    <% end %>
+  </header>
+  <main><%= yield %></main>
+  <footer>A clear place for every conversation.</footer>
+</body>
+</html>
