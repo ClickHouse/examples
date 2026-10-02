@@ -1,6 +1,6 @@
 # Durable contact imports
 
-An Express API accepts a small contact import, immediately returns its identifier, and lets its account retrieve progress and results. A separate pg-boss worker processes the durable payload in ClickHouse Managed Postgres (public beta). No email is sent and no external service is called.
+An Express API accepts a small contact import, immediately returns its identifier, and lets its account retrieve progress and results. A separate pg-boss worker processes the durable payload in ClickHouse Managed Postgres. No email is sent and no external service is called.
 
 The important boundaries are visible in the code:
 
