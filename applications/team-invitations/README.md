@@ -33,16 +33,16 @@ Builds and unit tests require no database credentials. Keep Package.resolved; no
 Authenticate clickhousectl with your Cloud organization API credentials. This service is billable; the fixture below selects a modest supported AWS shape and no HA. Use current CLI help if your region or account differs.
 
 ```bash
-clickhousectl cloud postgres create --name team-invitations-demo \
-  --provider aws --region us-east-1 --size c6gd.large --postgres-version 18 --ha-type none \
+clickhousectl cloud postgres --org-id YOUR_ORG_ID create --name team-invitations-demo \
+  --provider aws --region us-east-1 --size c6gd.large --pg-version 18 --ha-type none \
   --json > postgres-create.json
 chmod 600 postgres-create.json
 # Save the returned ID and password privately. get never returns the password.
-clickhousectl cloud postgres get YOUR_POSTGRES_ID --json
+clickhousectl cloud postgres --org-id YOUR_ORG_ID get YOUR_POSTGRES_ID --json
 # Repeat get until state is running.
 mkdir -p .deployment
 chmod 700 .deployment
-clickhousectl cloud postgres certs get YOUR_POSTGRES_ID --output .deployment/cloud-ca-bundle.pem
+clickhousectl cloud postgres --org-id YOUR_ORG_ID certs get YOUR_POSTGRES_ID --output .deployment/cloud-ca-bundle.pem
 ```
 
 The original authenticated CA bundle must be retained. The tested bundle contained two roots with the same subject but different keys; full-bundle NIOSSL chain selection failed while OpenSSL verified the endpoint. The setup helper selects exactly one candidate FROM the authenticated bundle that verifies the received leaf and endpoint hostname. It first uses a fully verified OpenSSL handshake bounded by GNU timeout to 20 seconds and refuses zero or multiple matches. It never treats a peer certificate as a trust anchor and does not choose by bundle order.
@@ -74,7 +74,7 @@ export PGUSER=invites_migrator PGPASSWORD="$INVITES_MIGRATOR_PASSWORD"
 .build/debug/Invitations seed
 ```
 
-bootstrap.sql is intentionally one-time for an empty dedicated service. invites_owner cannot log in; the migrator assumes it only for schema/seed operations. Runtime has SELECT on the four app tables, INSERT on invitations/memberships, only state-transition UPDATE columns on invitations, and UPDATE(id) on teams to permit its scoped row lock. Runtime cannot create tables, change digests/expiry/identities, delete memberships or create users. Runtime startup performs no migrations.
+bootstrap.sql is intentionally one-time for an empty dedicated service. invites_owner cannot log in; the migrator assumes it only for schema/seed operations. Runtime has SELECT on the four app tables, INSERT on invitations/memberships, only state-transition UPDATE columns on invitations, and UPDATE(id) on teams to permit its scoped row lock. Runtime cannot create tables, change invitation digests/expiry/id/team_id/recipient_id, change team admin_id, delete memberships or create users. Its team id UPDATE grant is trusted for the API’s scoped lock and is not a guarantee that all team identities are immutable. Runtime startup performs no migrations.
 
 For a disposable fixture, migrate --yes can be repeated; migrate --revert --yes drops all application tables and data, followed by migrate --yes and seed. Do not run destructive reversal on data you need. Repeating seed preserves existing identities and state.
 
@@ -97,8 +97,8 @@ The launcher explicitly passes only runtime fields to the server. It uses two ev
 In another shell, supply only the appropriate bearer credentials. Capture creation privately so its single secret response is not printed or logged:
 
 ```bash
-export ADMIN_TOKEN=YOUR_USER 001_CREDENTIAL
-export RECIPIENT_TOKEN=YOUR_USER 003_CREDENTIAL
+export ADMIN_TOKEN='YOUR_USER_001_CREDENTIAL'
+export RECIPIENT_TOKEN='YOUR_USER_003_CREDENTIAL'
 umask 077
 curl -fsS -X POST http://127.0.0.1:3000/teams/a0000000-0000-4000-8000-000000000001/invitations \
   -H "Authorization: Bearer $ADMIN_TOKEN" -H 'Content-Type: application/json' \
@@ -137,8 +137,8 @@ The actual factory's positive TLS control is .build/debug/Invitations tls-check.
 Stop the API, then delete **only your recorded** service ID. Keep no-HA fixtures only long enough for acceptance testing.
 
 ```bash
-clickhousectl cloud postgres delete YOUR_POSTGRES_ID
-clickhousectl cloud postgres list --json
+clickhousectl cloud postgres --org-id YOUR_ORG_ID delete YOUR_POSTGRES_ID
+clickhousectl cloud postgres --org-id YOUR_ORG_ID list --json
 # Verify your recorded ID is absent. Postgres delete has no --force option.
 ```
 
