@@ -1,0 +1,35 @@
+name: Nearby Places checks
+
+on:
+  pull_request:
+    paths:
+      - 'applications/nearby-places/**'
+      - '.github/workflows/nearby-places.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'applications/nearby-places/**'
+      - '.github/workflows/nearby-places.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/nearby-places
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2 branch
+        with:
+          deno-version: 2.9.7
+      - run: deno install --frozen --entrypoint src/server.ts test/domain_test.ts test/cloud_test.ts
+      - run: deno task fmt:check
+      - run: deno task lint
+      - run: deno task check
+      - run: deno task test
+
+# Live PostGIS/browser checks require an explicitly provisioned dedicated fixture.

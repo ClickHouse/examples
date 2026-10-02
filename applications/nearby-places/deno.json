@@ -1,0 +1,16 @@
+{
+  "imports": {
+    "@oak/oak": "jsr:@oak/oak@17.2.0",
+    "postgres": "npm:postgres@3.4.9"
+  },
+  "tasks": {
+    "check": "deno check --frozen src/server.ts test/domain_test.ts test/cloud_test.ts",
+    "test": "deno test --frozen test/domain_test.ts",
+    "fmt:check": "deno fmt --check",
+    "lint": "deno lint src test"
+  },
+  "fmt": {
+    "lineWidth": 100
+  },
+  "nodeModulesDir": "none"
+}
