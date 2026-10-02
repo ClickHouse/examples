@@ -1,6 +1,6 @@
 # Experiment log
 
-A small Scala API records supplied experiment results in ClickHouse Managed Postgres (public beta). Two seeded projects have separate bearer tokens. Each immutable run contains a title, a bounded flat JSONB configuration and 1–10 exact decimal measurements. These are synthetic examples, not model training or scientific validation.
+A small Scala API records supplied experiment results in ClickHouse Managed Postgres. Two seeded projects have separate bearer tokens. Each immutable run contains a title, a bounded flat JSONB configuration and 1–10 exact decimal measurements. These are synthetic examples, not model training or scientific validation.
 
 ## Requirements and verified versions
 
