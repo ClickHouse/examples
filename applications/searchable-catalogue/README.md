@@ -1,7 +1,7 @@
 # Searchable catalogue API
 
 Search an outdoor product catalogue with **Fastify, Kysely, node-postgres and
-ClickHouse Managed Postgres (public beta)**. The API combines English full-text
+ClickHouse Managed Postgres**. The API combines English full-text
 search, category and inclusive price filters, and signed cursor pagination.
 Equal prices are ordered by product ID. The example is read-only over HTTP;
 administrators load products through a separate migration login.
