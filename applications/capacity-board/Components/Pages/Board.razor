@@ -1,0 +1,152 @@
+@page "/"
+@inject BoardRepository Repository
+@implements IDisposable
+<PageTitle>Capacity Board</PageTitle>
+
+<main>
+    <header>
+        <div class="eyebrow">SYNTHETIC WORKSPACE</div>
+        <h1>Capacity Board</h1>
+        <p>Plan one sprint within 30 points. Saves replace the complete allocation.</p>
+        <p class="scope">A trusted local workspace with no sign-in or tenant isolation.</p>
+    </header>
+    @if (committed is null)
+    {
+        <p role="status">@message</p>
+        <button @onclick="Reload" disabled="@pending">Load board</button>
+    }
+    else
+    {
+        <section class="summary" aria-label="Committed allocation">
+            <div><span>Committed points</span><strong id="committed-total">@committed.Total</strong></div>
+            <div><span>Remaining capacity</span><strong id="committed-remaining">@committed.Remaining</strong></div>
+            <div><span>Loaded revision</span><strong id="loaded-revision">@committed.Revision</strong></div>
+        </section>
+        <section class="editor">
+            <div class="editor-heading"><h2>@committed.Title</h2><span>Draft: <b id="draft-total">@DraftTotal</b> / @committed.Capacity points</span></div>
+            <p class="hint">Changes below are unsaved. Reload explicitly to replace them with committed state.</p>
+            <EditForm Model="draft" OnSubmit="Save" FormName="allocation">
+                <fieldset disabled="@(pending || retry is not null)">
+                    @for (var index = 0; index < draft.Items.Count; index++)
+                    {
+                        var item = draft.Items[index];
+                        var number = index + 1;
+                        <div class="item" @key="item.Id">
+                            <label>Item @number<input aria-label="Item @number name" maxlength="80" @bind="item.Name" @bind:event="oninput" /></label>
+                            <label>Points<input aria-label="Item @number points" type="text" inputmode="numeric" maxlength="2" @bind="item.Points" @bind:event="oninput" /></label>
+                            <button type="button" class="secondary" @onclick="() => Remove(item)">Remove item @number</button>
+                        </div>
+                    }
+                    <button type="button" class="secondary" @onclick="Add" disabled="@(draft.Items.Count >= 20)">Add work item</button>
+                </fieldset>
+                <div class="actions">
+                    <button type="submit" disabled="@(pending || retry is not null)">@(pending ? "Saving…" : "Save allocation")</button>
+                    @if (retry is not null)
+                    {
+                        <button type="button" @onclick="Retry" disabled="@pending">Retry original save</button>
+                    }
+                    <button type="button" class="secondary" @onclick="Reload" disabled="@pending">Reload committed state</button>
+                </div>
+            </EditForm>
+            <p class="message" role="status">@message</p>
+        </section>
+        <p class="footnote">At most 20 items and 25 retained saves. Exact retries still work at the limit. Reloading discards this circuit’s unsaved edits.</p>
+    }
+</main>
+
+@code {
+    private readonly CancellationTokenSource lifetime = new();
+    private BoardSnapshot? committed;
+    private Draft draft = new();
+    private SaveRequest? retry;
+    private bool pending;
+    private string message = "Loading committed allocation…";
+    private string DraftTotal
+    {
+        get
+        {
+            try { return draft.Items.Sum(item => Allocation.Points(item.Points)).ToString(); }
+            catch (BoardError) { return "Check points"; }
+        }
+    }
+
+    protected override Task OnInitializedAsync() => Reload();
+
+    private async Task Reload()
+    {
+        if (pending) return;
+        pending = true;
+        try
+        {
+            var snapshot = await Repository.ReadAsync(lifetime.Token);
+            committed = snapshot;
+            draft = new Draft { Items = snapshot.Items.Select(item => new EditItem
+                { Id = item.Id, Name = item.Name, Points = item.Points.ToString(System.Globalization.CultureInfo.InvariantCulture) }).ToList() };
+            retry = null;
+            message = "Committed allocation loaded. Changes stay in this editor until saved.";
+        }
+        catch (Exception) { message = "The board couldn't be loaded. Try loading again."; }
+        finally { pending = false; }
+    }
+
+    private void Add() { if (!pending && draft.Items.Count < 20) draft.Items.Add(new EditItem()); }
+    private void Remove(EditItem item) { if (!pending) draft.Items.Remove(item); }
+
+    private Task Save(EditContext context)
+    {
+        if (pending || retry is not null || committed is null) return Task.CompletedTask;
+        try
+        {
+            var request = new SaveRequest(Guid.NewGuid(), committed.Revision,
+                draft.Items.Select(item => new WorkItem(item.Id, item.Name, Allocation.Points(item.Points))).ToArray());
+            return SaveRequest(request);
+        }
+        catch (BoardError)
+        {
+            message = "Each effort must be a whole number from 0 to 30. Your draft is preserved.";
+            return Task.CompletedTask;
+        }
+    }
+    private Task Retry() => pending || retry is null ? Task.CompletedTask : SaveRequest(retry);
+
+    private async Task SaveRequest(SaveRequest request)
+    {
+        pending = true;
+        try
+        {
+            var result = await Repository.SaveAsync(request, lifetime.Token);
+            committed = result;
+            draft = new Draft { Items = result.Items.Select(item => new EditItem
+                { Id = item.Id, Name = item.Name, Points = item.Points.ToString(System.Globalization.CultureInfo.InvariantCulture) }).ToList() };
+            retry = null;
+            message = $"Saved revision {result.Revision}. {result.Total} points committed.";
+        }
+        catch (BoardError error)
+        {
+            retry = null;
+            message = error.Code switch
+            {
+                "stale_revision" => "Newer committed state exists. Your draft is preserved. Reload explicitly before editing the newer revision.",
+                "over_capacity" => "The draft exceeds capacity. Reduce its points; your values are preserved.",
+                "revision_limit" => "This teaching board has reached its retained-save limit.",
+                "operation_conflict" => "That operation ID belongs to different content. Reload committed state.",
+                "busy" => "All database operations are busy. Your draft is preserved; try saving again.",
+                _ => "Use at most 20 items, names of 1–80 characters without controls, and 0–30 integer points."
+            };
+        }
+        catch (Exception)
+        {
+            retry = request;
+            message = "The save couldn't be confirmed. Retry the original save, or reload committed state. Editing is paused to keep that retry exact.";
+        }
+        finally { pending = false; }
+    }
+    public void Dispose() { lifetime.Cancel(); lifetime.Dispose(); }
+    private sealed class Draft { public List<EditItem> Items { get; set; } = []; }
+    private sealed class EditItem
+    {
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Name { get; set; } = "";
+        public string Points { get; set; } = "0";
+    }
+}

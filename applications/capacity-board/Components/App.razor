@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/" />
+    <link rel="stylesheet" href="app.css" />
+    <HeadOutlet />
+</head>
+<body>
+    <Routes @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+    <div id="components-reconnect-modal" class="reconnect">
+        Connection interrupted. <a href="/">Reload committed state</a> if reconnection fails.
+    </div>
+    <script src="_framework/blazor.web.js"></script>
+</body>
+</html>
