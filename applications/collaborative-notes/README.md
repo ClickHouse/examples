@@ -1,6 +1,6 @@
 # Collaborative notes with Hocuspocus, Yjs and Postgres
 
-A small trusted workspace for three shared plain-text notes. Two editors can type, delete, work offline and reconnect. CodeMirror binds directly to `Y.Text`; Hocuspocus synchronizes updates. ClickHouse Managed Postgres (public beta) stores original binary CRDT snapshots in `BYTEA`.
+A small trusted workspace for three shared plain-text notes. Two editors can type, delete, work offline and reconnect. CodeMirror binds directly to `Y.Text`; Hocuspocus synchronizes updates. ClickHouse Managed Postgres stores original binary CRDT snapshots in `BYTEA`.
 
 Synchronization and persistence have separate UI messages. A synchronized editor is **not** a database receipt. A snapshot receipt is broadcast only after its captured update has been merged and committed. Later edits can still be pending. An abrupt server loss can lose uncommitted edits.
 
