@@ -1,0 +1,8 @@
+.local/
+.venv/
+__pycache__/
+.ruff_cache/
+.private/
+*.env
+.env
+*.pem
