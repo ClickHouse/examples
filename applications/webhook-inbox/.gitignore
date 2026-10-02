@@ -1,0 +1,4 @@
+.deployment/
+.env
+bin/
+*.log

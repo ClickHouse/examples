@@ -1,0 +1,25 @@
+name: Webhook inbox
+on:
+  push:
+    paths: ['applications/webhook-inbox/**', '.github/workflows/webhook-inbox.yml']
+  pull_request:
+    paths: ['applications/webhook-inbox/**', '.github/workflows/webhook-inbox.yml']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/webhook-inbox
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: applications/webhook-inbox/go.mod
+          cache-dependency-path: applications/webhook-inbox/go.sum
+      - run: go mod download
+      - run: go test -race ./...
+      - run: go build ./cmd/inbox
+      - run: go run github.com/sqlc-dev/sqlc/cmd/sqlc@v1.31.1 generate
+      - run: git diff --exit-code -- internal/store
