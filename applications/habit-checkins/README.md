@@ -1,6 +1,6 @@
 # Habit check-ins with ASP.NET Core and EF Core
 
-A small account-scoped API backed by ClickHouse Managed Postgres (public beta) in ClickHouse Cloud. Create habits, mark an explicit calendar date complete, undo it, and archive a habit while keeping history. Repeating a check-in returns the stored completion, including its original ID, instead of inserting a duplicate. There is no frontend, streak calculation or inferred timezone.
+A small account-scoped API backed by ClickHouse Managed Postgres in ClickHouse Cloud. Create habits, mark an explicit calendar date complete, undo it, and archive a habit while keeping history. Repeating a check-in returns the stored completion, including its original ID, instead of inserting a duplicate. There is no frontend, streak calculation or inferred timezone.
 
 Pinned stack: .NET SDK 10.0.401 / ASP.NET Core 10.0.12, EF Core 10.0.12 (including Relational, Design and dotnet-ef), Npgsql and its EF provider 10.0.3. The provider's NuGet metadata supports EF versions 10.0.4–10.x; all Microsoft EF packages are explicitly aligned to 10.0.12. NuGet lockfiles pin transitive dependencies. `global.json` disables SDK roll-forward and preview SDKs.
 
