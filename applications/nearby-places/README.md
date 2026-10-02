@@ -1,7 +1,7 @@
 # Nearby places
 
 A small Deno/Oak browser form and JSON API search a synthetic place directory in ClickHouse Managed
-Postgres (public beta). PostGIS stores `geography(Point,4326)` and returns spheroidal geodesic
+Postgres. PostGIS stores `geography(Point,4326)` and returns spheroidal geodesic
 distances in meters. The results describe proximity over the Earth's surface, not routes or travel
 time.
 
