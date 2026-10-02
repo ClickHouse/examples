@@ -1,6 +1,6 @@
 # Capacity Board
 
-A small C#/Blazor Interactive Server board allocates a synthetic sprint's 30 effort points on [ClickHouse Managed Postgres (public beta)](https://clickhouse.com/docs/products/managed-postgres/overview). An editor changes a complete set of up to twenty work items and saves against the revision displayed in that editor. The committed summary stays separate from the unsaved draft.
+A small C#/Blazor Interactive Server board allocates a synthetic sprint's 30 effort points on [ClickHouse Managed Postgres](https://clickhouse.com/docs/products/managed-postgres/overview). An editor changes a complete set of up to twenty work items and saves against the revision displayed in that editor. The committed summary stays separate from the unsaved draft.
 
 This is one trusted local operator workspace with **no authentication or tenant isolation**. It binds loopback and checks Host/browser Origin; those controls are not operator identity. There is no employee data, external issue tracker, productivity score or calendar integration.
 
