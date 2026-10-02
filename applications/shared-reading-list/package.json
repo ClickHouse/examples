@@ -1,0 +1,50 @@
+{
+  "name": "shared-reading-list",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env node_modules/vite/bin/vite.js --host 0.0.0.0",
+    "build": "node --env-file-if-exists=.env node_modules/vite/bin/vite.js build",
+    "start": "node --env-file=.env build",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "node --env-file=.deployment/migration.env --import tsx scripts/migrate.ts",
+    "db:seed": "node --env-file=.env --import tsx scripts/seed.ts",
+    "test": "node --import tsx --test tests/input.test.ts",
+    "test:integration": "node --env-file=.env --import tsx --test tests/integration.test.ts",
+    "test:browser": "playwright test",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "test:tls": "node --env-file=.env --import tsx --test tests/tls.test.ts",
+    "test:persistence": "node --env-file=.env --import tsx --test tests/persistence.test.ts"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "1.9.0",
+    "@sveltejs/adapter-node": "5.5.7",
+    "@sveltejs/kit": "2.70.3",
+    "@sveltejs/vite-plugin-svelte": "7.3.1",
+    "better-auth": "1.7.7",
+    "drizzle-orm": "0.45.3",
+    "postgres": "3.4.9",
+    "svelte": "5.57.1",
+    "vite": "8.3.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "24.12.2",
+    "drizzle-kit": "0.31.11",
+    "svelte-check": "4.7.6",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3"
+  },
+  "overrides": {
+    "@sveltejs/kit": {
+      "cookie": "0.7.2"
+    },
+    "@esbuild-kit/core-utils": {
+      "esbuild": "0.25.12"
+    }
+  }
+}

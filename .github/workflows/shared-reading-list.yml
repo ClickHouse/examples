@@ -1,0 +1,37 @@
+name: Shared reading list
+on:
+  pull_request:
+    paths:
+      - applications/shared-reading-list/**
+      - .github/workflows/shared-reading-list.yml
+  push:
+    branches: [main]
+    paths:
+      - applications/shared-reading-list/**
+      - .github/workflows/shared-reading-list.yml
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/shared-reading-list
+    env:
+      DATABASE_URL: postgresql://unused:unused@localhost:5432/postgres
+      DATABASE_CA_PATH: /etc/ssl/certs/ca-certificates.crt
+      BETTER_AUTH_SECRET: ci-placeholder-secret-at-least-32-characters
+      BETTER_AUTH_URL: http://localhost:3000
+      ORIGIN: http://localhost:3000
+      SIGNUP_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.21.0
+          cache: npm
+          cache-dependency-path: applications/shared-reading-list/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm run check
+      - run: npm test
+      - run: npm run build

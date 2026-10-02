@@ -1,0 +1,277 @@
+:root {
+  font-family: "DM Sans", system-ui, sans-serif;
+  color: #25332a;
+  background: #f6f4ed;
+  line-height: 1.55;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+a {
+  color: #355f44;
+  text-underline-offset: 4px;
+}
+header {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  border-bottom: 1px solid #dce1d7;
+  padding: 24px max(24px, calc((100vw - 1180px) / 2));
+  font-size: 14px;
+}
+header .brand {
+  font-weight: 700;
+  font-size: 23px;
+  text-decoration: none;
+}
+header > span {
+  color: #667166;
+}
+header form {
+  margin-left: auto;
+}
+main {
+  max-width: 1180px;
+  margin: auto;
+  padding: 40px 24px 70px;
+}
+h1,
+h2 {
+  font-family: "Libre Baskerville", Georgia, serif;
+  line-height: 1.3;
+}
+h1 {
+  font-size: 42px;
+  letter-spacing: -1.3px;
+  margin: 12px 0 18px;
+}
+h2 {
+  font-size: 21px;
+}
+.eyebrow {
+  letter-spacing: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #55715c;
+}
+.intro {
+  max-width: 700px;
+  margin-bottom: 36px;
+}
+.intro > p:last-child {
+  font-size: 18px;
+  color: #627066;
+}
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 38px;
+}
+.filter {
+  display: flex;
+  gap: 12px;
+  align-items: end;
+  flex-wrap: wrap;
+}
+.filter label:first-child {
+  flex: 1;
+}
+.filter label:nth-child(2) {
+  width: 130px;
+}
+.filter a {
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+.card {
+  background: white;
+  border: 1px solid #dce1d7;
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.card h2 {
+  margin: 10px 0;
+}
+.card h2 a {
+  text-decoration: none;
+}
+.card p {
+  color: #667166;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.tags {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.tags a {
+  background: #edf2e9;
+  border-radius: 5px;
+  padding: 3px 9px;
+  font-size: 12px;
+  text-decoration: none;
+}
+.meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #768175;
+  gap: 10px;
+}
+.count {
+  font-size: 12px;
+  color: #768175;
+  margin: 20px 0;
+}
+aside {
+  background: #e8eddf;
+  border-radius: 10px;
+  padding: 24px;
+  align-self: start;
+}
+aside > p {
+  font-size: 14px;
+  color: #627066;
+}
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+input,
+textarea {
+  display: block;
+  width: 100%;
+  border: 1px solid #ccd4c6;
+  border-radius: 6px;
+  padding: 11px 12px;
+  font: inherit;
+  font-weight: 400;
+  background: #fff;
+  margin-top: 6px;
+  color: inherit;
+}
+textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+button {
+  background: #335b41;
+  color: white;
+  border: 0;
+  border-radius: 6px;
+  padding: 12px 18px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+}
+button:disabled {
+  opacity: 0.6;
+}
+button.quiet {
+  background: transparent;
+  color: #355f44;
+  padding: 8px 0;
+}
+.error {
+  background: #fff0e9;
+  color: #993d26;
+  padding: 12px;
+  border-radius: 5px;
+}
+.auth {
+  max-width: 460px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 32px;
+  border: 1px solid #dce1d7;
+  border-radius: 10px;
+}
+.auth h1 {
+  font-size: 31px;
+}
+.auth button:not(.quiet) {
+  width: 100%;
+}
+.detail,
+.edit {
+  max-width: 740px;
+}
+.detail {
+  margin: 28px 0 36px;
+}
+.detail > a {
+  overflow-wrap: anywhere;
+}
+.notes {
+  white-space: pre-wrap;
+  font-size: 18px;
+}
+.edit {
+  background: white;
+  padding: 28px;
+  border: 1px solid #dce1d7;
+  border-radius: 10px;
+}
+.edit h2 {
+  margin-top: 0;
+}
+.delete {
+  border-top: 1px solid #dce1d7;
+  margin-top: 24px;
+  padding-top: 20px;
+}
+.danger {
+  background: #a43e30;
+}
+.muted,
+footer {
+  color: #768175;
+  font-size: 13px;
+}
+footer {
+  text-align: center;
+  border-top: 1px solid #dce1d7;
+  padding: 24px;
+}
+@media (max-width: 800px) {
+  header > span {
+    display: none;
+  }
+  header {
+    gap: 15px;
+    padding: 20px;
+  }
+  .columns {
+    grid-template-columns: 1fr;
+  }
+  h1 {
+    font-size: 34px;
+  }
+  aside {
+    grid-row: 1;
+  }
+  .filter {
+    display: block;
+  }
+  .filter label:nth-child(2) {
+    width: auto;
+  }
+  .filter a {
+    margin-left: 15px;
+  }
+  main {
+    padding-top: 25px;
+  }
+  .auth {
+    padding: 24px;
+    margin-top: 15px;
+  }
+}

@@ -1,0 +1,7 @@
+.env
+.deployment/
+node_modules/
+.svelte-kit/
+build/
+playwright-report/
+test-results/
