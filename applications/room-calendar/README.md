@@ -1,6 +1,6 @@
 # Room calendar
 
-An authenticated JSON API using Symfony, Doctrine ORM/DBAL/Migrations and PostgreSQL PDO with ClickHouse Managed Postgres (public beta). Seeded members reserve seeded rooms, reschedule their own reservations, cancel them and read shared availability. PostgreSQL's active-only GiST exclusion constraint prevents overlapping bookings in the same room, including concurrent requests.
+An authenticated JSON API using Symfony, Doctrine ORM/DBAL/Migrations and PostgreSQL PDO with ClickHouse Managed Postgres. Seeded members reserve seeded rooms, reschedule their own reservations, cancel them and read shared availability. PostgreSQL's active-only GiST exclusion constraint prevents overlapping bookings in the same room, including concurrent requests.
 
 Intervals are start-inclusive/end-exclusive: `[09:00,10:00)` and `[10:00,11:00)` are adjacent and allowed. Inputs require ISO8601 seconds with `Z` or an explicit `±HH:mm` offset; responses normalize to UTC. Equal instants expressed with different offsets still collide. No ambiguous local times, fractional seconds, infinite timestamps or recurrence rules are accepted. Instants must be within UTC years 2000–2100, with positive booking duration at most 12 hours.
 
