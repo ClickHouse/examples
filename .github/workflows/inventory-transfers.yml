@@ -1,0 +1,30 @@
+name: Inventory Transfers checks
+on:
+  pull_request:
+    paths:
+      - 'applications/inventory-transfers/**'
+      - '.github/workflows/inventory-transfers.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'applications/inventory-transfers/**'
+      - '.github/workflows/inventory-transfers.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/inventory-transfers
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1
+        with:
+          sdk: '3.13.5'
+      - run: dart pub get --enforce-lockfile
+      - run: dart format --output=none --set-exit-if-changed bin lib test
+      - run: dart analyze
+      - run: dart test test/domain_test.dart test/http_test.dart
+      - run: dart compile exe bin/server.dart -o /tmp/inventory-transfers
