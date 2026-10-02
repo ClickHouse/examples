@@ -1,0 +1,173 @@
+* {
+    box-sizing:border-box
+}
+body {
+    margin:0;
+    background:#f4f6fa;
+    color:#142238;
+    font:16px/1.55 system-ui,sans-serif
+}
+main {
+    max-width:980px;
+    margin:40px auto;
+    padding:0 24px
+}
+h1 {
+    font-size:42px;
+    letter-spacing:-1.4px;
+    margin:6px 0
+}
+h2 {
+    margin:0;
+    font-size:24px
+}
+.eyebrow {
+    font-size:12px;
+    letter-spacing:2px;
+    font-weight:700;
+    color:#366c87
+}
+header p {
+    margin:8px 0
+}
+.scope,.hint,.footnote {
+    color:#53677a;
+    font-size:14px
+}
+.summary {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+    margin:30px 0
+}
+.summary div,.editor {
+    background:white;
+    border:1px solid #dbe3ed;
+    border-radius:14px;
+    padding:22px
+}
+.summary span {
+    display:block;
+    color:#53677a;
+    font-size:14px
+}
+.summary strong {
+    display:block;
+    font-size:32px
+}
+.editor-heading {
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    align-items:center
+}
+.item {
+    display:grid;
+    grid-template-columns:1fr 100px 150px;
+    gap:14px;
+    align-items:end;
+    margin:18px 0
+}
+label {
+    font-size:14px;
+    font-weight:600
+}
+input {
+    display:block;
+    width:100%;
+    border:1px solid #afbdcb;
+    border-radius:7px;
+    padding:11px;
+    font:inherit;
+    color:inherit;
+    margin-top:5px
+}
+input:focus,button:focus {
+    outline:3px solid #afdaef;
+    outline-offset:2px
+}
+button {
+    border:1px solid #285f7a;
+    border-radius:7px;
+    padding:11px 16px;
+    background:#285f7a;
+    color:white;
+    font:600 14px system-ui;
+    cursor:pointer
+}
+.secondary {
+    background:white;
+    color:#285f7a
+}
+button:disabled {
+    opacity:.55;
+    cursor:default
+}
+.actions {
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top:24px
+}
+fieldset {
+    border:0;
+    padding:0;
+    margin:0;
+    min-width:0
+}
+.message {
+    padding:12px 0 0;
+    color:#285f7a
+}
+.reconnect {
+    display:none
+}
+.components-reconnect-show,.components-reconnect-failed,.components-reconnect-rejected {
+    display:block;
+    position:fixed;
+    bottom:20px;
+    left:20px;
+    right:20px;
+    background:#fff6da;
+    border:1px solid #b3954f;
+    border-radius:10px;
+    padding:20px;
+    z-index:20
+}
+@media(max-width:640px) {
+    main {
+        margin:24px auto;
+        padding:0 16px
+    }
+    h1 {
+        font-size:34px
+    }
+    .summary {
+        gap:8px
+    }
+    .summary div {
+        padding:13px
+    }
+    .summary span {
+        font-size:12px
+    }
+    .summary strong {
+        font-size:28px
+    }
+    .editor {
+        padding:18px
+    }
+    .editor-heading {
+        display:block
+    }
+    .item {
+        grid-template-columns:1fr 80px
+    }
+    .item button {
+        grid-column:1 / -1;
+        text-align:left
+    }
+    .actions button {
+        width:100%
+    }
+}
