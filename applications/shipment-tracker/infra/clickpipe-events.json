@@ -1,0 +1,11 @@
+{
+  "sourceSchemaName": "shipments",
+  "sourceTable": "events",
+  "targetTable": "cdc_shipment_events",
+  "excludedColumns": [],
+  "sortingKeys": ["account_id", "event_day", "event_id"],
+  "useCustomSortingKey": true,
+  "partitionByExpr": "",
+  "partitionKey": "",
+  "tableEngine": "ReplacingMergeTree"
+}

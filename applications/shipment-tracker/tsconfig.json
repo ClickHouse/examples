@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES2023", "module": "NodeNext", "moduleResolution": "NodeNext",
+    "strict": true, "esModuleInterop": true, "skipLibCheck": true,
+    "experimentalDecorators": true, "emitDecoratorMetadata": true,
+    "rootDir": ".", "outDir": "dist", "sourceMap": true
+  },
+  "include": ["src/**/*.ts", "migrations/**/*.ts", "test/**/*.ts"]
+}
