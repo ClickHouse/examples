@@ -1,0 +1,6 @@
+node_modules/
+dist/
+dist-server/
+.local/
+.env
+*.pem
