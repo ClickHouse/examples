@@ -1,6 +1,6 @@
 # Redirect Links
 
-A small Rust/Actix Web management API creates and disables operator-scoped redirect links on [ClickHouse Managed Postgres (public beta)](https://clickhouse.com/docs/products/managed-postgres/overview). Public GET/HEAD lookups return a temporary redirect only while a link is enabled and unexpired. The service never fetches, previews or checks the reputation of submitted destinations.
+A small Rust/Actix Web management API creates and disables operator-scoped redirect links on [ClickHouse Managed Postgres](https://clickhouse.com/docs/products/managed-postgres/overview). Public GET/HEAD lookups return a temporary redirect only while a link is enabled and unexpired. The service never fetches, previews or checks the reputation of submitted destinations.
 
 This example deliberately integrates Diesel's synchronous PostgreSQL connection and typed query builder with Actix's blocking thread pool. It has no click analytics, external messaging, billing or browser visits to third-party sites.
 
