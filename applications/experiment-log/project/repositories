@@ -1,0 +1,3 @@
+[repositories]
+local
+maven-central: https://repo.maven.apache.org/maven2
