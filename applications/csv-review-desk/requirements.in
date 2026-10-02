@@ -1,0 +1,5 @@
+streamlit==1.64.0
+SQLAlchemy==2.1.2
+psycopg[binary]==3.3.6
+alembic==1.20.0
+pandas==3.0.6
