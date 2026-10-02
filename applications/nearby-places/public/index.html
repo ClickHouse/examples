@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Nearby places · A synthetic directory</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header
+        class="masthead"><a href="/" class="brand"><span class="brand-icon">↗</span> Nearby places</a><span class="sample-badge">Synthetic directory</span></header>
+      <section class="intro">
+        <p class="eyebrow">A point. A radius. A few discoveries.</p>
+        <h1>Find a little closer.</h1>
+        <p>Explore cafes, libraries and parks around a point.<br>Every place in this directory is a made-up sample.</p>
+      </section>
+      <div class="workspace">
+        <section class="search-panel" aria-labelledby="search-heading">
+          <h2 id="search-heading">Choose your starting point</h2>
+          <p class="muted">Enter coordinates or try a sample.</p>
+          <div
+            class="presets"><button type="button" data-preset="london">London sample</button><button type="button" data-preset="equator">Equator</button><button type="button" data-preset="dateline">Across dateline</button></div>
+          <form id="search-form">
+            <div
+              class="coordinate-fields"><label>Longitude<input name="longitude" type="number" min="-180" max="180" step="any" value="-0.12" required></label><label>Latitude<input name="latitude" type="number" min="-90" max="90" step="any" value="51.5" required></label></div>
+            <label>Radius (meters)<input name="radiusMeters" type="number" min="0" max="50000" step="any" value="1000" required></label>
+            <label>Category<select name="category" aria-label="Category"><option value="">All categories</option><option value="cafe">Cafe</option><option value="library">Library</option><option value="park">Park</option></select></label>
+            <label>Maximum results<input name="limit" type="number" min="1" max="50" step="1" value="20" required></label>
+            <button id="submit" class="primary"
+              type="submit">Find nearby places <span aria-hidden="true">→</span></button>
+          </form>
+          <aside
+            class="distance-note"><span aria-hidden="true">◎</span><p>Distances are measured over the Earth’s surface. They aren't walking routes or travel times.</p></aside>
+        </section>
+        <section class="results-panel" aria-labelledby="results-heading">
+          <div
+            class="results-top"><h2 id="results-heading">Around your point</h2><span class="sort-note">Nearest first</span></div>
+          <p id="status" role="status" aria-live="polite">Loading the London sample…</p>
+          <ol id="results"></ol>
+        </section>
+      </div>
+      <footer>Small searches, clear distances. <span>Up to 50 results · 50 km maximum radius</span></footer>
+    </main>
+  </body>
+</html>
