@@ -1,6 +1,6 @@
 # Customer notebook
 
-A small Clojure workbench using ClickHouse Managed Postgres (public beta) for operational notes and ClickHouse for synthetic daily activity. Ring/Reitit serve forms, Hiccup escapes their contents, and next.jdbc uses pgJDBC/HikariCP for both query paths. Reports run through pg_clickhouse, with a separate connection pool and role.
+A small Clojure workbench using ClickHouse Managed Postgres for operational notes and ClickHouse for synthetic daily activity. Ring/Reitit serve forms, Hiccup escapes their contents, and next.jdbc uses pgJDBC/HikariCP for both query paths. Reports run through pg_clickhouse, with a separate connection pool and role.
 
 This is a trusted local operator tool bound to 127.0.0.1, with seeded customers and native Ring CSRF protection. It has no signup, operator authentication, public deployment or tenant isolation. The runtime role can edit every seeded customer. Keep it on a trusted machine; sharing database credentials bypasses the form workflow.
 
