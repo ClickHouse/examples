@@ -1,0 +1,6 @@
+package-lock.json
+.output
+.nuxt
+node_modules
+.deployment
+README.md
