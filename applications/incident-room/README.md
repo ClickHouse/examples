@@ -1,6 +1,6 @@
 # Incident Room
 
-A small Phoenix LiveView application backed by ClickHouse Managed Postgres (public beta). A trusted team signs in, opens an incident, appends permanent notes and moves its status from investigating to monitoring to resolved. Monitoring can return to investigating; resolved incidents accept no further notes or transitions.
+A small Phoenix LiveView application backed by ClickHouse Managed Postgres. A trusted team signs in, opens an incident, appends permanent notes and moves its status from investigating to monitoring to resolved. Monitoring can return to investigating; resolved incidents accept no further notes or transitions.
 
 The status row and its timeline entry commit in one Ecto transaction. Browsers send an expected version; the row lock serializes writers and a stale version is rejected. Phoenix PubSub runs **after commit**. It is an ephemeral notification: reconnecting browsers load authoritative database rows rather than replay broadcasts.
 
