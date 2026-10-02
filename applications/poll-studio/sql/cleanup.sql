@@ -1,0 +1,6 @@
+\set ON_ERROR_STOP on
+BEGIN;
+DROP SCHEMA IF EXISTS poll_studio CASCADE;
+DROP ROLE IF EXISTS polls_app;
+DROP ROLE IF EXISTS polls_migration;
+COMMIT;

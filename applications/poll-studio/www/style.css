@@ -1,0 +1,36 @@
+:root { color-scheme: light; font-family: system-ui, sans-serif; color: #243b32; background: #f3f5f0; }
+body { background: #f3f5f0; color: #243b32; font-size: 15px; }
+.page-shell { max-width: 1320px; margin: 0 auto; padding: 30px 22px; }
+.masthead { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #d4dfd2; padding-bottom: 24px; }
+.brand { font-size: 19px; font-weight: 600; }
+.badge { border: 1px solid #ccd8c7; border-radius: 24px; padding: 8px 14px; font-size: 12px; }
+.intro { padding: 50px 0 35px; }
+.eyebrow { text-transform: uppercase; font-size: 11px; letter-spacing: 2px; color: #678568; }
+h1 { font-family: Georgia, serif; font-size: clamp(36px, 5vw, 52px); margin: 12px 0 18px; }
+.intro p { color: #64766b; }
+.workspace { display: grid; grid-template-columns: 1fr 1fr 1.35fr; gap: 22px; align-items: start; }
+.panel { background: white; padding: 25px; border: 1px solid #d7e0d3; border-radius: 14px; min-width: 0; }
+h2 { font-size: 20px; margin: 0 0 24px; font-weight: 500; }
+.form-control { border-color: #ccd8c7; border-radius: 6px; box-shadow: none; }
+.shiny-input-container { width: 100%; }
+.btn { background: #f4f6ef; border: 1px solid #ccd8c7; color: #344f41; border-radius: 6px; padding: 10px 13px; white-space: normal; }
+.btn.primary { background: #2f5845; color: white; width: 100%; }
+.hint { font-size: 12px; color: #748274; line-height: 1.6; margin-top: 18px; }
+.state { font-size: 12px; background: #edf3e8; border-radius: 6px; padding: 10px; margin: 8px 0 20px; }
+.state.closed { background: #f3ece0; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.footnote { border-top: 1px solid #d4dfd2; margin-top: 38px; padding-top: 20px; font-size: 12px; color: #748274; }
+pre { white-space: pre-wrap; word-break: normal; background: #edf3e8; border: none; font-size: 12px; }
+@media (max-width: 1050px) { .workspace { grid-template-columns: 1fr 1fr; } .results { grid-column: 1 / -1; } }
+@media (max-width: 650px) { .workspace { display: block; } .panel { margin-bottom: 18px; } .page-shell { padding: 20px 14px; } .intro { padding: 30px 0; } }
+
+table { width: 100%; table-layout: fixed; }
+td, th { overflow-wrap: anywhere; }
+
+#summary_heading { overflow-wrap: anywhere; }
+
+.radio label { overflow-wrap: anywhere; }
+
+#counts img { max-width: 100%; height: auto !important; }
+
+#count_table th:first-child, #count_table td:first-child { width: 70%; }

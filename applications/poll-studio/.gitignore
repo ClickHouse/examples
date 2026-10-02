@@ -1,0 +1,8 @@
+.env
+*.pem
+.Rhistory
+.RData
+renv/library/
+renv/staging/
+renv/cache/
+node_modules/

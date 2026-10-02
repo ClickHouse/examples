@@ -1,0 +1,39 @@
+name: Poll Studio checks
+
+on:
+  pull_request:
+    paths:
+      - 'applications/poll-studio/**'
+      - '.github/workflows/poll-studio.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'applications/poll-studio/**'
+      - '.github/workflows/poll-studio.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/poll-studio
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+        with:
+          r-version: '4.6.1'
+          use-public-rspm: false
+      - name: Install native package and graphics prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libpq-dev libcurl4-openssl-dev libssl-dev libxml2-dev \
+            libuv1-dev libcairo2-dev libpango1.0-dev libpng-dev libjpeg-dev libtiff-dev cmake
+      - run: Rscript -e 'renv::restore(prompt = FALSE)'
+      - run: Rscript -e 'stopifnot(capabilities("png"), capabilities("cairo")); for (p in c("app.R", "run.R", list.files("R", full.names=TRUE), list.files("test", pattern="\\.R$", full.names=TRUE))) parse(p)'
+      - run: Rscript test/domain.R
+
+# Dedicated Cloud and browser checks run separately without CI credentials.
