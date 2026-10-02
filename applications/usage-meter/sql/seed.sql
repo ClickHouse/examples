@@ -1,0 +1,8 @@
+\set ON_ERROR_STOP on
+BEGIN;
+SET LOCAL ROLE usage_owner;
+INSERT INTO usage.accounts (id, name, daily_quota) VALUES
+('00000000-0000-4000-8000-000000000001', 'Documentation API', 100),
+('00000000-0000-4000-8000-000000000002', 'Marketing API', 50)
+ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+COMMIT;

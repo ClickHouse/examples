@@ -1,0 +1,11 @@
+{
+  "sourceSchemaName": "usage",
+  "sourceTable": "events",
+  "targetTable": "cdc_usage_events",
+  "excludedColumns": [],
+  "sortingKeys": ["account_id", "usage_day", "event_id"],
+  "useCustomSortingKey": true,
+  "partitionByExpr": "",
+  "partitionKey": "",
+  "tableEngine": "ReplacingMergeTree"
+}
