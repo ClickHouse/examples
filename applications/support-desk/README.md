@@ -1,6 +1,6 @@
 # Support desk
 
-Create a ticket, keep its replies together, and assign one staff owner with **Rails**, **Active Record**, **pg**, and **Hotwire/Turbo** on **ClickHouse Managed Postgres (public beta)**. Customers see and reply to their own tickets. Staff see the queue, claim unassigned tickets, reply to tickets they own, and close or reopen them.
+Create a ticket, keep its replies together, and assign one staff owner with **Rails**, **Active Record**, **pg**, and **Hotwire/Turbo** on **ClickHouse Managed Postgres**. Customers see and reply to their own tickets. Staff see the queue, claim unassigned tickets, reply to tickets they own, and close or reopen them.
 
 Two staff members can press **Claim ticket** together. The ticket row lock makes the second request observe the first assignment, so exactly one succeeds. The same lock coordinates replies and closure: an accepted reply happens before closure; a closed ticket rejects new replies until its assigned owner reopens it.
 
