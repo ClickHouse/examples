@@ -3,3 +3,4 @@
 .deployment/
 .env
 *.log
+__pycache__/

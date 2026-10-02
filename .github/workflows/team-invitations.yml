@@ -20,9 +20,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y binutils gnupg2 libc6-dev libcurl4-openssl-dev libedit2 libgcc-13-dev libncurses-dev libpython3-dev libsqlite3-0 libstdc++-13-dev libxml2-dev libz3-dev pkg-config tzdata zip unzip zlib1g-dev
           url=https://download.swift.org/swift-6.4.0-release/ubuntu2404-aarch64/swift-6.4.0-RELEASE/swift-6.4.0-RELEASE-ubuntu24.04-aarch64.tar.gz
-          curl -fsSL --max-time 600 "$url" -o "$RUNNER_TEMP/swift.tar.gz"
-          curl -fsSL --max-time 60 "$url.sig" -o "$RUNNER_TEMP/swift.tar.gz.sig"
-          curl -fsSL --max-time 60 https://www.swift.org/keys/all-keys.asc -o "$RUNNER_TEMP/swift-keys.asc"
+          curl -fsSL --compressed --max-time 600 "$url" -o "$RUNNER_TEMP/swift.tar.gz"
+          curl -fsSL --compressed --max-time 60 "$url.sig" -o "$RUNNER_TEMP/swift.tar.gz.sig"
+          curl -fsSL --compressed --max-time 60 https://www.swift.org/keys/all-keys.asc -o "$RUNNER_TEMP/swift-keys.asc"
           gpg --import "$RUNNER_TEMP/swift-keys.asc"
           gpg --verify "$RUNNER_TEMP/swift.tar.gz.sig" "$RUNNER_TEMP/swift.tar.gz"
           tar -xzf "$RUNNER_TEMP/swift.tar.gz" -C "$RUNNER_TEMP"
