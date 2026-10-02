@@ -2,7 +2,7 @@
 
 Save useful links, add notes and tags, and search a shared collection with
 SvelteKit, Drizzle ORM, Postgres.js and Better Auth, backed by
-[ClickHouse Managed Postgres (public beta)](https://clickhouse.com/cloud/postgres).
+[ClickHouse Managed Postgres](https://clickhouse.com/cloud/postgres).
 All readers sign in. Only the person who saved a link can edit or delete it.
 
 The example has two application screens: the collection, with search and a save
