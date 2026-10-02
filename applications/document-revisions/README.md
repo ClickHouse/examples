@@ -31,7 +31,7 @@ This runs input and JDBC endpoint boundary tests and produces `target/quarkus-ap
 
 ## Create an isolated Cloud database
 
-Install [clickhousectl](https://clickhouse.com/docs/cloud/manage/cli), authenticate with your own Cloud API key, and select your organization. These commands use clickhousectl 0.5.0. The example creates a billable AWS service without HA; choose a supported size and region for your organization.
+Install [clickhousectl](https://clickhouse.com/blog/getting-started-clickhousectl), authenticate with your own Cloud API key, and select your organization. These commands use clickhousectl 0.5.0. The example creates a billable AWS service without HA; choose a supported size and region for your organization.
 
 ```bash
 umask 077
