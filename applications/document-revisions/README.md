@@ -1,6 +1,6 @@
 # Document revisions with Quarkus and Panache
 
-A JSON API for account-owned documents on ClickHouse Managed Postgres (public beta). Editing appends an immutable text snapshot and advances a draft pointer. Publishing independently selects an existing revision. New drafts leave published content unchanged.
+A JSON API for account-owned documents on ClickHouse Managed Postgres. Editing appends an immutable text snapshot and advances a draft pointer. Publishing independently selects an existing revision. New drafts leave published content unchanged.
 
 Quarkus REST handles HTTP, native Quarkus security maps two seeded accounts to bearer tokens, Hibernate ORM Panache supplies scoped queries and row locks, and Flyway owns schema changes. The application runs on the JVM. It has no frontend, arbitrary HTML, external storage or real deployment integration.
 
