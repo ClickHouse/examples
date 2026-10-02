@@ -1,0 +1,26 @@
+name: Team directory
+on:
+  push:
+    paths: ['applications/team-directory/**', '.github/workflows/team-directory.yml']
+  pull_request:
+    paths: ['applications/team-directory/**', '.github/workflows/team-directory.yml']
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/team-directory
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: applications/team-directory/.node-version
+          cache: npm
+          cache-dependency-path: applications/team-directory/package-lock.json
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run typecheck
+      - run: npm run build

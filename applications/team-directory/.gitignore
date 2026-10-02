@@ -1,0 +1,7 @@
+.env
+.deployment/
+node_modules/
+.nuxt/
+.output/
+__pycache__/
+*.png

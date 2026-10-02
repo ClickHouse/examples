@@ -1,0 +1,36 @@
+{
+  "name": "team-directory",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.21.0"
+  },
+  "scripts": {
+    "prepare": "nuxt prepare",
+    "dev": "nuxt dev --host 127.0.0.1",
+    "build": "nuxt build",
+    "start": "node .output/server/index.mjs",
+    "typecheck": "nuxt typecheck",
+    "test": "node --test tests/unit.test.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:migrate": "knex --knexfile knexfile.mjs migrate:latest",
+    "db:rollback": "knex --knexfile knexfile.mjs migrate:rollback --all",
+    "db:seed": "knex --knexfile knexfile.mjs seed:run"
+  },
+  "dependencies": {
+    "@adonisjs/hash": "9.1.1",
+    "knex": "3.3.0",
+    "nuxt": "4.5.2",
+    "nuxt-auth-utils": "0.5.30",
+    "pg": "8.23.1"
+  },
+  "devDependencies": {
+    "@types/pg": "8.23.1",
+    "prettier": "3.9.9",
+    "typescript": "5.9.3",
+    "vue-tsc": "3.3.12",
+    "@playwright/test": "1.55.1"
+  }
+}
