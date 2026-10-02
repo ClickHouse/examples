@@ -187,3 +187,5 @@ Deletion destroys that service's data; preserve needed evidence first.
 - [Shiny1.14.0 session WebSocket request source](https://github.com/rstudio/shiny/blob/v1.14.0/R/shiny.R)
 - [Standalone Shiny runApp](https://shiny.posit.co/r/reference/shiny/latest/runapp.html)
 - [ClickHouse Managed Postgres setup](https://clickhouse.com/docs/products/managed-postgres/quickstart)
+
+A targeted tie-order regression is available as `Rscript test/ordering.R` after fresh bootstrap/migration without seed. It creates 12 owner fixture polls with the same timestamp and complete choices, then calls the actual runtime pool and verifies numeric descending IDs. The list qualifies `poll_studio.polls.id` so the `id::text AS id` output alias cannot change the tie-breaker to lexical order. Use only a dedicated fixture; clean up with administrator credentials as above.

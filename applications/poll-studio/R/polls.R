@@ -16,7 +16,7 @@ create_poll <- function(db, question, choices) {
 list_polls <- function(db) {
   DBI::dbGetQuery(db,
     "SELECT id::text AS id, question, closed_at IS NOT NULL AS closed, response_count,
-       created_at FROM poll_studio.polls ORDER BY created_at DESC, id DESC LIMIT 100")
+       created_at FROM poll_studio.polls ORDER BY created_at DESC, poll_studio.polls.id DESC LIMIT 100")
 }
 
 poll_summary <- function(db, poll_id) {
