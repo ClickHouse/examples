@@ -1,0 +1,9 @@
+{
+  "requestId": "ae9387cb-13e5-4e92-a1ef-ea61df9c8668",
+  "title": "Synthetic optimizer comparison",
+  "config": {"optimizer": "adam", "enabled": true, "rate": 0.000001},
+  "measurements": [
+    {"name": "accuracy", "value": "0.123456"},
+    {"name": "loss", "value": "-0.000001"}
+  ]
+}

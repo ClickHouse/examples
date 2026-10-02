@@ -1,0 +1,11 @@
+BEGIN;
+SELECT pg_advisory_xact_lock(hashtextextended('experiment_log:001', 0));
+DROP TABLE experiment_log.measurements;
+DROP TABLE experiment_log.runs;
+DROP TABLE experiment_log.projects;
+DROP FUNCTION experiment_log.complete_run();
+DROP FUNCTION experiment_log.initial_measurement();
+DROP FUNCTION experiment_log.valid_measurement_payload(jsonb);
+DROP FUNCTION experiment_log.valid_config(jsonb);
+DELETE FROM experiment_log.schema_migrations WHERE version=1;
+COMMIT;

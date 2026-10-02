@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+version=1.13.0
+expected=18d4a733eae2f70fd4d71a46e9da21d2eb7c9bf6ee85a67be9a9800e7c01403e
+launcher="$PWD/.local/sbt/sbt-launch.jar"
+mkdir -p "$(dirname "$launcher")"
+if [ ! -f "$launcher" ]; then
+  curl --fail --location --retry 2 --connect-timeout 10 --max-time 120 \
+    "https://repo.maven.apache.org/maven2/org/scala-sbt/sbt-launch/$version/sbt-launch-$version.jar" -o "$launcher"
+fi
+printf '%s  %s\n' "$expected" "$launcher" | sha256sum --check --status
+exec java -Xmx1024m -Xss2m -XX:ActiveProcessorCount=2 \
+  -Dsbt.override.build.repos=true -Dsbt.repository.config="$PWD/project/repositories" \
+  -Dsbt.supershell=false -jar "$launcher" "$@"

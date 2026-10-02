@@ -1,0 +1,11 @@
+target/
+project/target/
+project/project/
+.local/
+.bsp/
+.metals/
+.venv/
+__pycache__/
+.env
+*.env
+*.pem
