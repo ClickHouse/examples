@@ -1,6 +1,6 @@
 # Playlist API with gqlgen and Ent
 
-A compact GraphQL API composes playlists over synthetic track metadata in ClickHouse Managed Postgres (public beta). There is no audio, upload, streaming, commercial catalogue or music-service integration. Two environment bearer tokens identify fixed server-side accounts. Create a named playlist, read its ordered metadata and reorder its existing tracks with the revision you observed.
+A compact GraphQL API composes playlists over synthetic track metadata in ClickHouse Managed Postgres. There is no audio, upload, streaming, commercial catalogue or music-service integration. Two environment bearer tokens identify fixed server-side accounts. Create a named playlist, read its ordered metadata and reorder its existing tracks with the revision you observed.
 
 ## Verified native stack
 
