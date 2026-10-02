@@ -1,0 +1,33 @@
+name: Habit check-ins checks
+
+on:
+  pull_request:
+    paths:
+      - 'applications/habit-checkins/**'
+      - '.github/workflows/habit-checkins.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'applications/habit-checkins/**'
+      - '.github/workflows/habit-checkins.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: applications/habit-checkins
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          dotnet-version: '10.0.401'
+      - run: dotnet restore --locked-mode
+      - run: dotnet tool restore
+      - run: dotnet build -c Release --no-restore
+      - run: dotnet test -c Release --no-build --filter 'Category!=Cloud'
+# Cloud acceptance is explicit, with a dedicated service and no Cloud secrets in CI.
