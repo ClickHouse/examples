@@ -1,6 +1,6 @@
 # Semantic notes
 
-A trusted local notebook using FastAPI, SQLModel, Sentence Transformers and pgvector on **ClickHouse Managed Postgres (public beta)**. Add short titled notes, edit them with an observed revision, and retrieve excerpts by meaning. The application returns stored notes and cosine distances; it does not generate answers.
+A trusted local notebook using FastAPI, SQLModel, Sentence Transformers and pgvector on **ClickHouse Managed Postgres**. Add short titled notes, edit them with an observed revision, and retrieve excerpts by meaning. The application returns stored notes and cosine distances; it does not generate answers.
 
 The CPU model is `sentence-transformers/all-MiniLM-L6-v2`, fixed at public revision `1110a243fdf4706b3f48f1d95db1a4f5529b4d41`. Only allowlisted model files and safetensors weights are downloaded; remote custom code is disabled. After the explicit download, application startup is offline. A full collection specification fixes model ID, revision, 384 dimensions, float32 values, normalized embeddings, 256 tokens including special tokens, and document formatting (`title + two newlines + body`). Source metadata and database metadata must match at startup.
 
