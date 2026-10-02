@@ -1,0 +1,9 @@
+.venv/
+.local/
+.private/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.ruff_cache/
