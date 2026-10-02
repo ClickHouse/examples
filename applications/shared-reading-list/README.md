@@ -222,6 +222,9 @@ npm run build
 npm start
 ```
 
+For development, `npm run dev` also uses loopback port 3000, matching the
+configured auth origin; stop the production process before starting it.
+
 Open [localhost:3000](http://localhost:3000), create an account and save a link.
 Open its detail screen, edit its tags, then search from the collection. Use a
 second browser profile to sign in as another reader: they can browse and search

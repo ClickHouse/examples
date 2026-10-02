@@ -7,7 +7,7 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "dev": "node --env-file-if-exists=.env node_modules/vite/bin/vite.js --host 127.0.0.1",
+    "dev": "node --env-file-if-exists=.env node_modules/vite/bin/vite.js --host 127.0.0.1 --port 3000 --strictPort",
     "build": "node --env-file-if-exists=.env node_modules/vite/bin/vite.js build",
     "start": "node --env-file=.env build",
     "db:generate": "drizzle-kit generate",
