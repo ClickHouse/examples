@@ -1,0 +1,28 @@
+name: Document revisions
+on:
+  push:
+    paths: ['applications/document-revisions/**', '.github/workflows/document-revisions.yml']
+  pull_request:
+    paths: ['applications/document-revisions/**', '.github/workflows/document-revisions.yml']
+permissions:
+  contents: read
+jobs:
+  jvm:
+    runs-on: ubuntu-24.04-arm
+    defaults:
+      run:
+        working-directory: applications/document-revisions
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-java@v6.0.1
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install verified Maven 3.10.0
+        run: |
+          curl -fsSLo "$RUNNER_TEMP/maven.tar.gz" https://downloads.apache.org/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.tar.gz
+          echo "908b1501bfb420bf7c8affb855534a9c407fd6099367bfb9f2f2dcb8e9799102bffb84518cde74c679bd76870247c6528683abdd620581bffa90f95d92d175aa  $RUNNER_TEMP/maven.tar.gz" | sha512sum --check
+          tar -xzf "$RUNNER_TEMP/maven.tar.gz" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/apache-maven-3.10.0/bin" >> "$GITHUB_PATH"
+      - name: Boundary tests and production Quarkus package without database credentials
+        run: mvn -B -ntp clean package
