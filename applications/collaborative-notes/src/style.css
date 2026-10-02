@@ -1,0 +1,266 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #f3f5f2;
+  color: #213b35;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+main {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 48px 28px;
+}
+header {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 38px;
+}
+.mark {
+  background: #24574c;
+  color: #e8f4d8;
+  font-family: Georgia, serif;
+  font-size: 40px;
+  width: 65px;
+  height: 65px;
+  border-radius: 20px;
+  text-align: center;
+  line-height: 58px;
+}
+.eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 700;
+  color: #6f8176;
+  margin: 0 0 8px;
+}
+h1 {
+  font-size: 42px;
+  letter-spacing: -0.04em;
+  margin: 0 0 8px;
+}
+h2 {
+  font-size: 23px;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+p {
+  line-height: 1.55;
+}
+header p:last-child {
+  margin: 0;
+  color: #667970;
+}
+.connect,
+.note {
+  background: #fff;
+  border: 1px solid #d9e1d9;
+  border-radius: 18px;
+}
+.connect {
+  max-width: 560px;
+  padding: 32px;
+  margin: auto;
+}
+.connect h2 {
+  margin-bottom: 26px;
+}
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #c4d1c8;
+  border-radius: 8px;
+  font: inherit;
+  margin-bottom: 16px;
+}
+button {
+  font: inherit;
+  border: 1px solid #ccd8ce;
+  background: #fff;
+  color: #24574c;
+  border-radius: 9px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+button:hover {
+  background: #f0f5ee;
+}
+.connect button {
+  background: #24574c;
+  color: white;
+  width: 100%;
+  border: 0;
+}
+.connect p {
+  font-size: 13px;
+  color: #738175;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: 215px minmax(0, 1fr);
+  gap: 26px;
+}
+nav {
+  padding-top: 16px;
+}
+nav button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border-color: transparent;
+  margin-bottom: 9px;
+}
+.selected {
+  background: #e1ebde !important;
+  color: #24574c;
+  font-weight: 650;
+}
+.nav-help {
+  color: #738175;
+  font-size: 12px;
+  line-height: 1.65;
+  padding: 24px 10px;
+}
+.leave {
+  font-size: 13px;
+  border-color: #d7e0d6 !important;
+}
+.note {
+  overflow: hidden;
+}
+.note-top {
+  padding: 26px 28px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e8eee7;
+}
+.status {
+  font-size: 12px;
+  color: #668069;
+  max-width: 160px;
+  text-align: right;
+}
+.editor {
+  background: #fffffc;
+}
+.note-bottom {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 24px;
+  border-top: 1px solid #e8eee7;
+}
+.note-bottom span {
+  font-size: 12px;
+  color: #7a887e;
+}
+.persistence {
+  background: #f7f9f4;
+  padding: 20px 27px;
+}
+.persistence strong {
+  font-size: 13px;
+}
+.persistence p {
+  font-size: 13px;
+  color: #728071;
+  margin: 6px 0 0;
+}
+.notice,
+.error {
+  font-size: 13px;
+  padding: 8px 24px;
+}
+.error {
+  color: #983b34;
+}
+.notice {
+  color: #856435;
+}
+footer {
+  font-size: 12px;
+  color: #7c887c;
+  text-align: center;
+  margin-top: 30px;
+  line-height: 1.6;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+@media (max-width: 700px) {
+  main {
+    padding: 26px 16px;
+  }
+  header {
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .mark {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    font-size: 30px;
+    line-height: 43px;
+    border-radius: 13px;
+  }
+  h1 {
+    font-size: 32px;
+  }
+  header p:last-child {
+    font-size: 14px;
+  }
+  .workspace {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0;
+  }
+  nav .eyebrow {
+    width: 100%;
+  }
+  nav button {
+    width: auto;
+    font-size: 12px;
+    padding: 8px;
+    margin: 0;
+  }
+  .nav-help {
+    width: 100%;
+    padding: 7px 0;
+  }
+  .note-top {
+    padding: 20px;
+    align-items: flex-start;
+  }
+  .note-top h2 {
+    font-size: 20px;
+  }
+  .note-bottom {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .persistence {
+    padding: 18px 20px;
+  }
+  .connect {
+    padding: 24px;
+  }
+}

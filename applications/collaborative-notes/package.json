@@ -1,0 +1,42 @@
+{
+  "name": "collaborative-notes",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.app.json && tsc -p tsconfig.server.json && vite build",
+    "start": "node dist-server/server/main.js",
+    "dev": "vite --host 127.0.0.1 --port 5173 --strictPort",
+    "preview": "vite preview --host 127.0.0.1 --port 5173 --strictPort",
+    "test": "node --test dist-server/tests/unit.test.js",
+    "format:check": "prettier --check src server shared tests *.json vite.config.ts index.html"
+  },
+  "dependencies": {
+    "@hocuspocus/server": "4.7.0",
+    "@hocuspocus/provider": "4.7.0",
+    "yjs": "13.6.33",
+    "y-protocols": "1.0.7",
+    "y-codemirror.next": "0.3.6",
+    "@codemirror/state": "6.7.6",
+    "@codemirror/view": "6.43.13",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "pg": "8.23.1",
+    "ws": "8.22.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/node": "26.6.4",
+    "@types/pg": "8.23.1",
+    "@types/ws": "8.18.2",
+    "typescript": "7.0.2",
+    "vite": "8.3.2",
+    "@vitejs/plugin-react": "6.1.1",
+    "playwright": "1.63.0",
+    "prettier": "3.9.9"
+  }
+}

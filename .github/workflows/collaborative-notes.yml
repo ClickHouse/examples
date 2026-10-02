@@ -1,0 +1,29 @@
+name: Collaborative notes
+on:
+  pull_request:
+    paths:
+      - 'applications/collaborative-notes/**'
+      - '.github/workflows/collaborative-notes.yml'
+  push:
+    paths:
+      - 'applications/collaborative-notes/**'
+      - '.github/workflows/collaborative-notes.yml'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/collaborative-notes
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.21.0'
+          cache: npm
+          cache-dependency-path: applications/collaborative-notes/package-lock.json
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run build
+      - run: npm test
