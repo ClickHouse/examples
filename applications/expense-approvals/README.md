@@ -1,6 +1,6 @@
 # Expense approvals with Spring Boot and Postgres
 
-A small Java approval API backed by ClickHouse Managed Postgres (public beta) in ClickHouse Cloud. Employees create and edit drafts, submit them, and inspect their status. Managers decide submitted requests. A version in every write prevents stale updates from silently replacing a competing edit or decision. This example enters expenses manually; it makes no payments.
+A small Java approval API backed by ClickHouse Managed Postgres in ClickHouse Cloud. Employees create and edit drafts, submit them, and inspect their status. Managers decide submitted requests. A version in every write prevents stale updates from silently replacing a competing edit or decision. This example enters expenses manually; it makes no payments.
 
 Java 21, Spring Boot 4.1.1, Spring Data JPA and Hibernate 7.4.5.Final, Flyway 12.4.0 and pgJDBC 42.7.13. The Boot BOM manages compatible dependency versions; Maven Wrapper pins Maven 3.9.11. No local Postgres or H2 is used for acceptance.
 
