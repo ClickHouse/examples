@@ -1,6 +1,6 @@
 # Inspection log
 
-A small Sinatra workbench for recording complete inspections of three synthetic assets in [ClickHouse Managed Postgres (public beta)](https://clickhouse.com/docs/products/managed-postgres/overview). Choose an asset, calendar day, outcome, three checklist results and a short note. Save once, view immutable records, filter asset history, and download a bounded CSV.
+A small Sinatra workbench for recording complete inspections of three synthetic assets in [ClickHouse Managed Postgres](https://clickhouse.com/docs/products/managed-postgres/overview). Choose an asset, calendar day, outcome, three checklist results and a short note. Save once, view immutable records, filter asset history, and download a bounded CSV.
 
 This is a trusted **loopback-only** sample. There is no operator identity, authentication or tenant isolation. Cookie sessions contain CSRF state. The shared database role covers every fixture asset; it is trusted server configuration. The app does not integrate with live equipment.
 
