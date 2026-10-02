@@ -1,0 +1,13 @@
+{
+  "query": "mutation Reorder($input:ReorderInput!){reorderPlaylist(input:$input){id revision items{position track{id title}}}}",
+  "variables": {
+    "input": {
+      "id": "REPLACE_WITH_CREATED_PLAYLIST_UUID",
+      "expectedRevision": 1,
+      "trackIds": [
+        "10000000-0000-4000-8000-000000000002",
+        "10000000-0000-4000-8000-000000000001"
+      ]
+    }
+  }
+}

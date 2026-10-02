@@ -1,0 +1,10 @@
+BEGIN;
+SELECT pg_advisory_xact_lock(hashtextextended('playlist_api:001',0));
+DROP TABLE IF EXISTS playlist_api.items;
+DROP TABLE IF EXISTS playlist_api.playlists;
+DROP TABLE IF EXISTS playlist_api.tracks;
+DROP TABLE IF EXISTS playlist_api.accounts;
+DROP FUNCTION IF EXISTS playlist_api.complete_items();
+DROP FUNCTION IF EXISTS playlist_api.playlist_quota();
+DELETE FROM playlist_api.schema_migrations WHERE version=1;
+COMMIT;

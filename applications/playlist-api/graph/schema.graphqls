@@ -1,0 +1,8 @@
+type Track { id: ID!, title: String!, artist: String!, durationSeconds: Int! }
+type PlaylistItem { position: Int!, track: Track! }
+type Playlist { id: ID!, name: String!, revision: Int!, items: [PlaylistItem!]! }
+type PlaylistPage { playlists: [Playlist!]!, nextCursor: String }
+input CreatePlaylistInput { name: String!, trackIds: [ID!]! }
+input ReorderInput { id: ID!, expectedRevision: Int!, trackIds: [ID!]! }
+type Query { tracks(limit: Int!): [Track!]!, playlists(limit: Int!, cursor: String): PlaylistPage!, playlist(id: ID!): Playlist! }
+type Mutation { createPlaylist(input: CreatePlaylistInput!): Playlist!, reorderPlaylist(input: ReorderInput!): Playlist! }

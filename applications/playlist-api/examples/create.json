@@ -1,0 +1,12 @@
+{
+  "query": "mutation Create($input: CreatePlaylistInput!) { createPlaylist(input: $input) { id name revision items { position track { id title artist durationSeconds } } } }",
+  "variables": {
+    "input": {
+      "name": "Synthetic afternoon",
+      "trackIds": [
+        "10000000-0000-4000-8000-000000000001",
+        "10000000-0000-4000-8000-000000000002"
+      ]
+    }
+  }
+}
