@@ -1,6 +1,6 @@
 # Device Heartbeats
 
-A small C++20/Drogon API saves synthetic readings and advances each device's latest sequence in one transaction on [ClickHouse Managed Postgres (public beta)](https://clickhouse.com/docs/products/managed-postgres/overview). Project tokens select seeded devices; matching sample UUIDs replay retained results. This is an instructional ingestion protocol, without hardware integration or monitoring/alerting behavior.
+A small C++20/Drogon API saves synthetic readings and advances each device's latest sequence in one transaction on [ClickHouse Managed Postgres](https://clickhouse.com/docs/products/managed-postgres/overview). Project tokens select seeded devices; matching sample UUIDs replay retained results. This is an instructional ingestion protocol, without hardware integration or monitoring/alerting behavior.
 
 ## Transaction and trust model
 
