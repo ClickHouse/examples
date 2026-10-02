@@ -145,7 +145,7 @@ Rscript test/cloud.R
 
 The suite uses separate R worker processes for same-code contention and held-lock response/close ordering, observing actual blocked database sessions. Workers use longer timeouts only for controlled test barriers. Owner-only temporary rejecting triggers force failures after earlier writes, then are removed; no runtime privilege changes are needed. The cap test accelerates the stored counter with the owner and restores it afterward. Foreign-choice and duplicate-key checks exercise actual database constraints. TLS tests use a valid unrelated CA and resolve the real endpoint address with a deliberately mismatched libpq hostname, then prove the ordinary connection succeeds.
 
-Optional browser acceptance uses isolated Node24.21.0, Playwright1.63.0 and ws8.22.0 dependencies:
+Optional browser acceptance uses isolated Node24.21.0, Playwright1.63.0 and ws8.22.0 dependencies. The harness resolves Rscript through PATH; set RSCRIPT to an explicit executable if needed:
 
 ```bash
 export BROWSER_DIR=/private/path/browser-dependencies

@@ -21,7 +21,7 @@ const env = Object.fromEntries(
 env.LANG = "C.UTF-8";
 env.PORT = String(port);
 env.APP_ORIGIN = origin;
-const rscript = process.env.RSCRIPT || "/home/al/R/bin/Rscript";
+const rscript = process.env.RSCRIPT || "Rscript";
 let processHandle;
 let browser;
 let external;
