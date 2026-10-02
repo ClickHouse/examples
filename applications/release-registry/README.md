@@ -55,7 +55,7 @@ ignored unless explicitly selected.
 
 ### Create the Cloud service
 
-Install [clickhousectl](https://clickhouse.com/docs/interfaces/cli), authenticate
+Install [clickhousectl](https://clickhouse.com/docs/concepts/features/interfaces/cli), authenticate
 with an Admin Cloud API key, and choose your organization. Interactive login
 avoids secrets in shell history. Commands were validated with CLI 0.5.0:
 
@@ -263,7 +263,7 @@ Stop the API, then delete only the disposable service you created:
 
 ```sh
 source .deployment/resources.env
-clickhousectl cloud postgres delete "$PG_SERVICE_ID" --org-id "$CH_ORG_ID" --force
+clickhousectl cloud postgres delete "$PG_SERVICE_ID" --org-id "$CH_ORG_ID"
 clickhousectl cloud postgres list --org-id "$CH_ORG_ID" --json
 ```
 
