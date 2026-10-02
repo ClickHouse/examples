@@ -1,6 +1,6 @@
 # Kotlin usage meter
 
-An authenticated Ktor API accepts integer usage against an account's daily quota. ClickHouse Managed Postgres (public beta) stores accounts, counters and accepted events. ClickPipes copies events to an analytical ClickHouse service; the official Java client reads daily and feature totals. All three services run in ClickHouse Cloud. This is a software quota example, not a billing system.
+An authenticated Ktor API accepts integer usage against an account's daily quota. ClickHouse Managed Postgres stores accounts, counters and accepted events. ClickPipes copies events to an analytical ClickHouse service; the official Java client reads daily and feature totals. All three services run in ClickHouse Cloud. This is a software quota example, not a billing system.
 
 The API binds to localhost. A server-configured bearer token determines the account; clients cannot supply an account ID. `POST /usage` locks that account, checks a retained request ID, then updates its UTC daily counter and inserts an event in one Exposed transaction. A matching retry returns the original result, even after quota exhaustion or UTC midnight. A changed feature or units returns 409. The application never writes to ClickHouse.
 
