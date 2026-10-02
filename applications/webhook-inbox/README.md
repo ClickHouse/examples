@@ -1,7 +1,7 @@
 # Durable webhook inbox
 
 Receive and process webhook events with **Go, chi, pgx, sqlc, and ClickHouse
-Managed Postgres (public beta)**. Two seeded integrations have separate tokens.
+Managed Postgres**. Two seeded integrations have separate tokens.
 The receiver stores one event per integration/external ID and exposes its status.
 Workers use `FOR UPDATE SKIP LOCKED` to process a database-only operation in the
 same transaction as the claim and completion status.
