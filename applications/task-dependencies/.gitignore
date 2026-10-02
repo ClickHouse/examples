@@ -1,0 +1,6 @@
+/bin/
+/.local/
+/.venv/
+__pycache__/
+.env
+*.pem

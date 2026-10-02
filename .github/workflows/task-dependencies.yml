@@ -1,0 +1,26 @@
+name: Task dependencies
+on:
+  push:
+    paths: ['applications/task-dependencies/**', '.github/workflows/task-dependencies.yml']
+  pull_request:
+    paths: ['applications/task-dependencies/**', '.github/workflows/task-dependencies.yml']
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: applications/task-dependencies
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.1'
+          cache-dependency-path: applications/task-dependencies/go.sum
+      - run: go mod download
+      - run: go mod verify
+      - run: test -z "$(gofmt -l cmd internal)"
+      - run: go test -tags nomsgpack ./...
+      - run: go vet -tags nomsgpack ./...
+      - run: go build -tags nomsgpack ./cmd/server
