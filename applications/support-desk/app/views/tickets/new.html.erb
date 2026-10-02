@@ -1,0 +1,9 @@
+<%= link_to "← Back to tickets", tickets_path, class: "back" %>
+<section class="new-ticket"><p class="eyebrow">TELL US WHAT'S HAPPENING</p><h1>Start a conversation.</h1><p>A clear subject and a little context help us get you an answer.</p>
+  <% if @ticket.errors.any? %><div class="alert" role="alert"><%= @ticket.errors.full_messages.to_sentence %></div><% end %>
+  <%= form_with model: @ticket do |form| %>
+    <%= form.label :subject %><%= form.text_field :subject, maxlength: 120, required: true %>
+    <%= label_tag :body, "Message" %><%= text_area_tag :body, @body, rows: 6, maxlength: 4000, required: true %>
+    <%= form.submit "Create ticket" %>
+  <% end %>
+</section>

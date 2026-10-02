@@ -1,0 +1,35 @@
+<%= link_to "← Back to tickets", tickets_path, class: "back" %>
+<%= turbo_frame_tag "conversation", data: { turbo_action: "advance" } do %>
+  <div class="ticket-intro"><p class="eyebrow">CONVERSATION #<%= @ticket.id %></p><h1><%= @ticket.subject %></h1>
+    <div class="ticket-meta"><span class="badge <%= @ticket.status %>"><%= @ticket.status.capitalize %></span><span>From <%= @ticket.customer.name %></span><span>Assigned to <%= @ticket.assignee&.name || "nobody yet" %></span></div>
+  </div>
+  <% if flash[:notice] %><p class="notice" role="status"><%= flash[:notice] %></p><% end %>
+  <% if flash[:alert] %><p class="alert" role="alert"><%= flash[:alert] %></p><% end %>
+  <% if @reply&.errors&.any? %><p class="alert" role="alert"><%= @reply.errors.full_messages.to_sentence %></p><% end %>
+  <div class="conversation-layout">
+    <section class="timeline" aria-label="Conversation">
+      <p class="timeline-note"><%= @reply_page == 1 ? "Latest replies" : "Earlier replies" %> · page <%= @reply_page %> · <%= @replies.length %> shown</p>
+      <nav class="pagination" aria-label="Reply pages">
+        <% if @older_replies %><%= link_to "← Older replies", ticket_path(@ticket, reply_page: @reply_page + 1) %><% end %>
+        <% if @reply_page > 1 %><%= link_to "Newer replies →", ticket_path(@ticket, reply_page: @reply_page - 1) %><% end %>
+      </nav>
+      <% @replies.each do |reply| %>
+        <article class="reply" id="<%= dom_id(reply) %>"><div class="reply-author"><strong><%= reply.author.name %></strong><span><%= reply.author.role %> · <%= reply.created_at.strftime("%-d %b, %H:%M") %></span></div><p><%= reply.body %></p></article>
+      <% end %>
+      <% authorized = current_user.staff? ? @ticket.assignee_id == current_user.id : @ticket.customer_id == current_user.id %>
+      <% if @ticket.open? && authorized %>
+        <%= form_with model: [@ticket, (@reply || Reply.new)], class: "reply-form" do |form| %>
+          <%= form.label :body, "Your reply" %><%= form.text_area :body, rows: 4, maxlength: 4000, required: true %><%= form.submit "Add reply" %>
+        <% end %>
+      <% elsif @ticket.closed? %><div class="empty">This ticket is closed. Staff must reopen it before anyone can reply.</div>
+      <% else %><div class="empty">Claim this ticket to join the conversation.</div><% end %>
+    </section>
+    <aside><h2>Ticket details</h2><p>Keep one owner responsible for the next step.</p>
+      <% if current_user.staff? && @ticket.open? && @ticket.assignee_id.nil? %><%= button_to "Claim ticket", claim_ticket_path(@ticket) %><% end %>
+      <% if current_user.staff? && @ticket.assignee_id == current_user.id %>
+        <p class="owner">You're the owner of this conversation.</p>
+        <% if @ticket.open? %><%= button_to "Close ticket", close_ticket_path(@ticket), class: "secondary" %><% else %><%= button_to "Reopen ticket", reopen_ticket_path(@ticket) %><% end %>
+      <% end %>
+    </aside>
+  </div>
+<% end %>
