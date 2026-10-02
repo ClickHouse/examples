@@ -1,0 +1,6 @@
+/_build/
+/deps/
+/priv/static/assets/
+.env
+*.pem
+/erl_crash.dump
