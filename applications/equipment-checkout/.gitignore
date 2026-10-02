@@ -1,0 +1,6 @@
+.venv/
+.deployment/
+.env
+__pycache__/
+*.pyc
+staticfiles/
