@@ -1,0 +1,41 @@
+name: Device Heartbeats checks
+on:
+  pull_request:
+    paths:
+      - 'applications/device-heartbeats/**'
+      - '.github/workflows/device-heartbeats.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'applications/device-heartbeats/**'
+      - '.github/workflows/device-heartbeats.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: applications/device-heartbeats
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install native prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake git pkg-config libjsoncpp-dev libssl-dev libpq-dev uuid-dev zlib1g-dev libbrotli-dev clang-format
+      - name: Build pinned Drogon and Trantor
+        run: |
+          git clone --branch v1.9.13 --depth 1 --recurse-submodules https://github.com/drogonframework/drogon.git /tmp/drogon-source
+          test "$(git -C /tmp/drogon-source rev-parse HEAD)" = 4c5430757ea5451a7c38fbbef4b4bef7dbb47f2f
+          test "$(git -C /tmp/drogon-source/trantor rev-parse HEAD)" = 63a4e5e164e219dc3bf30cdbfa1462ae5602fa97
+          cmake -S /tmp/drogon-source -B /tmp/drogon-build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/drogon -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF -DBUILD_CTL=OFF -DBUILD_ORM=ON -DUSE_POSTGRESQL=ON -DUSE_MYSQL=OFF -DUSE_SQLITE3=OFF -DUSE_REDIS=OFF
+          cmake --build /tmp/drogon-build --parallel 2
+          cmake --install /tmp/drogon-build
+      - name: Format, build and check
+        run: |
+          clang-format --dry-run --Werror src/*.cpp src/*.hpp test/validation.cpp
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/tmp/drogon
+          cmake --build build --parallel 2
+          ctest --test-dir build --output-on-failure
+          python3 test/preflight.py "$PWD/build/device_heartbeats"
