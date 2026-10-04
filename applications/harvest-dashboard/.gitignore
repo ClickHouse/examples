@@ -1,0 +1,8 @@
+.env
+.deployment/
+.clickhouse/
+node_modules/
+build/
+.react-router/
+playwright-report/
+test-results/

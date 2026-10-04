@@ -1,0 +1,15 @@
+body { margin: 0; background: #f5f7f1; color: #263e34; font-family: system-ui, sans-serif; }
+.garden-header { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin: 1rem 0 2rem; }
+.garden-header h1 { font-family: Georgia, serif; font-size: clamp(2.3rem, 5vw, 3.8rem); font-weight:500; letter-spacing:-.04em; line-height:1.15; }
+.eyebrow { font-size:.68rem; font-weight:700; letter-spacing:.14em; color:#577261; }
+.metric { font-family:Georgia,serif; font-size:2.6rem; line-height:1.4; color:#275b46; }
+.metric span { font-family:system-ui,sans-serif; font-size:1rem; color:#577261; }
+.mantine-Card-root { border-color:#dce5d8; box-shadow:0 3px 12px #283d2410; }
+.mantine-Title-root[data-order="2"] { font-family:Georgia,serif; font-weight:500; font-size:1.5rem; color:#2d503d; }
+.entry-card { background:#edf2e8; }
+.chart { min-width:0; min-height:220px; }
+.notes-cell { max-width:280px; overflow-wrap:anywhere; }
+details { margin-top:.75rem; font-size:.85rem; color:#456853; }
+summary { cursor:pointer; }
+footer { padding:2rem 0 .5rem; }
+@media(max-width:48em) { .garden-header { align-items:flex-start; flex-direction:column; } .filter-card .mantine-Group-root > * { flex:1 1 140px; } }
