@@ -1,0 +1,19 @@
+{
+  "name": "asset-audit",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "install": "npm ci --prefix api && npm ci --prefix ui",
+    "typecheck": "npm run typecheck --prefix api && npm run typecheck --prefix ui",
+    "build": "npm run build --prefix ui && npm run build --prefix api && node scripts/copy-ui.mjs",
+    "start": "cd api/build && node bin/server.js",
+    "test:integration": "node tests/integration.mjs",
+    "test:browser": "node tests/browser.mjs"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}

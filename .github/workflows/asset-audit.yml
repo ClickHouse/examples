@@ -1,0 +1,32 @@
+name: Asset audit build
+on:
+  pull_request:
+    paths:
+      - 'applications/asset-audit/**'
+      - '.github/workflows/asset-audit.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'applications/asset-audit/**'
+      - '.github/workflows/asset-audit.yml'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/asset-audit
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.21.0'
+          cache: npm
+          cache-dependency-path: |
+            applications/asset-audit/package-lock.json
+            applications/asset-audit/api/package-lock.json
+            applications/asset-audit/ui/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build

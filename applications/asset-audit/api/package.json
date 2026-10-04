@@ -1,0 +1,36 @@
+{
+  "name": "asset-audit-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "node ace build"
+  },
+  "imports": {
+    "#controllers/*": "./app/controllers/*.js",
+    "#models/*": "./app/models/*.js",
+    "#services/*": "./app/services/*.js",
+    "#validators/*": "./app/validators/*.js",
+    "#middleware/*": "./app/middleware/*.js",
+    "#start/*": "./start/*.js",
+    "#config/*": "./config/*.js"
+  },
+  "dependencies": {
+    "@adonisjs/core": "7.5.2",
+    "@adonisjs/lucid": "22.4.2",
+    "@adonisjs/static": "2.0.1",
+    "@vinejs/vine": "4.4.0",
+    "pg": "8.23.1",
+    "luxon": "3.7.2",
+    "reflect-metadata": "0.2.2"
+  },
+  "devDependencies": {
+    "@adonisjs/assembler": "8.5.2",
+    "@adonisjs/tsconfig": "2.0.0",
+    "@poppinss/ts-exec": "1.4.4",
+    "@types/node": "24.19.1",
+    "@types/luxon": "3.7.6",
+    "typescript": "6.0.3"
+  }
+}

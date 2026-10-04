@@ -1,0 +1,9 @@
+node_modules/
+api/build/
+ui/dist/
+ui/.angular/
+.deployment/
+.env
+.env.*
+!.env.example
+*.log

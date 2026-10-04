@@ -1,0 +1,60 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">A</span><span>Asset audit<small>OPERATIONS WORKBENCH</small></span></div>
+    <div class="sidebar-label">WORKSPACE</div>
+    <div class="nav-current"><span>▦</span> Equipment stocktake <span class="nav-dot"></span></div>
+    <div class="sidebar-note">AdonisJS API<br><small>Counts stored in ClickHouse Managed Postgres</small></div>
+  </aside>
+  <main>
+    <div class="topbar"><span>Equipment / <strong>Count sheets</strong></span><span class="operator">LOCAL OPERATOR</span></div>
+    <header class="page-heading"><div class="eyebrow">PHYSICAL INVENTORY</div><h1>Make every count count.</h1><p>Record what's on the shelf. Review the differences. Close the sheet.</p></header>
+    <div class="sheet-toolbar">
+      <div><label for="sheet-select">Count sheet</label><p-select inputId="sheet-select" [options]="sheets()" optionLabel="name" optionValue="id" [(ngModel)]="selectedId" (onChange)="load()" [disabled]="dirty() || busy()" /></div>
+      <div class="sheet-state">
+        @if (sheet(); as current) {
+          <p-tag [value]="current.status === 'draft' ? 'Draft' : 'Finalized'" [severity]="current.status === 'draft' ? 'warn' : 'success'" />
+          <span>Revision {{ current.revision }}</span>
+          @if (dirty()) { <span class="unsaved">Unsaved changes</span> }
+        }
+      </div>
+    </div>
+    @if (message()) { <div class="feedback" aria-live="polite"><p-message [severity]="error() ? 'error' : 'success'">{{ message() }}</p-message></div> }
+    @if (!sheet()) {
+      <section class="empty-state" aria-live="polite">
+        <h2>{{ busy() ? 'Loading count sheet…' : sheets().length ? 'Count sheet unavailable' : 'No count sheets available' }}</h2>
+        <p>{{ busy() ? 'Reading the saved revision and equipment counts.' : sheets().length ? 'Reload to try reading the saved sheet again.' : 'Run the database seed to add the example equipment and sheets.' }}</p>
+        @if (!busy() && sheets().length) { <p-button label="Retry loading" (onClick)="load()" /> }
+      </section>
+    }
+    @if (sheet(); as current) {
+      <div class="summary-grid">
+        <section class="metric"><span>LOCATION</span><strong class="location">{{ current.location }}</strong><small>{{ rows().length }} equipment lines</small></section>
+        <section class="metric"><span>COUNTED</span><strong>{{ counted() }}<em> / {{ rows().length }}</em></strong><small>{{ rows().length - counted() }} lines remaining</small></section>
+        <section class="metric"><span>DISCREPANCIES</span><strong class="accent">{{ discrepancies() }}</strong><small>Counted lines differing from expected</small></section>
+        <section class="metric"><span>NET DIFFERENCE</span><strong>{{ difference() > 0 ? '+' : '' }}{{ difference() }}</strong><small>Across counted lines only</small></section>
+      </div>
+      <section class="grid-panel">
+        <div class="grid-header"><div><h2>Equipment count</h2><p>{{ current.status === 'draft' ? 'Double-click a Counted cell, or select it and press Enter.' : 'Finalized count sheet · editing is closed.' }}</p></div>
+          <input class="search" aria-label="Filter equipment" placeholder="Filter equipment…" [(ngModel)]="filter"></div>
+        <ag-grid-angular class="equipment-grid" [theme]="theme" [rowData]="rows()" [columnDefs]="columns" [defaultColDef]="defaultColDef" [quickFilterText]="filter" [stopEditingWhenCellsLoseFocus]="true" (gridReady)="ready($event)" (cellValueChanged)="edited()" />
+        <div class="grid-footer"><span>Expected quantities were captured when this sheet started.</span><span>{{ rows().length }} lines</span></div>
+      </section>
+      <div class="actions"><div class="action-note">{{ conflict() ? 'Reload to review the saved revision; reapply your changes afterward.' : dirty() ? 'Save this draft before switching sheets or finalizing.' : current.status === 'finalized' ? 'Finalized sheets remain available for review.' : 'Your saved draft can be resumed at any time.' }}</div>
+        <p-button label="Reload sheet" severity="secondary" [outlined]="true" (onClick)="requestReload()" [disabled]="busy()" />
+        @if (current.status === 'draft') {
+          <p-button label="Save draft" (onClick)="save()" [disabled]="!dirty() || busy() || conflict()" [loading]="busy()" />
+          <p-button label="Finalize sheet" severity="contrast" (onClick)="confirmFinalize = true" [disabled]="dirty() || busy() || conflict() || counted() !== rows().length" />
+        }
+      </div>
+    }
+    <footer>Angular · PrimeNG · AG Grid Community <span>AdonisJS + Lucid + ClickHouse Managed Postgres</span></footer>
+  </main>
+</div>
+<p-dialog header="Finalize this count sheet?" [(visible)]="confirmFinalize" [modal]="true" [style]="{width: '450px'}">
+  <p>Every line has a saved count. Finalization makes these quantities read-only.</p>
+  <div class="dialog-actions"><p-button label="Keep draft" severity="secondary" (onClick)="confirmFinalize = false" /><p-button label="Confirm finalization" (onClick)="finalize()" /></div>
+</p-dialog>
+<p-dialog header="Discard unsaved changes?" [(visible)]="confirmReload" [modal]="true" [style]="{width: '450px'}">
+  <p>Reloading replaces your local edits with the saved count sheet.</p>
+  <div class="dialog-actions"><p-button label="Keep editing" severity="secondary" (onClick)="confirmReload = false" /><p-button label="Discard and reload" (onClick)="confirmReload = false; load()" /></div>
+</p-dialog>
