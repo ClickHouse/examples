@@ -1,0 +1,392 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color: #233a3c;
+  background: #f4f6f2;
+  font-synthesis: none;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button,
+select {
+  border: 1px solid #cad4d0;
+  border-radius: 7px;
+  background: #fff;
+  color: #284548;
+  padding: 10px 14px;
+}
+button {
+  cursor: pointer;
+  font-weight: 600;
+}
+button:hover {
+  background: #edf3ec;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.primary {
+  background: #294e46;
+  color: #fff;
+  border-color: #294e46;
+}
+.primary:hover {
+  background: #37665b;
+}
+.shell {
+  min-height: 100vh;
+}
+header {
+  height: 82px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #dde3db;
+  padding: 0 42px;
+  background: #fbfcf8;
+}
+.brand {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+}
+.brand-mark {
+  background: #d4e7b6;
+  display: grid;
+  place-items: center;
+  width: 39px;
+  height: 39px;
+  border-radius: 10px;
+  font-size: 29px;
+}
+.brand strong {
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 20px;
+  display: block;
+}
+.brand small {
+  font-size: 12px;
+  color: #75857e;
+}
+.header-meta {
+  font-size: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.local-dot {
+  height: 7px;
+  width: 7px;
+  border-radius: 50%;
+  background: #699963;
+}
+main {
+  max-width: 1500px;
+  margin: auto;
+  padding: 35px 42px 18px;
+}
+.intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: #73826f;
+}
+h1 {
+  font-family: "Trebuchet MS", sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  letter-spacing: -1px;
+  margin: 10px 0;
+}
+p {
+  color: #74827e;
+  line-height: 1.65;
+  font-size: 13px;
+  margin: 8px 0;
+}
+.intro p {
+  font-size: 14px;
+}
+.revision {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  background: #e9eee1;
+  padding: 15px 20px;
+  border-radius: 8px;
+}
+.revision span {
+  width: 85px;
+  line-height: 1.7;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #6e7e66;
+}
+.revision strong {
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 35px;
+  font-weight: 500;
+}
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  background: #fbfcf8;
+  padding: 14px 16px;
+  border: 1px solid #d8e1d7;
+  border-radius: 12px 12px 0 0;
+}
+.add-tools,
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.save-state {
+  font-size: 11px;
+  padding: 0 8px;
+  color: #638165;
+}
+.save-state.dirty {
+  color: #ac792d;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 275px;
+  border: 1px solid #d8e1d7;
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+}
+.canvas {
+  height: 590px;
+  position: relative;
+  background: #f9fbf6;
+}
+.canvas-caption {
+  position: absolute;
+  bottom: 18px;
+  left: 60px;
+  font-size: 10px;
+  color: #889690;
+  pointer-events: none;
+  background: #f9fbf6cc;
+  padding: 4px 8px;
+}
+aside {
+  background: #fbfcf8;
+  border-left: 1px solid #d8e1d7;
+  padding: 25px 22px;
+}
+h2 {
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 14px 0;
+}
+label {
+  display: block;
+  font-size: 12px;
+  margin: 20px 0 7px;
+}
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #c9d3ce;
+  border-radius: 6px;
+  background: white;
+}
+.service-card {
+  width: 200px;
+  min-height: 104px;
+  padding: 17px 19px;
+  border-radius: 9px;
+  border: 1px solid #cad6c5;
+  border-top: 4px solid #91ad73;
+  box-shadow: 0 3px 10px #233a3c07;
+  background: white;
+}
+.service-card.api {
+  border-top-color: #6c9da9;
+}
+.service-card.worker {
+  border-top-color: #bda273;
+}
+.service-card.database {
+  border-top-color: #a193b6;
+}
+.service-card.selected {
+  outline: 2px solid #345b4d;
+  outline-offset: 3px;
+}
+.service-kind {
+  text-transform: uppercase;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #7a8c81;
+}
+.service-card strong {
+  font-size: 13px;
+  margin: 8px 0;
+  display: block;
+}
+.service-ref {
+  font-size: 9px;
+  color: #a0aea8;
+}
+.react-flow__handle {
+  background: #6b9180;
+  width: 9px;
+  height: 9px;
+  border: 2px solid white;
+}
+.counts {
+  display: flex;
+  gap: 30px;
+  border-top: 1px solid #e1e7dd;
+  border-bottom: 1px solid #e1e7dd;
+  padding: 20px 0;
+  margin: 20px 0;
+}
+.counts strong {
+  display: block;
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 28px;
+  font-weight: 500;
+}
+.counts span {
+  font-size: 11px;
+  color: #8b958e;
+}
+.legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  font-size: 11px;
+  margin: 22px 0;
+}
+.legend div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: #91ad73;
+}
+.swatch.api {
+  background: #6c9da9;
+}
+.swatch.worker {
+  background: #bda273;
+}
+.swatch.database {
+  background: #a193b6;
+}
+.storage-note {
+  border-top: 1px solid #e1e7dd;
+  padding-top: 20px;
+  margin-top: 30px;
+}
+.storage-note strong {
+  font-size: 12px;
+}
+.reload {
+  width: 100%;
+  margin-top: 18px;
+  background: transparent;
+  font-size: 11px;
+}
+.detail-kind {
+  font-size: 11px;
+  color: #73826f;
+  padding: 12px 0;
+}
+.danger {
+  color: #9c564d;
+  margin: 10px 0;
+  font-size: 12px;
+}
+.notice {
+  padding: 12px 16px;
+  font-size: 13px;
+  background: #e9efe1;
+  border-left: 3px solid #91ad73;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.notice.conflict {
+  background: #fff3df;
+  border-color: #bda273;
+}
+.notice button {
+  font-size: 12px;
+}
+footer {
+  max-width: 1500px;
+  margin: auto;
+  padding: 18px 42px 30px;
+  display: flex;
+  justify-content: space-between;
+  color: #8e9a92;
+  font-size: 10px;
+}
+@media (max-width: 900px) {
+  main {
+    padding: 24px 16px;
+  }
+  header {
+    padding: 0 16px;
+  }
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+  aside {
+    border-left: 0;
+    border-top: 1px solid #d8e1d7;
+  }
+  .toolbar {
+    flex-wrap: wrap;
+  }
+  .intro {
+    gap: 10px;
+  }
+  h1 {
+    font-size: 25px;
+  }
+  .revision {
+    padding: 10px;
+  }
+  .canvas {
+    height: 450px;
+  }
+  footer {
+    padding: 20px 16px;
+    gap: 15px;
+  }
+  .header-meta {
+    display: none;
+  }
+  .actions {
+    flex-wrap: wrap;
+  }
+}

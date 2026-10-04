@@ -1,0 +1,35 @@
+{
+  "name": "service-topology",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/server/index.ts",
+    "dev:web": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "start": "bun src/server/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test tests/graph.test.ts",
+    "test:integration": "bun test tests/database.test.ts",
+    "test:browser": "playwright test"
+  },
+  "dependencies": {
+    "@elysiajs/eden": "1.4.9",
+    "@sinclair/typebox": "0.34.52",
+    "@xyflow/react": "12.12.0",
+    "drizzle-orm": "0.45.3",
+    "elysia": "1.4.30",
+    "elkjs": "0.12.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zustand": "5.0.15"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/bun": "1.4.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "typescript": "7.0.2",
+    "vite": "8.3.2"
+  }
+}
