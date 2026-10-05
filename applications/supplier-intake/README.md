@@ -208,6 +208,8 @@ ssh -N -L 3001:127.0.0.1:3001 supplier-dev@orb
 Then use the same URL in your macOS browser. This forwards the loopback port
 without installing host dependencies. Stop the tunnel with Ctrl-C.
 
+![Receiving desk with Uppy upload and staged batches](docs/receiving-desk.png)
+
 ## Try a complete import
 
 1. Download the included CSV example or use [harbor-tools.csv](static/fixtures/harbor-tools.csv).
@@ -229,6 +231,10 @@ without installing host dependencies. Stop the tunnel with Ctrl-C.
 To reproduce the synthetic fixtures, run `npm run fixtures` inside Linux. The
 checked-in XLSX is a real workbook generated with SheetJS CE's buffer writer.
 
+![CSV review after atomic promotion](docs/csv-promoted.png)
+
+![XLSX review after atomic promotion](docs/xlsx-promoted.png)
+
 ## Verification and limits
 
 ```sh
@@ -248,6 +254,16 @@ npm run test:browser
 Stop a manually running server before the browser suite. It owns and replaces
 its Node process during persistence checks. Live suites add synthetic test
 batches; run them against a disposable example database.
+
+Validated against a disposable ClickHouse Managed Postgres 18.6 service from an
+Ubuntu 24.04 ARM64 VM, using the restricted `intake_app` role and verified TLS.
+Both real Uppy CSV and XLSX imports passed, including mapping errors, atomic
+conflict rollback, duplicate replay and persistence after replacing the Node
+process. SQL checks covered simultaneous upload/review/promotion, a coherent
+read during review, runtime grants, and wrong-CA/wrong-hostname rejection through
+`pg`. Parser tests, a clean locked install, typecheck and production build passed.
+`svelte-check` reported no errors or warnings; the successful build emits
+upstream adapter/validation-library warnings.
 
 This is a loopback application for one trusted operator, with no signup flow.
 Uploads are bounded to 512 KiB, 100 data rows, 16 columns and 500 characters per
