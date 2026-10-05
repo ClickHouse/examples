@@ -198,6 +198,10 @@ unset PG_MIGRATION_PASSWORD PG_APP_PASSWORD
 For VM-local Postgres only, add `DATABASE_LOCAL=true` to `.env`. This bypass is
 restricted to loopback database hosts. Managed connections use the downloaded
 CA, certificate/hostname verification, and a bounded five-connection pool.
+Bun 1.4.2 can reject CA rotation bundles with duplicate subjects. On that specific
+signature failure, the connector retries only certificates from the downloaded
+bundle, with certificate and hostname verification still enabled. Restart the app
+after updating the CA bundle.
 Use a plain URL without query parameters; the server configures TLS explicitly.
 
 ```sh
