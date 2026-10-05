@@ -1,0 +1,53 @@
+{
+  "name": "supplier-intake",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.21.0 <25"
+  },
+  "scripts": {
+    "dev": "node --env-file=.env ./node_modules/vite/bin/vite.js --host 127.0.0.1 --port 3001",
+    "build": "vite build",
+    "start": "node --env-file=.env build/index.js",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "test": "tsx --test tests/parsers.test.ts",
+    "test:integration": "node --env-file=.env --import tsx --test tests/database.test.ts",
+    "test:browser": "node --env-file=.env ./node_modules/@playwright/test/cli.js test",
+    "fixtures": "tsx scripts/fixtures.ts",
+    "format": "prettier --write \"src/**/*.{ts,svelte}\" \"src/styles.css\" \"tests/**/*.ts\" \"scripts/*.ts\" \"*.{ts,js,json}\""
+  },
+  "dependencies": {
+    "@lucide/svelte": "1.52.0",
+    "@sveltejs/kit": "2.70.3",
+    "@uppy/core": "6.2.0",
+    "@uppy/dashboard": "6.0.1",
+    "@uppy/xhr-upload": "6.0.1",
+    "bits-ui": "2.19.5",
+    "clsx": "2.1.1",
+    "papaparse": "5.7.0",
+    "pg": "8.23.1",
+    "svelte": "5.57.1",
+    "sveltekit-superforms": "3.0.0",
+    "tailwind-merge": "3.7.0",
+    "tailwind-variants": "3.3.1",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@internationalized/date": "3.12.4",
+    "@playwright/test": "1.63.0",
+    "@sveltejs/adapter-node": "5.5.7",
+    "@sveltejs/vite-plugin-svelte": "7.3.1",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/node": "26.6.4",
+    "@types/papaparse": "5.5.2",
+    "@types/pg": "8.23.1",
+    "svelte-check": "4.7.6",
+    "tailwindcss": "4.3.3",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "vite": "8.3.2",
+    "prettier": "3.9.9",
+    "prettier-plugin-svelte": "4.1.1"
+  }
+}

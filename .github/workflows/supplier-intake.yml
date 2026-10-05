@@ -1,0 +1,25 @@
+name: Supplier intake
+on:
+  pull_request:
+    paths: ['applications/supplier-intake/**', '.github/workflows/supplier-intake.yml']
+  push:
+    paths: ['applications/supplier-intake/**', '.github/workflows/supplier-intake.yml']
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/supplier-intake
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: applications/supplier-intake/.node-version
+          cache: npm
+          cache-dependency-path: applications/supplier-intake/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm test
+      - run: npm run check
+      - run: npm run build

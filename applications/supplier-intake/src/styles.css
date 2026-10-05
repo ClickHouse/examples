@@ -1,0 +1,236 @@
+@import 'tailwindcss';
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--card);
+  --color-popover-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: #fff;
+  --color-secondary: #ede7dc;
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: #f0ece4;
+  --color-muted-foreground: #726e64;
+  --color-accent: #f3e8d1;
+  --color-accent-foreground: var(--foreground);
+  --color-destructive: #b2382c;
+  --color-border: #dfd9cc;
+  --color-input: #d5cebf;
+  --color-ring: #9f6327;
+  --radius-sm: 0.35rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.7rem;
+  --radius-xl: 1rem;
+}
+:root {
+  --background: #f7f4ed;
+  --foreground: #283c39;
+  --card: #fffefa;
+  --primary: #866024;
+  font-family: Arial, sans-serif;
+  color: var(--foreground);
+  background: var(--background);
+}
+body {
+  margin: 0;
+}
+h1,
+h2,
+h3 {
+  font-family: Georgia, serif;
+  letter-spacing: -0.02em;
+}
+button,
+a,
+input,
+select {
+  touch-action: manipulation;
+}
+button {
+  cursor: pointer;
+}
+.shell {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 36px 24px;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: #837248;
+  font-weight: 700;
+}
+.masthead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #ded6c6;
+  margin-bottom: 28px;
+}
+.masthead h1 {
+  font-size: 46px;
+  line-height: 1.05;
+  margin: 12px 0;
+}
+.masthead p {
+  max-width: 650px;
+  color: #726e64;
+  line-height: 1.6;
+}
+.step {
+  font-size: 12px;
+  color: #837248;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 24px;
+}
+.panel {
+  background: var(--card);
+  border: 1px solid #dfd9cc;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.panel h2 {
+  font-size: 26px;
+  margin: 0 0 12px;
+}
+.muted {
+  color: #726e64;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.help-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 18px 0 0;
+  font-size: 13px;
+  text-decoration: underline;
+}
+.mapping-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d5cebf;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 14px;
+}
+.message {
+  padding: 13px 16px;
+  background: #edf3eb;
+  border: 1px solid #c9d9c3;
+  border-radius: 8px;
+  margin: 16px 0;
+  font-size: 14px;
+}
+.error {
+  color: #a13526;
+  font-size: 13px;
+}
+.scroll {
+  overflow: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+th {
+  text-align: left;
+  font-weight: 600;
+  color: #726e64;
+}
+th,
+td {
+  padding: 13px 12px;
+  border-bottom: 1px solid #e9e3d7;
+  vertical-align: top;
+}
+td {
+  max-width: 280px;
+  overflow-wrap: anywhere;
+}
+.catalog-table {
+  min-width: 640px;
+}
+.row-error {
+  background: #fff6ee;
+}
+.row-error p {
+  max-width: 250px;
+}
+.summary {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 18px 0;
+}
+.pill {
+  background: #efe8d6;
+  border-radius: 100px;
+  padding: 8px 14px;
+  font-size: 12px;
+}
+.accordion-trigger {
+  width: 100%;
+  text-align: left;
+  padding: 16px 0;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+}
+.accordion-trigger::after {
+  content: '+';
+}
+.accordion-trigger[data-state='open']::after {
+  content: '−';
+}
+footer {
+  padding: 28px 0 8px;
+  color: #7b766a;
+  font-size: 12px;
+}
+.uppy-Dashboard-inner {
+  border-radius: 10px !important;
+  border-color: #dfd9cc !important;
+}
+@media (max-width: 760px) {
+  .shell {
+    padding: 24px 16px;
+  }
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .masthead {
+    display: block;
+  }
+  .masthead h1 {
+    font-size: 36px;
+  }
+  .mapping-grid {
+    grid-template-columns: 1fr;
+  }
+  .panel {
+    padding: 18px;
+  }
+}
