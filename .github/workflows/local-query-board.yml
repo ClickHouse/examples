@@ -1,0 +1,23 @@
+name: Local query board
+on:
+  pull_request:
+    paths: ['applications/local-query-board/**', '.github/workflows/local-query-board.yml']
+  push:
+    paths: ['applications/local-query-board/**', '.github/workflows/local-query-board.yml']
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/local-query-board
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.4.2'
+      - run: bun install --frozen-lockfile --ignore-scripts
+      - run: bun run typecheck
+      - run: bun run test
+      - run: bun run build
