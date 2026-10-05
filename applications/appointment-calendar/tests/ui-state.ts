@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import { chromium } from "@playwright/test";
 import { spawn } from "node:child_process";
+import { mkdir } from "node:fs/promises";
+const evidence = process.env.EVIDENCE_DIR ?? "test-artifacts";
+await mkdir(evidence, { recursive: true });
 const origin = "http://127.0.0.1:4331";
 const server = spawn(process.execPath, ["build/server/server.js"], {
   env: { ...process.env, APP_ORIGIN: origin },
@@ -73,7 +76,7 @@ try {
     return green > 5000;
   });
   await page.screenshot({
-    path: "/home/al/appointment-evidence/utilization-ui-final.png",
+    path: evidence + "/utilization-ui-final.png",
     fullPage: true,
   });
   console.log(

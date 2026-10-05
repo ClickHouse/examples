@@ -4,3 +4,4 @@ build/
 .env
 .env.*
 !.env.example
+test-artifacts/

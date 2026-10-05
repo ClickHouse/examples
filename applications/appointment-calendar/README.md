@@ -8,11 +8,27 @@ This is a local, trusted workshop demonstration with synthetic customers, no sig
 
 ## Create Postgres with clickhousectl
 
-Install Node.js 24 or newer, `psql`, and clickhousectl using the [official installation instructions](https://github.com/ClickHouse/clickhousectl). Use your own Cloud organization and API credentials. A Cloud service incurs ordinary database charges until deleted.
+Use Linux, Node.js 24, npm 11, psql 15+ and curl. On macOS use an [isolated OrbStack machine](https://docs.orbstack.dev/machines/isolated), copying source into its own Linux home directory. Install application dependencies inside Linux, not on the host.
 
 ```sh
-export CLICKHOUSE_CLOUD_API_KEY='your-key'
-export CLICKHOUSE_CLOUD_API_SECRET='your-secret'
+git clone https://github.com/ClickHouse/examples.git
+cd examples/applications/appointment-calendar
+```
+
+Install [clickhousectl](https://clickhouse.com/docs/concepts/features/interfaces/cli) on the machine managing your Cloud resources. Creation requires an Admin API key. Enter its credentials interactively and choose your own organization. A Cloud service incurs ordinary database charges until deleted.
+
+```sh
+curl -fsSL https://clickhouse.com/cli | sh
+export PATH="$HOME/.local/bin:$PATH"
+clickhousectl --version
+clickhousectl cloud auth login --interactive
+clickhousectl cloud auth status
+clickhousectl cloud org list
+```
+
+Keep Cloud API credentials outside the application and browser. In an isolated maintainer workflow, management stays on the host; transfer only the database credentials and CA to Linux.
+
+```sh
 export ORG_ID='your-organization-id'
 clickhousectl cloud postgres create --help
 ```
@@ -21,21 +37,22 @@ Create one disposable non-HA service. The following shape was accepted for this 
 
 ```sh
 umask 077
+mkdir -p .deployment
 clickhousectl cloud postgres create --name workshop-calendar \
   --region us-east-1 --size c6gd.large --provider aws \
-  --pg-version 18 --ha-type none --org-id "$ORG_ID" --json > create.private.json
+  --pg-version 18 --ha-type none --org-id "$ORG_ID" --json > .deployment/create.private.json
 export SERVICE_ID='id-from-your-create-receipt'
 clickhousectl cloud postgres get "$SERVICE_ID" --org-id "$ORG_ID" --json
 # Wait until state is running.
 clickhousectl cloud postgres certs get "$SERVICE_ID" \
-  --org-id "$ORG_ID" --output postgres-ca.pem
+  --org-id "$ORG_ID" --output .deployment/postgres-ca.pem
 ```
 
-Copy `.env.example` to `.env`. Use the direct hostname, database and administrator credentials from your receipt. Choose separate owner/application passwords and set `PG_OWNER_PASSWORD` and `PG_APP_PASSWORD` for bootstrap. Configure psql TLS and apply the files explicitly:
+Copy `.env.example` to `.env`. Use the direct hostname and administrator credentials from your receipt; the database is `postgres`. Choose separate owner/application passwords and set `PG_OWNER_PASSWORD` and `PG_APP_PASSWORD` for bootstrap. Configure psql TLS and apply the files explicitly:
 
 ```sh
-export PGHOST='direct-hostname' PGPORT=5432 PGDATABASE='database-from-receipt'
-export PGSSLROOTCERT="$PWD/postgres-ca.pem" PGSSLMODE=verify-full
+export PGHOST='direct-hostname' PGPORT=5432 PGDATABASE=postgres
+export PGSSLROOTCERT="$PWD/.deployment/postgres-ca.pem" PGSSLMODE=verify-full
 export PGUSER='administrator-from-receipt' PGPASSWORD='administrator-password'
 export PG_OWNER_PASSWORD='your-owner-password' PG_APP_PASSWORD='your-app-password'
 psql -X -v ON_ERROR_STOP=1 -f sql/bootstrap.sql
@@ -55,7 +72,7 @@ npm run check
 npm run build
 ```
 
-Copy `.env.example` to `.env` and set the direct database fields. Keep the administrator, schema owner, and runtime users separate. Never expose their credentials to the browser. Run `sql/bootstrap.sql` as the administrator, then `sql/schema.sql` as the owner and `sql/grants.sql` as the administrator. The bootstrap requires the supported `btree_gist` extension; the runtime has catalogue/appointment SELECT and only the appointment UPDATE columns needed by this workflow.
+After the one-time schema setup, copy `.env.example` to `.env`. Set `DB_HOST` to the direct hostname, `DB_DATABASE=postgres`, `DB_USER=appointment_calendar_app`, `DB_PASSWORD` to your application password and `PG_CA_CERT_PATH` to the absolute `.deployment/postgres-ca.pem` path. Keep migration/administrator credentials separate. The restricted runtime has catalogue/appointment SELECT and only the appointment UPDATE columns needed by this workflow.
 
 ```sh
 set -a
@@ -64,7 +81,13 @@ set +a
 npm start
 ```
 
-Open http://127.0.0.1:4331/calendar. The seed date is **5 October 2026**. Drag Morgan's booking to a free quarter-hour slot, reload, then drag it into Ellis's booking. The server rejects the overlap and restores the committed appointment. Select a booking to edit its customer, service, bay, start, or note. The service's stored duration determines the end. Open Utilization to see minutes calculated from those same saved bookings.
+Open http://127.0.0.1:4331/calendar. For an isolated OrbStack machine, forward its loopback server from a separate host terminal:
+
+```sh
+ssh -N -L 4331:127.0.0.1:4331 YOUR_MACHINE@orb
+```
+
+Keep the browser URL and `APP_ORIGIN` at http://127.0.0.1:4331. The seed date is **5 October 2026**. Drag Morgan's booking to a free quarter-hour slot, reload, then drag it into Ellis's booking. The server rejects the overlap and restores the committed appointment. Select a booking to edit its customer, service, bay, start, or note. The service's stored duration determines the end. Open Utilization to see minutes calculated from those same saved bookings.
 
 ## Time and database behavior
 
@@ -77,7 +100,9 @@ Updates include the previously read revision. The conditional UPDATE rejects a s
 Managed validation used PostgreSQL 18.6 with `btree_gist` 1.8, Node 24 and verified Cloud TLS. Integration checks exercise concurrent overlap rejection, persisted rescheduling after a genuine process restart, stale revisions, invalid timestamps and tampered request fields, runtime grant boundaries, totals and a 23-hour daylight-saving day.
 
 ```sh
-# Export .env, including separate DB_OWNER_USER/DB_OWNER_PASSWORD for fixture setup.
+# Export .env for runtime connectivity; tests use these additional owner fields only.
+export DB_OWNER_USER=appointment_calendar_owner
+export DB_OWNER_PASSWORD="$PG_OWNER_PASSWORD"
 # Stop the interactive server first: the tests start their own production process.
 npm run test:integration
 npm exec playwright install chromium

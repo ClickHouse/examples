@@ -5,7 +5,7 @@ import { mkdir } from "node:fs/promises";
 import pg from "pg";
 import { connection } from "../server/db.js";
 const origin = process.env.APP_ORIGIN ?? "http://127.0.0.1:4331";
-const evidence = process.env.EVIDENCE_DIR ?? "/home/al/appointment-evidence";
+const evidence = process.env.EVIDENCE_DIR ?? "test-artifacts";
 await mkdir(evidence, { recursive: true });
 const server = spawn(process.execPath, ["build/server/server.js"], {
   env: process.env,
