@@ -1,0 +1,90 @@
+query Catalog($first: Int!, $offset: Int!, $search: String, $category: String) {
+  products(
+    first: $first
+    offset: $offset
+    search: $search
+    category: $category
+  ) {
+    id
+    name
+    category
+    description
+    variants {
+      id
+      name
+      sku
+      priceCents
+    }
+  }
+}
+query CollectionList {
+  collections {
+    id
+    title
+    revision
+  }
+}
+query CollectionDetail($id: ID!) {
+  collection(id: $id) {
+    id
+    title
+    revision
+    products {
+      id
+      name
+      category
+      description
+      variants {
+        id
+        name
+        sku
+        priceCents
+      }
+    }
+  }
+}
+mutation NewCollection($title: String!, $productIds: [ID!]!) {
+  createCollection(title: $title, productIds: $productIds) {
+    id
+    title
+    revision
+    products {
+      id
+      name
+      category
+      description
+      variants {
+        id
+        name
+        sku
+        priceCents
+      }
+    }
+  }
+}
+mutation SaveCollection($id: ID!, $baseRevision: Int!, $productIds: [ID!]!) {
+  replaceCollection(
+    id: $id
+    baseRevision: $baseRevision
+    productIds: $productIds
+  ) {
+    status
+    collection {
+      id
+      title
+      revision
+      products {
+        id
+        name
+        category
+        description
+        variants {
+          id
+          name
+          sku
+          priceCents
+        }
+      }
+    }
+  }
+}

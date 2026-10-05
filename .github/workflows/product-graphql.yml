@@ -1,0 +1,23 @@
+name: Product GraphQL
+on:
+  pull_request:
+    paths: ['applications/product-graphql/**', '.github/workflows/product-graphql.yml']
+  push:
+    paths: ['applications/product-graphql/**', '.github/workflows/product-graphql.yml']
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/product-graphql
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.4.2'
+      - run: bun install --frozen-lockfile --ignore-scripts
+      - run: bun run codegen
+      - run: git diff --exit-code -- schema.graphql src/client/gql
+      - run: bun run typecheck
+      - run: bun run test
+      - run: bun run build

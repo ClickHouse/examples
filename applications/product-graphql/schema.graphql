@@ -1,0 +1,42 @@
+type Collection {
+  id: ID!
+  products: [Product!]!
+  revision: Int!
+  title: String!
+}
+
+type CollectionSave {
+  collection: Collection
+  status: SaveStatus!
+}
+
+type Mutation {
+  createCollection(productIds: [ID!]!, title: String!): Collection!
+  replaceCollection(baseRevision: Int!, id: ID!, productIds: [ID!]!): CollectionSave!
+}
+
+type Product {
+  category: String!
+  description: String!
+  id: ID!
+  name: String!
+  variants: [Variant!]!
+}
+
+type Query {
+  collection(id: ID!): Collection
+  collections: [Collection!]!
+  products(category: String, first: Int!, offset: Int!, search: String): [Product!]!
+}
+
+enum SaveStatus {
+  CONFLICT
+  OK
+}
+
+type Variant {
+  id: ID!
+  name: String!
+  priceCents: Int!
+  sku: String!
+}
