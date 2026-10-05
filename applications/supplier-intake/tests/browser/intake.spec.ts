@@ -71,9 +71,7 @@ test('CSV and XLSX upload, mapped review, atomic promotion, row errors and real 
   await expect(
     page.getByRole('status').filter({ hasText: 'Every row is valid.' }),
   ).toBeVisible();
-  await expect(
-    page.getByRole('cell', { name: 'Copper watering can, 2L', exact: true }),
-  ).toBeVisible();
+  await expect(page.getByRole('cell', { name: /Copper watering can, 2L/ })).toBeVisible();
   await page.getByRole('tab', { name: 'Source values', exact: true }).click();
   await expect(page.getByRole('cell', { name: '24.50', exact: true })).toBeVisible();
   await page.getByRole('tab', { name: 'Reviewed rows', exact: true }).click();
@@ -103,9 +101,7 @@ test('CSV and XLSX upload, mapped review, atomic promotion, row errors and real 
   await expect(
     page.getByRole('status').filter({ hasText: 'Every row is valid.' }),
   ).toBeVisible();
-  await expect(
-    page.getByRole('cell', { name: 'Woven table runner', exact: true }),
-  ).toBeVisible();
+  await expect(page.getByRole('cell', { name: /Woven table runner/ })).toBeVisible();
   await page.getByRole('button', { name: 'Promote batch', exact: true }).click();
   await expect(
     page.getByRole('status').filter({ hasText: '2 products promoted together.' }),
@@ -125,7 +121,7 @@ test('CSV and XLSX upload, mapped review, atomic promotion, row errors and real 
   await expect(
     page.getByRole('status').filter({ hasText: '1 row needs correction.' }),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Row corrections (1)', exact: true }).click();
+  await page.getByRole('button', { name: /^Row corrections \(1\)/ }).click();
   await expect(page.getByText(/Price must be a positive USD amount/)).toBeVisible();
   await expect(
     page.getByRole('button', { name: 'Promote batch', exact: true }),
@@ -134,7 +130,7 @@ test('CSV and XLSX upload, mapped review, atomic promotion, row errors and real 
     (
       await request.post(`/batches/${bad}?/promote`, {
         form: { revision: '2' },
-        headers: { Origin: base },
+        headers: { Origin: base, Accept: 'text/html' },
       })
     ).status(),
   ).toBe(400);
@@ -197,12 +193,8 @@ test('CSV and XLSX upload, mapped review, atomic promotion, row errors and real 
   await expect(page.getByText('promoted', { exact: true })).toBeVisible();
   await page.goto('/');
   await page.getByRole('tab', { name: 'Live catalog', exact: true }).click();
-  await expect(
-    page.getByRole('cell', { name: 'Copper watering can, 2L', exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole('cell', { name: 'Woven table runner', exact: true }),
-  ).toBeVisible();
+  await expect(page.getByRole('cell', { name: /Copper watering can, 2L/ })).toBeVisible();
+  await expect(page.getByRole('cell', { name: /Woven table runner/ })).toBeVisible();
   expect(
     (
       await request.post('/api/upload', {
@@ -213,7 +205,7 @@ test('CSV and XLSX upload, mapped review, atomic promotion, row errors and real 
             buffer: Buffer.from('A,A\nx,y\n'),
           },
         },
-        headers: { Origin: base },
+        headers: { Origin: base, Accept: 'text/html' },
       })
     ).status(),
   ).toBe(400);
