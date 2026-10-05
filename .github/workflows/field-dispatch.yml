@@ -1,0 +1,25 @@
+name: Field dispatch
+on:
+  pull_request:
+    paths: ['applications/field-dispatch/**', '.github/workflows/field-dispatch.yml']
+  push:
+    paths: ['applications/field-dispatch/**', '.github/workflows/field-dispatch.yml']
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/field-dispatch
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: applications/field-dispatch/.node-version
+          cache: npm
+          cache-dependency-path: applications/field-dispatch/package-lock.json
+      - run: npm ci --ignore-scripts --strict-peer-deps
+      - run: npm test
+      - run: npm run check
+      - run: npm run build

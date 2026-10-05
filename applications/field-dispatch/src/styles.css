@@ -1,0 +1,393 @@
+:root {
+  font-family: Arial, sans-serif;
+  color: #253f49;
+  background: #f2f1eb;
+  font-synthesis: none;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+button,
+select {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: default;
+  opacity: 0.52;
+}
+button:focus-visible,
+select:focus-visible {
+  outline: 3px solid #cc9b49;
+  outline-offset: 3px;
+}
+main {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 40px 36px 22px;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+h1,
+h2,
+p {
+  margin: 0;
+}
+h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(32px, 4vw, 54px);
+  font-weight: normal;
+  letter-spacing: -0.04em;
+  margin: 10px 0;
+}
+h2 {
+  font-family: Georgia, serif;
+  font-size: 24px;
+  font-weight: normal;
+  line-height: 1.2;
+}
+.eyebrow {
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.15em;
+  color: #687a75;
+}
+.intro {
+  color: #73817f;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.edition {
+  text-align: right;
+  line-height: 1.5;
+  font-size: 12px;
+  color: #6c7a76;
+  border-right: 3px solid #af8648;
+  padding-right: 16px;
+}
+.toolbar {
+  background: #203e4a;
+  color: #f7f7ef;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  padding: 18px 22px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+.toolbar label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+}
+select {
+  min-width: 170px;
+  font-size: 13px;
+  font-weight: normal;
+  border: 1px solid #617980;
+  color: #fff;
+  background: #2b4b58;
+  border-radius: 5px;
+  padding: 10px 30px 10px 12px;
+}
+.coverage {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-left: auto;
+}
+.coverage span {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: #a2bbb8;
+}
+.coverage strong {
+  font-size: 19px;
+  font-weight: normal;
+}
+.save,
+.review-panel button {
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 5px;
+  background: #c89a52;
+  color: #183441;
+  font-size: 12px;
+  font-weight: bold;
+}
+.notice {
+  padding: 14px 18px;
+  margin: 0 0 18px;
+  border-radius: 5px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.success {
+  background: #e5eddf;
+  border: 1px solid #c9d6bd;
+}
+.failure {
+  background: #fae5dc;
+  border: 1px solid #deb6a3;
+  color: #883d2b;
+}
+.desk {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 24px;
+}
+aside {
+  border: 1px solid #dddcd3;
+  border-radius: 8px;
+  background: #fffefa;
+  overflow: hidden;
+}
+.panel-heading {
+  padding: 24px 20px 18px;
+  border-bottom: 1px solid #e6e5da;
+}
+.panel-heading h2 {
+  margin: 10px 0 8px;
+}
+.panel-heading p {
+  font-size: 12px;
+  color: #79857c;
+  line-height: 1.5;
+}
+.jobs {
+  max-height: 680px;
+  overflow: auto;
+  padding: 12px;
+}
+.job {
+  display: block;
+  text-align: left;
+  width: 100%;
+  border: 1px solid transparent;
+  border-bottom-color: #e4e4da;
+  background: transparent;
+  padding: 14px 12px;
+  border-radius: 5px;
+  color: #2b424a;
+}
+.job:hover {
+  background: #f5f5ed;
+}
+.job.selected {
+  background: #edf0e6;
+  border-color: #8ba488;
+}
+.job-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+.priority {
+  font-size: 9px;
+  border-radius: 12px;
+  padding: 3px 7px;
+  letter-spacing: 0;
+}
+.priority.urgent {
+  background: #f7e5d2;
+  color: #a55c2e;
+}
+.priority.routine {
+  background: #e8eceb;
+  color: #6b787f;
+}
+.job-title {
+  display: block;
+  font-size: 14px;
+  line-height: 1.45;
+  margin: 8px 0 6px;
+}
+.assignment {
+  font-size: 10px;
+  color: #748274;
+}
+.map-column {
+  min-width: 0;
+}
+.map-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid #c7cdbb;
+}
+.map {
+  height: 570px;
+  width: 100%;
+}
+.map-status {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  padding: 7px 11px;
+  border-radius: 4px;
+  font-size: 10px;
+  background: #fffff4e8;
+  box-shadow: 0 1px 6px #243a4620;
+}
+.loading {
+  height: 570px;
+  display: grid;
+  place-content: center;
+  background: #e1e7db;
+  border-radius: 8px;
+  color: #6c7f73;
+}
+.legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 14px 3px;
+  font-size: 10px;
+  color: #69796e;
+}
+.legend > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.legend small {
+  display: block;
+  width: 100%;
+  font-size: 10px;
+}
+.swatch {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.unassigned {
+  background: #5d6771;
+}
+.swatch.urgent {
+  background: #b2562a;
+}
+.review-panel {
+  background: #fffefa;
+  padding: 24px;
+  border-radius: 8px;
+  border: 1px solid #dddcd3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+.review-panel h2 {
+  margin: 10px 0;
+  font-size: 23px;
+}
+.review-panel p {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.review-panel .hint {
+  margin-top: 7px;
+  font-size: 10px;
+  color: #788275;
+}
+.review-panel button {
+  flex-shrink: 0;
+}
+footer {
+  padding: 24px 2px 0;
+  color: #8a9387;
+  font-size: 10px;
+  line-height: 1.5;
+}
+@media (max-width: 900px) {
+  .desk {
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 16px;
+  }
+  main {
+    padding: 28px 20px 18px;
+  }
+  .toolbar {
+    gap: 16px;
+  }
+  .review-panel {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px;
+  }
+  .toolbar select {
+    min-width: 140px;
+  }
+}
+@media (max-width: 680px) {
+  header {
+    align-items: flex-start;
+  }
+  .edition {
+    display: none;
+  }
+  .toolbar {
+    flex-wrap: wrap;
+    padding: 16px;
+    gap: 16px;
+  }
+  .toolbar label {
+    flex: 1;
+  }
+  select {
+    width: 100%;
+  }
+  .coverage {
+    margin-left: 0;
+  }
+  .save {
+    margin-left: auto;
+  }
+  .desk {
+    grid-template-columns: 1fr;
+  }
+  .jobs {
+    max-height: 220px;
+  }
+  .map {
+    height: 390px;
+  }
+  .panel-heading {
+    padding: 18px;
+  }
+  .legend {
+    gap: 10px;
+  }
+}
+
+.panel-heading button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 1px solid #bfc9bd;
+  border-radius: 5px;
+  background: #edf1e8;
+  color: #29443d;
+  font: inherit;
+  cursor: pointer;
+}
+.panel-heading button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}

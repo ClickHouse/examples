@@ -1,0 +1,44 @@
+{
+  "name": "field-dispatch",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.21.0 <25"
+  },
+  "scripts": {
+    "build": "vite build",
+    "check": "tsc --noEmit",
+    "start": "node --env-file=.env --import tsx server/index.ts",
+    "test": "tsx --test tests/native.test.ts",
+    "test:integration": "node --env-file=.env --import tsx --test tests/database.test.ts",
+    "test:browser": "node --env-file=.env ./node_modules/@playwright/test/cli.js test"
+  },
+  "dependencies": {
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "maplibre-gl": "6.12.0",
+    "@deck.gl/core": "9.4.0",
+    "@deck.gl/layers": "9.4.0",
+    "@deck.gl/maplibre": "9.4.0",
+    "@luma.gl/core": "9.4.0",
+    "@luma.gl/engine": "9.4.0",
+    "@loaders.gl/core": "4.5.2",
+    "@turf/turf": "7.4.0",
+    "pmtiles": "4.5.0",
+    "pg": "8.23.1",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/geojson": "7946.0.16",
+    "@types/node": "26.6.4",
+    "@types/pg": "8.23.1",
+    "@vitejs/plugin-react": "6.1.1",
+    "vite": "8.3.2",
+    "typescript": "6.0.3",
+    "tsx": "4.23.15",
+    "@playwright/test": "1.63.0",
+    "prettier": "3.9.9"
+  }
+}
