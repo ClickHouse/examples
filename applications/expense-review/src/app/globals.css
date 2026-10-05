@@ -1,0 +1,368 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+body {
+  background: #f3f5f8;
+  color: #172c41;
+  font-family: system-ui, sans-serif;
+}
+.workbench {
+  max-width: 1340px;
+  margin: auto;
+  padding: 36px;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+h1 {
+  font-size: 34px;
+  font-weight: 650;
+  margin-top: 8px;
+}
+header p {
+  color: #5e7082;
+  margin-top: 7px;
+}
+.eyebrow {
+  color: #577391;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+.panel {
+  border: 1px solid #d9e2ed;
+  background: white;
+  border-radius: 14px;
+  padding: 24px;
+}
+.tools {
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+}
+.tools > div:first-child {
+  flex: 1;
+}
+.tools label,
+.claim-form label,
+.decision-form > label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+.scope {
+  display: flex;
+  justify-content: space-between;
+  color: #657991;
+  font-size: 13px;
+  margin: 20px 0;
+}
+.claims-scroll {
+  height: 510px;
+  overflow: auto;
+  border: 1px solid #e0e6ee;
+  border-radius: 8px;
+}
+.claims-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+.claims-table thead {
+  position: sticky;
+  top: 0;
+  background: #f5f7fa;
+  z-index: 1;
+}
+.claims-table th {
+  text-align: left;
+  font-size: 12px;
+  padding: 15px 12px;
+  color: #4d647c;
+}
+.claims-table td {
+  font-size: 13px;
+  padding: 0 12px;
+  height: 54px;
+  border-bottom: 1px solid #edf0f4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.claims-table th:first-child {
+  width: 75px;
+}
+.claims-table th:nth-child(2) {
+  width: 145px;
+}
+.claims-table th:nth-child(3) {
+  width: 105px;
+}
+.claims-table th:nth-child(5) {
+  width: 100px;
+}
+.claims-table th:nth-child(6) {
+  width: 100px;
+}
+.claims-table tr[data-selected="true"] {
+  background: #edf4ff;
+}
+.claims-table tr[aria-hidden="true"] td {
+  padding: 0;
+  height: inherit;
+  border: 0;
+}
+.claim-link {
+  font-weight: 650;
+  color: #245c9a;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.hint {
+  font-size: 12px;
+  color: #667b91;
+  margin-top: 15px;
+}
+.review-dialog {
+  max-width: 720px !important;
+  max-height: 90vh;
+  overflow: auto;
+}
+.claim-summary {
+  display: flex;
+  justify-content: space-between;
+  padding: 18px 0;
+  border-bottom: 1px solid #dde5ed;
+}
+.claim-summary > div:last-child {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+.claim-summary p {
+  font-size: 12px;
+  color: #657991;
+  margin-top: 5px;
+}
+h2 {
+  font-size: 16px;
+  font-weight: 650;
+  margin: 16px 0 12px;
+}
+.claim-form,
+.decision-form {
+  padding: 10px 0 20px;
+  border-bottom: 1px solid #dde5ed;
+}
+.line-form {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 16px;
+}
+.line-form > div:first-child {
+  flex: 1;
+}
+.line-form > div:nth-child(2) {
+  width: 135px;
+}
+.line-form > button {
+  margin-top: 26px;
+}
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+.feedback {
+  background: #e5f5ed;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.feedback.error {
+  background: #fff0ee;
+}
+.error {
+  color: #a53d3d;
+  font-size: 12px;
+}
+.decision-form fieldset {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+.decision-form legend {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.decision-form > button {
+  margin-top: 14px;
+}
+.history article {
+  background: #f5f7fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 12px;
+  font-size: 13px;
+}
+.history article > div {
+  display: flex;
+  justify-content: space-between;
+}
+.history p,
+.history li {
+  margin-top: 8px;
+}
+.empty {
+  padding: 20px;
+  text-align: center;
+}
+@media (max-width: 800px) {
+  .workbench {
+    padding: 18px;
+  }
+  .tools,
+  header,
+  .scope {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .line-form {
+    flex-wrap: wrap;
+  }
+  .panel {
+    padding: 14px;
+  }
+}
