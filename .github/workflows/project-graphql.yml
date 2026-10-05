@@ -1,0 +1,60 @@
+name: Project GraphQL
+on:
+  push:
+    paths: ['applications/project-graphql/**', '.github/workflows/project-graphql.yml']
+  pull_request:
+    paths: ['applications/project-graphql/**', '.github/workflows/project-graphql.yml']
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/project-graphql
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: ci-admin-not-for-use
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 12
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: 5432
+      PGDATABASE: postgres
+      PGUSER: postgres
+      PGPASSWORD: ci-admin-not-for-use
+      PGSSLMODE: disable
+      PG_MIGRATION_PASSWORD: ci-migration-not-for-use
+      PG_APP_PASSWORD: ci-runtime-not-for-use
+      DATABASE_LOCAL: 'true'
+      DATABASE_URL: postgresql://tracker_api:ci-runtime-not-for-use@127.0.0.1:5432/postgres
+      MIGRATION_DATABASE_URL: postgresql://tracker_migration:ci-migration-not-for-use@127.0.0.1:5432/postgres
+      APP_ORIGIN: http://127.0.0.1:3002
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.21.0'
+          cache: npm
+          cache-dependency-path: applications/project-graphql/package-lock.json
+      - run: npm ci
+      - name: Apply dedicated local roles and schema
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f sql/roles.sql
+          PGUSER=tracker_migration PGPASSWORD="$PG_MIGRATION_PASSWORD" psql -X -v ON_ERROR_STOP=1 -f sql/schema.sql
+          PGUSER=tracker_migration PGPASSWORD="$PG_MIGRATION_PASSWORD" psql -X -v ON_ERROR_STOP=1 -f sql/seed.sql
+          node scripts/seed-users.ts
+          touch .env
+      - run: npm run schema && git diff --exit-code -- schema.graphql
+      - run: npm run typecheck && npm run build && npm test
+      - name: Exercise SQL-derived API and real restricted roles
+        run: |
+          npm start > /tmp/project-graphql-server.log 2>&1 &
+          for attempt in $(seq 1 20); do
+            if curl --fail --silent http://127.0.0.1:3002/api/me >/dev/null; then break; fi
+            sleep 1
+          done
+          npm run test:integration

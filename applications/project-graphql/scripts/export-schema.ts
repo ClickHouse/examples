@@ -1,0 +1,10 @@
+import { writeFile } from "node:fs/promises";
+import { printSchema } from "graphql";
+import { connectDatabase } from "../src/server/database.ts";
+import { createGraphile } from "../src/server/preset.ts";
+const pool = await connectDatabase();
+const pgl = createGraphile(pool);
+const { schema } = await pgl.getSchemaResult();
+await writeFile("schema.graphql", printSchema(schema) + "\n");
+await pgl.release();
+await pool.end();

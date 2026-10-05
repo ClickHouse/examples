@@ -1,0 +1,37 @@
+{
+  "name": "project-graphql",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "vite build",
+    "start": "node --env-file=.env src/server/index.ts",
+    "test": "node --test tests/session.test.ts",
+    "test:integration": "node --env-file=.env --test tests/api.test.ts",
+    "test:browser": "playwright test",
+    "schema": "node --env-file=.env scripts/export-schema.ts"
+  },
+  "dependencies": {
+    "postgraphile": "5.1.5",
+    "grafast": "1.1.4",
+    "@apollo/client": "4.3.1",
+    "graphql": "16.12.0",
+    "rxjs": "7.8.2",
+    "pg": "8.23.1",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "@types/pg": "8.23.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "vite": "8.3.2",
+    "typescript": "7.0.2",
+    "@playwright/test": "1.63.0"
+  }
+}

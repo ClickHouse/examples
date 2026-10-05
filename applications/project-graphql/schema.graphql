@@ -1,0 +1,730 @@
+"""The root query type which gives access points into the data universe."""
+type Query implements Node {
+  """
+  Exposes the root query type nested one level down. This is helpful for Relay 1
+  which can only query top level fields if they are in a particular form.
+  """
+  query: Query!
+
+  """
+  The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`.
+  """
+  id: ID!
+
+  """Fetches an object given its globally unique `ID`."""
+  node(
+    """The globally unique `ID`."""
+    id: ID!
+  ): Node
+
+  """Get a single `Workspace`."""
+  workspaceByRowId(rowId: UUID!): Workspace
+
+  """Get a single `Project`."""
+  projectByRowId(rowId: UUID!): Project
+
+  """Get a single `Project`."""
+  projectByRowIdAndWorkspaceId(rowId: UUID!, workspaceId: UUID!): Project
+
+  """Get a single `Task`."""
+  taskByRowId(rowId: UUID!): Task
+
+  """Reads a single `Workspace` using its globally unique `ID`."""
+  workspace(
+    """The globally unique `ID` to be used in selecting a single `Workspace`."""
+    id: ID!
+  ): Workspace
+
+  """Reads a single `Project` using its globally unique `ID`."""
+  project(
+    """The globally unique `ID` to be used in selecting a single `Project`."""
+    id: ID!
+  ): Project
+
+  """Reads a single `Task` using its globally unique `ID`."""
+  task(
+    """The globally unique `ID` to be used in selecting a single `Task`."""
+    id: ID!
+  ): Task
+
+  """Reads and enables pagination through a set of `Workspace`."""
+  allWorkspaces(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: WorkspaceCondition
+
+    """The method to use when ordering `Workspace`."""
+    orderBy: [WorkspaceOrderBy!] = [PRIMARY_KEY_ASC]
+  ): WorkspaceConnection
+
+  """Reads and enables pagination through a set of `Project`."""
+  allProjects(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: ProjectCondition
+
+    """The method to use when ordering `Project`."""
+    orderBy: [ProjectOrderBy!] = [PRIMARY_KEY_ASC]
+  ): ProjectConnection
+
+  """Reads and enables pagination through a set of `Task`."""
+  allTasks(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: TaskCondition
+
+    """The method to use when ordering `Task`."""
+    orderBy: [TaskOrderBy!] = [PRIMARY_KEY_ASC]
+  ): TaskConnection
+}
+
+"""An object with a globally unique `ID`."""
+interface Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  id: ID!
+}
+
+type Workspace implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  id: ID!
+  rowId: UUID!
+  name: String!
+
+  """Reads and enables pagination through a set of `Project`."""
+  projectsByWorkspaceId(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: ProjectCondition
+
+    """The method to use when ordering `Project`."""
+    orderBy: [ProjectOrderBy!] = [PRIMARY_KEY_ASC]
+  ): ProjectConnection!
+}
+
+"""
+A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122).
+"""
+scalar UUID
+
+"""A connection to a list of `Project` values."""
+type ProjectConnection {
+  """A list of `Project` objects."""
+  nodes: [Project]!
+
+  """
+  A list of edges which contains the `Project` and cursor to aid in pagination.
+  """
+  edges: [ProjectEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Project` you could get from the connection."""
+  totalCount: Int!
+}
+
+type Project implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  id: ID!
+  rowId: UUID!
+  workspaceId: UUID!
+  name: String!
+  createdAt: Datetime!
+  description: String!
+
+  """Reads a single `Workspace` that is related to this `Project`."""
+  workspaceByWorkspaceId: Workspace
+
+  """Reads and enables pagination through a set of `Task`."""
+  tasksByProjectIdAndWorkspaceId(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: TaskCondition
+
+    """The method to use when ordering `Task`."""
+    orderBy: [TaskOrderBy!] = [PRIMARY_KEY_ASC]
+  ): TaskConnection!
+}
+
+"""
+A point in time as described by the [ISO
+8601](https://en.wikipedia.org/wiki/ISO_8601) and, if it has a timezone, [RFC
+3339](https://datatracker.ietf.org/doc/html/rfc3339) standards. Input values
+that do not conform to both ISO 8601 and RFC 3339 may be coerced, which may lead
+to unexpected results.
+"""
+scalar Datetime
+
+"""A connection to a list of `Task` values."""
+type TaskConnection {
+  """A list of `Task` objects."""
+  nodes: [Task]!
+
+  """
+  A list of edges which contains the `Task` and cursor to aid in pagination.
+  """
+  edges: [TaskEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Task` you could get from the connection."""
+  totalCount: Int!
+}
+
+type Task implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  id: ID!
+  rowId: UUID!
+  workspaceId: UUID!
+  projectId: UUID!
+  title: String!
+  done: Boolean!
+  createdAt: Datetime!
+
+  """Reads a single `Project` that is related to this `Task`."""
+  projectByProjectIdAndWorkspaceId: Project
+}
+
+"""A `Task` edge in the connection."""
+type TaskEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Task` at the end of the edge."""
+  node: Task
+}
+
+"""A location in a connection that can be used for resuming pagination."""
+scalar Cursor
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: Cursor
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: Cursor
+}
+
+"""
+A condition to be used against `Task` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input TaskCondition {
+  """Checks for equality with the object’s `rowId` field."""
+  rowId: UUID
+
+  """Checks for equality with the object’s `workspaceId` field."""
+  workspaceId: UUID
+
+  """Checks for equality with the object’s `projectId` field."""
+  projectId: UUID
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+}
+
+"""Methods to use when ordering `Task`."""
+enum TaskOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  WORKSPACE_ID_ASC
+  WORKSPACE_ID_DESC
+  PROJECT_ID_ASC
+  PROJECT_ID_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+}
+
+"""A `Project` edge in the connection."""
+type ProjectEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Project` at the end of the edge."""
+  node: Project
+}
+
+"""
+A condition to be used against `Project` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input ProjectCondition {
+  """Checks for equality with the object’s `rowId` field."""
+  rowId: UUID
+
+  """Checks for equality with the object’s `workspaceId` field."""
+  workspaceId: UUID
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+}
+
+"""Methods to use when ordering `Project`."""
+enum ProjectOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+  WORKSPACE_ID_ASC
+  WORKSPACE_ID_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+}
+
+"""A connection to a list of `Workspace` values."""
+type WorkspaceConnection {
+  """A list of `Workspace` objects."""
+  nodes: [Workspace]!
+
+  """
+  A list of edges which contains the `Workspace` and cursor to aid in pagination.
+  """
+  edges: [WorkspaceEdge]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Workspace` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Workspace` edge in the connection."""
+type WorkspaceEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Workspace` at the end of the edge."""
+  node: Workspace
+}
+
+"""
+A condition to be used against `Workspace` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+input WorkspaceCondition {
+  """Checks for equality with the object’s `rowId` field."""
+  rowId: UUID
+}
+
+"""Methods to use when ordering `Workspace`."""
+enum WorkspaceOrderBy {
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROW_ID_ASC
+  ROW_ID_DESC
+}
+
+"""
+The root mutation type which contains root level fields which mutate data.
+"""
+type Mutation {
+  """Creates a single `Project`."""
+  createProject(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateProjectInput!
+  ): CreateProjectPayload
+
+  """Creates a single `Task`."""
+  createTask(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateTaskInput!
+  ): CreateTaskPayload
+
+  """Updates a single `Project` using its globally unique id and a patch."""
+  updateProject(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateProjectInput!
+  ): UpdateProjectPayload
+
+  """Updates a single `Project` using a unique key and a patch."""
+  updateProjectByRowId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateProjectByRowIdInput!
+  ): UpdateProjectPayload
+
+  """Updates a single `Project` using a unique key and a patch."""
+  updateProjectByRowIdAndWorkspaceId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateProjectByRowIdAndWorkspaceIdInput!
+  ): UpdateProjectPayload
+
+  """Updates a single `Task` using its globally unique id and a patch."""
+  updateTask(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateTaskInput!
+  ): UpdateTaskPayload
+
+  """Updates a single `Task` using a unique key and a patch."""
+  updateTaskByRowId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateTaskByRowIdInput!
+  ): UpdateTaskPayload
+}
+
+"""The output of our create `Project` mutation."""
+type CreateProjectPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Project` that was created by this mutation."""
+  project: Project
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Project`. May be used by Relay 1."""
+  projectEdge(
+    """The method to use when ordering `Project`."""
+    orderBy: [ProjectOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): ProjectEdge
+}
+
+"""All input for the create `Project` mutation."""
+input CreateProjectInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Project` to be created by this mutation."""
+  project: ProjectInput!
+}
+
+"""An input for mutations affecting `Project`"""
+input ProjectInput {
+  rowId: UUID
+  workspaceId: UUID
+  name: String!
+  createdAt: Datetime
+  description: String
+}
+
+"""The output of our create `Task` mutation."""
+type CreateTaskPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Task` that was created by this mutation."""
+  task: Task
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Task`. May be used by Relay 1."""
+  taskEdge(
+    """The method to use when ordering `Task`."""
+    orderBy: [TaskOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): TaskEdge
+}
+
+"""All input for the create `Task` mutation."""
+input CreateTaskInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Task` to be created by this mutation."""
+  task: TaskInput!
+}
+
+"""An input for mutations affecting `Task`"""
+input TaskInput {
+  rowId: UUID
+  workspaceId: UUID
+  projectId: UUID!
+  title: String!
+  done: Boolean
+  createdAt: Datetime
+}
+
+"""The output of our update `Project` mutation."""
+type UpdateProjectPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Project` that was updated by this mutation."""
+  project: Project
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Project`. May be used by Relay 1."""
+  projectEdge(
+    """The method to use when ordering `Project`."""
+    orderBy: [ProjectOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): ProjectEdge
+}
+
+"""All input for the `updateProject` mutation."""
+input UpdateProjectInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Project` to be updated.
+  """
+  id: ID!
+
+  """
+  An object where the defined keys will be set on the `Project` being updated.
+  """
+  projectPatch: ProjectPatch!
+}
+
+"""
+Represents an update to a `Project`. Fields that are set will be updated.
+"""
+input ProjectPatch {
+  rowId: UUID
+  workspaceId: UUID
+  name: String
+  createdAt: Datetime
+  description: String
+}
+
+"""All input for the `updateProjectByRowId` mutation."""
+input UpdateProjectByRowIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  rowId: UUID!
+
+  """
+  An object where the defined keys will be set on the `Project` being updated.
+  """
+  projectPatch: ProjectPatch!
+}
+
+"""All input for the `updateProjectByRowIdAndWorkspaceId` mutation."""
+input UpdateProjectByRowIdAndWorkspaceIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  rowId: UUID!
+  workspaceId: UUID!
+
+  """
+  An object where the defined keys will be set on the `Project` being updated.
+  """
+  projectPatch: ProjectPatch!
+}
+
+"""The output of our update `Task` mutation."""
+type UpdateTaskPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Task` that was updated by this mutation."""
+  task: Task
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Task`. May be used by Relay 1."""
+  taskEdge(
+    """The method to use when ordering `Task`."""
+    orderBy: [TaskOrderBy!]! = [PRIMARY_KEY_ASC]
+  ): TaskEdge
+}
+
+"""All input for the `updateTask` mutation."""
+input UpdateTaskInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Task` to be updated.
+  """
+  id: ID!
+
+  """
+  An object where the defined keys will be set on the `Task` being updated.
+  """
+  taskPatch: TaskPatch!
+}
+
+"""Represents an update to a `Task`. Fields that are set will be updated."""
+input TaskPatch {
+  rowId: UUID
+  workspaceId: UUID
+  projectId: UUID
+  title: String
+  done: Boolean
+  createdAt: Datetime
+}
+
+"""All input for the `updateTaskByRowId` mutation."""
+input UpdateTaskByRowIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  rowId: UUID!
+
+  """
+  An object where the defined keys will be set on the `Task` being updated.
+  """
+  taskPatch: TaskPatch!
+}
