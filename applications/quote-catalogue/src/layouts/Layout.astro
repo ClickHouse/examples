@@ -1,0 +1,6 @@
+---
+import '../styles/app.css'
+const { title } = Astro.props
+---
+<!doctype html><html lang="en" data-theme="light"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width"/><title>{title} · Fieldwork</title><meta name="description" content="Build and save an equipment-hire quote with Fieldwork's synthetic catalogue."/></head>
+<body><header class="site-header"><a class="brand" href="/"><span class="brand-mark">F</span>FIELDWORK<span class="brand-note">EQUIPMENT HIRE</span></a><nav aria-label="Main"><a href="/">Catalogue</a><a href="/hire-guide">Hire guide</a><span class="badge badge-outline">LOCAL WORKBENCH</span></nav></header><main><slot/></main><footer>Fieldwork · Synthetic equipment catalogue <span>Saved quotes, clear revisions.</span></footer></body></html>

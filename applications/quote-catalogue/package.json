@@ -1,0 +1,42 @@
+{
+  "name": "quote-catalogue",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "check": "astro check",
+    "build": "astro build",
+    "start": "node scripts/start.mjs",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:seed": "tsx scripts/seed.ts",
+    "db:probe": "tsx scripts/probe.ts",
+    "test:integration": "tsx tests/integration.ts",
+    "test:browser": "tsx tests/browser.ts"
+  },
+  "dependencies": {
+    "astro": "7.3.5",
+    "@astrojs/node": "11.1.6",
+    "@astrojs/preact": "6.0.5",
+    "preact": "10.29.8",
+    "daisyui": "5.7.47",
+    "tailwindcss": "4.3.3",
+    "@tailwindcss/vite": "4.3.3",
+    "@orpc/server": "1.15.4",
+    "@orpc/client": "1.15.4",
+    "@orpc/contract": "1.15.4",
+    "arktype": "2.2.7",
+    "kysely": "0.29.6",
+    "pg": "8.23.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "typescript": "6.0.3",
+    "tsx": "4.23.15",
+    "@types/pg": "8.23.1",
+    "@types/node": "24.19.1",
+    "@playwright/test": "1.63.0"
+  }
+}

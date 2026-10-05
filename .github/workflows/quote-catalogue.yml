@@ -1,0 +1,25 @@
+name: Quote catalogue build
+on:
+  pull_request:
+    paths: ['applications/quote-catalogue/**', '.github/workflows/quote-catalogue.yml']
+  push:
+    branches: [main]
+    paths: ['applications/quote-catalogue/**', '.github/workflows/quote-catalogue.yml']
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/quote-catalogue
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.21.0'
+          cache: npm
+          cache-dependency-path: applications/quote-catalogue/package-lock.json
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build

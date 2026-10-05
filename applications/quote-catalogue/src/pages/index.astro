@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro'
+import QuoteBuilder from '../components/QuoteBuilder'
+import { catalogue } from '../server/quotes'
+let products: Awaited<ReturnType<typeof catalogue>> = []
+let unavailable = false
+try { products = await catalogue() } catch { unavailable = true }
+const quoteId = Number(Astro.url.searchParams.get('quote') ?? 1)
+---
+<Layout title="Equipment quote catalogue">
+  <section class="hero-copy"><div><p class="eyebrow">SMALL CREWS. GOOD EQUIPMENT.</p><h1>Bring your next<br/>production together.</h1><p class="hero-description">Build a kit for your studio session or field shoot.<br/>Choose equipment, set the duration and save a quote you can return to.</p></div><aside><span>01 / PREPARE</span><h2>A clear plan<br/>before the shoot.</h2><p>Daily hire rates.<br/>A quote you can revise.<br/>No booking required.</p><a href="/hire-guide" class="link">Plan your equipment list ↗</a></aside></section>
+  {unavailable ? <div class="alert alert-error" role="alert">The catalogue could not be loaded. Check the database connection and reload.</div> :
+    Number.isSafeInteger(quoteId) && quoteId > 0 ? <QuoteBuilder products={products} quoteId={quoteId} client:load/> : <div class="alert alert-error">Invalid quote number.</div>}
+</Layout>
