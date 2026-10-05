@@ -69,12 +69,10 @@ set +a
 npm start
 ```
 
-Open http://127.0.0.1:4332. For OrbStack, forward the loopback server in a host terminal:
-
-```sh
-ssh -N -L 4332:127.0.0.1:4332 YOUR_MACHINE@orb
-```
-
+Open http://127.0.0.1:4332 from your Mac while Next.js runs in the VM.
+[OrbStack automatically forwards Linux machine ports](https://docs.orbstack.dev/machines/network#running-servers),
+including this loopback listener. Keep port 4332 free of other host or VM servers;
+an additional SSH tunnel on the same port conflicts with automatic forwarding.
 Keep `APP_ORIGIN` and the browser URL at http://127.0.0.1:4332.
 
 ## Try the review workflow
