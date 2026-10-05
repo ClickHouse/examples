@@ -11,8 +11,7 @@ Opening an old edit form cannot silently overwrite a newer edit.
 ![Harvest dashboard with weekly and crop charts](docs/dashboard-desktop.png)
 
 [View the mobile layout](docs/dashboard-mobile.png). These screenshots were
-captured against a local TLS Postgres fixture; they are not managed-service
-validation evidence.
+captured against ClickHouse Managed Postgres during the complete browser workflow.
 
 **[Start a ClickHouse Cloud trial with $300 in credits](https://clickhouse.com/cloud).**
 
@@ -251,10 +250,11 @@ exact aggregated values.
 
 ## Verify behavior
 
-Current maintainer verification used Ubuntu 24.04 ARM64, Node 24.21.0 and
-Postgres 18.6 started with `clickhousectl`, with a local TLS certificate.
-Clean install, typecheck, build, database checks and Chromium workflows passed.
-Managed-service provisioning and execution have not yet been verified.
+Maintainer verification used Ubuntu 24.04 ARM64, Node 24.21.0 and ClickHouse
+Managed Postgres 18.6, provisioned with `clickhousectl`. Clean install, typecheck,
+build, database checks and Chromium workflows passed, including a genuine server
+process replacement and persisted edit. The disposable managed service was
+deleted after verification.
 
 Run the secret-free checks inside Linux:
 
