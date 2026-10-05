@@ -1,0 +1,28 @@
+name: Appointment calendar build
+on:
+  pull_request:
+    paths:
+      - 'applications/appointment-calendar/**'
+      - '.github/workflows/appointment-calendar.yml'
+  push:
+    paths:
+      - 'applications/appointment-calendar/**'
+      - '.github/workflows/appointment-calendar.yml'
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: applications/appointment-calendar
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: applications/appointment-calendar/package-lock.json
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build

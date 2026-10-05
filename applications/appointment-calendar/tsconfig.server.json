@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": "build",
+    "rootDir": ".",
+    "ignoreDeprecations": "6.0"
+  },
+  "include": ["server/**/*", "shared/**/*", "scripts/**/*", "tests/**/*"]
+}

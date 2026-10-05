@@ -1,0 +1,46 @@
+{
+  "name": "appointment-calendar",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "check": "vue-tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.server.json",
+    "build": "vite build && tsc -p tsconfig.server.json",
+    "start": "node build/server/server.js",
+    "db:probe": "tsx scripts/probe.ts",
+    "test:integration": "tsx tests/integration.ts",
+    "test:browser": "tsx tests/browser.ts"
+  },
+  "dependencies": {
+    "vue": "3.5.43",
+    "vue-router": "5.3.1",
+    "pinia": "4.0.3",
+    "primevue": "4.5.5",
+    "@primeuix/themes": "2.0.3",
+    "vee-validate": "4.15.1",
+    "@vee-validate/zod": "4.15.1",
+    "@fullcalendar/vue3": "7.1.0",
+    "@fullcalendar/core": "7.1.0",
+    "temporal-polyfill": "1.0.5",
+    "chart.js": "4.5.1",
+    "@ts-rest/core": "3.52.1",
+    "@ts-rest/express": "3.52.1",
+    "zod": "3.25.76",
+    "express": "4.22.3",
+    "pg": "8.23.1"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.25",
+    "@types/pg": "8.23.1",
+    "@types/node": "24.19.1",
+    "typescript": "6.0.3",
+    "tsx": "4.23.15",
+    "vite": "8.3.2",
+    "@vitejs/plugin-vue": "6.0.9",
+    "vue-tsc": "3.3.12",
+    "@playwright/test": "1.63.0"
+  }
+}
