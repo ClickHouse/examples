@@ -1,0 +1,198 @@
+[
+  {
+    "format": "Avro",
+    "shape": "two",
+    "n": 7,
+    "query_elapsed_seconds": {
+      "median": 0.228,
+      "min": 0.215,
+      "max": 0.237
+    },
+    "clickhouse_peak_tracked_bytes": {
+      "median": 8537463,
+      "min": 8537463,
+      "max": 8537463
+    },
+    "process_wall_seconds": {
+      "median": 0.258693192001374,
+      "min": 0.24521210999955656,
+      "max": 0.2669893829988723
+    },
+    "user_cpu_seconds": {
+      "median": 0.221408,
+      "min": 0.215976,
+      "max": 0.239923
+    },
+    "system_cpu_seconds": {
+      "median": 0.038286,
+      "min": 0.028307,
+      "max": 0.056103
+    },
+    "peak_rss_kib": {
+      "median": 245344,
+      "min": 245212,
+      "max": 245744
+    },
+    "block_input_ops": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "proc_read_bytes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "format": "Parquet",
+    "shape": "two",
+    "n": 7,
+    "query_elapsed_seconds": {
+      "median": 0.008,
+      "min": 0.007,
+      "max": 0.008
+    },
+    "clickhouse_peak_tracked_bytes": {
+      "median": 9504144,
+      "min": 9468704,
+      "max": 10028208
+    },
+    "process_wall_seconds": {
+      "median": 0.0385170739973546,
+      "min": 0.037324152999644866,
+      "max": 0.04091899700142676
+    },
+    "user_cpu_seconds": {
+      "median": 0.035296,
+      "min": 0.030549,
+      "max": 0.037098
+    },
+    "system_cpu_seconds": {
+      "median": 0.009581,
+      "min": 0.004364,
+      "max": 0.012001
+    },
+    "peak_rss_kib": {
+      "median": 250196,
+      "min": 249700,
+      "max": 254888
+    },
+    "block_input_ops": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "proc_read_bytes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "format": "Avro",
+    "shape": "all",
+    "n": 7,
+    "query_elapsed_seconds": {
+      "median": 0.349,
+      "min": 0.34,
+      "max": 0.36
+    },
+    "clickhouse_peak_tracked_bytes": {
+      "median": 52378734,
+      "min": 52378734,
+      "max": 52378974
+    },
+    "process_wall_seconds": {
+      "median": 0.3813496840011794,
+      "min": 0.3709298619978654,
+      "max": 0.3915057570011413
+    },
+    "user_cpu_seconds": {
+      "median": 0.31946199999999997,
+      "min": 0.304394,
+      "max": 0.342257
+    },
+    "system_cpu_seconds": {
+      "median": 0.066014,
+      "min": 0.055487999999999996,
+      "max": 0.08369299999999999
+    },
+    "peak_rss_kib": {
+      "median": 276704,
+      "min": 276340,
+      "max": 276900
+    },
+    "block_input_ops": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "proc_read_bytes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "format": "Parquet",
+    "shape": "all",
+    "n": 7,
+    "query_elapsed_seconds": {
+      "median": 0.099,
+      "min": 0.097,
+      "max": 0.112
+    },
+    "clickhouse_peak_tracked_bytes": {
+      "median": 128070128,
+      "min": 128065832,
+      "max": 128105920
+    },
+    "process_wall_seconds": {
+      "median": 0.12997147299756762,
+      "min": 0.1276951330000884,
+      "max": 0.1441576819997863
+    },
+    "user_cpu_seconds": {
+      "median": 0.147927,
+      "min": 0.129746,
+      "max": 0.168256
+    },
+    "system_cpu_seconds": {
+      "median": 0.04641,
+      "min": 0.019289999999999998,
+      "max": 0.057009
+    },
+    "peak_rss_kib": {
+      "median": 317668,
+      "min": 317500,
+      "max": 319528
+    },
+    "block_input_ops": {
+      "median": 0,
+      "min": 0,
+      "max": 0
+    },
+    "proc_read_bytes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+]

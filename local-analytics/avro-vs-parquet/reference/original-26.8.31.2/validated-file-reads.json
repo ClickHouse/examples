@@ -1,0 +1,34 @@
+[
+  {
+    "format": "avro",
+    "shape": "two",
+    "read_calls": 69,
+    "requested_bytes": 72351744,
+    "returned_bytes": 70484749,
+    "unique_file_range_bytes": 70484749
+  },
+  {
+    "format": "avro",
+    "shape": "all",
+    "read_calls": 69,
+    "requested_bytes": 72351744,
+    "returned_bytes": 70484749,
+    "unique_file_range_bytes": 70484749
+  },
+  {
+    "format": "parquet",
+    "shape": "two",
+    "read_calls": 18,
+    "requested_bytes": 2986857,
+    "returned_bytes": 2986857,
+    "unique_file_range_bytes": 2984841
+  },
+  {
+    "format": "parquet",
+    "shape": "all",
+    "read_calls": 169,
+    "requested_bytes": 55178653,
+    "returned_bytes": 55178653,
+    "unique_file_range_bytes": 55176170
+  }
+]

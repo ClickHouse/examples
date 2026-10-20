@@ -1,0 +1,20 @@
+{
+  "cli_version": "clickhousectl 0.4.2",
+  "engine_version": "ClickHouse local version 26.8.32.16 (official build).",
+  "binary_path": "/root/.clickhouse/versions/26.8.32.16/clickhouse",
+  "managed_binary_sha256": "0d0719833575d7f930580bba7769069d4bc054a8af037e8b8bc3955f7368f937",
+  "original_image_binary_sha256": "53d4dc9a50e04564358da9df2bb432f1a4b6af4ac3f659fdf63b9d1ffd36f94d",
+  "binary_identical_to_original_image": false,
+  "which_response": {
+    "version": "26.8.32.16",
+    "binary_path": "/root/.clickhouse/versions/26.8.32.16/clickhouse"
+  },
+  "telemetry_env": "DO_NOT_TRACK=1",
+  "resolver_input": "26.8",
+  "required_exact_version": "26.8.32.16",
+  "required_binary_sha256": "0d0719833575d7f930580bba7769069d4bc054a8af037e8b8bc3955f7368f937",
+  "binary_matches_declared_pin": true,
+  "condition_change": "intentional managed engine update from original image 26.8.31.2 to 26.8.32.16",
+  "default_selection": "first install sets default; no local use command invoked",
+  "global_symlink_created": false
+}

@@ -1,0 +1,7 @@
+/artifacts/
+/data/
+/results/
+__pycache__/
+*.pyc
+/orchestration-*.json
+/orchestration-*.stderr

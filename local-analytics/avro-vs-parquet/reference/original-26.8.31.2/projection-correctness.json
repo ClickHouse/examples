@@ -1,0 +1,13 @@
+{
+  "generator_two_column_ordered_rowbinary_sha256": "07a4bd58dfbf10efaf6fb98df7fbc12e9661bf631cffa37185de1691b1301c66",
+  "files": {
+    "Avro": {
+      "two_column_ordered_rowbinary_sha256": "07a4bd58dfbf10efaf6fb98df7fbc12e9661bf631cffa37185de1691b1301c66",
+      "matches_generator": true
+    },
+    "Parquet": {
+      "two_column_ordered_rowbinary_sha256": "07a4bd58dfbf10efaf6fb98df7fbc12e9661bf631cffa37185de1691b1301c66",
+      "matches_generator": true
+    }
+  }
+}

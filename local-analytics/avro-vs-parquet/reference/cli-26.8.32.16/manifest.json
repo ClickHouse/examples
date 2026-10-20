@@ -1,0 +1,162 @@
+{
+  "rows": 500000,
+  "repeats": 7,
+  "fields": [
+    [
+      "event_id",
+      "Int64"
+    ],
+    [
+      "event_time",
+      "DateTime64(3, 'UTC')"
+    ],
+    [
+      "tenant_id",
+      "Int32"
+    ],
+    [
+      "user_id",
+      "Int64"
+    ],
+    [
+      "event_type",
+      "String"
+    ],
+    [
+      "country",
+      "String"
+    ],
+    [
+      "status",
+      "Int32"
+    ],
+    [
+      "latency_ms",
+      "Float64"
+    ],
+    [
+      "bytes_sent",
+      "Int64"
+    ],
+    [
+      "cpu_ms",
+      "Float64"
+    ],
+    [
+      "path",
+      "String"
+    ],
+    [
+      "host",
+      "String"
+    ],
+    [
+      "user_agent",
+      "String"
+    ],
+    [
+      "campaign",
+      "String"
+    ],
+    [
+      "email",
+      "String"
+    ],
+    [
+      "request_id",
+      "String"
+    ],
+    [
+      "payload",
+      "String"
+    ],
+    [
+      "region",
+      "String"
+    ],
+    [
+      "service",
+      "String"
+    ],
+    [
+      "retry_count",
+      "Int32"
+    ]
+  ],
+  "base_command": [
+    "/root/.clickhouse/versions/26.8.32.16/clickhouse",
+    "local",
+    "--max_threads=1",
+    "--max_memory_usage=1500000000",
+    "--max_execution_time=30",
+    "--max_rows_to_read=600000",
+    "--max_bytes_to_read=1500000000",
+    "--max_result_rows=600000",
+    "--input_format_parallel_parsing=0",
+    "--input_format_parquet_preserve_order=1",
+    "--storage_file_read_method=pread",
+    "--use_query_cache=0",
+    "--use_parquet_metadata_cache=0",
+    "--input_format_parquet_memory_high_watermark=536870912"
+  ],
+  "clickhouse_version": "26.8.32.16",
+  "platform": {
+    "system": "Linux",
+    "node": "5ad3854273dd",
+    "release": "7.2.9-orbstack-00391-g2b298d05fbd4",
+    "version": "#1 SMP PREEMPT Mon Oct 12 05:39:36 UTC 2026",
+    "machine": "aarch64",
+    "processor": "aarch64"
+  },
+  "python": "3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]",
+  "cpu_max": "200000 100000",
+  "memory_max": "3221225472",
+  "cache_regime": "warm OS page cache; fresh ClickHouse process per invocation; no cache drop claimed",
+  "managed_setup": {
+    "cli_version": "clickhousectl 0.4.2",
+    "engine_version": "ClickHouse local version 26.8.32.16 (official build).",
+    "binary_path": "/root/.clickhouse/versions/26.8.32.16/clickhouse",
+    "managed_binary_sha256": "0d0719833575d7f930580bba7769069d4bc054a8af037e8b8bc3955f7368f937",
+    "original_image_binary_sha256": "53d4dc9a50e04564358da9df2bb432f1a4b6af4ac3f659fdf63b9d1ffd36f94d",
+    "binary_identical_to_original_image": false,
+    "which_response": {
+      "version": "26.8.32.16",
+      "binary_path": "/root/.clickhouse/versions/26.8.32.16/clickhouse"
+    },
+    "telemetry_env": "DO_NOT_TRACK=1",
+    "resolver_input": "26.8",
+    "required_exact_version": "26.8.32.16",
+    "required_binary_sha256": "0d0719833575d7f930580bba7769069d4bc054a8af037e8b8bc3955f7368f937",
+    "binary_matches_declared_pin": true,
+    "condition_change": "intentional managed engine update from original image 26.8.31.2 to 26.8.32.16",
+    "default_selection": "first install sets default; no local use command invoked",
+    "global_symlink_created": false
+  },
+  "start_utc": "2026-10-20T16:48:13Z",
+  "export_settings": {
+    "Avro": [
+      "--output_format_avro_codec=zstd",
+      "--output_format_avro_sync_interval=65536",
+      "--output_format_avro_string_column_pattern=.*"
+    ],
+    "Parquet": [
+      "--output_format_parquet_compression_method=zstd",
+      "--output_format_parquet_row_group_size=100000",
+      "--output_format_parquet_row_group_size_bytes=134217728",
+      "--output_format_parquet_data_page_size=1048576",
+      "--output_format_parquet_parallel_encoding=0",
+      "--output_format_parquet_write_page_index=1"
+    ]
+  },
+  "files": {
+    "Avro": {
+      "bytes": 70484749,
+      "sha256": "eb7a8180687395512ac577d73df5a0467927df2b8135b24229ecf3788948dae8"
+    },
+    "Parquet": {
+      "bytes": 61650454,
+      "sha256": "60f749fb545ddb140d664fbe20e86e698de9b23f6039b250499f79078471b1c5"
+    }
+  },
+  "end_utc": "2026-10-20T16:48:25Z"
+}

@@ -1,0 +1,182 @@
+[
+  {
+    "name": "event_id",
+    "type": "Int64",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "event_time",
+    "type": "DateTime64(3, 'UTC')",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "tenant_id",
+    "type": "Int32",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "user_id",
+    "type": "Int64",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "event_type",
+    "type": "String",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "country",
+    "type": "String",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "status",
+    "type": "Int32",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "latency_ms",
+    "type": "Float64",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "bytes_sent",
+    "type": "Int64",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "cpu_ms",
+    "type": "Float64",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "path",
+    "type": "String",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "host",
+    "type": "String",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "user_agent",
+    "type": "String",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "campaign",
+    "type": "String",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "email",
+    "type": "String",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "request_id",
+    "type": "String",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "payload",
+    "type": "String",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "region",
+    "type": "String",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "service",
+    "type": "String",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  },
+  {
+    "name": "retry_count",
+    "type": "Int32",
+    "default_type": "",
+    "default_expression": "",
+    "comment": "",
+    "codec_expression": "",
+    "ttl_expression": ""
+  }
+]

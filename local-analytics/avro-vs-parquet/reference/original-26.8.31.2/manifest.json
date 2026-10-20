@@ -1,0 +1,142 @@
+{
+  "rows": 500000,
+  "repeats": 7,
+  "fields": [
+    [
+      "event_id",
+      "Int64"
+    ],
+    [
+      "event_time",
+      "DateTime64(3, 'UTC')"
+    ],
+    [
+      "tenant_id",
+      "Int32"
+    ],
+    [
+      "user_id",
+      "Int64"
+    ],
+    [
+      "event_type",
+      "String"
+    ],
+    [
+      "country",
+      "String"
+    ],
+    [
+      "status",
+      "Int32"
+    ],
+    [
+      "latency_ms",
+      "Float64"
+    ],
+    [
+      "bytes_sent",
+      "Int64"
+    ],
+    [
+      "cpu_ms",
+      "Float64"
+    ],
+    [
+      "path",
+      "String"
+    ],
+    [
+      "host",
+      "String"
+    ],
+    [
+      "user_agent",
+      "String"
+    ],
+    [
+      "campaign",
+      "String"
+    ],
+    [
+      "email",
+      "String"
+    ],
+    [
+      "request_id",
+      "String"
+    ],
+    [
+      "payload",
+      "String"
+    ],
+    [
+      "region",
+      "String"
+    ],
+    [
+      "service",
+      "String"
+    ],
+    [
+      "retry_count",
+      "Int32"
+    ]
+  ],
+  "base_command": [
+    "clickhouse",
+    "local",
+    "--max_threads=1",
+    "--max_memory_usage=1500000000",
+    "--max_execution_time=30",
+    "--max_rows_to_read=600000",
+    "--max_bytes_to_read=1500000000",
+    "--max_result_rows=600000",
+    "--input_format_parallel_parsing=0",
+    "--input_format_parquet_preserve_order=1",
+    "--storage_file_read_method=pread",
+    "--use_query_cache=0",
+    "--use_parquet_metadata_cache=0",
+    "--input_format_parquet_memory_high_watermark=536870912"
+  ],
+  "clickhouse_version": "26.8.31.2",
+  "platform": {
+    "system": "Linux",
+    "node": "07cb28511a8c",
+    "release": "7.2.9-orbstack-00391-g2b298d05fbd4",
+    "version": "#1 SMP PREEMPT Mon Oct 12 05:39:36 UTC 2026",
+    "machine": "aarch64",
+    "processor": "aarch64"
+  },
+  "python": "3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]",
+  "cpu_max": "200000 100000",
+  "memory_max": "3221225472",
+  "cache_regime": "warm OS page cache; fresh ClickHouse process per invocation; no cache drop claimed",
+  "start_utc": "2026-10-20T16:13:31Z",
+  "export_settings": {
+    "Avro": [
+      "--output_format_avro_codec=zstd",
+      "--output_format_avro_sync_interval=65536",
+      "--output_format_avro_string_column_pattern=.*"
+    ],
+    "Parquet": [
+      "--output_format_parquet_compression_method=zstd",
+      "--output_format_parquet_row_group_size=100000",
+      "--output_format_parquet_row_group_size_bytes=134217728",
+      "--output_format_parquet_data_page_size=1048576",
+      "--output_format_parquet_parallel_encoding=0",
+      "--output_format_parquet_write_page_index=1"
+    ]
+  },
+  "files": {
+    "Avro": {
+      "bytes": 70484749,
+      "sha256": "ed7c997cbfd18ce719b3bfb3c86a1082b54a8ab3e7ef072e3cf469f79d1b37c0"
+    },
+    "Parquet": {
+      "bytes": 61650454,
+      "sha256": "f1d1b4ee636e1a102e4281730d7c7054cf73ff6e34fefb5daf782bc02010a9ee"
+    }
+  },
+  "end_utc": "2026-10-20T16:13:40Z"
+}

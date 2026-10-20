@@ -1,0 +1,26 @@
+{
+  "sdk_version": "1.12.2",
+  "tests": [
+    {
+      "test": "add_with_default",
+      "outcome": "success",
+      "result": {
+        "id": 7,
+        "region": "unknown"
+      }
+    },
+    {
+      "test": "add_without_default",
+      "outcome": "error",
+      "exception_type": "SchemaResolutionException",
+      "message": "No default value for field region\nWriter's Schema: {\n  \"type\": \"record\",\n  \"name\": \"Event\",\n  \"fields\": [\n    {\n      \"type\": \"long\",\n      \"name\": \"id\"\n    },\n    {\n      \"type\": \"string\",\n      \"name\": \"obsolete\"\n    }\n  ]\n}\nReader's Schema: {\n  \"type\": \"record\",\n  \"name\": \"Event\",\n  \"fields\": [\n    {\n      \"type\": \"long\",\n      \"name\": \"id\"\n    },\n    {\n      \"type\": \"string\",\n      \"name\": \"region\"\n    }\n  ]\n}"
+    },
+    {
+      "test": "omit_writer_field",
+      "outcome": "success",
+      "result": {
+        "id": 7
+      }
+    }
+  ]
+}
