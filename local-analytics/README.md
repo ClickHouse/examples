@@ -29,6 +29,7 @@ local-analytics/<surface>-<topic>/
 
 | Folder | Companion article | Surface |
 |---|---|---|
+| [`avro-vs-parquet`](./avro-vs-parquet) | Avro vs Parquet: selective file reads with correctness and I/O checks | clickhouse-local |
 | [`clickhouse-local-intro`](./clickhouse-local-intro) | What is clickhouse-local? | clickhouse-local |
 | [`clickhouse-local-parquet`](./clickhouse-local-parquet) | How to query a Parquet file from the command line | clickhouse-local |
 | [`clickhouse-local-csv`](./clickhouse-local-csv) | How to run SQL on a CSV file | clickhouse-local |

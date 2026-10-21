@@ -1,0 +1,6 @@
+artifacts
+data
+results
+reference
+__pycache__
+*.pyc

@@ -1,0 +1,275 @@
+{
+  "status": "pass",
+  "hard_errors": [],
+  "review_reasons": [],
+  "volume_reference": "cli-26.8.32.16",
+  "comparisons": [
+    {
+      "metric": "Avro file bytes",
+      "observed": 70484749,
+      "reference": 70484749,
+      "ratio": 1.0,
+      "review_tolerance": 0.01
+    },
+    {
+      "metric": "Parquet file bytes",
+      "observed": 61650454,
+      "reference": 61650454,
+      "ratio": 1.0,
+      "review_tolerance": 0.01
+    },
+    {
+      "metric": "avro/two traced returned bytes",
+      "observed": 70484749,
+      "reference": 70484749,
+      "ratio": 1.0,
+      "review_tolerance": 0.05
+    },
+    {
+      "metric": "avro/all traced returned bytes",
+      "observed": 70484749,
+      "reference": 70484749,
+      "ratio": 1.0,
+      "review_tolerance": 0.05
+    },
+    {
+      "metric": "parquet/two traced returned bytes",
+      "observed": 2986857,
+      "reference": 2986857,
+      "ratio": 1.0,
+      "review_tolerance": 0.05
+    },
+    {
+      "metric": "parquet/all traced returned bytes",
+      "observed": 55178653,
+      "reference": 55178653,
+      "ratio": 1.0,
+      "review_tolerance": 0.05
+    }
+  ],
+  "advisory_resource_comparisons": [
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Avro",
+      "shape": "two",
+      "metric": "query_seconds",
+      "observed_median": 0.228,
+      "reference_median": 0.228,
+      "delta": 0.0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Avro",
+      "shape": "two",
+      "metric": "process_wall_seconds",
+      "observed_median": 0.258693192001374,
+      "reference_median": 0.258693192001374,
+      "delta": 0.0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Avro",
+      "shape": "two",
+      "metric": "process_cpu_seconds",
+      "observed_median": 0.26723399999999997,
+      "reference_median": 0.26723399999999997,
+      "delta": 0.0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Avro",
+      "shape": "two",
+      "metric": "peak_rss_kib",
+      "observed_median": 245344,
+      "reference_median": 245344,
+      "delta": 0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Avro",
+      "shape": "two",
+      "metric": "clickhouse_peak_tracked_bytes",
+      "observed_median": 8537463,
+      "reference_median": 8537463,
+      "delta": 0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Avro",
+      "shape": "all",
+      "metric": "query_seconds",
+      "observed_median": 0.349,
+      "reference_median": 0.349,
+      "delta": 0.0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Avro",
+      "shape": "all",
+      "metric": "process_wall_seconds",
+      "observed_median": 0.3813496840011794,
+      "reference_median": 0.3813496840011794,
+      "delta": 0.0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Avro",
+      "shape": "all",
+      "metric": "process_cpu_seconds",
+      "observed_median": 0.39358499999999996,
+      "reference_median": 0.39358499999999996,
+      "delta": 0.0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Avro",
+      "shape": "all",
+      "metric": "peak_rss_kib",
+      "observed_median": 276704,
+      "reference_median": 276704,
+      "delta": 0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Avro",
+      "shape": "all",
+      "metric": "clickhouse_peak_tracked_bytes",
+      "observed_median": 52378734,
+      "reference_median": 52378734,
+      "delta": 0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Parquet",
+      "shape": "two",
+      "metric": "query_seconds",
+      "observed_median": 0.008,
+      "reference_median": 0.008,
+      "delta": 0.0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Parquet",
+      "shape": "two",
+      "metric": "process_wall_seconds",
+      "observed_median": 0.0385170739973546,
+      "reference_median": 0.0385170739973546,
+      "delta": 0.0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Parquet",
+      "shape": "two",
+      "metric": "process_cpu_seconds",
+      "observed_median": 0.042355000000000004,
+      "reference_median": 0.042355000000000004,
+      "delta": 0.0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Parquet",
+      "shape": "two",
+      "metric": "peak_rss_kib",
+      "observed_median": 250196,
+      "reference_median": 250196,
+      "delta": 0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Parquet",
+      "shape": "two",
+      "metric": "clickhouse_peak_tracked_bytes",
+      "observed_median": 9504144,
+      "reference_median": 9504144,
+      "delta": 0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Parquet",
+      "shape": "all",
+      "metric": "query_seconds",
+      "observed_median": 0.099,
+      "reference_median": 0.099,
+      "delta": 0.0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Parquet",
+      "shape": "all",
+      "metric": "process_wall_seconds",
+      "observed_median": 0.12997147299756762,
+      "reference_median": 0.12997147299756762,
+      "delta": 0.0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Parquet",
+      "shape": "all",
+      "metric": "process_cpu_seconds",
+      "observed_median": 0.188056,
+      "reference_median": 0.188056,
+      "delta": 0.0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Parquet",
+      "shape": "all",
+      "metric": "peak_rss_kib",
+      "observed_median": 317668,
+      "reference_median": 317668,
+      "delta": 0,
+      "ratio": 1.0,
+      "advisory_only": true
+    },
+    {
+      "reference": "cli-26.8.32.16",
+      "format": "Parquet",
+      "shape": "all",
+      "metric": "clickhouse_peak_tracked_bytes",
+      "observed_median": 128070128,
+      "reference_median": 128070128,
+      "delta": 0,
+      "ratio": 1.0,
+      "advisory_only": true
+    }
+  ],
+  "timing_policy": "Advisory only; no exact expected timings, speed ratios, CPU or memory pass thresholds. Do not tune to force a winner.",
+  "hard_checks_count": 188,
+  "summary_note": "Compact projection of the recorded validation report; complete checks are regenerated by validate.py."
+}

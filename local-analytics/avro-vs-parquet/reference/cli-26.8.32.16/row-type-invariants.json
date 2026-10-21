@@ -1,0 +1,16 @@
+{
+  "Avro": {
+    "inferred_types_match": true,
+    "rows": 500000,
+    "min_id": 0,
+    "max_id": 499999,
+    "sum_id": 124999750000
+  },
+  "Parquet": {
+    "inferred_types_match": true,
+    "rows": 500000,
+    "min_id": 0,
+    "max_id": 499999,
+    "sum_id": 124999750000
+  }
+}

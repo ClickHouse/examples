@@ -1,0 +1,34 @@
+{
+  "status": "pass",
+  "scope": "Synthetic validator fixtures only; no CLI-managed measurement claimed",
+  "tests": [
+    {
+      "test": "synthetic complete evidence",
+      "expected": "pass",
+      "observed": "pass",
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "test": "missing measured sample",
+      "expected": "failed",
+      "observed": "failed",
+      "exit_code": 1,
+      "passed": true
+    },
+    {
+      "test": "corrupted complete-output hash",
+      "expected": "failed",
+      "observed": "failed",
+      "exit_code": 1,
+      "passed": true
+    },
+    {
+      "test": "changed warm I/O regime",
+      "expected": "review_required",
+      "observed": "review_required",
+      "exit_code": 2,
+      "passed": true
+    }
+  ]
+}
