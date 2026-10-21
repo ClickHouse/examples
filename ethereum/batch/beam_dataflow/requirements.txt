@@ -4,7 +4,7 @@ apache-beam==2.65.0
 attrs==25.3.0
 backports-tarfile==1.2.0
 cachetools==5.5.2
-certifi==2025.4.26
+certifi==2026.10.19
 charset-normalizer==3.4.2
 clickhouse-connect==0.8.17
 crcmod==1.7
