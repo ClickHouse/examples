@@ -2,7 +2,7 @@
 
 Runnable companion to [Avro vs Parquet](https://clickhouse.com/resources/engineering/avro-vs-parquet). This example keeps a small, controlled observation reproducible. It is not a universal format benchmark, and no timing or winner is a promised result.
 
-**Recorded reference:** the CLI-managed ClickHouse 26.8.32.16 run completed all 28 samples and correctness/mechanism checks. Its executable was pinned by version and SHA-256 before measurement. The earlier 26.8.31.2 observations remain in a separate reference pack.
+**Recorded reference:** the CLI-managed ClickHouse 26.8.32.16 run completed all 28 samples and correctness/mechanism checks. Its executable was pinned by version and SHA-256 before measurement.
 
 It generates 500,000 deterministic event records with 20 fields, writes Avro and Parquet using the same ClickHouse build and Zstandard codec family, then consumes two columns or all 20 through direct-file queries. Output correctness, inferred types, row counts and order are checked outside the timing measurements. The file-read traces distinguish bytes returned by `pread64` from Linux guest block I/O. Nothing is sent to ClickHouse Cloud or another service.
 
@@ -10,7 +10,7 @@ It generates 500,000 deterministic event records with 20 fields, writes Avro and
 
 - Local OrbStack Docker context named `orbstack`, Linux arm64, and host Python 3 standard library. The orchestrator refuses a remote Docker endpoint.
 - The Docker build downloads official software. Runtime containers have no network access, credential or directory mounts, exposed ports or additional capabilities.
-- Official ClickHouse base image pinned by arm64 digest; executed managed engine **26.8.32.16**, Apache Avro Python 1.12.2, official `clickhousectl` 0.4.2. The base contains the original 26.8.31.2 binary for comparison, but the runner invokes the CLI-managed executable. Ubuntu helper-package versions are recorded; their apt repository is not snapshot-pinned.
+- Official ClickHouse base image pinned by arm64 digest; executed managed engine **26.8.32.16**, Apache Avro Python 1.12.2, official `clickhousectl` 0.4.2. The runner invokes the CLI-managed executable rather than the unused binary in the base image. Ubuntu helper-package versions are recorded; their apt repository is not snapshot-pinned.
 - 2 CPUs, 3 GiB memory and swap limit, 256 PIDs. Per-query limits are 1.5 GB memory, 30 seconds, 600,000 scanned rows and 1.5 GB scanned bytes.
 - Warm OS page cache, fresh process per query, common explicit `storage_file_read_method=pread`, same query settings, seven alternating repetitions of each of four cases. No cold-cache or predicate-pruning result.
 
@@ -54,7 +54,7 @@ Its complete, missing-sample, corrupted-hash and changed-cache inputs are explic
 
 Hard checks include exact engine and CLI versions, use of the managed executable, identical settings, resource caps and architecture, 28 samples covering every format/projection/repetition, finite measurements, exact logical-output hashes, inferred types, row count/range/sum, and expected schema-resolution outcomes. The fixture is fixed rather than a general benchmark generator.
 
-A human review is required when the cache regime or I/O counter control differs, format file sizes differ by more than 1%, or traced file-read volumes differ by more than 5% from the current pinned-run reference. The exact managed engine version and declared SHA are hard checks. Its intentional difference from the older image binary is recorded, not treated as a failure. The column-selection mechanism is checked separately: Avro's narrow read should still traverse approximately the full stream, and Parquet's narrow read should fetch substantially less than its full read. These thresholds identify a changed experiment; they are not format guarantees.
+A human review is required when the cache regime or I/O counter control differs, format file sizes differ by more than 1%, or traced file-read volumes differ by more than 5% from the current pinned-run reference. The exact managed engine version and declared SHA are hard checks. The column-selection mechanism is checked separately: Avro's narrow read should still traverse approximately the full stream, and Parquet's narrow read should fetch substantially less than its full read. These thresholds identify a changed experiment; they are not format guarantees.
 
 **Timings, CPU and memory are advisory and hardware-dependent.** No elapsed-time threshold or desired speed ratio determines success. `results/summary-table.md` reports query time, whole-process wall time, CPU, RSS and ClickHouse tracked memory separately. `max_threads=1` does not make every reader helper thread serial. Millisecond measurements, especially the small Parquet projection, have limited resolution.
 
@@ -74,8 +74,8 @@ Important files under each run:
 
 ## Reference observations
 
-Two small reference packs preserve the original and CLI-managed runs, not expected timing fixtures: [reference/original-26.8.31.2](reference/original-26.8.31.2/README.md) and [reference/cli-26.8.32.16](reference/cli-26.8.32.16/README.md). Machine validation reports advisory timing/CPU/RSS deltas against both. Record values are deterministic; Avro's random sync marker can change binary file hashes between runs. Stable correctness hashes refer to ordered RowBinary output, not byte-identical Avro files.
+The [CLI-managed reference run](reference/cli-26.8.32.16/README.md) contains the observations used by the article. Machine validation compares new runs with that reference; timing, CPU and RSS deltas are advisory. Record values are deterministic; Avro's random sync marker can change binary file hashes between runs. Stable correctness hashes refer to ordered RowBinary output, not byte-identical Avro files.
 
 The reference implementation selected common pread reads to make I/O independently traceable; untouched ClickHouse-local defaults use mmap in this build. Parquet's 100,000-row layout setting is a target: the observed file has four row groups of 130,818 / 130,818 / 130,818 / 107,546 rows. Both formats use Zstandard, but internal compression levels were not independently proved equal. Data is synthetic, flat and non-null. No write-throughput, Kafka/registry, second-engine, S3, pruning, nested-data or concurrent-workload claim is tested.
 
-The reference packs describe observations on the recorded environment. Treat different timings or memory use as data to inspect, and explain changes rather than tuning toward a preferred result.
+The reference describes observations on the recorded environment. Treat different timings or memory use as data to inspect, and explain changes rather than tuning toward a preferred result.

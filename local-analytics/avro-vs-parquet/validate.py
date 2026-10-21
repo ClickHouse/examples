@@ -9,8 +9,7 @@ import sys
 ROOT=Path(__file__).resolve().parent
 RUN=Path(sys.argv[1]).resolve()
 OUT=RUN/'results'
-REF=ROOT/'reference'/'original-26.8.31.2'
-CURRENT_REF=ROOT/'reference'/'cli-26.8.32.16'
+REF=ROOT/'reference'/'cli-26.8.32.16'
 errors=[];reviews=[];checks=[]
 def read(path):return json.loads(path.read_text())
 def hard(ok,message):
@@ -32,7 +31,7 @@ try:
     hard(manifest['managed_setup']['managed_binary_sha256']=='0d0719833575d7f930580bba7769069d4bc054a8af037e8b8bc3955f7368f937','exact declared managed binary SHA-256')
     for filename in ['correctness.json','projection-correctness.json']:
         actual=read(OUT/filename);expected=read(REF/filename)
-        hard(actual==expected,f'exact original logical-output invariant: {filename}')
+        hard(actual==expected,f'exact reference logical-output invariant: {filename}')
     rowtypes=read(OUT/'row-type-invariants.json')
     for fmt in ['Avro','Parquet']:
         hard(rowtypes[fmt]=={'inferred_types_match':True,'rows':500000,'min_id':0,'max_id':499999,'sum_id':124999750000},f'{fmt} row range/count/sum and inferred types')
@@ -54,7 +53,7 @@ try:
     io=read(OUT/'io-counter-control.json')
     review(io['runs'][0]['proc_io']['read_bytes']==16777216 and io['runs'][1]['proc_io']['read_bytes']==0,'positive/warm guest I/O counter control differs')
     traces=read(OUT/'validated-file-reads.json')
-    volume_ref=CURRENT_REF if (CURRENT_REF/'manifest.json').exists() else REF
+    volume_ref=REF
     reference=read(volume_ref/'validated-file-reads.json')
     index={(r['format'],r['shape']):r for r in traces}
     hard(set(index)=={('avro','two'),('avro','all'),('parquet','two'),('parquet','all')},'four validated target-file traces')
@@ -74,8 +73,7 @@ try:
     review(av2/avall>=0.95,'Avro projection no longer traverses approximately the full compressed stream')
     review(pq2/pqall<0.20,'Parquet narrow projection no longer fetches substantially less than its full projection')
     timing_comparisons=[]
-    for reference_dir in [REF,CURRENT_REF]:
-        if not (reference_dir/'raw-measurements.json').exists():continue
+    for reference_dir in [REF]:
         ref_raw=read(reference_dir/'raw-measurements.json')
         for fmt in ['Avro','Parquet']:
             for shape in ['two','all']:
