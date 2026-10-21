@@ -98,7 +98,7 @@ def main():
            '-e','DO_NOT_TRACK=1',IMAGE],'container-create')
         save({'run_id':args.id,'container':name,'image':IMAGE,**target,'platform':platform,
               'resolver_input':args.resolver_input,'stage':'created','created_utc':datetime.datetime.now(datetime.timezone.utc).isoformat()})
-        for filename in ['run.py']:
+        for filename in ['run.py','dataset.py']:
             command(docker+['cp',str(ROOT/filename),f'{name}:/work/{filename}'],f'copy-{filename}')
         command(docker+['cp',f'{name}:/opt/setup',str(run/'setup')],'copy-setup')
         command(docker+['inspect',name],'container-inspect')
