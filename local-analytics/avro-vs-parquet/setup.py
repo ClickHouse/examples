@@ -3,12 +3,14 @@
 import hashlib
 import json
 import os
+import platform
+from pins import BINARY_SHA256, ENGINE_VERSION
 from pathlib import Path
 import re
 import subprocess
 
-VERSION='26.8.32.16'
-EXPECTED_SHA256='0d0719833575d7f930580bba7769069d4bc054a8af037e8b8bc3955f7368f937'
+VERSION=ENGINE_VERSION
+EXPECTED_SHA256=BINARY_SHA256[platform.machine()]
 OUT=Path('/opt/setup')
 OUT.mkdir(exist_ok=True)
 ENV=dict(os.environ,DO_NOT_TRACK='1')
@@ -58,7 +60,7 @@ record={'cli_version':cli,'engine_version':version,'binary_path':binary,
         'binary_identical_to_original_image':managed==image,'which_response':which,
         'telemetry_env':'DO_NOT_TRACK=1','resolver_input':RESOLVER_INPUT,'required_exact_version':VERSION,
         'required_binary_sha256':EXPECTED_SHA256,'binary_matches_declared_pin':managed==EXPECTED_SHA256,
-        'condition_change':'intentional managed engine update from original image 26.8.31.2 to 26.8.32.16',
+        'condition_change':f'managed engine {VERSION}; original image 26.8.31.2',
         'default_selection':'first install sets default; no local use command invoked',
         'global_symlink_created':Path('/root/.local/bin/clickhouse').exists()}
 (OUT/'managed.json').write_text(json.dumps(record,indent=2))

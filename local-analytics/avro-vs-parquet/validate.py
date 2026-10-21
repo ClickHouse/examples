@@ -5,6 +5,7 @@ import math
 from pathlib import Path
 import statistics
 import sys
+from pins import BINARY_SHA256, ENGINE_PINS
 
 ROOT=Path(__file__).resolve().parent
 RUN=Path(sys.argv[1]).resolve()
@@ -21,14 +22,17 @@ def review(ok,message):
 try:
     manifest=read(OUT/'manifest.json')
     hard(manifest['rows']==500000 and manifest['repeats']==7,'fixed dataset and repetition count')
-    hard(manifest['clickhouse_version']=='26.8.32.16','exact engine version')
+    version=manifest['clickhouse_version']
+    hard(version in ENGINE_PINS,'declared engine version')
     hard(manifest['managed_setup']['cli_version']=='clickhousectl 0.4.2','pinned official CLI version')
     hard(manifest['managed_setup']['binary_path']==manifest['base_command'][0],'managed binary actually used by runner')
     baseline_manifest=read(REF/'manifest.json')
     hard(manifest['base_command'][1:]==baseline_manifest['base_command'][1:],'identical query settings and execution mode')
     hard(manifest['export_settings']==baseline_manifest['export_settings'],'identical export and layout settings')
-    hard(manifest['platform']['machine']=='aarch64' and manifest['cpu_max']=='200000 100000' and manifest['memory_max']=='3221225472','arm64 architecture and exact resource caps')
-    hard(manifest['managed_setup']['managed_binary_sha256']=='0d0719833575d7f930580bba7769069d4bc054a8af037e8b8bc3955f7368f937','exact declared managed binary SHA-256')
+    machine=manifest['platform']['machine']
+    hard(machine in BINARY_SHA256,'supported container architecture')
+    hard(manifest['cpu_max']=='200000 100000' and manifest['memory_max']=='3221225472','exact resource caps')
+    hard(manifest['managed_setup']['managed_binary_sha256']==ENGINE_PINS.get(version,{}).get(machine),'exact declared managed binary SHA-256')
     for filename in ['correctness.json','projection-correctness.json']:
         actual=read(OUT/filename);expected=read(REF/filename)
         hard(actual==expected,f'exact reference logical-output invariant: {filename}')

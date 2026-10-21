@@ -8,22 +8,65 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+from pins import ENGINE_VERSION
 
 ROOT=Path(__file__).resolve().parent
-IMAGE='avro-parquet-clickhousectl:26.8.32.16'
-CONTEXT='orbstack'
+IMAGE=f'avro-parquet-clickhousectl:{ENGINE_VERSION}'
 OWNER='clickhouse.avro-parquet-example'
+
+def docker_target(context=None, saved=None, environ=None):
+    """Resolve once, allow only local sockets, then pin the endpoint for later stages."""
+    source = dict(os.environ if environ is None else environ)
+    env = {k: v for k, v in source.items() if k not in {
+        'DOCKER_HOST', 'DOCKER_CONTEXT', 'DOCKER_TLS_VERIFY', 'DOCKER_CERT_PATH',
+        'DOCKER_DEFAULT_PLATFORM', 'BUILDX_BUILDER'}}
+    endpoint = None
+    if saved:
+        endpoint = saved.get('docker_endpoint') if context is None else None
+        context = context or saved.get('context')
+    elif context is None:
+        context = source.get('DOCKER_CONTEXT')
+        if not context:
+            endpoint = source.get('DOCKER_HOST')
+    if not context and not endpoint:
+        context = subprocess.check_output(['docker', 'context', 'show'], env=env, text=True).strip()
+    if not endpoint:
+        details = json.loads(subprocess.check_output(
+            ['docker', 'context', 'inspect', context], env=env, text=True))
+        endpoint = details[0]['Endpoints']['docker']['Host']
+    if not isinstance(endpoint, str) or not endpoint.startswith(('unix:///', 'npipe:////./pipe/')):
+        raise RuntimeError('Use a local Docker socket; TCP and SSH endpoints are refused. Choose a local context with --context NAME.')
+    if saved and saved.get('docker_endpoint') and endpoint != saved['docker_endpoint']:
+        raise RuntimeError('Docker endpoint differs from this run; refusing to switch engines')
+    # Explicit host plus a clean environment prevents later context/env overrides.
+    return ['docker', '--host', endpoint], {'context': context, 'docker_endpoint': endpoint}, env
+
+
+def runtime_platform(info):
+    """The workload uses Linux /proc and cgroup v2 inside the container."""
+    architectures = {'aarch64': 'arm64', 'arm64': 'arm64', 'x86_64': 'amd64', 'amd64': 'amd64'}
+    arch = architectures.get(info.get('Architecture'))
+    if info.get('OSType') != 'linux' or not arch:
+        raise RuntimeError('Use Docker with Linux containers on a supported amd64 or arm64 CPU')
+    if str(info.get('CgroupVersion')) != '2':
+        raise RuntimeError('This example requires a Docker engine using cgroup v2 for resource accounting')
+    if info.get('NCPU', 0) < 2 or info.get('MemTotal', 0) < 3 * 1024**3:
+        raise RuntimeError('Make at least 2 CPUs and 3 GiB of memory available to Docker')
+    return 'linux/' + arch
+
 
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument('action',choices=['all','setup','run','validate','cleanup','status'])
     ap.add_argument('--id',required=True,help='Unique lowercase run ID; never overwrite an earlier run')
+    ap.add_argument('--context', help='Local Docker context; defaults to the current Docker selection')
     ap.add_argument('--resolver-input',choices=['26.8'],default='26.8')
     args=ap.parse_args()
     if not re.fullmatch('[a-z0-9][a-z0-9-]{0,63}',args.id):ap.error('Invalid run ID')
     run=ROOT/'artifacts'/args.id
     state_path=run/'state.json'
-    docker=['docker','--context',CONTEXT]
+    docker=[]
+    target={}
     name=f'avro-parquet-{args.id}'
     env=dict(os.environ,DO_NOT_TRACK='1')
     def command(parts,label,*,capture=False):
@@ -35,22 +78,25 @@ def main():
     def load():
         if not state_path.is_file():raise RuntimeError('Run not set up; use setup or all first')
         return json.loads(state_path.read_text())
+    def configure(state=None):
+        nonlocal target,env
+        docker[:],target,env=docker_target(args.context,state)
+        env['DO_NOT_TRACK']='1'
     def owned():
+        configure(load())
         label=command(docker+['inspect',name,'--format','{{index .Config.Labels "clickhouse.avro-parquet-example"}}'],'ownership',capture=True)
         if label!=args.id:raise RuntimeError('Container ownership label does not match; no lifecycle mutation performed')
     def setup():
         run.mkdir(parents=True,exist_ok=False)
-        selected=command(['docker','context','show'],'context',capture=True)
-        # Explicit context avoids a remote or paid service selected in the user's default context.
-        inspected=json.loads(command(['docker','context','inspect',CONTEXT],'context-inspect',capture=True))
-        endpoint=inspected[0]['Endpoints']['docker']['Host']
-        if not endpoint.startswith('unix://'):raise RuntimeError('Only the local OrbStack Unix socket is allowed')
-        command(docker+['build','--build-arg',f'CLICKHOUSECTL_RESOLVER_INPUT={args.resolver_input}','-t',IMAGE,'.'],'build')
-        command(docker+['run','-d','--name',name,'--label',f'{OWNER}={args.id}',
+        configure()
+        info=json.loads(command(docker+['info','--format','{{json .}}'],'docker-info',capture=True))
+        platform=runtime_platform(info)
+        command(docker+['build','--platform',platform,'--build-arg',f'CLICKHOUSECTL_RESOLVER_INPUT={args.resolver_input}','-t',IMAGE,'.'],'build')
+        command(docker+['run','--platform',platform,'-d','--name',name,'--label',f'{OWNER}={args.id}',
            '--cpus=2','--memory=3g','--memory-swap=3g','--pids-limit=256',
            '--network=none','--cap-drop=ALL','--security-opt=no-new-privileges',
            '-e','DO_NOT_TRACK=1',IMAGE],'container-create')
-        save({'run_id':args.id,'container':name,'image':IMAGE,'context':CONTEXT,
+        save({'run_id':args.id,'container':name,'image':IMAGE,**target,'platform':platform,
               'resolver_input':args.resolver_input,'stage':'created','created_utc':datetime.datetime.now(datetime.timezone.utc).isoformat()})
         for filename in ['run.py']:
             command(docker+['cp',str(ROOT/filename),f'{name}:/work/{filename}'],f'copy-{filename}')
