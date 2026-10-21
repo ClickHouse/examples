@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Generate Avro/Parquet locally and compare two-column and all-column reads."""
+import argparse
 import csv
 import hashlib
 import json
 import os
 from pathlib import Path
 import subprocess
+import re
 import tempfile
 import time
 
@@ -19,10 +21,25 @@ def sql_string(value):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--version', required=True, help='Installed numeric version or series, such as 26.9')
+    args = parser.parse_args()
+    if not re.fullmatch(r'[0-9]+(?:\.[0-9]+){1,3}', args.version):
+        parser.error('--version must be a numeric version or series')
     env = dict(os.environ, DO_NOT_TRACK='1')
-    managed = json.loads(subprocess.check_output(
-        ['clickhousectl', 'local', 'which', '--json'], env=env, text=True))
-    base = [managed['binary_path'], 'local', *QUERY_SETTINGS]
+    installed = json.loads(subprocess.check_output(
+        ['clickhousectl', 'local', 'list', '--json'], env=env, text=True))
+    versions = [entry['version'] for entry in installed['versions']
+                if re.fullmatch(r'[0-9]+(?:\.[0-9]+){1,3}', entry['version'])
+                and (entry['version'] == args.version or entry['version'].startswith(args.version + '.'))]
+    if not versions:
+        parser.error(f'Install the requested version with: clickhousectl local install {args.version}')
+    version = max(versions, key=lambda value: tuple(map(int, value.split('.'))))
+    # clickhousectl's documented shared binary repository, independent of its default.
+    binary = Path.home() / '.clickhouse' / 'versions' / version / 'clickhouse'
+    if not binary.is_file():
+        parser.error(f'Installed ClickHouse binary is missing: {binary}')
+    base = [str(binary), 'local', *QUERY_SETTINGS]
     output_root = ROOT / 'demo-output'
     output_root.mkdir(exist_ok=True)
     output = Path(tempfile.mkdtemp(prefix='run-', dir=output_root))
@@ -41,7 +58,7 @@ def main():
             raise RuntimeError('ClickHouse output validation failed')
         return value.hexdigest()
 
-    print(subprocess.check_output([managed['binary_path'], 'local', '--version'], text=True).strip())
+    print(subprocess.check_output([str(binary), 'local', '--version'], text=True).strip())
     (output / 'generate.sql').write_text(GEN + ';\n')
     files = {}
     for fmt, settings in EXPORT_SETTINGS.items():

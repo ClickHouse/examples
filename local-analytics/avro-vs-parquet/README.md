@@ -14,10 +14,10 @@ Write the same 500,000 events to Avro and Parquet, then compare reading two colu
 
    ```sh
    cd local-analytics/avro-vs-parquet
-   python3 demo.py
+   python3 demo.py --version 26.9
    ```
 
-The script uses your currently selected ClickHouse version. It generates both files, checks that both formats return the same data, and prints four elapsed times for the two-column and all-column reads. Python's standard library is sufficient.
+The demo selects an installed 26.9 version without changing your CLI default. It generates both files, checks that both formats return the same data, and prints four elapsed times for the two-column and all-column reads. Python's standard library is sufficient.
 
 Each run saves the files, SQL, correctness checks, and `results.csv` in a new folder under `demo-output/`.
 
@@ -26,5 +26,5 @@ These are quick local timings. The [recorded results](reference/cli-26.8.32.16/R
 ## Prompt for your agent
 
 ```text
-Run local-analytics/avro-vs-parquet locally with clickhousectl and python3 demo.py. Check that both formats match the generated data for two-column and all-column reads. Report the four timings and output folder, keeping the existing reference results unchanged.
+Run local-analytics/avro-vs-parquet locally with clickhousectl and python3 demo.py --version 26.9. Check that both formats match the generated data for two-column and all-column reads. Report the four timings and output folder, keeping the existing reference results unchanged.
 ```
