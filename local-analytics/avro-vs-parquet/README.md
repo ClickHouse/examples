@@ -21,7 +21,7 @@ The demo selects an installed 26.9 version without changing your CLI default. It
 
 Each run saves the files, SQL, correctness checks, and `results.csv` in a new folder under `demo-output/`.
 
-These are quick local timings. The [recorded results](reference/cli-26.8.32.16/README.md) and [optional measurement harness](REPRODUCING.md) document the controlled run separately.
+These are quick local timings. The [recorded results](reference/cli-26.8.32.16/README.md) document the controlled run separately.
 
 ## Prompt for your agent
 
