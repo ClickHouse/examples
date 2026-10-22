@@ -1,6 +1,16 @@
 import { SQL } from "bun";
 import { validateDatabaseUrl, type DatabaseConfig } from "./config.ts";
 
+// ClickHouse Managed Postgres: verify the server certificate and hostname against
+// the service CA from `clickhousectl cloud postgres certs get`. Keep the URL plain
+// (no sslmode or channel_binding); TLS is configured here. Everything else is plain
+// Postgres.
+//
+// Bun 1.4.2 can fail with CERT_SIGNATURE_FAILURE on a CA bundle that holds several
+// roots with the same subject (as during a CA rotation). On that error only, each
+// certificate in the bundle is tried on its own, still verifying certificate and
+// hostname. The first anchor that works is kept for the life of the process, so
+// re-download the bundle and restart after a CA rotation.
 export async function createDatabase(config: DatabaseConfig): Promise<SQL> {
   const url = validateDatabaseUrl(config.url);
   // Only this known Bun option is added internally. It overrides ambient PGSSLMODE;
@@ -37,9 +47,7 @@ export async function createDatabase(config: DatabaseConfig): Promise<SQL> {
     return await connect(ca);
   } catch (originalError) {
     if (errorCode(originalError) !== "CERT_SIGNATURE_FAILURE" || certificates.length < 2) throw originalError;
-    // Bun 1.4.2 can reject a rotation bundle containing roots with the same subject.
-    // Retry only the supplied trust anchors, always verifying certificate AND hostname.
-    // The first successful pool retains that CA until the application restarts.
+    // See the CA bundle note above: retry each supplied anchor on its own.
     for (const certificate of certificates) {
       try {
         return await connect(certificate);
