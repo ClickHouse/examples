@@ -115,8 +115,7 @@ Browse [all local analytics examples](./local-analytics/README.md) for more file
 
 | Directory | What you'll find |
 | --- | --- |
-| [applications](./applications/) | Application examples: a link shortener, feature request board, report results, and run history with ClickHouse Cloud. |
-| [applications](./applications/) | Application examples: workshop bookings, a link shortener, report results, and run history with ClickHouse Cloud. |
+| [applications](./applications/) | Application examples: stock reservations, workshop bookings, a feature request board, a link shortener, report results, and run history with ClickHouse Cloud. |
 | [ai](./ai/README.md) | AI agents, MCP integrations, and workflows using `clickhousectl`. |
 | [blog-examples](./blog-examples/) | Code and resources accompanying the [ClickHouse Blog](https://clickhouse.com/blog). |
 | [clickstack](./clickstack/) | Observability examples for LLM applications and MCP servers. |

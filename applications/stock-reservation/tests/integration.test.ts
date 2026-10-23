@@ -30,7 +30,7 @@ type Reservation = {
 
 function required(name: string): string {
   const value = process.env[name];
-  if (!value) throw new Error(`Integration tests require ${name}; see tests/README.md.`);
+  if (!value) throw new Error(`Integration tests require ${name}; see the README Test section.`);
   return value;
 }
 

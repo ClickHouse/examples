@@ -1,5 +1,5 @@
 -- DESTRUCTIVE: removes all Stock Reservation example data and its three roles.
--- Stop the API first. Run as the same service administrator used for bootstrap.
+-- Stop the API first. Run as the same service administrator that ran 01_roles.sql.
 -- This does not delete the ClickHouse Cloud service or affect other schemas.
 BEGIN;
 

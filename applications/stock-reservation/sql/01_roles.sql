@@ -1,8 +1,8 @@
 -- Run ONCE as the service administrator with psql -X -v ON_ERROR_STOP=1.
 -- Passwords come from the environment, not process arguments or committed files.
--- PG_MIGRATION_PASSWORD and PG_APP_PASSWORD must contain random generated passwords.
-\getenv migration_password PG_MIGRATION_PASSWORD
-\getenv app_password PG_APP_PASSWORD
+-- MIGRATOR_PASSWORD and APP_PASSWORD must contain random generated passwords.
+\getenv migration_password MIGRATOR_PASSWORD
+\getenv app_password APP_PASSWORD
 
 BEGIN;
 

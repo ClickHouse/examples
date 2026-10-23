@@ -10,7 +10,7 @@ let trusted: SQL;
 beforeAll(async () => {
   const url = process.env.DATABASE_URL;
   const caCertPath = process.env.PG_CA_CERT_PATH;
-  if (!url || !caCertPath) throw new Error("TLS tests require DATABASE_URL and PG_CA_CERT_PATH; see tests/README.md.");
+  if (!url || !caCertPath) throw new Error("TLS tests require DATABASE_URL and PG_CA_CERT_PATH; see the README Test section.");
   configuration = { url, caCertPath, maxConnections: 1 };
   trusted = await createDatabase(configuration);
   // Establish the positive control first. Offline/bad-credential failures must
