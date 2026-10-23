@@ -76,6 +76,7 @@ ClickHouse ships official client libraries for [C# / .NET](https://clickhouse.co
 - [Shortwave link shortener](./applications/shortwave/README.md): Build and deploy a link shortener using ClickHouse Managed Postgres for application data, ClickPipes for metadata sync, and ClickHouse for click analytics.
 - [Feature Request Board](./applications/feature-request-board/README.md): Build a Next.js and Prisma board with Clerk sign-in, request ownership, and one vote per user on ClickHouse Managed Postgres.
 - [Workshop Booking API](./applications/workshop-booking/README.md): Build a FastAPI and SQLAlchemy application on ClickHouse Managed Postgres with transactional seat allocation, cancellation, and safe retries.
+- [Habit Tracker](./applications/habit-tracker/README.md): Build a Next.js and Drizzle ORM habit tracker on ClickHouse Managed Postgres with one check-in per habit per day and streaks computed in SQL.
 - [Postgres-to-ClickHouse data modeling](./postgresql-clickhouse-data-modeling/README.md): Replicate a tiny fixture from PostgreSQL to ClickHouse with PeerDB, then verify inserts, updates, and deletes. Follow the separate ClickHouse Managed Postgres and ClickPipes walkthrough for ClickHouse Cloud; a larger Stack Overflow import is optional.
 
 ### ClickStack: logs, metrics, traces, and session replay
