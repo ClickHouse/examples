@@ -8,3 +8,15 @@ SELECT count(DISTINCT user_id) FROM events;
 SELECT count(DISTINCT user_id) FROM events;
 \echo RUN 4
 SELECT count(DISTINCT user_id) FROM events;
+\echo RUN 5
+SELECT count(DISTINCT user_id) FROM events;
+\echo RUN 6
+SELECT count(DISTINCT user_id) FROM events;
+\echo RUN 7
+SELECT count(DISTINCT user_id) FROM events;
+\echo RUN 8
+SELECT count(DISTINCT user_id) FROM events;
+\echo RUN 9
+SELECT count(DISTINCT user_id) FROM events;
+\echo RUN 10
+SELECT count(DISTINCT user_id) FROM events;

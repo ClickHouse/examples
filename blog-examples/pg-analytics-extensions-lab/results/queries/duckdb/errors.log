@@ -1,1 +1,1 @@
-duckdb Q4 psql rc=2
+duckdb Q4 Q4.out psql rc=2

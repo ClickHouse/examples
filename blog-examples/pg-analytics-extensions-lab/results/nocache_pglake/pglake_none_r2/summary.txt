@@ -1,0 +1,21 @@
+{
+ "run": "pglake_none_r2",
+ "tps": 17926.696387,
+ "lat_avg_ms": 0.892,
+ "failed_txn": 0,
+ "pgbench_aborted": false,
+ "backend_sigkills": 0,
+ "lat_p50_ms": 0.86,
+ "lat_p95_ms": 1.32,
+ "lat_p99_ms": 1.77,
+ "lat_samples": 107295,
+ "cpu_avg_pct[lab-pglake]": 394.5,
+ "cpu_max_pct[lab-pglake]": 402.9,
+ "mem_max_GiB[lab-pglake]": 1.0,
+ "cpu_avg_pct[lab-pgduck-server]": 0.0,
+ "cpu_max_pct[lab-pgduck-server]": 0.1,
+ "mem_max_GiB[lab-pgduck-server]": 0.13,
+ "cpu_avg_pct[lab-ch]": 2.2,
+ "cpu_max_pct[lab-ch]": 18.2,
+ "mem_max_GiB[lab-ch]": 0.68
+}

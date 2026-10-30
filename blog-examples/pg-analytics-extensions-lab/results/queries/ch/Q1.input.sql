@@ -8,3 +8,15 @@ SELECT count(*), sum(revenue) FROM events;
 SELECT count(*), sum(revenue) FROM events;
 \echo RUN 4
 SELECT count(*), sum(revenue) FROM events;
+\echo RUN 5
+SELECT count(*), sum(revenue) FROM events;
+\echo RUN 6
+SELECT count(*), sum(revenue) FROM events;
+\echo RUN 7
+SELECT count(*), sum(revenue) FROM events;
+\echo RUN 8
+SELECT count(*), sum(revenue) FROM events;
+\echo RUN 9
+SELECT count(*), sum(revenue) FROM events;
+\echo RUN 10
+SELECT count(*), sum(revenue) FROM events;

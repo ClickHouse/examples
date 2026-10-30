@@ -39,6 +39,9 @@ up_pglake() {
     docker exec lab-s3 sh -c 'echo s3.bucket.list | timeout 10 weed shell 2>/dev/null' | grep -q testbucket && break
     docker exec lab-s3 sh -c 'echo "s3.bucket.create -name testbucket" | timeout 10 weed shell' >/dev/null 2>&1; sleep 2
   done; set -eo pipefail
+  # The cache volume is created root-owned; pgduck_server runs as postgres (uid 1001) and must be able to write it,
+  # otherwise every query silently reads from object storage ("Failed to create directory ... Permission denied").
+  docker run --rm -v lab-pglake-cache:/c $IMG_CLIENT chown 1001:1001 /c
   docker run -d --name lab-pgduck-server --network $NET --cpus=4 --memory=4g --memory-swap=4g --cpuset-cpus=${CPUSET:-$PG_CPUSET} \
     -v "$LAB/vendor/pg_lake/docker/scripts/entrypoint-pgduck-server.sh:/entrypoint-pgduck-server.sh" \
     -v "$LAB/vendor/pg_lake/docker/scripts/init-pgduck-server.sql:/init-pgduck-server.sql" \

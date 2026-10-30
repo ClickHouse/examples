@@ -1,0 +1,11 @@
+SET
+SET
+SET
+Timing is on.
+RUN 1
+  count   |      sum      
+----------+---------------
+ 50000000 | 1249764526.89
+(1 row)
+
+Time: 117.854 ms

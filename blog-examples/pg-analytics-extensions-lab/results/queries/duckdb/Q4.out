@@ -16,7 +16,7 @@ RUN 1
  3217859 | 2629.55 | 17
 (10 rows)
 
-Time: 5707.310 ms (00:05.707)
+Time: 5557.714 ms (00:05.558)
 RUN 2
 psql:<stdin>:6: server closed the connection unexpectedly
 	This probably means the server terminated abnormally

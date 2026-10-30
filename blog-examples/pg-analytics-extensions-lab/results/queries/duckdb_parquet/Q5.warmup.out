@@ -1,0 +1,11 @@
+SET
+SET
+SET
+Timing is on.
+WARMUP
+  count  
+---------
+ 4999777
+(1 row)
+
+Time: 416.741 ms

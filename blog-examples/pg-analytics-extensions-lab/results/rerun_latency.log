@@ -1,0 +1,180 @@
+### 08:02:24 latency plain
+plain Q1: cold median 1420.805 ms, warm median 2340.300 ms
+plain Q2: cold median 1963.588 ms, warm median 2341.953 ms
+plain Q3: cold median 1155.511 ms, warm median 538.265 ms
+plain Q4: cold median 13706.620 ms, warm median 13779.458 ms
+plain Q5: cold median 10144.711 ms, warm median 10185.402 ms
+plain Q6: cold median 2169.607 ms, warm median 1668.527 ms
+### 08:14:47 latency ch
+ch Q1: cold median 73.635 ms, warm median 53.504 ms
+ch Q2: cold median 128.384 ms, warm median 92.544 ms
+ch Q3: cold median 90.151 ms, warm median 57.712 ms
+ch Q4: cold median 624.342 ms, warm median 544.164 ms
+ch Q5: cold median 404.113 ms, warm median 352.119 ms
+ch Q6: cold median 345.980 ms, warm median 294.995 ms
+### 08:20:13 latency duckdb
+duckdb Q1: cold median 4000.100 ms, warm median 4031.775 ms
+duckdb Q2: cold median 5451.971 ms, warm median 4933.291 ms
+duckdb Q3: cold median 1463.254 ms, warm median 784.213 ms
+duckdb Q4 Q4.out psql rc=2
+duckdb Q4: cold median 5659.802 ms, warm median 5557.714 ms
+duckdb Q5: cold median 3984.224 ms, warm median 3367.530 ms
+duckdb Q6: cold median 2228.388 ms, warm median 1587.003 ms
+### 08:28:52 latency duckdb_tuned
+duckdb_tuned Q1: cold median 3810.747 ms, warm median 3871.450 ms
+duckdb_tuned Q2: cold median 4972.789 ms, warm median 4764.000 ms
+duckdb_tuned Q3: cold median 1275.719 ms, warm median 553.536 ms
+duckdb_tuned Q4: cold median 5442.071 ms, warm median 5257.592 ms
+duckdb_tuned Q5: cold median 3581.080 ms, warm median 3439.530 ms
+duckdb_tuned Q6: cold median 2149.968 ms, warm median 1588.779 ms
+### 08:37:42 latency duckdb_parquet
+duckdb_parquet Q1: cold median 117.890 ms, warm median 67.822 ms
+duckdb_parquet Q2: cold median 163.860 ms, warm median 91.298 ms
+duckdb_parquet Q3: cold median 164.336 ms, warm median 114.443 ms
+duckdb_parquet Q4: cold median 1190.661 ms, warm median 1039.958 ms
+duckdb_parquet Q5: cold median 549.694 ms, warm median 407.018 ms
+duckdb_parquet Q6: cold median 408.587 ms, warm median 293.073 ms
+### 08:40:11 latency lake
+pg_lake file cache: 1477498569 bytes
+lake Q1: cold median 170.061 ms, warm median 63.639 ms
+pg_lake file cache: 1477498569 bytes
+lake Q2: cold median 289.897 ms, warm median 83.673 ms
+pg_lake file cache: 509980859 bytes
+lake Q3: cold median 631.829 ms, warm median 401.614 ms
+pg_lake file cache: 1477498569 bytes
+lake Q4: cold median 1187.656 ms, warm median 901.283 ms
+pg_lake file cache: 1477498569 bytes
+lake Q5: cold median 673.145 ms, warm median 497.144 ms
+pg_lake file cache: 947524663 bytes
+lake Q6: cold median 1090.379 ms, warm median 937.712 ms
+wrote /data/lab/results/explain/plain.txt
+wrote /data/lab/results/explain/ch.txt
+wrote /data/lab/results/explain/duckdb.txt
+wrote /data/lab/results/explain/lake.txt
+### 09:05:49 compare
+query              ch          duckdb  duckdb_parquet    duckdb_tuned            lake           plain
+Q1        947112b8/1r     947112b8/1r     947112b8/1r     947112b8/1r     947112b8/1r     947112b8/1r   MATCH
+Q2       8586a8e6/14r    8586a8e6/14r    8586a8e6/14r    8586a8e6/14r    8586a8e6/14r    8586a8e6/14r   MATCH
+Q3     0daa0d7e/1120r  0daa0d7e/1120r  0daa0d7e/1120r  0daa0d7e/1120r  0daa0d7e/1120r  0daa0d7e/1120r   MATCH
+Q4       27f9d3cf/10r    27f9d3cf/10r    27f9d3cf/10r    27f9d3cf/10r    27f9d3cf/10r    27f9d3cf/10r   MATCH
+Q5        1a24b6a8/1r     1a24b6a8/1r     1a24b6a8/1r     1a24b6a8/1r     1a24b6a8/1r     1a24b6a8/1r   MATCH
+Q6        3c310fc1/4r     3c310fc1/4r     3c310fc1/4r     3c310fc1/4r     3c310fc1/4r     3c310fc1/4r   MATCH
+pg_lake file cache: 947524663 bytes
+### 09:06:01 pg_lake contention TPC-B
+{
+ "run": "pglake_none_r1",
+ "tps": 17496.949141,
+ "lat_avg_ms": 0.914,
+ "failed_txn": 0,
+ "pgbench_aborted": false,
+ "backend_sigkills": 0,
+ "lat_p50_ms": 0.88,
+ "lat_p95_ms": 1.37,
+ "lat_p99_ms": 1.82,
+ "lat_samples": 105450,
+ "cpu_avg_pct[lab-pglake]": 393.4,
+ "cpu_max_pct[lab-pglake]": 400.9,
+ "mem_max_GiB[lab-pglake]": 1.0,
+ "cpu_avg_pct[lab-pgduck-server]": 0.0,
+ "cpu_max_pct[lab-pgduck-server]": 0.0,
+ "mem_max_GiB[lab-pgduck-server]": 0.84,
+ "cpu_avg_pct[lab-ch]": 0.0,
+ "cpu_max_pct[lab-ch]": 0.0,
+ "mem_max_GiB[lab-ch]": 0.0
+}
+{
+ "run": "pglake_lake",
+ "tps": 7317.054006,
+ "lat_avg_ms": 2.186,
+ "failed_txn": 0,
+ "pgbench_aborted": false,
+ "backend_sigkills": 0,
+ "lat_p50_ms": 1.4,
+ "lat_p95_ms": 8.3,
+ "lat_p99_ms": 13.48,
+ "lat_samples": 43887,
+ "loop_q3_n": 62,
+ "loop_q4_n": 62,
+ "loop_errors": 0,
+ "loop_q3_median_ms": 461.6,
+ "loop_q4_median_ms": 1579.4,
+ "cpu_avg_pct[lab-pglake]": 170.8,
+ "cpu_max_pct[lab-pglake]": 235.0,
+ "mem_max_GiB[lab-pglake]": 1.02,
+ "cpu_avg_pct[lab-pgduck-server]": 220.9,
+ "cpu_max_pct[lab-pgduck-server]": 336.2,
+ "mem_max_GiB[lab-pgduck-server]": 3.97,
+ "cpu_avg_pct[lab-ch]": 0.0,
+ "cpu_max_pct[lab-ch]": 0.0,
+ "mem_max_GiB[lab-ch]": 0.0
+}
+{
+ "run": "pglake_none_r2",
+ "tps": 17607.807224,
+ "lat_avg_ms": 0.908,
+ "failed_txn": 0,
+ "pgbench_aborted": false,
+ "backend_sigkills": 0,
+ "lat_p50_ms": 0.88,
+ "lat_p95_ms": 1.34,
+ "lat_p99_ms": 1.73,
+ "lat_samples": 105871,
+ "cpu_avg_pct[lab-pglake]": 395.3,
+ "cpu_max_pct[lab-pglake]": 401.2,
+ "mem_max_GiB[lab-pglake]": 1.02,
+ "cpu_avg_pct[lab-pgduck-server]": 0.0,
+ "cpu_max_pct[lab-pgduck-server]": 0.2,
+ "mem_max_GiB[lab-pgduck-server]": 1.2,
+ "cpu_avg_pct[lab-ch]": 0.0,
+ "cpu_max_pct[lab-ch]": 0.0,
+ "mem_max_GiB[lab-ch]": 0.0
+}
+### 09:12:55 pg_lake contention select-only
+{
+ "run": "pglake_none",
+ "tps": 120467.362799,
+ "lat_avg_ms": 0.132,
+ "failed_txn": 0,
+ "pgbench_aborted": false,
+ "backend_sigkills": 0,
+ "lat_p50_ms": 0.13,
+ "lat_p95_ms": 0.23,
+ "lat_p99_ms": 0.25,
+ "lat_samples": 361583,
+ "cpu_avg_pct[lab-pglake]": 402.2,
+ "cpu_max_pct[lab-pglake]": 404.7,
+ "mem_max_GiB[lab-pglake]": 1.01,
+ "cpu_avg_pct[lab-pgduck-server]": 0.0,
+ "cpu_max_pct[lab-pgduck-server]": 0.0,
+ "mem_max_GiB[lab-pgduck-server]": 1.2,
+ "cpu_avg_pct[lab-ch]": 0.0,
+ "cpu_max_pct[lab-ch]": 0.0,
+ "mem_max_GiB[lab-ch]": 0.0
+}
+{
+ "run": "pglake_lake",
+ "tps": 74812.472107,
+ "lat_avg_ms": 0.214,
+ "failed_txn": 0,
+ "pgbench_aborted": false,
+ "backend_sigkills": 0,
+ "lat_p50_ms": 0.13,
+ "lat_p95_ms": 0.22,
+ "lat_p99_ms": 4.92,
+ "lat_samples": 224422,
+ "loop_q3_n": 22,
+ "loop_q4_n": 21,
+ "loop_errors": 0,
+ "loop_q3_median_ms": 784.1,
+ "loop_q4_median_ms": 2318.4,
+ "cpu_avg_pct[lab-pglake]": 235.8,
+ "cpu_max_pct[lab-pglake]": 302.9,
+ "mem_max_GiB[lab-pglake]": 1.02,
+ "cpu_avg_pct[lab-pgduck-server]": 153.2,
+ "cpu_max_pct[lab-pgduck-server]": 341.5,
+ "mem_max_GiB[lab-pgduck-server]": 3.84,
+ "cpu_avg_pct[lab-ch]": 0.0,
+ "cpu_max_pct[lab-ch]": 0.0,
+ "mem_max_GiB[lab-ch]": 0.0
+}
+### 09:15:33 ALL_DONE

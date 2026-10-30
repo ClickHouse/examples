@@ -8,7 +8,7 @@ instance and measures (a) query latency and (b) how much each approach hurts a c
 - **pg_lake** — Iceberg tables (Parquet on S3-compatible storage) queried through `pgduck_server`, a separate DuckDB process on the same host
 - **pg_clickhouse** — foreign tables (`IMPORT FOREIGN SCHEMA`) over a ClickHouse MergeTree copy running in a separate container ("separate machine")
 
-Results and interpretation: [RESULTS.md](RESULTS.md). Raw outputs: `results/` (files over 300 KB are gzipped; per-transaction pgbench sample logs and generated loop SQL are left out, and the scripts regenerate them).
+Results and interpretation: [RESULTS.md](RESULTS.md). Raw outputs: `results/`.
 
 > **Hardware.** The published results come from one AWS **m9gd.4xlarge** (Graviton5, 16 vCPU, 64 GiB, Amazon
 > Linux 2023, Docker 25, Docker data on the local NVMe instance store), with containers capped by cgroups. It is
@@ -85,7 +85,7 @@ git clone https://github.com/Snowflake-Labs/pg_lake.git vendor/pg_lake && git -C
 BUILD_NCORES=16 scripts/00_build_pg_lake.sh   # builds pg_lake:lab-pg17 + pgduck-server:lab-pg17 (~13 min on 16 cores)
 
 # Either run everything in one go (loads overlap the build, every measurement waits for it):
-scripts/run_all.sh
+scripts/run_all.sh                   # then scripts/11_rerun_latency_and_lake.sh was used for the published latency numbers
 
 # ...or step by step:
 scripts/01_up.sh all                   # client, ClickHouse, pg_duckdb, pg_clickhouse containers
@@ -95,7 +95,8 @@ scripts/02_load_clickhouse.sh          # MergeTree copy + IMPORT FOREIGN SCHEMA
 docker exec -i lab-client psql -h lab-pglake -U postgres -f /lab/sql/pglake_setup.sql
 docker exec -i lab-client psql -h lab-pgduck -U postgres -f /lab/sql/duckdb_parquet_setup.sql   # optional
 
-# query latency: 1 cold run (containers restarted + OS page cache dropped) + 3 warm runs, per query
+# query latency: 10 cold runs (containers restarted + OS page cache dropped before each; pg_lake's file cache
+# emptied too) + 1 warm-up and 10 warm runs, per query. COLD_RUNS / WARM_RUNS override the counts.
 for p in plain ch duckdb duckdb_tuned duckdb_parquet lake; do scripts/03_bench_queries.sh $p; done
 for p in plain ch duckdb lake; do scripts/04_explain.sh $p; done
 scripts/compare_results.py             # checks every path returns the same answers
@@ -135,8 +136,10 @@ ClickHouse 25.8 vs 26.10 comparison described in RESULTS.md.
 6. **ClickHouse schema**: `LowCardinality(String)` for `event_type`/`country`, `DateTime64(6,'UTC')`,
    `Decimal(10,2)`, `ORDER BY event_time` — a normal ClickHouse modelling choice, not a heap-equivalent layout.
 7. **Cold runs** = `docker restart` of the path's containers + `echo 3 > /proc/sys/vm/drop_caches` on the host.
-   For pg_duckdb this includes DuckDB instance start-up in the new backend; for pg_lake it does not clear
-   pgduck_server's on-disk file cache (`--cache_dir`), which persists across restarts by design.
+   For pg_duckdb this includes DuckDB instance start-up in the new backend. For pg_lake, pgduck_server's on-disk
+   file cache (`--cache_dir`, which persists across restarts by design) is emptied as well, so cold queries read
+   from object storage; SeaweedFS keeps running, as S3 would. Warm pg_lake runs wait until the cache manager has
+   downloaded the files the warm-up query read.
 8. In `run_all.sh` the data loads for pg_duckdb, pg_clickhouse and ClickHouse overlap the pg_lake build; nothing
    is measured until the build has finished.
 
