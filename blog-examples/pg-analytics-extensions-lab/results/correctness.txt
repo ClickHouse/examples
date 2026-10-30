@@ -1,0 +1,7 @@
+query              ch          duckdb  duckdb_parquet    duckdb_tuned            lake           plain
+Q1        947112b8/1r     947112b8/1r     947112b8/1r     947112b8/1r     947112b8/1r     947112b8/1r   MATCH
+Q2       8586a8e6/14r    8586a8e6/14r    8586a8e6/14r    8586a8e6/14r    8586a8e6/14r    8586a8e6/14r   MATCH
+Q3     0daa0d7e/1120r  0daa0d7e/1120r  0daa0d7e/1120r  0daa0d7e/1120r  0daa0d7e/1120r  0daa0d7e/1120r   MATCH
+Q4       27f9d3cf/10r    27f9d3cf/10r    27f9d3cf/10r    27f9d3cf/10r    27f9d3cf/10r    27f9d3cf/10r   MATCH
+Q5        1a24b6a8/1r     1a24b6a8/1r     1a24b6a8/1r     1a24b6a8/1r     1a24b6a8/1r     1a24b6a8/1r   MATCH
+Q6        3c310fc1/4r     3c310fc1/4r     3c310fc1/4r     3c310fc1/4r     3c310fc1/4r     3c310fc1/4r   MATCH

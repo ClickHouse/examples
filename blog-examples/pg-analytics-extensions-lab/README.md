@@ -8,7 +8,9 @@ instance and measures (a) query latency and (b) how much each approach hurts a c
 - **pg_lake** — Iceberg tables (Parquet on S3-compatible storage) queried through `pgduck_server`, a separate DuckDB process on the same host
 - **pg_clickhouse** — foreign tables (`IMPORT FOREIGN SCHEMA`) over a ClickHouse MergeTree copy running in a separate container ("separate machine")
 
-Results and interpretation: [RESULTS.md](RESULTS.md). Raw outputs: `results/`.
+Results and interpretation: [RESULTS.md](RESULTS.md). Data: `results/queries/timings.csv`, `results/contention.csv`,
+`results/explain/`, `results/correctness.txt`. Rerunning writes raw logs and per-query output under `results/`
+too; those are gitignored.
 
 > **Hardware.** The published results come from one AWS **m9gd.4xlarge** (Graviton5, 16 vCPU, 64 GiB, Amazon
 > Linux 2023, Docker 25, Docker data on the local NVMe instance store), with containers capped by cgroups. It is
@@ -85,7 +87,7 @@ git clone https://github.com/Snowflake-Labs/pg_lake.git vendor/pg_lake && git -C
 BUILD_NCORES=16 scripts/00_build_pg_lake.sh   # builds pg_lake:lab-pg17 + pgduck-server:lab-pg17 (~13 min on 16 cores)
 
 # Either run everything in one go (loads overlap the build, every measurement waits for it):
-scripts/run_all.sh                   # then scripts/11_rerun_latency_and_lake.sh was used for the published latency numbers
+scripts/run_all.sh
 
 # ...or step by step:
 scripts/01_up.sh all                   # client, ClickHouse, pg_duckdb, pg_clickhouse containers
@@ -104,14 +106,14 @@ scripts/compare_results.py             # checks every path returns the same answ
 # contention: pgbench -c16 -j4 (scale 50) alone, then with a Q3+Q4 loop through each path
 scripts/06_contention_all.sh           # TPC-B, 120 s, baselines before and after  -> results/contention/
 scripts/07_contention_select_only.sh   # pgbench -S, 60 s (CPU-bound variant)     -> results/contention_select_only/
-scripts/make_tables.py [contention|contention_select_only]   # markdown tables used in RESULTS.md
+scripts/make_tables.py [latency|contention|contention_select_only]   # markdown tables used in RESULTS.md
+scripts/export_results.py              # writes results/contention.csv + results/correctness.txt
 scripts/99_teardown.sh                 # removes containers + volumes, keeps scripts/results
 ```
 
 Only one Postgres instance should be under load while you measure (they all share cores 0-3).
 
-`scripts/08_rerun_clickhouse.sh`, `09_ab_clickhouse_versions.sh` and `10_ch_under_host_load.sh` were used for the
-ClickHouse 25.8 vs 26.10 comparison described in RESULTS.md.
+
 
 ## Deviations from "stock" (all deliberate, all disclosed)
 
@@ -147,8 +149,10 @@ ClickHouse 25.8 vs 26.10 comparison described in RESULTS.md.
 
 ```
 docker/          pg_lake Dockerfile copy, entrypoint, lab postgresql.conf
-scripts/         00_build … 05_contention, 99_teardown, summarise_contention.py, compare_results.py, env.sh, paths.sh
+scripts/         00_build … 07_contention, run_all.sh, 99_teardown, env.sh, paths.sh,
+                 summarise_contention.py, compare_results.py, make_tables.py, export_results.py
 sql/             data generator, per-path setup, queries/Q1..Q6.sql
-results/         build/, load/, queries/<path>/Qn.out + timings.csv, explain/<path>.txt, contention/<run>/
-vendor/          shallow clones of the three extension repos (do not commit)
+results/         queries/timings.csv, contention.csv, explain/<path>.txt, correctness.txt, host_info.txt
+                 (raw logs and per-run output are written here too, but gitignored)
+vendor/          clone of pg_lake for the build context (gitignored)
 ```

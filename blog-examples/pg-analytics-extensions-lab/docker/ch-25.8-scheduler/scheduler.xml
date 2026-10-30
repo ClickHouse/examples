@@ -1,5 +1,0 @@
-<clickhouse>
-  <concurrent_threads_scheduler>fair_round_robin</concurrent_threads_scheduler>
-  <cpu_slot_preemption>0</cpu_slot_preemption>
-  <concurrent_threads_lazy_allocation>false</concurrent_threads_lazy_allocation>
-</clickhouse>

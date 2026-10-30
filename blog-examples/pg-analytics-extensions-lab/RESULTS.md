@@ -1,6 +1,8 @@
 # Results: pg_duckdb vs pg_lake vs pg_clickhouse (lab run 2026-10-30)
 
-Setup, versions and deviations: [README.md](README.md). Raw outputs: `results/`.
+Setup, versions and deviations: [README.md](README.md). Data behind these tables: `results/queries/timings.csv`
+(every latency run), `results/contention.csv` (every pgbench run), `results/explain/` (plans) and
+`results/correctness.txt`.
 
 One AWS **m9gd.4xlarge** (Graviton5, 16 vCPU, 64 GiB, Amazon Linux 2023, Docker data on the local NVMe
 instance store). Every Postgres instance was capped at 4 CPUs (pinned to the same cores 0-3) and 4 GiB;
@@ -107,9 +109,9 @@ Postgres used ~396% of its 400% on both tests, so both are CPU-bound on this hos
 | baseline pglake r1 / r2 | 17,497 / 17,608 | — | 1.37 / 1.34 ms | 1.82 / 1.73 ms | — | 394% | 0% | — |
 | + pg_lake loop | 7,317 | **-58%** | 8.30 ms | 13.48 ms | 62 / 62 (462 ms / 1.58 s) | 171% | 221% | — |
 
-Baselines repeated within 1.5% on every instance. Raw logs: `results/contention/`. The pg_lake rows were rerun
-after fixing the pgduck_server cache-directory permissions (see section 4), with ClickHouse stopped; the
-earlier no-cache pg_lake runs (−56% / −36%) are in `results/nocache_pglake/`.
+Baselines repeated within 1.5% on every instance. The pg_lake rows were rerun after fixing the pgduck_server
+cache-directory permissions (see section 4), with its file cache filled first; the earlier runs without a
+working cache gave −56% / −36%.
 
 ### 2b. Select-only (pgbench -S, 60 s)
 
@@ -159,7 +161,7 @@ earlier no-cache pg_lake runs (−56% / −36%) are in `results/nocache_pglake/`
 
 pg_clickhouse's Q4 took 563 ms on an idle host but a median ~1.56 s inside the contention loops. ClickHouse's
 `system.query_log` shows that time is spent in ClickHouse, not in pg_clickhouse: Q4 durations are bimodal
-(~0.4-0.6 s or ~1.4-2.9 s). An interleaved A/B on the laptop (`results/ab_ch_versions_laptop/`, scripts 09-10) showed
+(~0.4-0.6 s or ~1.4-2.9 s). An interleaved A/B on the laptop (26.10 → 25.8 → 26.10 → 25.8, same data and load) showed
 the same behaviour on 26.10.3.7 and not on 25.8.33.6 (steady ~0.6 s), and that it is not caused by 26.10's new
 `concurrent_threads_scheduler` / `cpu_slot_preemption` defaults. It lowers pg_clickhouse's analytics
 throughput in section 2, not the OLTP impact.

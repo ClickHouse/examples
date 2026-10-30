@@ -23,4 +23,5 @@ for p in plain ch duckdb lake; do $S/04_explain.sh $p; done
 step "compare"; python3 $S/compare_results.py
 step "contention TPC-B"; $S/06_contention_all.sh 2>&1 | grep -E '"run"|"tps"|loop_q4_n|loop_errors|backend_sigkills'
 step "contention select-only"; $S/07_contention_select_only.sh 2>&1 | grep -E '"run"|"tps"|loop_q4_n|loop_errors|backend_sigkills'
+python3 $S/export_results.py
 step "ALL_DONE"

@@ -1,9 +1,0 @@
-SET
-Timing is on.
-RUN 1
-  count  
----------
- 4999777
-(1 row)
-
-Time: 681.449 ms

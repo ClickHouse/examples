@@ -12,6 +12,9 @@ for _ in $(seq 1 120); do psql_c $H -d pgbench -c 'select 1' >/dev/null 2>&1 && 
 if [ $INST = pglake ]; then  # pgduck_server needs ~60 s after start before its socket appears
   for _ in $(seq 1 180); do docker exec lab-pgduck-server psql -X -q -p 5332 -h /home/postgres/pgduck_socket_dir -c "select 1" >/dev/null 2>&1 && break; sleep 1; done
 fi
+if [ $INST = pglake ] && [ "$P" = lake ]; then  # fill pgduck_server's file cache first, as a long-running server would have it
+  psql_c lab-pglake -c "SET search_path = ice, public" -f /lab/sql/queries/Q3.sql -f /lab/sql/queries/Q4.sql >/dev/null; wait_lake_cache
+fi
 # warm-up (not measured) so shared_buffers holds the pgbench working set
 docker exec lab-client pgbench ${PGBENCH_ARGS:-} -h $H -U postgres -c 16 -j 4 -T 15 pgbench > $OUT/warmup.log 2>&1
 psql_c $H -d pgbench -c "CHECKPOINT" >/dev/null

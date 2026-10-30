@@ -1,2 +1,11 @@
 vendor/
 results-*/
+# raw run output: keep only the summary files listed in README "Layout"
+results/*
+!results/queries/
+results/queries/*
+!results/queries/timings.csv
+!results/explain/
+!results/contention.csv
+!results/correctness.txt
+!results/host_info.txt

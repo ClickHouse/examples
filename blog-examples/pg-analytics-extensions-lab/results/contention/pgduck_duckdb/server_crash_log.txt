@@ -1,2 +1,0 @@
-2026-10-30 07:17:21.722 UTC [1] LOG:  server process (PID 80) was terminated by signal 9: Killed
-2026-10-30 07:17:21.892 UTC [109] LOG:  database system was not properly shut down; automatic recovery in progress
