@@ -7,7 +7,7 @@ Setup, versions and deviations: [README.md](README.md). Data behind these tables
 One AWS **m9gd.4xlarge** (Graviton5, 16 vCPU, 64 GiB, Amazon Linux 2023, Docker data on the local NVMe
 instance store). Every Postgres instance was capped at 4 CPUs (pinned to the same cores 0-3) and 4 GiB;
 ClickHouse 26.10 ran in its own 4 CPU / 4 GiB container on cores 8-11; the pgbench/psql client on cores 4-7;
-50M-row `events` table + 5M-row `users` table. **One host, one run per configuration, not a formal benchmark.**
+50M-row `events` table + 5M-row `users` table. **One host, not a formal benchmark: 10 cold + 10 warm runs per query; one loaded run per contention configuration.**
 
 Correctness: `scripts/compare_results.py` confirms every path returned identical results for all six queries.
 
@@ -73,28 +73,29 @@ Pushdown (from `results/explain/`):
 
 What the latency numbers say:
 - **pg_duckdb on heap tables is not a universal accelerator.** Tuned, it was *slower* than plain Postgres on
-  simple scans and low-cardinality aggregates (Q1 1.7×, Q2 2× slower warm), even on Q3 and Q6, and faster only
+  simple scans and low-cardinality aggregates (Q1 1.7×, Q2 2× slower warm; ~2.5× cold), about level on Q3 and Q6, and faster only
   where Postgres is weak: high-cardinality aggregation (Q4 2.6×) and `count(DISTINCT)` (Q5 3×). The bottleneck is
   reading row-format heap pages through the Postgres scan, not DuckDB's engine.
 - **The same DuckDB on columnar data is fast.** pg_duckdb on a Parquet copy was ~5-57× faster than on the heap
   (5-8× on Q3-Q6, 52-57× on Q1-Q2). pg_lake (also DuckDB, over Iceberg/Parquet) matched or beat local Parquet
-  on full scans once its file cache was warm (Q1, Q2, Q4) but was slower on the filtered Q3 and the Q6 join, and
+  on Q1, Q2 and Q4 once its file cache was warm but was slower on Q5 (`count(DISTINCT)`), the filtered Q3 and the Q6 join, and
   cold runs that read from object storage were 1.2-3.5× slower than warm ones. The large
   speed-ups from both DuckDB extensions come from *changing the storage format* (a second copy of the data), not
   from running against the live OLTP tables.
-- **pg_clickhouse was fastest cold on all six queries** and fastest warm on Q1, Q3 and Q4 (1.2-2× ahead of the
-  next path; 7× ahead of pg_lake on Q3). Warm, pg_lake was fastest on Q2 (84 ms vs 91-93 ms), and on Q5 and Q6
+- **pg_clickhouse was fastest cold on all six queries** and fastest warm on Q1, Q3 and, by median, Q4 (1.2-2× ahead of the
+  next path; 7× ahead of pg_lake on Q3). Eight of its ten warm Q4 runs took 494-555 ms; two were slow outliers
+  (756 ms and 3.7 s, the 26.10 behaviour described in section 3), which widen its Q4 p10-p90 range. Warm, pg_lake was fastest on Q2 (84 ms vs 91-93 ms), and on Q5 and Q6
   pg_clickhouse and pg_duckdb over Parquet were within each other's p10-p90 range: effectively ties. Against the paths that query live
   data in Postgres (plain PG, tuned pg_duckdb on heap), pg_clickhouse was 5-72× faster warm.
-- Every fast path needs a data copy: Parquet export (pg_duckdb, 19.8 s), Iceberg CTAS (pg_lake, 51 s for 50M
-  rows), or MergeTree (pg_clickhouse, 28 s one-shot load via `postgresql()`; CDC in production).
+- Every fast path needs a data copy: Parquet export (pg_duckdb, 19.8 s), Iceberg CTAS (pg_lake, 48 s for the 50M-row
+  events table), or MergeTree (pg_clickhouse, 28 s one-shot load via `postgresql()`; CDC in production).
 
 ## 2. Contention: OLTP throughput while analytics runs
 
 `pgbench -c 16 -j 4` (scale 50, `pgbench` DB in the **same** Postgres instance as the events data) with and
 without one psql session looping Q3 + Q4 through each path. Δ TPS is vs the mean of that instance's baseline
 runs. CPU% from `docker stats` (100% = 1 core; the Postgres containers are capped at 400%). At baseline
-Postgres used ~396% of its 400% on both tests, so both are CPU-bound on this host (the NVMe makes commits cheap).
+Postgres used ~395-403% of its 400% on both tests, so both are CPU-bound on this host (the NVMe makes commits cheap).
 
 ### 2a. TPC-B (default pgbench, read-write, 120 s)
 
@@ -128,16 +129,16 @@ working cache gave −56% / −36%.
 ### Memory behaviour
 
 - **pg_duckdb defaults are unsafe in a 4 GiB instance.** `duckdb.max_memory` defaults to 4096 MB *per backend*,
-  on top of `shared_buffers=1GB`. In the latency run Q4 completed once (5.7 s) and the backend was then killed by
-  the container's memory cgroup (signal 9). In the TPC-B contention run with defaults the same happened after
-  one Q4. Postgres treats a SIGKILLed backend as a crash: the postmaster terminates **every** connection and runs
+  on top of `shared_buffers=1GB`. Q4 completed on every fresh connection (10 cold runs, median 5.66 s), but in the
+  warm session the backend was killed by the container's memory cgroup (signal 9) on the third Q4. In the TPC-B
+  contention run with defaults the same happened on the second Q4 of the loop. Postgres treats a SIGKILLed backend as a crash: the postmaster terminates **every** connection and runs
   crash recovery, so the pgbench run aborted. With `duckdb.max_memory=2048` there were no OOMs, but the Postgres
   container still peaked at ~3.7 GiB of its 4 GiB cap.
 - pg_lake's DuckDB lives in pgduck_server with its own memory limit (default 80% of system memory). In this lab
-  it had a separate 4 GiB cgroup and peaked at 2.9 GiB, so analytics memory pressure never touched the Postgres
-  cgroup (Postgres stayed under 1 GiB). On a single real host it would share RAM with Postgres.
+  it had a separate 4 GiB cgroup and peaked at ~3.9-4.0 GiB, i.e. at its cap, so analytics memory pressure never
+  touched the Postgres cgroup (Postgres stayed at ~1 GiB, the same as its baseline). On a single real host it would share RAM with Postgres.
 - pg_clickhouse: the Postgres container peaked at ~1.4 GiB (TPC-B) to ~2.8 GiB (select-only) and ClickHouse used
-  up to 2.2 GiB in its own container. No OOMs anywhere outside the pg_duckdb default runs.
+  up to 2.4 GiB in its own container. No OOMs anywhere outside the pg_duckdb default runs.
 
 ## 3. Interpretation vs the hypothesis
 
@@ -159,7 +160,7 @@ working cache gave −56% / −36%.
 
 ### Note on ClickHouse 26.10 under load
 
-pg_clickhouse's Q4 took 563 ms on an idle host but a median ~1.56 s inside the contention loops. ClickHouse's
+pg_clickhouse's Q4 took 547 ms (warm median) on an idle host but a median ~1.56 s inside the contention loops. ClickHouse's
 `system.query_log` shows that time is spent in ClickHouse, not in pg_clickhouse: Q4 durations are bimodal
 (~0.4-0.6 s or ~1.4-2.9 s). An interleaved A/B on the laptop (26.10 → 25.8 → 26.10 → 25.8, same data and load) showed
 the same behaviour on 26.10.3.7 and not on 25.8.33.6 (steady ~0.6 s), and that it is not caused by 26.10's new
@@ -175,7 +176,7 @@ throughput in section 2, not the OLTP impact.
 | `shared_preload_libraries` | `pg_duckdb` (restart) | `pg_extension_base` (restart) | not needed |
 | Extra processes / infra | none (DuckDB inside each backend) | **pgduck_server** (separate DuckDB process, unix socket on a shared volume) + **object storage** (S3/GCS/Azure) | a **ClickHouse server** + a replication path (CDC in prod) |
 | Superuser | needed for `duckdb.max_memory` etc. | init (`CREATE SECRET` in pgduck_server) | `CREATE SERVER` / user mapping |
-| Data copy needed | no for heap (slow); yes for fast path (Parquet) | yes (Iceberg CTAS: 51 s / 50M rows) | yes (MergeTree: 28 s / 50M rows via `postgresql()`, 800 MiB compressed) |
+| Data copy needed | no for heap (slow); yes for fast path (Parquet) | yes (Iceberg CTAS: 48 s / 50M rows) | yes (MergeTree: 28 s / 50M rows via `postgresql()`, 800 MiB compressed) |
 
 Errors and surprises hit, as-is:
 - **pg_duckdb**: default `duckdb.max_memory` (4 GB per connection) → backend OOM-kill → postmaster crash-restart of

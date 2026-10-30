@@ -14,8 +14,8 @@ too; those are gitignored.
 
 > **Hardware.** The published results come from one AWS **m9gd.4xlarge** (Graviton5, 16 vCPU, 64 GiB, Amazon
 > Linux 2023, Docker 25, Docker data on the local NVMe instance store), with containers capped by cgroups. It is
-> laptop-sized on purpose. It is a lab, not a formal benchmark: one run per configuration and a small number of
-> repetitions. Treat the numbers as directional and re-run them yourself. Any Linux host with 16+ cores works.
+> laptop-sized on purpose. It is a lab, not a formal benchmark: 10 cold and 10 warm runs per query, and one
+> loaded run per contention configuration. Treat the numbers as directional and re-run them yourself. Any Linux host with 16+ cores works.
 
 ## Versions (as tested 2026-10-30)
 
