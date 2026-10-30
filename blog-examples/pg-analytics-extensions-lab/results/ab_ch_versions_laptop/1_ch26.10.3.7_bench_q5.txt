@@ -1,0 +1,106 @@
+Loaded 1 queries.
+
+Queries executed: 5 (25%).
+
+localhost:9000, queries: 5, QPS: 4.449, RPS: 60623376.964, MiB/s: 1069.339, result RPS: 17.796, result MiB/s: 0.001.
+
+0%		0.182 sec.	
+10%		0.182 sec.	
+20%		0.183 sec.	
+30%		0.183 sec.	
+40%		0.184 sec.	
+50%		0.184 sec.	
+60%		0.184 sec.	
+70%		0.259 sec.	
+80%		0.259 sec.	
+90%		0.304 sec.	
+95%		0.304 sec.	
+99%		0.304 sec.	
+99.9%		0.304 sec.	
+99.99%		0.304 sec.	
+
+
+
+Queries executed: 10 (50%).
+
+localhost:9000, queries: 5, QPS: 4.056, RPS: 55270694.991, MiB/s: 974.923, result RPS: 16.225, result MiB/s: 0.001.
+
+0%		0.186 sec.	
+10%		0.186 sec.	
+20%		0.256 sec.	
+30%		0.256 sec.	
+40%		0.259 sec.	
+50%		0.259 sec.	
+60%		0.259 sec.	
+70%		0.262 sec.	
+80%		0.262 sec.	
+90%		0.266 sec.	
+95%		0.266 sec.	
+99%		0.266 sec.	
+99.9%		0.266 sec.	
+99.99%		0.266 sec.	
+
+
+
+Queries executed: 14 (70%).
+
+localhost:9000, queries: 4, QPS: 3.432, RPS: 46763390.929, MiB/s: 824.862, result RPS: 13.728, result MiB/s: 0.001.
+
+0%		0.264 sec.	
+10%		0.264 sec.	
+20%		0.289 sec.	
+30%		0.289 sec.	
+40%		0.289 sec.	
+50%		0.292 sec.	
+60%		0.292 sec.	
+70%		0.292 sec.	
+80%		0.292 sec.	
+90%		0.316 sec.	
+95%		0.316 sec.	
+99%		0.316 sec.	
+99.9%		0.316 sec.	
+99.99%		0.316 sec.	
+
+
+
+Queries executed: 18 (90%).
+
+localhost:9000, queries: 4, QPS: 3.743, RPS: 51008291.727, MiB/s: 899.738, result RPS: 14.974, result MiB/s: 0.001.
+
+0%		0.254 sec.	
+10%		0.254 sec.	
+20%		0.264 sec.	
+30%		0.264 sec.	
+40%		0.264 sec.	
+50%		0.268 sec.	
+60%		0.268 sec.	
+70%		0.268 sec.	
+80%		0.268 sec.	
+90%		0.280 sec.	
+95%		0.280 sec.	
+99%		0.280 sec.	
+99.9%		0.280 sec.	
+99.99%		0.280 sec.	
+
+
+
+Queries executed: 20 (100%).
+
+localhost:9000, queries: 20, QPS: 3.863, RPS: 52634095.672, MiB/s: 928.416, result RPS: 15.451, result MiB/s: 0.001.
+
+0%		0.182 sec.	
+10%		0.184 sec.	
+20%		0.205 sec.	
+30%		0.256 sec.	
+40%		0.259 sec.	
+50%		0.264 sec.	
+60%		0.264 sec.	
+70%		0.268 sec.	
+80%		0.280 sec.	
+90%		0.292 sec.	
+95%		0.304 sec.	
+99%		0.316 sec.	
+99.9%		0.316 sec.	
+99.99%		0.316 sec.	
+
+

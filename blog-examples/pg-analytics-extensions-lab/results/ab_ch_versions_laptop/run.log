@@ -1,0 +1,127 @@
+== 1_ch26.10.3.7 26.10.3.7
+1_ch26.10.3.7 q1 0.090
+0.089 s median :: SELECT event_type, count(*), sum(revenue) FROM lab.events GR
+1_ch26.10.3.7 q2 0.748
+0.439
+0.400
+0.386
+0.406
+0.407
+0.420 s median :: SELECT user_id, sum(revenue), count(*) FROM lab.events GROUP
+1_ch26.10.3.7 q3 0.046
+0.046 s median :: SELECT count(*), sum(revenue) FROM lab.events
+1_ch26.10.3.7 q4 0.039 s median :: SELECT country, toStartOfDay(event_time), count(*), sum(reve
+1_ch26.10.3.7 q5 0.184
+0.259
+0.292
+0.268
+0.264 s median :: SELECT r2.plan, count(*), sum(r1.revenue) FROM  lab.events r
+1_ch26.10.3.7 q6 0.340
+0.319
+0.421
+0.418
+0.321
+0.417 s median :: SELECT count(DISTINCT user_id) FROM lab.events
+ "tps": 172976.065583,
+ "loop_q3_n": 49,
+ "loop_q4_n": 48,
+ "loop_q3_median_ms": 46.1,
+ "loop_q4_median_ms": 1072.9,
+ "cpu_avg_pct[lab-pgch]": 228.6,
+ "cpu_avg_pct[lab-ch]": 91.2,
+== 2_ch25.8.33.6 25.8.33.6
+2_ch25.8.33.6 q1 0.063
+0.063 s median :: SELECT event_type, count(*), sum(revenue) FROM lab.events GR
+2_ch25.8.33.6 q2 0.961
+0.655
+0.698
+0.687
+0.559
+0.571
+0.596
+0.602
+0.619
+0.596 s median :: SELECT user_id, sum(revenue), count(*) FROM lab.events GROUP
+2_ch25.8.33.6 q3 0.029 s median :: SELECT count(*), sum(revenue) FROM lab.events
+2_ch25.8.33.6 q4 0.026 s median :: SELECT country, toStartOfDay(event_time), count(*), sum(reve
+2_ch25.8.33.6 q5 0.213
+0.219
+0.213
+0.213 s median :: SELECT r2.plan, count(*), sum(r1.revenue) FROM  lab.events r
+2_ch25.8.33.6 q6 0.266
+0.246
+0.249
+0.248 s median :: SELECT count(DISTINCT user_id) FROM lab.events
+ "tps": 151154.049841,
+ "loop_q3_n": 99,
+ "loop_q4_n": 98,
+ "loop_q3_median_ms": 33.9,
+ "loop_q4_median_ms": 623.0,
+ "cpu_avg_pct[lab-pgch]": 206.5,
+ "cpu_avg_pct[lab-ch]": 234.2,
+== 3_ch26.10.3.7 26.10.3.7
+3_ch26.10.3.7 q1 0.098
+0.091 s median :: SELECT event_type, count(*), sum(revenue) FROM lab.events GR
+3_ch26.10.3.7 q2 0.488
+0.436
+0.609
+0.393
+0.402
+2.577
+0.396
+0.421 s median :: SELECT user_id, sum(revenue), count(*) FROM lab.events GROUP
+3_ch26.10.3.7 q3 0.067
+0.067 s median :: SELECT count(*), sum(revenue) FROM lab.events
+3_ch26.10.3.7 q4 0.057
+0.057 s median :: SELECT country, toStartOfDay(event_time), count(*), sum(reve
+3_ch26.10.3.7 q5 0.268
+0.270
+0.197
+0.262
+0.268 s median :: SELECT r2.plan, count(*), sum(r1.revenue) FROM  lab.events r
+3_ch26.10.3.7 q6 0.317
+0.426
+0.328
+0.423
+0.323
+0.414 s median :: SELECT count(DISTINCT user_id) FROM lab.events
+ "tps": 175658.530668,
+ "loop_q3_n": 45,
+ "loop_q4_n": 44,
+ "loop_q3_median_ms": 46.2,
+ "loop_q4_median_ms": 1444.7,
+ "cpu_avg_pct[lab-pgch]": 239.2,
+ "cpu_avg_pct[lab-ch]": 100.4,
+== 4_ch25.8.33.6 25.8.33.6
+4_ch25.8.33.6 q1 0.065
+0.064 s median :: SELECT event_type, count(*), sum(revenue) FROM lab.events GR
+4_ch25.8.33.6 q2 1.034
+0.657
+0.752
+0.561
+0.568
+0.559
+0.580
+0.588
+0.570
+0.574 s median :: SELECT user_id, sum(revenue), count(*) FROM lab.events GROUP
+4_ch25.8.33.6 q3 0.030 s median :: SELECT count(*), sum(revenue) FROM lab.events
+4_ch25.8.33.6 q4 0.026 s median :: SELECT country, toStartOfDay(event_time), count(*), sum(reve
+4_ch25.8.33.6 q5 0.215
+0.218
+0.207
+0.213 s median :: SELECT r2.plan, count(*), sum(r1.revenue) FROM  lab.events r
+4_ch25.8.33.6 q6 0.250
+0.242
+0.244
+0.251
+0.247 s median :: SELECT count(DISTINCT user_id) FROM lab.events
+ "tps": 159437.829376,
+ "loop_q3_n": 102,
+ "loop_q4_n": 101,
+ "loop_q3_median_ms": 32.8,
+ "loop_q4_median_ms": 608.9,
+ "cpu_avg_pct[lab-pgch]": 217.1,
+ "cpu_avg_pct[lab-ch]": 239.1,
+ "tps": 187847.450438,
+AB_DONE

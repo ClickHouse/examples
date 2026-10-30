@@ -1126,7 +1126,7 @@ ITER 1 Q3
  ZA      | 2026-02-28 00:00:00+00 | 1024 | 29947.32
 (1120 rows)
 
-Time: 2186.960 ms (00:02.187)
+Time: 1348.902 ms (00:01.349)
 ITER 1 Q4
  user_id |   rev   | n  
 ---------+---------+----
@@ -1142,7 +1142,7 @@ ITER 1 Q4
  3217859 | 2629.55 | 17
 (10 rows)
 
-Time: 12591.407 ms (00:12.591)
+Time: 6076.260 ms (00:06.076)
 ITER 2 Q3
  country |          day           |  n   |   rev    
 ---------+------------------------+------+----------
@@ -2268,7 +2268,7 @@ ITER 2 Q3
  ZA      | 2026-02-28 00:00:00+00 | 1024 | 29947.32
 (1120 rows)
 
-Time: 2578.461 ms (00:02.578)
+Time: 6050.035 ms (00:06.050)
 ITER 2 Q4
 psql:<stdin>:10: server closed the connection unexpectedly
 	This probably means the server terminated abnormally

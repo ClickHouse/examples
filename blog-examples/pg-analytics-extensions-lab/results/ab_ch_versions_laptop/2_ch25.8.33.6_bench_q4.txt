@@ -1,0 +1,22 @@
+Loaded 1 queries.
+
+Queries executed: 20 (100%).
+
+localhost:9000, queries: 20, QPS: 30.303, RPS: 235833503.934, MiB/s: 4048.350, result RPS: 33939.855, result MiB/s: 0.950.
+
+0%		0.025 sec.	
+10%		0.025 sec.	
+20%		0.025 sec.	
+30%		0.025 sec.	
+40%		0.025 sec.	
+50%		0.026 sec.	
+60%		0.026 sec.	
+70%		0.026 sec.	
+80%		0.027 sec.	
+90%		0.029 sec.	
+95%		0.030 sec.	
+99%		0.053 sec.	
+99.9%		0.053 sec.	
+99.99%		0.053 sec.	
+
+

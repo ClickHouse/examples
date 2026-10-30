@@ -5,8 +5,9 @@
 set -euo pipefail
 LAB=$(cd "$(dirname "$0")/.." && pwd)
 CTX=$LAB/vendor/pg_lake/docker
+mkdir -p $LAB/results/build
 DF=$LAB/docker/pg_lake.Dockerfile
-docker build --target pgduck_server --build-arg PG_MAJOR=17 -t pgduck-server:lab-pg17 -f $DF --progress=plain $CTX > $LAB/results/build/pgduck_server_build.log 2>&1 &
+docker build --target pgduck_server --build-arg PG_MAJOR=17 --build-arg BUILD_NCORES=${BUILD_NCORES:-8} -t pgduck-server:lab-pg17 -f $DF --progress=plain $CTX > $LAB/results/build/pgduck_server_build.log 2>&1 &
 P1=$!
 sleep 30
 docker build --target pg_lake_postgres --build-arg PG_MAJOR=17 -t pg_lake:lab-pg17 -f $DF --progress=plain $CTX > $LAB/results/build/pg_lake_build.log 2>&1 &

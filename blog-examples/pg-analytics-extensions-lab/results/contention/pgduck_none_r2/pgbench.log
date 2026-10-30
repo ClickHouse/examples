@@ -1,17 +1,17 @@
 pgbench (17.11 (Debian 17.11-1.pgdg13+2), server 17.7 (Debian 17.7-3.pgdg12+1))
 starting vacuum...end.
-progress: 10.0 s, 2372.8 tps, lat 6.720 ms stddev 8.108, 0 failed
-progress: 20.0 s, 2493.6 tps, lat 6.414 ms stddev 8.200, 0 failed
-progress: 30.0 s, 2414.0 tps, lat 6.623 ms stddev 8.590, 0 failed
-progress: 40.0 s, 2574.9 tps, lat 6.211 ms stddev 8.187, 0 failed
-progress: 50.0 s, 2442.1 tps, lat 6.545 ms stddev 10.208, 0 failed
-progress: 60.0 s, 2766.8 tps, lat 5.782 ms stddev 8.489, 0 failed
-progress: 70.0 s, 7793.3 tps, lat 2.051 ms stddev 1.000, 0 failed
-progress: 80.0 s, 7599.1 tps, lat 2.103 ms stddev 2.138, 0 failed
-progress: 90.0 s, 2846.2 tps, lat 5.611 ms stddev 19.149, 0 failed
-progress: 100.0 s, 1357.2 tps, lat 11.542 ms stddev 47.858, 0 failed
-progress: 110.0 s, 5290.6 tps, lat 3.086 ms stddev 11.418, 0 failed
-progress: 120.0 s, 7859.4 tps, lat 2.035 ms stddev 6.357, 0 failed
+progress: 10.0 s, 16783.5 tps, lat 0.950 ms stddev 0.262, 0 failed
+progress: 20.0 s, 17262.4 tps, lat 0.927 ms stddev 0.253, 0 failed
+progress: 30.0 s, 17183.1 tps, lat 0.931 ms stddev 0.278, 0 failed
+progress: 40.0 s, 17392.8 tps, lat 0.920 ms stddev 0.248, 0 failed
+progress: 50.0 s, 17396.7 tps, lat 0.919 ms stddev 0.247, 0 failed
+progress: 60.0 s, 17425.9 tps, lat 0.918 ms stddev 0.252, 0 failed
+progress: 70.0 s, 17388.9 tps, lat 0.920 ms stddev 0.250, 0 failed
+progress: 80.0 s, 17360.7 tps, lat 0.921 ms stddev 0.254, 0 failed
+progress: 90.0 s, 17301.5 tps, lat 0.924 ms stddev 0.281, 0 failed
+progress: 100.0 s, 17543.4 tps, lat 0.912 ms stddev 0.244, 0 failed
+progress: 110.0 s, 17556.2 tps, lat 0.911 ms stddev 0.246, 0 failed
+progress: 120.0 s, 17539.7 tps, lat 0.912 ms stddev 0.246, 0 failed
 transaction type: <builtin: TPC-B (sort of)>
 scaling factor: 50
 query mode: simple
@@ -19,9 +19,9 @@ number of clients: 16
 number of threads: 4
 maximum number of tries: 1
 duration: 120 s
-number of transactions actually processed: 478148
+number of transactions actually processed: 2081360
 number of failed transactions: 0 (0.000%)
-latency average = 4.012 ms
-latency stddev = 11.744 ms
-initial connection time = 23.916 ms
-tps = 3983.929902 (without initial connection time)
+latency average = 0.922 ms
+latency stddev = 0.259 ms
+initial connection time = 25.859 ms
+tps = 17343.095527 (without initial connection time)

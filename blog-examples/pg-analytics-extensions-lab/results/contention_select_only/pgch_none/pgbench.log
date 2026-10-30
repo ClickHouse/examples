@@ -1,10 +1,11 @@
 pgbench (17.11 (Debian 17.11-1.pgdg13+2))
 starting vacuum...end.
-progress: 10.0 s, 181487.9 tps, lat 0.086 ms stddev 0.035, 0 failed
-progress: 20.0 s, 183683.1 tps, lat 0.085 ms stddev 0.037, 0 failed
-progress: 30.0 s, 187193.4 tps, lat 0.084 ms stddev 0.035, 0 failed
-progress: 40.0 s, 180062.0 tps, lat 0.086 ms stddev 0.059, 0 failed
-progress: 50.0 s, 182752.5 tps, lat 0.085 ms stddev 0.052, 0 failed
+progress: 10.0 s, 115248.1 tps, lat 0.138 ms stddev 0.044, 0 failed
+progress: 20.0 s, 118057.2 tps, lat 0.135 ms stddev 0.040, 0 failed
+progress: 30.0 s, 119274.5 tps, lat 0.134 ms stddev 0.074, 0 failed
+progress: 40.0 s, 119589.4 tps, lat 0.133 ms stddev 0.062, 0 failed
+progress: 50.0 s, 119601.9 tps, lat 0.133 ms stddev 0.062, 0 failed
+progress: 60.0 s, 120351.6 tps, lat 0.133 ms stddev 0.062, 0 failed
 transaction type: <builtin: select only>
 scaling factor: 50
 query mode: simple
@@ -12,9 +13,9 @@ number of clients: 16
 number of threads: 4
 maximum number of tries: 1
 duration: 60 s
-number of transactions actually processed: 11048284
+number of transactions actually processed: 7121232
 number of failed transactions: 0 (0.000%)
-latency average = 0.085 ms
-latency stddev = 0.043 ms
-initial connection time = 20.450 ms
-tps = 184199.534051 (without initial connection time)
+latency average = 0.134 ms
+latency stddev = 0.060 ms
+initial connection time = 27.906 ms
+tps = 118680.451038 (without initial connection time)

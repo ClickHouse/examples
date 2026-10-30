@@ -66,17 +66,17 @@ SET
    ORDER BY ("date_trunc"('day'::"text", "event_time"))::timestamp with time zone, "country"
    ->  ORDER_BY
          ->  HASH_GROUP_BY
-               Estimated Cardinality: 667084
+               Estimated Cardinality: 676742
                ->  PROJECTION
-                     Estimated Cardinality: 680515
+                     Estimated Cardinality: 690368
                      ->  HASH_JOIN
                            Join Type: SEMI
                            Conditions: event_type = #0
-                           Estimated Cardinality: 680515
+                           Estimated Cardinality: 690368
                            ->  READ_PARQUET
                                  Filters: event_time>='2026-02-01 00:00:00+00'::TIMESTAMP WITH TIME ZONE AND event_time<'2026-03-01 00:00:00+00'::TIMESTAMP WITH TIME ZONE
                                  Function: READ_PARQUET
-                                 Estimated Cardinality: 3402577
+                                 Estimated Cardinality: 3451840
                            ->  PROJECTION
                                  Projections: UNNEST(list_value(CAST('purchase' AS VARCHAR), CAST('add_to_cart' AS VARCHAR), CAST('checkout_start' AS VARCHAR)))
                                  Estimated Cardinality: 1

@@ -1,6 +1,6 @@
 # Postgres analytics extensions lab: pg_duckdb vs pg_lake vs pg_clickhouse
 
-A reproducible, single-laptop lab that runs the same synthetic analytics workload four ways from one Postgres
+A reproducible, single-host Docker lab that runs the same synthetic analytics workload four ways from one Postgres
 instance and measures (a) query latency and (b) how much each approach hurts a concurrent OLTP workload.
 
 - **plain** — stock Postgres 17 executor on the heap table (parallel seq scans, 4 workers per gather)
@@ -8,26 +8,26 @@ instance and measures (a) query latency and (b) how much each approach hurts a c
 - **pg_lake** — Iceberg tables (Parquet on S3-compatible storage) queried through `pgduck_server`, a separate DuckDB process on the same host
 - **pg_clickhouse** — foreign tables (`IMPORT FOREIGN SCHEMA`) over a ClickHouse MergeTree copy running in a separate container ("separate machine")
 
-Results and interpretation: [RESULTS.md](RESULTS.md). Raw outputs: `results/` (files over 300 KB are gzipped; per-transaction pgbench sample logs and the loop SQL files are left out to keep the repo small, and the scripts regenerate them).
+Results and interpretation: [RESULTS.md](RESULTS.md). Raw outputs: `results/` (files over 300 KB are gzipped; per-transaction pgbench sample logs and generated loop SQL are left out, and the scripts regenerate them).
 
-> **Hardware caveat.** This is one MacBook (Apple silicon, 14 vCPUs exposed to OrbStack's Linux VM, ~11.7 GiB
-> Docker memory), with containers capped by cgroups. It is a lab, not a formal benchmark: one run per
-> configuration, small number of repetitions, a shared SSD and a shared VM kernel/page cache. Treat the numbers as
-> directional and re-run them yourself.
+> **Hardware.** The published results come from one AWS **m9gd.4xlarge** (Graviton5, 16 vCPU, 64 GiB, Amazon
+> Linux 2023, Docker 25, Docker data on the local NVMe instance store), with containers capped by cgroups. It is
+> laptop-sized on purpose. It is a lab, not a formal benchmark: one run per configuration and a small number of
+> repetitions. Treat the numbers as directional and re-run them yourself. Any Linux host with 16+ cores works.
 
-## Versions (as tested 2026-10-29)
+## Versions (as tested 2026-10-30)
 
 | Component | Image / source | Version |
 |---|---|---|
 | pg_duckdb | `pgduckdb/pgduckdb:17-v1.1.1` (`sha256:302d06d0…`) | pg_duckdb 1.1.1 (SQL ext 1.1.0), DuckDB v1.4.3, PostgreSQL 17.7 |
 | pg_clickhouse | `ghcr.io/clickhouse/pg_clickhouse:17` (`sha256:620d833a…`, built 2026-09-28) | pg_clickhouse 0.11 (latest published image; repo `main` is 0.12.0), PostgreSQL 17.11 |
-| ClickHouse | `clickhouse/clickhouse-server:25.8` | 25.8.33.6 |
-| pg_lake | built from `Snowflake-Labs/pg_lake` `main` @ `1918df64e9655671036037051c8507949a953595` with the repo's `docker/Dockerfile` (see deviations) | PostgreSQL 17.11 compiled from source, pgduck_server + duckdb_pglake from the same commit |
-| S3 for pg_lake | `chrislusf/seaweedfs:latest` | 4.50 (ec8f97935) |
+| ClickHouse | `clickhouse/clickhouse-server:26.10.3.7` (`sha256:739e099a…`) | 26.10.3.7 |
+| pg_lake | built from `Snowflake-Labs/pg_lake` @ `1918df64e9655671036037051c8507949a953595` (pinned in the Dockerfile) with the repo's `docker/Dockerfile` (see deviations) | PostgreSQL 17.11 compiled from source, pgduck_server + duckdb_pglake from the same commit |
+| S3 for pg_lake | `chrislusf/seaweedfs:latest` (`sha256:c2658820…`) | 4.50 (ec8f97935) |
 | client / pgbench | `postgres:17` | pgbench 17 |
 
 Repos are cloned (shallow) into `vendor/` for reference and for the pg_lake build context. `vendor/` is a
-scratch area and is gitignored. Commit SHAs at clone time:
+scratch area: do not commit it (treat it as gitignored). Commit SHAs at clone time:
 pg_lake `1918df6`, pg_clickhouse `35cdcac`, pg_duckdb `a9457c9`.
 
 ## Topology and resource caps
@@ -81,8 +81,13 @@ Load per path:
 ```bash
 git clone https://github.com/ClickHouse/examples.git
 cd examples/blog-examples/pg-analytics-extensions-lab
-git clone --depth 1 https://github.com/Snowflake-Labs/pg_lake.git vendor/pg_lake      # + pg_clickhouse, pg_duckdb for reference
-scripts/00_build_pg_lake.sh            # builds pg_lake:lab-pg17 + pgduck-server:lab-pg17 (slow: see notes)
+git clone https://github.com/Snowflake-Labs/pg_lake.git vendor/pg_lake && git -C vendor/pg_lake checkout 1918df64
+BUILD_NCORES=16 scripts/00_build_pg_lake.sh   # builds pg_lake:lab-pg17 + pgduck-server:lab-pg17 (~13 min on 16 cores)
+
+# Either run everything in one go (loads overlap the build, every measurement waits for it):
+scripts/run_all.sh
+
+# ...or step by step:
 scripts/01_up.sh all                   # client, ClickHouse, pg_duckdb, pg_clickhouse containers
 scripts/01_up.sh pglake                # pg_lake + pgduck_server + SeaweedFS (pgduck_server needs ~20-60 s before it accepts queries)
 for c in lab-pgch lab-pgduck lab-pglake; do scripts/02_gen_events.sh $c; scripts/02_init_pgbench.sh $c; done
@@ -90,7 +95,7 @@ scripts/02_load_clickhouse.sh          # MergeTree copy + IMPORT FOREIGN SCHEMA
 docker exec -i lab-client psql -h lab-pglake -U postgres -f /lab/sql/pglake_setup.sql
 docker exec -i lab-client psql -h lab-pgduck -U postgres -f /lab/sql/duckdb_parquet_setup.sql   # optional
 
-# query latency: 1 cold run (containers restarted + VM page cache dropped) + 3 warm runs, per query
+# query latency: 1 cold run (containers restarted + OS page cache dropped) + 3 warm runs, per query
 for p in plain ch duckdb duckdb_tuned duckdb_parquet lake; do scripts/03_bench_queries.sh $p; done
 for p in plain ch duckdb lake; do scripts/04_explain.sh $p; done
 scripts/compare_results.py             # checks every path returns the same answers
@@ -102,15 +107,18 @@ scripts/make_tables.py [contention|contention_select_only]   # markdown tables u
 scripts/99_teardown.sh                 # removes containers + volumes, keeps scripts/results
 ```
 
-Only one Postgres instance should be running while you measure (they all share cores 0-3).
+Only one Postgres instance should be under load while you measure (they all share cores 0-3).
+
+`scripts/08_rerun_clickhouse.sh`, `09_ab_clickhouse_versions.sh` and `10_ch_under_host_load.sh` were used for the
+ClickHouse 25.8 vs 26.10 comparison described in RESULTS.md.
 
 ## Deviations from "stock" (all deliberate, all disclosed)
 
 1. **pg_lake has no official prebuilt image**, so it is built from the repo's own `docker/Dockerfile`. Copy in
    `docker/pg_lake.Dockerfile` with two changes: the `dev_base` stage only compiles PostgreSQL 17 (+ its PostGIS,
-   pgaudit, pg_cron, pg_incremental) instead of 16/17/18/19, and the DuckDB compile uses `NCORES=8`
-   (upstream recommends 16 GB+ RAM for the build; this VM has 11.7 GiB). The pg_lake source is cloned by the
-   Dockerfile from `main` (commit above). PG 17 was chosen over 18 because the upstream Dockerfile compiles PG 18
+   pgaudit, pg_cron, pg_incremental) instead of 16/17/18/19, the DuckDB compile parallelism is a build arg
+   (`BUILD_NCORES`, default 8; upstream recommends 16 GB+ RAM for the build), and the pg_lake source is pinned to
+   the commit above instead of a branch. PG 17 was chosen over 18 because the upstream Dockerfile compiles PG 18
    with `--enable-cassert` (assertion-enabled build), which would unfairly slow pg_lake; PG 17 is built without
    asserts. It is still built with `--enable-debug` (symbols only, `-O2`).
 2. **Object storage**: upstream compose uses localstack; `localstack/localstack:latest` now requires an auth
@@ -126,12 +134,11 @@ Only one Postgres instance should be running while you measure (they all share c
    `duckdb.max_workers_per_postgres_scan=4`, `duckdb.threads_for_postgres_scan=4`.
 6. **ClickHouse schema**: `LowCardinality(String)` for `event_type`/`country`, `DateTime64(6,'UTC')`,
    `Decimal(10,2)`, `ORDER BY event_time` — a normal ClickHouse modelling choice, not a heap-equivalent layout.
-7. **Cold runs** = `docker restart` of the path's containers + `echo 3 > /proc/sys/vm/drop_caches` in the VM.
+7. **Cold runs** = `docker restart` of the path's containers + `echo 3 > /proc/sys/vm/drop_caches` on the host.
    For pg_duckdb this includes DuckDB instance start-up in the new backend; for pg_lake it does not clear
    pgduck_server's on-disk file cache (`--cache_dir`), which persists across restarts by design.
-8. During part of the run the pg_lake image was still building; the buildkit cgroup was pinned to cores 8-13
-   (`/sys/fs/cgroup/docker/buildkit/cpuset.cpus`) so it never shared cores 0-3 with the Postgres under test.
-   See RESULTS.md for which measurements overlapped with the build.
+8. In `run_all.sh` the data loads for pg_duckdb, pg_clickhouse and ClickHouse overlap the pg_lake build; nothing
+   is measured until the build has finished.
 
 ## Layout
 

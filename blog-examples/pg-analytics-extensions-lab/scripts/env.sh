@@ -5,7 +5,7 @@ IMG_PGDUCKDB=pgduckdb/pgduckdb:17-v1.1.1
 IMG_PGCH=ghcr.io/clickhouse/pg_clickhouse:17
 IMG_PGLAKE=pg_lake:lab-pg17
 IMG_PGDUCK_SERVER=pgduck-server:lab-pg17
-IMG_CH=clickhouse/clickhouse-server:25.8
+IMG_CH=clickhouse/clickhouse-server:26.10.3.7
 IMG_CLIENT=postgres:17
 IMG_S3=chrislusf/seaweedfs:latest
 # Resource caps. Every Postgres instance is pinned to the SAME 4 cores (0-3) and only one runs at a time

@@ -226,8 +226,10 @@ ENV VCPKG_TOOLCHAIN_PATH="/home/postgres/vcpkg/scripts/buildsystems/vcpkg.cmake"
 FROM dev_base AS base
 
 # Clone pg_lake project
-RUN git clone https://github.com/snowflake-labs/pg_lake.git \
-    --branch ${PG_LAKE_REF} --recurse-submodules /home/postgres/pg_lake
+# Lab: pinned to the commit tested on 2026-10-29 instead of a moving branch
+ARG PG_LAKE_COMMIT=1918df64e9655671036037051c8507949a953595
+RUN git clone https://github.com/snowflake-labs/pg_lake.git /home/postgres/pg_lake && \
+    cd /home/postgres/pg_lake && git checkout ${PG_LAKE_COMMIT} && git submodule update --init --recursive
 
 ############## pg_lake_builder - Build all pg_lake extensions ##############
 FROM base AS pg_lake_builder
@@ -250,6 +252,7 @@ FROM base AS pgduck_builder
 # need to redefine ARGs in each stage
 ARG PG_MAJOR=18
 ARG PGCOMPAT_BUILD_CONFIG=Release
+ARG BUILD_NCORES=8
 
 # Set environment variables for the selected PostgreSQL version
 ENV PG_MAJOR=${PG_MAJOR}
@@ -257,7 +260,7 @@ ENV PATH=/home/postgres/pgsql-${PG_MAJOR}/bin:$PATH
 
 # Install pgduck_server (build happens here, not in final image)
 RUN cd pg_lake && \
-    NCORES=8 make install-pgduck_server && \
+    NCORES=${BUILD_NCORES} make install-pgduck_server && \
     rm -r duckdb_pglake/build
 
 ############## runtime_base - Minimal runtime environment ##############

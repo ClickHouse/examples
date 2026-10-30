@@ -2,14 +2,14 @@
 SET
                                                 QUERY PLAN                                                 
 -----------------------------------------------------------------------------------------------------------
- Finalize Aggregate  (cost=892389.02..892389.03 rows=1 width=40)
+ Finalize Aggregate  (cost=892371.08..892371.09 rows=1 width=40)
    Output: count(*), sum(revenue)
-   ->  Gather  (cost=892388.58..892388.99 rows=4 width=40)
+   ->  Gather  (cost=892370.64..892371.05 rows=4 width=40)
          Output: (PARTIAL count(*)), (PARTIAL sum(revenue))
          Workers Planned: 4
-         ->  Partial Aggregate  (cost=891388.58..891388.59 rows=1 width=40)
+         ->  Partial Aggregate  (cost=891370.64..891370.65 rows=1 width=40)
                Output: PARTIAL count(*), PARTIAL sum(revenue)
-               ->  Parallel Seq Scan on public.events  (cost=0.00..828887.05 rows=12500305 width=3)
+               ->  Parallel Seq Scan on public.events  (cost=0.00..828875.09 rows=12499109 width=3)
                      Output: event_id, event_time, user_id, event_type, country, url, duration_ms, revenue
  JIT:
    Functions: 5
@@ -20,19 +20,19 @@ SET
 SET
                                                    QUERY PLAN                                                    
 -----------------------------------------------------------------------------------------------------------------
- Finalize GroupAggregate  (cost=923639.84..923647.28 rows=14 width=48)
+ Finalize GroupAggregate  (cost=923618.91..923626.35 rows=14 width=48)
    Output: event_type, count(*), sum(revenue)
    Group Key: events.event_type
-   ->  Gather Merge  (cost=923639.84..923646.54 rows=56 width=48)
+   ->  Gather Merge  (cost=923618.91..923625.61 rows=56 width=48)
          Output: event_type, (PARTIAL count(*)), (PARTIAL sum(revenue))
          Workers Planned: 4
-         ->  Sort  (cost=922639.78..922639.81 rows=14 width=48)
+         ->  Sort  (cost=922618.85..922618.88 rows=14 width=48)
                Output: event_type, (PARTIAL count(*)), (PARTIAL sum(revenue))
                Sort Key: events.event_type
-               ->  Partial HashAggregate  (cost=922639.34..922639.51 rows=14 width=48)
+               ->  Partial HashAggregate  (cost=922618.41..922618.58 rows=14 width=48)
                      Output: event_type, PARTIAL count(*), PARTIAL sum(revenue)
                      Group Key: events.event_type
-                     ->  Parallel Seq Scan on public.events  (cost=0.00..828887.05 rows=12500305 width=11)
+                     ->  Parallel Seq Scan on public.events  (cost=0.00..828875.09 rows=12499109 width=11)
                            Output: event_id, event_time, user_id, event_type, country, url, duration_ms, revenue
  JIT:
    Functions: 7
@@ -43,16 +43,16 @@ SET
 SET
                                                                                         QUERY PLAN                                                                                        
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- GroupAggregate  (cost=319891.60..484462.41 rows=1137052 width=51)
+ GroupAggregate  (cost=324555.93..490456.56 rows=1146240 width=51)
    Output: country, (date_trunc('day'::text, event_time)), count(*), sum(revenue)
    Group Key: (date_trunc('day'::text, events.event_time)), events.country
-   ->  Gather Merge  (cost=319891.60..456036.11 rows=1137052 width=14)
+   ->  Gather Merge  (cost=324555.93..461800.56 rows=1146240 width=14)
          Output: country, (date_trunc('day'::text, event_time)), revenue
          Workers Planned: 4
-         ->  Sort  (cost=318891.54..319602.20 rows=284263 width=14)
+         ->  Sort  (cost=323555.87..324272.27 rows=286560 width=14)
                Output: country, (date_trunc('day'::text, event_time)), revenue
                Sort Key: (date_trunc('day'::text, events.event_time)), events.country
-               ->  Parallel Index Scan using events_event_time_idx on public.events  (cost=0.56..293141.76 rows=284263 width=14)
+               ->  Parallel Index Scan using events_event_time_idx on public.events  (cost=0.56..297581.38 rows=286560 width=14)
                      Output: country, date_trunc('day'::text, event_time), revenue
                      Index Cond: ((events.event_time >= '2026-02-01 00:00:00+00'::timestamp with time zone) AND (events.event_time < '2026-03-01 00:00:00+00'::timestamp with time zone))
                      Filter: (events.event_type = ANY ('{purchase,add_to_cart,checkout_start}'::text[]))
@@ -65,25 +65,25 @@ SET
 SET
                                                          QUERY PLAN                                                          
 -----------------------------------------------------------------------------------------------------------------------------
- Limit  (cost=5022335.33..5022335.35 rows=10 width=48)
+ Limit  (cost=5022200.56..5022200.58 rows=10 width=48)
    Output: user_id, (sum(revenue)), (count(*))
-   ->  Sort  (cost=5022335.33..5033787.13 rows=4580721 width=48)
+   ->  Sort  (cost=5022200.56..5033652.26 rows=4580680 width=48)
          Output: user_id, (sum(revenue)), (count(*))
          Sort Key: (sum(events.revenue)) DESC, events.user_id
-         ->  Finalize GroupAggregate  (cost=2488975.81..4923347.59 rows=4580721 width=48)
+         ->  Finalize GroupAggregate  (cost=2488863.72..4923213.71 rows=4580680 width=48)
                Output: user_id, sum(revenue), count(*)
                Group Key: events.user_id
-               ->  Gather Merge  (cost=2488975.81..4682859.74 rows=18322884 width=48)
+               ->  Gather Merge  (cost=2488863.72..4682728.01 rows=18322720 width=48)
                      Output: user_id, (PARTIAL sum(revenue)), (PARTIAL count(*))
                      Workers Planned: 4
-                     ->  Sort  (cost=2487975.75..2499427.56 rows=4580721 width=48)
+                     ->  Sort  (cost=2487863.66..2499315.36 rows=4580680 width=48)
                            Output: user_id, (PARTIAL sum(revenue)), (PARTIAL count(*))
                            Sort Key: events.user_id
-                           ->  Partial HashAggregate  (cost=1660938.60..1840270.91 rows=4580721 width=48)
+                           ->  Partial HashAggregate  (cost=1660847.03..1840167.14 rows=4580680 width=48)
                                  Output: user_id, PARTIAL sum(revenue), PARTIAL count(*)
                                  Group Key: events.user_id
                                  Planned Partitions: 16
-                                 ->  Parallel Seq Scan on public.events  (cost=0.00..828887.05 rows=12500305 width=11)
+                                 ->  Parallel Seq Scan on public.events  (cost=0.00..828875.09 rows=12499109 width=11)
                                        Output: event_id, event_time, user_id, event_type, country, url, duration_ms, revenue
  JIT:
    Functions: 8
@@ -94,12 +94,12 @@ SET
 SET
                                       QUERY PLAN                                      
 --------------------------------------------------------------------------------------
- Aggregate  (cost=8531536.30..8531536.31 rows=1 width=8)
+ Aggregate  (cost=8530751.77..8530751.78 rows=1 width=8)
    Output: count(DISTINCT user_id)
-   ->  Sort  (cost=8281530.20..8406533.25 rows=50001220 width=8)
+   ->  Sort  (cost=8280769.59..8405760.68 rows=49996436 width=8)
          Output: user_id
          Sort Key: events.user_id
-         ->  Seq Scan on public.events  (cost=0.00..1203896.20 rows=50001220 width=8)
+         ->  Seq Scan on public.events  (cost=0.00..1203848.36 rows=49996436 width=8)
                Output: user_id
  JIT:
    Functions: 5
@@ -110,28 +110,28 @@ SET
 SET
                                                                                          QUERY PLAN                                                                                         
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- Finalize GroupAggregate  (cost=408827.64..408829.77 rows=4 width=45)
+ Finalize GroupAggregate  (cost=403845.97..403848.09 rows=4 width=45)
    Output: u.plan, count(*), sum(e.revenue)
    Group Key: u.plan
-   ->  Gather Merge  (cost=408827.64..408829.56 rows=16 width=45)
+   ->  Gather Merge  (cost=403845.97..403847.88 rows=16 width=45)
          Output: u.plan, (PARTIAL count(*)), (PARTIAL sum(e.revenue))
          Workers Planned: 4
-         ->  Sort  (cost=407827.58..407827.59 rows=4 width=45)
+         ->  Sort  (cost=402845.91..402845.92 rows=4 width=45)
                Output: u.plan, (PARTIAL count(*)), (PARTIAL sum(e.revenue))
                Sort Key: u.plan
-               ->  Partial HashAggregate  (cost=407827.49..407827.54 rows=4 width=45)
+               ->  Partial HashAggregate  (cost=402845.82..402845.87 rows=4 width=45)
                      Output: u.plan, PARTIAL count(*), PARTIAL sum(e.revenue)
                      Group Key: u.plan
-                     ->  Parallel Hash Join  (cost=60548.51..391579.97 rows=2166336 width=8)
+                     ->  Parallel Hash Join  (cost=60548.38..386832.38 rows=2135126 width=8)
                            Output: u.plan, e.revenue
                            Inner Unique: true
                            Hash Cond: (e.user_id = u.user_id)
-                           ->  Parallel Index Scan using events_event_time_idx on public.events e  (cost=0.56..325345.39 rows=2166336 width=11)
+                           ->  Parallel Index Scan using events_event_time_idx on public.events e  (cost=0.56..320679.85 rows=2135126 width=11)
                                  Output: e.event_id, e.event_time, e.user_id, e.event_type, e.country, e.url, e.duration_ms, e.revenue
                                  Index Cond: ((e.event_time >= '2026-03-01 00:00:00+00'::timestamp with time zone) AND (e.event_time < '2026-04-01 00:00:00+00'::timestamp with time zone))
-                           ->  Parallel Hash  (cost=44922.97..44922.97 rows=1249998 width=13)
+                           ->  Parallel Hash  (cost=44922.92..44922.92 rows=1249992 width=13)
                                  Output: u.plan, u.user_id
-                                 ->  Parallel Seq Scan on public.users u  (cost=0.00..44922.97 rows=1249998 width=13)
+                                 ->  Parallel Seq Scan on public.users u  (cost=0.00..44922.92 rows=1249992 width=13)
                                        Output: u.plan, u.user_id
  JIT:
    Functions: 18

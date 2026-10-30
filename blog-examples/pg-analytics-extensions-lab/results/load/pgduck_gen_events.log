@@ -1,27 +1,31 @@
 Timing is on.
 DROP TABLE
-Time: 1.820 ms
+Time: 1.739 ms
 DROP TABLE
-Time: 0.044 ms
+Time: 0.076 ms
+CREATE TABLE
+Time: 1.631 ms
 psql:/lab/sql/01_gen_events.sql:4: NOTICE:  table "events" does not exist, skipping
 psql:/lab/sql/01_gen_events.sql:5: NOTICE:  table "users" does not exist, skipping
-CREATE TABLE
-Time: 7.950 ms
 INSERT 0 50000000
-Time: 111714.789 ms (01:51.715)
+Time: 78655.874 ms (01:18.656)
 CREATE INDEX
-Time: 33720.370 ms (00:33.720)
+Time: 8741.157 ms (00:08.741)
 CREATE TABLE
-Time: 19.665 ms
+Time: 1.405 ms
 INSERT 0 5000000
-Time: 6417.490 ms (00:06.417)
+Time: 5044.295 ms (00:05.044)
 VACUUM
-Time: 29772.626 ms (00:29.773)
+Time: 4110.764 ms (00:04.111)
 VACUUM
-Time: 362.835 ms
+Time: 270.675 ms
  events_size | users_size | n_events | n_users 
 -------------+------------+----------+---------
  7643 MB     | 361 MB     | 50000000 | 5000000
 (1 row)
 
-Time: 8160.009 ms (00:08.160)
+Time: 1105.217 ms (00:01.105)
+
+real	1m37.987s
+user	0m0.010s
+sys	0m0.000s

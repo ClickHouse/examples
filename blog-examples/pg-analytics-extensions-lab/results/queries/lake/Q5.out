@@ -6,25 +6,25 @@ RUN 1
  4999777
 (1 row)
 
-Time: 611.806 ms
+Time: 690.651 ms
 RUN 2
   count  
 ---------
  4999777
 (1 row)
 
-Time: 550.337 ms
+Time: 605.130 ms
 RUN 3
   count  
 ---------
  4999777
 (1 row)
 
-Time: 532.796 ms
+Time: 586.581 ms
 RUN 4
   count  
 ---------
  4999777
 (1 row)
 
-Time: 527.927 ms
+Time: 598.202 ms

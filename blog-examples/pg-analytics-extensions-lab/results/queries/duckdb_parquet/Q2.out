@@ -21,7 +21,7 @@ RUN 1
  video_play       |  2498563 |  62124812.62
 (14 rows)
 
-Time: 113.295 ms
+Time: 161.774 ms
 RUN 2
     event_type    |    n     |     rev      
 ------------------+----------+--------------
@@ -41,7 +41,7 @@ RUN 2
  video_play       |  2498563 |  62124812.62
 (14 rows)
 
-Time: 75.819 ms
+Time: 92.347 ms
 RUN 3
     event_type    |    n     |     rev      
 ------------------+----------+--------------
@@ -61,7 +61,7 @@ RUN 3
  video_play       |  2498563 |  62124812.62
 (14 rows)
 
-Time: 76.746 ms
+Time: 91.641 ms
 RUN 4
     event_type    |    n     |     rev      
 ------------------+----------+--------------
@@ -81,4 +81,4 @@ RUN 4
  video_play       |  2498563 |  62124812.62
 (14 rows)
 
-Time: 75.687 ms
+Time: 91.641 ms

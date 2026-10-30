@@ -1,0 +1,85 @@
+Loaded 1 queries.
+
+Queries executed: 5 (25%).
+
+localhost:9000, queries: 5, QPS: 4.524, RPS: 61641139.071, MiB/s: 1086.811, result RPS: 18.095, result MiB/s: 0.001.
+
+0%		0.207 sec.	
+10%		0.207 sec.	
+20%		0.212 sec.	
+30%		0.212 sec.	
+40%		0.213 sec.	
+50%		0.213 sec.	
+60%		0.213 sec.	
+70%		0.214 sec.	
+80%		0.214 sec.	
+90%		0.250 sec.	
+95%		0.250 sec.	
+99%		0.250 sec.	
+99.9%		0.250 sec.	
+99.99%		0.250 sec.	
+
+
+
+Queries executed: 10 (50%).
+
+localhost:9000, queries: 5, QPS: 4.567, RPS: 62228131.972, MiB/s: 1097.160, result RPS: 18.267, result MiB/s: 0.001.
+
+0%		0.210 sec.	
+10%		0.210 sec.	
+20%		0.211 sec.	
+30%		0.211 sec.	
+40%		0.219 sec.	
+50%		0.219 sec.	
+60%		0.219 sec.	
+70%		0.220 sec.	
+80%		0.220 sec.	
+90%		0.228 sec.	
+95%		0.228 sec.	
+99%		0.228 sec.	
+99.9%		0.228 sec.	
+99.99%		0.228 sec.	
+
+
+
+Queries executed: 15 (75%).
+
+localhost:9000, queries: 5, QPS: 4.749, RPS: 64713707.676, MiB/s: 1140.984, result RPS: 18.997, result MiB/s: 0.001.
+
+0%		0.200 sec.	
+10%		0.200 sec.	
+20%		0.203 sec.	
+30%		0.203 sec.	
+40%		0.213 sec.	
+50%		0.213 sec.	
+60%		0.213 sec.	
+70%		0.213 sec.	
+80%		0.213 sec.	
+90%		0.217 sec.	
+95%		0.217 sec.	
+99%		0.217 sec.	
+99.9%		0.217 sec.	
+99.99%		0.217 sec.	
+
+
+
+Queries executed: 20 (100%).
+
+localhost:9000, queries: 20, QPS: 4.494, RPS: 61232546.322, MiB/s: 1079.607, result RPS: 17.975, result MiB/s: 0.001.
+
+0%		0.200 sec.	
+10%		0.207 sec.	
+20%		0.210 sec.	
+30%		0.212 sec.	
+40%		0.213 sec.	
+50%		0.213 sec.	
+60%		0.213 sec.	
+70%		0.217 sec.	
+80%		0.220 sec.	
+90%		0.228 sec.	
+95%		0.232 sec.	
+99%		0.250 sec.	
+99.9%		0.250 sec.	
+99.99%		0.250 sec.	
+
+

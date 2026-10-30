@@ -1,26 +1,26 @@
 0.001
-0.001
 0.000
-0.007
-0.004
+0.000
+0.001
+0.001
 events load:
-31.778
+28.330
 users load:
-0.830
-5.299
-0.113
-0.201
+1.008
+12.062
+0.156
    ┌─table──┬─sum(rows)─┬─compressed─┬─uncompressed─┬─parts─┐
 1. │ users  │   5000000 │ 35.77 MiB  │ 57.25 MiB    │     1 │
-2. │ events │  50000000 │ 1.40 GiB   │ 3.54 GiB     │     1 │
+2. │ events │  50000000 │ 800.04 MiB │ 3.87 GiB     │     1 │
    └────────┴───────────┴────────────┴──────────────┴───────┘
+0.002
 CREATE EXTENSION
-DROP SERVER
 psql:/lab/sql/pgch_setup.sql:2: NOTICE:  server "ch_srv" does not exist, skipping
+DROP SERVER
 CREATE SERVER
 CREATE USER MAPPING
-DROP SCHEMA
 psql:/lab/sql/pgch_setup.sql:5: NOTICE:  schema "ch" does not exist, skipping
+DROP SCHEMA
 CREATE SCHEMA
 IMPORT FOREIGN SCHEMA
                                 Foreign table "ch.events"
