@@ -1,0 +1,60 @@
+===== Q1: SELECT count(*), sum(revenue) FROM events;
+SET
+                         QUERY PLAN                          
+-------------------------------------------------------------
+ Foreign Scan  (cost=1.00..5.10 rows=1000 width=40)
+   Output: (count(*)), (sum(revenue))
+   Relations: Aggregate on (events)
+   Remote SQL: SELECT count(*), sum(revenue) FROM lab.events
+(4 rows)
+
+===== Q2: SELECT event_type, count(*) AS n, sum(revenue) AS rev FROM events GROUP BY event_type ORDER BY event_type;
+SET
+                                                           QUERY PLAN                                                           
+--------------------------------------------------------------------------------------------------------------------------------
+ Foreign Scan  (cost=1.00..5.10 rows=1000 width=72)
+   Output: event_type, (count(*)), (sum(revenue))
+   Relations: Aggregate on (events)
+   Remote SQL: SELECT event_type, count(*), sum(revenue) FROM lab.events GROUP BY event_type ORDER BY event_type ASC NULLS LAST
+(4 rows)
+
+===== Q3: SELECT country, date_trunc('day', event_time) AS day, count(*) AS n, sum(revenue) AS rev FROM events WHERE event_time >= '2026-02-01 00:00:00+00' AND event_time < '2026-03-01 00:00:00+00' AND event_type IN ('purchase', 'add_to_cart', 'checkout_start') GROUP BY country, day ORDER BY day, country;
+SET
+                                                                                                                                                                                   QUERY PLAN                                                                                                                                                                                    
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Foreign Scan  (cost=1.00..5.10 rows=1000 width=80)
+   Output: country, (date_trunc('day'::text, event_time)), (count(*)), (sum(revenue))
+   Relations: Aggregate on (events)
+   Remote SQL: SELECT country, toStartOfDay(event_time), count(*), sum(revenue) FROM lab.events WHERE ((event_time >= '2026-02-01 00:00:00')) AND ((event_time < '2026-03-01 00:00:00')) AND ((event_type IN ('purchase','add_to_cart','checkout_start'))) GROUP BY country, (toStartOfDay(event_time)) ORDER BY toStartOfDay(event_time) ASC NULLS LAST, country ASC NULLS LAST
+(4 rows)
+
+===== Q4: SELECT user_id, sum(revenue) AS rev, count(*) AS n FROM events GROUP BY user_id ORDER BY rev DESC, user_id LIMIT 10;
+SET
+                                                                          QUERY PLAN                                                                           
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Foreign Scan  (cost=0.00..-10.00 rows=1 width=48)
+   Output: user_id, (sum(revenue)), (count(*))
+   Relations: Aggregate on (events)
+   Remote SQL: SELECT user_id, sum(revenue), count(*) FROM lab.events GROUP BY user_id ORDER BY sum(revenue) DESC NULLS FIRST, user_id ASC NULLS LAST LIMIT 10
+(4 rows)
+
+===== Q5: SELECT count(DISTINCT user_id) FROM events;
+SET
+                          QUERY PLAN                          
+--------------------------------------------------------------
+ Foreign Scan  (cost=1.00..5.10 rows=1000 width=8)
+   Output: (count(DISTINCT user_id))
+   Relations: Aggregate on (events)
+   Remote SQL: SELECT count(DISTINCT user_id) FROM lab.events
+(4 rows)
+
+===== Q6: SELECT u.plan, count(*) AS n, sum(e.revenue) AS rev FROM events e JOIN users u ON u.user_id = e.user_id WHERE e.event_time >= '2026-03-01 00:00:00+00' AND e.event_time < '2026-04-01 00:00:00+00' GROUP BY u.plan ORDER BY u.plan;
+SET
+                                                                                                                                        QUERY PLAN                                                                                                                                        
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Foreign Scan  (cost=1.00..5.10 rows=1000 width=72)
+   Output: u.plan, (count(*)), (sum(e.revenue))
+   Relations: Aggregate on ((events e) INNER JOIN (users u))
+   Remote SQL: SELECT r2.plan, count(*), sum(r1.revenue) FROM  lab.events r1 ALL INNER JOIN lab.users r2 ON (((r1.user_id = r2.user_id))) WHERE ((r1.event_time >= '2026-03-01 00:00:00')) AND ((r1.event_time < '2026-04-01 00:00:00')) GROUP BY r2.plan ORDER BY r2.plan ASC NULLS LAST
+(4 rows)
+

@@ -1,0 +1,173 @@
+===== Q1: SELECT count(*), sum(revenue) FROM events;
+SET
+                                                         QUERY PLAN                                                         
+----------------------------------------------------------------------------------------------------------------------------
+ Custom Scan (Query Pushdown)  (cost=0.00..0.00 rows=0 width=0)
+   Output: pushdown_query.count, pushdown_query.sum
+   Engine: DuckDB
+   Data Files Scanned: 4
+   Deletion Files Scanned: 0
+   Vectorized SQL:  SELECT "count"(*) AS "count",
+     "sum"("revenue") AS "sum"
+    FROM ice.events "events"("event_id", "event_time", "user_id", "event_type", "country", "url", "duration_ms", "revenue")
+   ->  UNGROUPED_AGGREGATE
+         ->  PROJECTION
+               Projections: revenue
+               Estimated Cardinality: 50000000
+               ->  READ_PARQUET
+                     Function: READ_PARQUET
+                     Projections: revenue
+                     Estimated Cardinality: 50000000
+(16 rows)
+
+===== Q2: SELECT event_type, count(*) AS n, sum(revenue) AS rev FROM events GROUP BY event_type ORDER BY event_type;
+SET
+                                                         QUERY PLAN                                                         
+----------------------------------------------------------------------------------------------------------------------------
+ Custom Scan (Query Pushdown)  (cost=0.00..0.00 rows=0 width=0)
+   Output: pushdown_query.event_type, pushdown_query.n, pushdown_query.rev
+   Engine: DuckDB
+   Data Files Scanned: 4
+   Deletion Files Scanned: 0
+   Vectorized SQL:  SELECT "event_type",
+     "count"(*) AS "n",
+     "sum"("revenue") AS "rev"
+    FROM ice.events "events"("event_id", "event_time", "user_id", "event_type", "country", "url", "duration_ms", "revenue")
+   GROUP BY "event_type"
+   ORDER BY "event_type"
+   ->  ORDER_BY
+         Order By: events.event_type ASC
+         ->  HASH_GROUP_BY
+               Groups: #0
+               Estimated Cardinality: 31606027
+               ->  PROJECTION
+                     Estimated Cardinality: 50000000
+                     ->  READ_PARQUET
+                           Function: READ_PARQUET
+                           Estimated Cardinality: 50000000
+(21 rows)
+
+===== Q3: SELECT country, date_trunc('day', event_time) AS day, count(*) AS n, sum(revenue) AS rev FROM events WHERE event_time >= '2026-02-01 00:00:00+00' AND event_time < '2026-03-01 00:00:00+00' AND event_type IN ('purchase', 'add_to_cart', 'checkout_start') GROUP BY country, day ORDER BY day, country;
+SET
+                                                                                                                                    QUERY PLAN                                                                                                                                    
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Custom Scan (Query Pushdown)  (cost=0.00..0.00 rows=0 width=0)
+   Output: pushdown_query.country, pushdown_query.day, pushdown_query.n, pushdown_query.rev
+   Engine: DuckDB
+   Data Files Scanned: 1
+   Deletion Files Scanned: 0
+   Vectorized SQL:  SELECT "country",
+     ("date_trunc"('day'::"text", "event_time"))::timestamp with time zone AS "day",
+     "count"(*) AS "n",
+     "sum"("revenue") AS "rev"
+    FROM ice.events "events"("event_id", "event_time", "user_id", "event_type", "country", "url", "duration_ms", "revenue")
+   WHERE (("event_time" >= ('2026-02-01 00:00:00+00'::"text")::timestamp with time zone) AND ("event_time" < ('2026-03-01 00:00:00+00'::"text")::timestamp with time zone) AND ("event_type" = ANY (ARRAY['purchase'::"text", 'add_to_cart'::"text", 'checkout_start'::"text"])))
+   GROUP BY "country", ("date_trunc"('day'::"text", "event_time"))::timestamp with time zone
+   ORDER BY ("date_trunc"('day'::"text", "event_time"))::timestamp with time zone, "country"
+   ->  ORDER_BY
+         ->  HASH_GROUP_BY
+               Estimated Cardinality: 676742
+               ->  PROJECTION
+                     Estimated Cardinality: 690368
+                     ->  HASH_JOIN
+                           Join Type: SEMI
+                           Conditions: event_type = #0
+                           Estimated Cardinality: 690368
+                           ->  READ_PARQUET
+                                 Filters: event_time>='2026-02-01 00:00:00+00'::TIMESTAMP WITH TIME ZONE AND event_time<'2026-03-01 00:00:00+00'::TIMESTAMP WITH TIME ZONE
+                                 Function: READ_PARQUET
+                                 Estimated Cardinality: 3451840
+                           ->  PROJECTION
+                                 Projections: UNNEST(list_value(CAST('purchase' AS VARCHAR), CAST('add_to_cart' AS VARCHAR), CAST('checkout_start' AS VARCHAR)))
+                                 Estimated Cardinality: 1
+                                 ->  UNNEST
+                                       ->  DUMMY_SCAN
+(31 rows)
+
+===== Q4: SELECT user_id, sum(revenue) AS rev, count(*) AS n FROM events GROUP BY user_id ORDER BY rev DESC, user_id LIMIT 10;
+SET
+                                                         QUERY PLAN                                                         
+----------------------------------------------------------------------------------------------------------------------------
+ Custom Scan (Query Pushdown)  (cost=0.00..0.00 rows=0 width=0)
+   Output: pushdown_query.user_id, pushdown_query.rev, pushdown_query.n
+   Engine: DuckDB
+   Data Files Scanned: 4
+   Deletion Files Scanned: 0
+   Vectorized SQL:  SELECT "user_id",
+     "sum"("revenue") AS "rev",
+     "count"(*) AS "n"
+    FROM ice.events "events"("event_id", "event_time", "user_id", "event_type", "country", "url", "duration_ms", "revenue")
+   GROUP BY "user_id"
+   ORDER BY ("sum"("revenue")) DESC, "user_id"
+  LIMIT (10)::bigint
+   ->  TOP_N
+         Top: 10
+         ->  HASH_GROUP_BY
+               Groups: #0
+               Estimated Cardinality: 31606027
+               ->  PROJECTION
+                     Estimated Cardinality: 50000000
+                     ->  READ_PARQUET
+                           Function: READ_PARQUET
+                           Estimated Cardinality: 50000000
+(22 rows)
+
+===== Q5: SELECT count(DISTINCT user_id) FROM events;
+SET
+                                                         QUERY PLAN                                                         
+----------------------------------------------------------------------------------------------------------------------------
+ Custom Scan (Query Pushdown)  (cost=0.00..0.00 rows=0 width=0)
+   Output: pushdown_query.count
+   Engine: DuckDB
+   Data Files Scanned: 4
+   Deletion Files Scanned: 0
+   Vectorized SQL:  SELECT "count"(DISTINCT "user_id") AS "count"
+    FROM ice.events "events"("event_id", "event_time", "user_id", "event_type", "country", "url", "duration_ms", "revenue")
+   ->  UNGROUPED_AGGREGATE
+         Aggregates: count(DISTINCT #0)
+         ->  PROJECTION
+               Projections: user_id
+               Estimated Cardinality: 50000000
+               ->  READ_PARQUET
+                     Function: READ_PARQUET
+                     Projections: user_id
+                     Estimated Cardinality: 50000000
+(16 rows)
+
+===== Q6: SELECT u.plan, count(*) AS n, sum(e.revenue) AS rev FROM events e JOIN users u ON u.user_id = e.user_id WHERE e.event_time >= '2026-03-01 00:00:00+00' AND e.event_time < '2026-04-01 00:00:00+00' GROUP BY u.plan ORDER BY u.plan;
+SET
+                                                                                     QUERY PLAN                                                                                     
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Custom Scan (Query Pushdown)  (cost=0.00..0.00 rows=0 width=0)
+   Output: pushdown_query.plan, pushdown_query.n, pushdown_query.rev
+   Engine: DuckDB
+   Data Files Scanned: 3
+   Deletion Files Scanned: 0
+   Vectorized SQL:  SELECT "u"."plan",
+     "count"(*) AS "n",
+     "sum"("e"."revenue") AS "rev"
+    FROM (ice.events "e"("event_id", "event_time", "user_id", "event_type", "country", "url", "duration_ms", "revenue")
+      JOIN ice.users "u"("user_id", "signup_date", "plan", "country") ON (("u"."user_id" = "e"."user_id")))
+   WHERE (("e"."event_time" >= ('2026-03-01 00:00:00+00'::"text")::timestamp with time zone) AND ("e"."event_time" < ('2026-04-01 00:00:00+00'::"text")::timestamp with time zone))
+   GROUP BY "u"."plan"
+   ORDER BY "u"."plan"
+   ->  ORDER_BY
+         Order By: u.plan ASC
+         ->  HASH_GROUP_BY
+               Groups: #0
+               Estimated Cardinality: 5612950
+               ->  PROJECTION
+                     Estimated Cardinality: 6192943
+                     ->  HASH_JOIN
+                           Join Type: INNER
+                           Conditions: user_id = user_id
+                           Estimated Cardinality: 6192943
+                           ->  READ_PARQUET
+                                 Function: READ_PARQUET
+                                 Estimated Cardinality: 5000000
+                           ->  READ_PARQUET
+                                 Filters: event_time>='2026-03-01 00:00:00+00'::TIMESTAMP WITH TIME ZONE AND event_time<'2026-04-01 00:00:00+00'::TIMESTAMP WITH TIME ZONE
+                                 Function: READ_PARQUET
+                                 Estimated Cardinality: 6192943
+(31 rows)
+
