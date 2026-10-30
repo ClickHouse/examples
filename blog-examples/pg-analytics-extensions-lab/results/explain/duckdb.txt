@@ -1,0 +1,314 @@
+===== Q1: SELECT count(*), sum(revenue) FROM events;
+SET
+SET
+                         QUERY PLAN                         
+------------------------------------------------------------
+ Custom Scan (DuckDBScan)  (cost=0.00..0.00 rows=0 width=0)
+   Output: count, sum
+   DuckDB Execution Plan: 
+ 
+ ┌───────────────────────────┐
+ │    UNGROUPED_AGGREGATE    │
+ │    ────────────────────   │
+ │        Aggregates:        │
+ │        count_star()       │
+ │          sum(#0)          │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │         PROJECTION        │
+ │    ────────────────────   │
+ │          revenue          │
+ │                           │
+ │      ~49,999,720 rows     │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │  PGDUCKDB_POSTGRES_SCAN   │
+ │    ────────────────────   │
+ │       Table: events       │
+ │    Projections: revenue   │
+ │                           │
+ │      ~49,999,720 rows     │
+ └───────────────────────────┘
+ 
+ 
+(28 rows)
+
+===== Q2: SELECT event_type, count(*) AS n, sum(revenue) AS rev FROM events GROUP BY event_type ORDER BY event_type;
+SET
+SET
+                         QUERY PLAN                         
+------------------------------------------------------------
+ Custom Scan (DuckDBScan)  (cost=0.00..0.00 rows=0 width=0)
+   Output: event_type, n, rev
+   DuckDB Execution Plan: 
+ 
+ ┌───────────────────────────┐
+ │          ORDER_BY         │
+ │    ────────────────────   │
+ │   events.event_type ASC   │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │       HASH_GROUP_BY       │
+ │    ────────────────────   │
+ │         Groups: #0        │
+ │                           │
+ │        Aggregates:        │
+ │        count_star()       │
+ │          sum(#1)          │
+ │                           │
+ │      ~31,605,850 rows     │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │         PROJECTION        │
+ │    ────────────────────   │
+ │         event_type        │
+ │          revenue          │
+ │                           │
+ │      ~49,999,720 rows     │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │  PGDUCKDB_POSTGRES_SCAN   │
+ │    ────────────────────   │
+ │       Table: events       │
+ │                           │
+ │        Projections:       │
+ │         event_type        │
+ │          revenue          │
+ │                           │
+ │      ~49,999,720 rows     │
+ └───────────────────────────┘
+ 
+ 
+(41 rows)
+
+===== Q3: SELECT country, date_trunc('day', event_time) AS day, count(*) AS n, sum(revenue) AS rev FROM events WHERE event_time >= '2026-02-01 00:00:00+00' AND event_time < '2026-03-01 00:00:00+00' AND event_type IN ('purchase', 'add_to_cart', 'checkout_start') GROUP BY country, day ORDER BY day, country;
+SET
+SET
+                         QUERY PLAN                         
+------------------------------------------------------------
+ Custom Scan (DuckDBScan)  (cost=0.00..0.00 rows=0 width=0)
+   Output: country, day, n, rev
+   DuckDB Execution Plan: 
+ 
+ ┌───────────────────────────┐
+ │          ORDER_BY         │
+ │    ────────────────────   │
+ │  date_trunc(CAST('day' AS │
+ │      VARCHAR), events     │
+ │      .event_time) ASC     │
+ │     events.country ASC    │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │       HASH_GROUP_BY       │
+ │    ────────────────────   │
+ │          Groups:          │
+ │             #0            │
+ │             #1            │
+ │                           │
+ │        Aggregates:        │
+ │        count_star()       │
+ │          sum(#2)          │
+ │                           │
+ │      ~1,960,516 rows      │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │         PROJECTION        │
+ │    ────────────────────   │
+ │          country          │
+ │     date_trunc('day',     │
+ │         event_time)       │
+ │          revenue          │
+ │                           │
+ │      ~1,999,988 rows      │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │         HASH_JOIN         │
+ │    ────────────────────   │
+ │      Join Type: SEMI      │
+ │                           │
+ │        Conditions:        ├──────────────┐
+ │      event_type = #0      │              │
+ │                           │              │
+ │      ~1,999,988 rows      │              │
+ └─────────────┬─────────────┘              │
+ ┌─────────────┴─────────────┐┌─────────────┴─────────────┐
+ │  PGDUCKDB_POSTGRES_SCAN   ││         PROJECTION        │
+ │    ────────────────────   ││    ────────────────────   │
+ │       Table: events       ││  UNNEST(list_value(CAST(  │
+ │                           ││  'purchase' AS VARCHAR),  │
+ │        Projections:       ││    CAST('add_to_cart' AS  │
+ │         event_time        ││       VARCHAR), CAST(     │
+ │         event_type        ││    'checkout_start' AS    │
+ │          country          ││         VARCHAR)))        │
+ │          revenue          ││                           │
+ │                           ││                           │
+ │          Filters:         ││                           │
+ │ event_time>='2026-02-01 00││                           │
+ │ :00:00+00'::TIMESTAMP WITH││                           │
+ │  TIME ZONE AND event_time<││                           │
+ │ '2026-03-01 00:00:00+00': ││                           │
+ │ :TIMESTAMP WITH TIME ZONE ││                           │
+ │                           ││                           │
+ │      ~9,999,944 rows      ││           ~1 row          │
+ └───────────────────────────┘└─────────────┬─────────────┘
+                              ┌─────────────┴─────────────┐
+                              │           UNNEST          │
+                              └─────────────┬─────────────┘
+                              ┌─────────────┴─────────────┐
+                              │         DUMMY_SCAN        │
+                              └───────────────────────────┘
+ 
+ 
+(73 rows)
+
+===== Q4: SELECT user_id, sum(revenue) AS rev, count(*) AS n FROM events GROUP BY user_id ORDER BY rev DESC, user_id LIMIT 10;
+SET
+SET
+                         QUERY PLAN                         
+------------------------------------------------------------
+ Custom Scan (DuckDBScan)  (cost=0.00..0.00 rows=0 width=0)
+   Output: user_id, rev, n
+   DuckDB Execution Plan: 
+ 
+ ┌───────────────────────────┐
+ │           TOP_N           │
+ │    ────────────────────   │
+ │          Top: 10          │
+ │                           │
+ │         Order By:         │
+ │  sum(events.revenue) DESC │
+ │     events.user_id ASC    │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │       HASH_GROUP_BY       │
+ │    ────────────────────   │
+ │         Groups: #0        │
+ │                           │
+ │        Aggregates:        │
+ │          sum(#1)          │
+ │        count_star()       │
+ │                           │
+ │      ~31,605,850 rows     │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │         PROJECTION        │
+ │    ────────────────────   │
+ │          user_id          │
+ │          revenue          │
+ │                           │
+ │      ~49,999,720 rows     │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │  PGDUCKDB_POSTGRES_SCAN   │
+ │    ────────────────────   │
+ │       Table: events       │
+ │                           │
+ │        Projections:       │
+ │          user_id          │
+ │          revenue          │
+ │                           │
+ │      ~49,999,720 rows     │
+ └───────────────────────────┘
+ 
+ 
+(45 rows)
+
+===== Q5: SELECT count(DISTINCT user_id) FROM events;
+SET
+SET
+                         QUERY PLAN                         
+------------------------------------------------------------
+ Custom Scan (DuckDBScan)  (cost=0.00..0.00 rows=0 width=0)
+   Output: count
+   DuckDB Execution Plan: 
+ 
+ ┌───────────────────────────┐
+ │    UNGROUPED_AGGREGATE    │
+ │    ────────────────────   │
+ │        Aggregates:        │
+ │     count(DISTINCT #0)    │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │         PROJECTION        │
+ │    ────────────────────   │
+ │          user_id          │
+ │                           │
+ │      ~49,999,720 rows     │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │  PGDUCKDB_POSTGRES_SCAN   │
+ │    ────────────────────   │
+ │       Table: events       │
+ │    Projections: user_id   │
+ │                           │
+ │      ~49,999,720 rows     │
+ └───────────────────────────┘
+ 
+ 
+(27 rows)
+
+===== Q6: SELECT u.plan, count(*) AS n, sum(e.revenue) AS rev FROM events e JOIN users u ON u.user_id = e.user_id WHERE e.event_time >= '2026-03-01 00:00:00+00' AND e.event_time < '2026-04-01 00:00:00+00' GROUP BY u.plan ORDER BY u.plan;
+SET
+SET
+                         QUERY PLAN                         
+------------------------------------------------------------
+ Custom Scan (DuckDBScan)  (cost=0.00..0.00 rows=0 width=0)
+   Output: plan, n, rev
+   DuckDB Execution Plan: 
+ 
+ ┌───────────────────────────┐
+ │          ORDER_BY         │
+ │    ────────────────────   │
+ │         u.plan ASC        │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │       HASH_GROUP_BY       │
+ │    ────────────────────   │
+ │         Groups: #0        │
+ │                           │
+ │        Aggregates:        │
+ │        count_star()       │
+ │          sum(#1)          │
+ │                           │
+ │      ~9,063,411 rows      │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │         PROJECTION        │
+ │    ────────────────────   │
+ │            plan           │
+ │          revenue          │
+ │                           │
+ │      ~9,999,944 rows      │
+ └─────────────┬─────────────┘
+ ┌─────────────┴─────────────┐
+ │         HASH_JOIN         │
+ │    ────────────────────   │
+ │      Join Type: INNER     │
+ │                           │
+ │        Conditions:        ├──────────────┐
+ │     user_id = user_id     │              │
+ │                           │              │
+ │      ~9,999,944 rows      │              │
+ └─────────────┬─────────────┘              │
+ ┌─────────────┴─────────────┐┌─────────────┴─────────────┐
+ │  PGDUCKDB_POSTGRES_SCAN   ││  PGDUCKDB_POSTGRES_SCAN   │
+ │    ────────────────────   ││    ────────────────────   │
+ │       Table: events       ││        Table: users       │
+ │                           ││                           │
+ │        Projections:       ││        Projections:       │
+ │          user_id          ││          user_id          │
+ │          revenue          ││            plan           │
+ │                           ││                           │
+ │          Filters:         ││                           │
+ │ event_time>='2026-03-01 00││                           │
+ │ :00:00+00'::TIMESTAMP WITH││                           │
+ │  TIME ZONE AND event_time<││                           │
+ │ '2026-04-01 00:00:00+00': ││                           │
+ │ :TIMESTAMP WITH TIME ZONE ││                           │
+ │                           ││                           │
+ │      ~9,999,944 rows      ││      ~4,999,974 rows      │
+ └───────────────────────────┘└───────────────────────────┘
+ 
+ 
+(58 rows)
+

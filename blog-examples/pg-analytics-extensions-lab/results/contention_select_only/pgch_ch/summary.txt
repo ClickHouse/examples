@@ -1,0 +1,23 @@
+{
+ "run": "pgch_ch",
+ "tps": 166101.451914,
+ "lat_avg_ms": 0.093,
+ "failed_txn": 0,
+ "pgbench_aborted": false,
+ "backend_sigkills": 0,
+ "lat_p50_ms": 0.09,
+ "lat_p95_ms": 0.16,
+ "lat_p99_ms": 0.22,
+ "lat_samples": 498452,
+ "loop_q3_n": 105,
+ "loop_q4_n": 103,
+ "loop_errors": 8,
+ "loop_q3_median_ms": 33.1,
+ "loop_q4_median_ms": 625.3,
+ "cpu_avg_pct[lab-pgch]": 215.7,
+ "cpu_max_pct[lab-pgch]": 400.3,
+ "mem_max_GiB[lab-pgch]": 2.03,
+ "cpu_avg_pct[lab-ch]": 232.7,
+ "cpu_max_pct[lab-ch]": 399.3,
+ "mem_max_GiB[lab-ch]": 3.26
+}

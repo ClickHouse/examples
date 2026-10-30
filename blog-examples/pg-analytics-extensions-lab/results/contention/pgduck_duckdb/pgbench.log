@@ -1,0 +1,80 @@
+pgbench (17.11 (Debian 17.11-1.pgdg13+2), server 17.7 (Debian 17.7-3.pgdg12+1))
+starting vacuum...end.
+progress: 10.0 s, 3359.4 tps, lat 4.745 ms stddev 3.218, 0 failed
+progress: 20.0 s, 2177.1 tps, lat 7.329 ms stddev 11.776, 0 failed
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+pgbench: error: client 9 aborted in command 10 (SQL) of script 0; perhaps the backend died while processing
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+pgbench: error: client 1 aborted in command 4 (SQL) of script 0; perhaps the backend died while processing
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+pgbench: error: client 12 aborted in command 8 (SQL) of script 0; perhaps the backend died while processing
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+pgbench: error: client 8 aborted in command 8 (SQL) of script 0; perhaps the backend died while processing
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+pgbench: error: client 10 aborted in command 8 (SQL) of script 0; perhaps the backend died while processing
+pgbench: error: client 13 aborted in command 6 (SQL) of script 0; perhaps the backend died while processing
+pgbench: error: client 15 aborted in command 8 (SQL) of script 0; perhaps the backend died while processing
+pgbench: error: client 7 aborted in command 10 (SQL) of script 0; perhaps the backend died while processing
+pgbench: error: client 0 aborted in command 10 (SQL) of script 0; perhaps the backend died while processing
+pgbench: error: client 11 aborted in command 10 (SQL) of script 0; perhaps the backend died while processing
+pgbench: error: client 6 aborted in command 5 (SQL) of script 0; perhaps the backend died while processing
+pgbench: error: client 3 aborted in command 10 (SQL) of script 0; perhaps the backend died while processing
+pgbench: error: client 14 aborted in command 9 (SQL) of script 0; perhaps the backend died while processing
+pgbench: error: client 4 aborted in command 4 (SQL) of script 0; perhaps the backend died while processing
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+pgbench: error: client 2 aborted in command 10 (SQL) of script 0; perhaps the backend died while processing
+pgbench: error: client 5 aborted in command 10 (SQL) of script 0; perhaps the backend died while processing
+pgbench: error: Run was aborted; the above results are incomplete.
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 50
+query mode: simple
+number of clients: 16
+number of threads: 4
+maximum number of tries: 1
+duration: 120 s
+number of transactions actually processed: 57602
+number of failed transactions: 0 (0.000%)
+latency average = 7.727 ms
+latency stddev = 15.768 ms
+initial connection time = 33.810 ms
+tps = 2068.184082 (without initial connection time)
+pgbench rc=2

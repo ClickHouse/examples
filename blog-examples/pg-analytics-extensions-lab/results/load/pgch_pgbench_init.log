@@ -1,0 +1,6 @@
+NOTICE:  database "pgbench" does not exist, skipping
+DROP DATABASE
+CREATE DATABASE
+vacuuming...
+creating primary keys...
+done in 2.91 s (drop tables 0.00 s, create tables 0.01 s, client-side generate 2.24 s, vacuum 0.16 s, primary keys 0.50 s).

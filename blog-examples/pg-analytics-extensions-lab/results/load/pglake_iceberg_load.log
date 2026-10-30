@@ -1,0 +1,46 @@
+Timing is on.
+psql:/lab/sql/pglake_setup.sql:2: NOTICE:  extension "pg_lake" already exists, skipping
+CREATE EXTENSION
+Time: 1.804 ms
+      extname      | extversion 
+-------------------+------------
+ btree_gist        | 1.7
+ pg_extension_base | 3.6
+ pg_lake           | 3.6
+ pg_lake_copy      | 3.6
+ pg_lake_engine    | 3.6
+ pg_lake_iceberg   | 3.6
+ pg_lake_spatial   | 3.6
+ pg_lake_table     | 3.6
+ pg_map            | 3.6
+ plpgsql           | 1.0
+ postgis           | 3.6.4
+(11 rows)
+
+Time: 0.581 ms
+ pg_lake_iceberg.default_location_prefix 
+-----------------------------------------
+ s3://testbucket/pg_lake/
+(1 row)
+
+Time: 0.077 ms
+DROP SCHEMA
+Time: 63.409 ms
+CREATE SCHEMA
+Time: 1.747 ms
+SELECT 50000000
+Time: 61305.972 ms (01:01.306)
+SELECT 5000000
+Time: 2533.241 ms (00:02.533)
+  count   
+----------
+ 50000000
+(1 row)
+
+Time: 45.733 ms
+  count  
+---------
+ 5000000
+(1 row)
+
+Time: 5.332 ms

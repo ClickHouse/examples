@@ -1,0 +1,54 @@
+0.001
+0.001
+0.000
+0.007
+0.004
+events load:
+31.778
+users load:
+0.830
+5.299
+0.113
+0.201
+   ┌─table──┬─sum(rows)─┬─compressed─┬─uncompressed─┬─parts─┐
+1. │ users  │   5000000 │ 35.77 MiB  │ 57.25 MiB    │     1 │
+2. │ events │  50000000 │ 1.40 GiB   │ 3.54 GiB     │     1 │
+   └────────┴───────────┴────────────┴──────────────┴───────┘
+CREATE EXTENSION
+DROP SERVER
+psql:/lab/sql/pgch_setup.sql:2: NOTICE:  server "ch_srv" does not exist, skipping
+CREATE SERVER
+CREATE USER MAPPING
+DROP SCHEMA
+psql:/lab/sql/pgch_setup.sql:5: NOTICE:  schema "ch" does not exist, skipping
+CREATE SCHEMA
+IMPORT FOREIGN SCHEMA
+                                Foreign table "ch.events"
+   Column    |            Type             | Collation | Nullable | Default | FDW options 
+-------------+-----------------------------+-----------+----------+---------+-------------
+ event_id    | bigint                      |           | not null |         | 
+ event_time  | timestamp(6) with time zone |           | not null |         | 
+ user_id     | bigint                      |           | not null |         | 
+ event_type  | text                        |           | not null |         | 
+ country     | text                        |           | not null |         | 
+ url         | text                        |           | not null |         | 
+ duration_ms | integer                     |           | not null |         | 
+ revenue     | numeric(10,2)               |           | not null |         | 
+Server: ch_srv
+FDW options: (database 'lab', table_name 'events', engine 'MergeTree')
+
+                      Foreign table "ch.users"
+   Column    |  Type  | Collation | Nullable | Default | FDW options 
+-------------+--------+-----------+----------+---------+-------------
+ user_id     | bigint |           | not null |         | 
+ signup_date | date   |           | not null |         | 
+ plan        | text   |           | not null |         | 
+ country     | text   |           | not null |         | 
+Server: ch_srv
+FDW options: (database 'lab', table_name 'users', engine 'MergeTree')
+
+    extname    | extversion 
+---------------+------------
+ pg_clickhouse | 0.11
+(1 row)
+

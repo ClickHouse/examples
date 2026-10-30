@@ -1,0 +1,27 @@
+pgbench (17.11 (Debian 17.11-1.pgdg13+2))
+starting vacuum...end.
+progress: 10.0 s, 1541.9 tps, lat 10.346 ms stddev 23.047, 0 failed
+progress: 20.0 s, 1607.6 tps, lat 9.947 ms stddev 22.110, 0 failed
+progress: 30.0 s, 1629.6 tps, lat 9.809 ms stddev 26.457, 0 failed
+progress: 40.0 s, 5199.7 tps, lat 3.078 ms stddev 4.937, 0 failed
+progress: 50.0 s, 3922.1 tps, lat 4.075 ms stddev 10.635, 0 failed
+progress: 60.0 s, 2024.4 tps, lat 7.889 ms stddev 24.029, 0 failed
+progress: 70.0 s, 4757.6 tps, lat 3.366 ms stddev 10.611, 0 failed
+progress: 80.0 s, 5249.6 tps, lat 3.045 ms stddev 7.639, 0 failed
+progress: 90.0 s, 5378.7 tps, lat 2.972 ms stddev 11.937, 0 failed
+progress: 100.0 s, 7224.2 tps, lat 2.212 ms stddev 1.771, 0 failed
+progress: 110.0 s, 6832.9 tps, lat 2.339 ms stddev 4.036, 0 failed
+progress: 120.0 s, 2429.4 tps, lat 6.585 ms stddev 21.522, 0 failed
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 50
+query mode: simple
+number of clients: 16
+number of threads: 4
+maximum number of tries: 1
+duration: 120 s
+number of transactions actually processed: 477980
+number of failed transactions: 0 (0.000%)
+latency average = 4.014 ms
+latency stddev = 12.636 ms
+initial connection time = 21.150 ms
+tps = 3982.891117 (without initial connection time)

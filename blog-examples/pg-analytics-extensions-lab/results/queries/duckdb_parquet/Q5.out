@@ -1,0 +1,32 @@
+SET
+SET
+SET
+Timing is on.
+RUN 1
+  count  
+---------
+ 4999777
+(1 row)
+
+Time: 465.480 ms
+RUN 2
+  count  
+---------
+ 4999777
+(1 row)
+
+Time: 415.458 ms
+RUN 3
+  count  
+---------
+ 4999777
+(1 row)
+
+Time: 420.095 ms
+RUN 4
+  count  
+---------
+ 4999777
+(1 row)
+
+Time: 358.977 ms

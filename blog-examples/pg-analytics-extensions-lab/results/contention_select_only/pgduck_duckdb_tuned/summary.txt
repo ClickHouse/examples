@@ -1,0 +1,23 @@
+{
+ "run": "pgduck_duckdb_tuned",
+ "tps": 110300.701402,
+ "lat_avg_ms": 0.144,
+ "failed_txn": 0,
+ "pgbench_aborted": false,
+ "backend_sigkills": 0,
+ "lat_p50_ms": 0.11,
+ "lat_p95_ms": 0.29,
+ "lat_p99_ms": 0.65,
+ "lat_samples": 330825,
+ "loop_q3_n": 4,
+ "loop_q4_n": 4,
+ "loop_errors": 0,
+ "loop_q3_median_ms": 2364.5,
+ "loop_q4_median_ms": 12505.1,
+ "cpu_avg_pct[lab-pgduck]": 254.2,
+ "cpu_max_pct[lab-pgduck]": 465.1,
+ "mem_max_GiB[lab-pgduck]": 3.26,
+ "cpu_avg_pct[lab-ch]": 7.5,
+ "cpu_max_pct[lab-ch]": 30.7,
+ "mem_max_GiB[lab-ch]": 0.89
+}
