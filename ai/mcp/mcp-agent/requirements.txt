@@ -2,4 +2,4 @@
 mcp-agent==0.2.6
 openai==3.8.0
 # This framework still requires the MCP SDK 1.x API.
-mcp==1.28.1
+mcp==1.30.0
