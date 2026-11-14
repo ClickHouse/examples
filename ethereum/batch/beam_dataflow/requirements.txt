@@ -10,7 +10,7 @@ clickhouse-connect==0.8.17
 crcmod==1.7
 deprecated==1.2.18
 dill==0.3.1.1
-dnspython==2.7.0
+dnspython==2.9.2
 docopt==0.6.2
 docstring-parser==0.16
 fastavro==1.11.1
